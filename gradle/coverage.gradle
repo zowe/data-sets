@@ -1,0 +1,23 @@
+ext.javaProjectsWithUnitTests = [
+    'jobs-api-server',
+    'jobs-tests'
+    
+]
+
+
+configure(subprojects.findAll { it.name in javaProjectsWithUnitTests }) {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'jacoco'
+    jacoco {
+        toolVersion = '0.8.2'
+    }
+
+    jacocoTestReport {
+        dependsOn test
+        reports {
+            xml.enabled true
+            html.enabled true
+        }
+    }
+}

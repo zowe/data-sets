@@ -1,0 +1,21 @@
+dependencies {
+
+    compile libraries.spring_boot_starter_actuator
+    compile libraries.spring_boot_starter_parent
+    compile libraries.spring_boot_starter_security
+    compile libraries.spring_boot_starter_web
+    compile libraries.http_core
+    compile libraries.http_client
+    compile libraries.commons_codec
+    compile libraries.gson
+    compile libraries.springFox
+    compile libraries.springFoxSwagger2
+    compile libraries.springFoxSwaggerUI
+    compile libraries.lombok
+
+    testCompile libraries.spring_boot_starter_test
+    testCompile libraries.powermock_api_mockito2
+    testCompile libraries.power_mock_junit4
+    testCompile libraries.power_mock_junit4_rule
+    testCompile libraries.mockito_core
+}

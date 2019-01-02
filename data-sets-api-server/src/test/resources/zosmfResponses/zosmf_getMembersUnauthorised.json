@@ -1,0 +1,10 @@
+{
+    "category": 4,
+    "details": [
+        "ISRZ002 Authorization failed - You may not use this protected data set. Open 913 abend."
+    ],
+    "message": "LMOPEN error",
+    "rc": 8,
+    "reason": 0,
+    "stack": "  1 1532BF88+000000EE IspfInterface::throwIspfException(int,const char*,int)\n  2 152F8458+00000184 ListMembersServlet::lmopen()\n  3 152F5968+0000065A ListMembersServlet::doGet()\n  4 152FC670+00000086 TsoServlet::service()\n  5 15326618+0000017E TsoServlet::run()\n  6 15325FF0+00000386 main\n  7 06780118+0000127E CEEVROND\n  8 14B06718+000000B4 EDCZHINV\n  9 0661A8D0+000001C6 CEEBBEXT\n"
+}

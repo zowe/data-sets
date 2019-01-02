@@ -1,0 +1,74 @@
+// Usage: ./gradlew runIntegrationTests -Pserver.host=<> -Pserver.port=<> -Pserver.username=<>, -Pserver.password=<>
+// ./gradlew build will still compile Java, but not run the test task
+
+
+ext {
+	server_host = project.hasProperty('server.host') ? project.getProperty('server.host') : "undefined"
+	server_port = project.hasProperty('server.port') ? project.getProperty('server.port') : -1
+	username = project.hasProperty('server.username') ? project.getProperty('server.username') : "undefined"
+	password = project.hasProperty('server.password') ? project.getProperty('server.password') : "undefined"
+}
+
+dependencies {
+    compile project(':data-sets-model')
+    compile project(':data-sets-api-server')
+
+    compile libraries.spring_boot_starter_actuator
+    compile libraries.spring_boot_starter_parent
+    compile libraries.spring_boot_starter_security
+    compile libraries.spring_boot_starter_web
+    compile libraries.http_core
+    compile libraries.http_client
+    compile libraries.commons_codec
+    compile libraries.gson
+    compile libraries.springFox
+    compile libraries.springFoxSwagger2
+    compile libraries.springFoxSwaggerUI
+    compile libraries.lombok
+    compile libraries.explorer_api_common
+
+    testCompile libraries.spring_boot_starter_test
+    testCompile libraries.powermock_api_mockito2
+    testCompile libraries.power_mock_junit4
+    testCompile libraries.power_mock_junit4_rule
+    testCompile libraries.mockito_core
+    testCompile libraries.explorer_api_common_test
+    testCompile 'io.rest-assured:rest-assured:3.2.0' //TODO testCompile libraries.restAssured
+}
+
+test {
+	systemProperty "server.host", server_host
+	systemProperty "server.port", server_port
+	systemProperty "server.username", username
+	systemProperty "server.password", password
+}
+
+task validate << {
+	checkAndThrow("server_host", "undefined", "server.host");
+	checkAndThrow("server_port", -1, "server.port");
+	checkAndThrow("username", "undefined", "server.username");
+	checkAndThrow("password", "undefined", "server.password");
+}	
+
+task runIntegrationTests(dependsOn: ['validate', 'test']){
+
+}
+
+void checkAndThrow(String property, defaultValue, required=property) {
+	if (ext.getProperty(property).equals(defaultValue)) {
+		throw new GradleException("Missing the required property \'" + required + "\'.");
+	}
+}
+
+gradle.taskGraph.whenReady { taskGraph -> 
+	if (!taskGraph.hasTask(runIntegrationTests)) {
+		def tasks = taskGraph.getAllTasks()
+		tasks.findAll { it.name == 'test' }.each { task -> 
+			if (task.getProject().getName() == 'data-sets-tests') {
+		 		task.setEnabled(false) 
+			}
+		}
+	}
+} 
+
+

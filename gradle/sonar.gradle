@@ -1,0 +1,43 @@
+apply plugin: "org.sonarqube"
+
+ext.pullRequest = System.getenv()['CHANGE_ID'] ?: null
+
+sonarqube {
+    properties {
+        property "sonar.host.url", project.getProperty('sonar.host.url')
+        property "sonar.login", project.hasProperty('sonar.login') ? project.getProperty('sonar.login') : null
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.projectKey", "explorer:jobs-api-server"
+        property "sonar.projectName", "Zowe Explorer Jobs APIs"
+        property "sonar.projectVersion", project.version
+        property "sonar.language", "java"
+        property "sonar.links.scm", "https://github.com/zowe/jobs"
+        property "sonar.links.scm_dev", "https://github.com/zowe/jobs.git"
+        property "sonar.links.ci", project.hasProperty('sonar.links.ci') ? project.getProperty('sonar.links.ci') : null
+        if (pullRequest != null) {
+            property "sonar.analysis.mode", "preview"
+            property "sonar.github.pullRequest", pullRequest
+            property "sonar.github.repository", "zowe/jobs"
+            property "sonar.github.oauth",  project.hasProperty('sonar.github.oauth') ? project.getProperty('sonar.github.oauth') : null
+        }
+    }
+}
+
+subprojects {
+    sonarqube {
+        properties {
+            property "sonar.sources", "src/main/java"
+            property "sonar.tests", "src/test/java"
+        }
+    }
+}
+/*
+    Keep this commented out as a reminder to re-add it if we have a packaging subproject.
+
+// Packaging project; sonar does not apply
+project(":zowe-package") {
+    sonarqube {
+        skipProject = true
+    }
+}
+*/

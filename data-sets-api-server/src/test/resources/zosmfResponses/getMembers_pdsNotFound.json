@@ -1,0 +1,10 @@
+{
+    "category": 4,
+    "details": [
+        "ISRZ002 Data set not cataloged - 'STEVENH.JCLS' was not found in catalog."
+    ],
+    "message": "LMINIT error",
+    "rc": 8,
+    "reason": 0,
+    "stack": "  1 15335F88+000000EE IspfInterface::throwIspfException(int,const char*,int)\n  2 15302098+00000280 ListMembersServlet::lminit()\n  3 152FF968+0000061E ListMembersServlet::doGet()\n  4 15306670+00000086 TsoServlet::service()\n  5 15330618+0000017E TsoServlet::run()\n  6 1532FFF0+00000386 main\n  7 06780118+0000127E CEEVROND\n  8 14B06718+000000B4 EDCZHINV\n  9 0661A8D0+000001C6 CEEBBEXT\n"
+}

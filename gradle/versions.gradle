@@ -1,0 +1,49 @@
+ext {
+
+    springBootVersion = '2.0.4.RELEASE'
+    springFoxVersion = '2.8.0'
+    lombokVersion = '1.16.20'
+    mockitoCoreVersion = '2.9.0'
+    powerMockVersion = "2.0.0-RC.1"
+    gsonVersion = '2.8.2'
+    httpClientVersion = '4.5.3'
+    httpCoreVersion = '4.4.10'
+    commonsCodecVersion = '1.11'
+    slf4jVersion = "1.7.25"
+    jsonPathVersion = "2.4.0"
+    junitVersion = "4.12"
+    explorerApiCommonVersion = "0.0.1-SNAPSHOT"
+
+    libraries = [
+        lombok                             : "org.projectlombok:lombok:${lombokVersion}",
+        slf4j_simple                       : "org.slf4j:slf4j-simple:${slf4jVersion}",
+        slf4j_api                          : "org.slf4j:slf4j-api:${slf4jVersion}",
+        spring_boot_gradle_plugin          : "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}",
+        spring_boot_starter_actuator       : "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}",
+        spring_boot_starter_parent         : "org.springframework.boot:spring-boot-starter-parent:${springBootVersion}",
+        spring_boot_starter_security       : "org.springframework.boot:spring-boot-starter-security:${springBootVersion}",
+        spring_boot_starter_web            : "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
+        spring_boot_starter_test           : "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
+
+        commons_codec                      : "commons-codec:commons-codec:${commonsCodecVersion}",
+        json_path                          : "com.jayway.jsonpath:json-path:${jsonPathVersion}",
+        springFox                          : "io.springfox:springfox-swagger2:${springFoxVersion}",
+        springFoxSwagger2                  : "io.springfox:springfox-swagger2:${springFoxVersion}",
+        springFoxSwaggerUI                 : "io.springfox:springfox-swagger-ui:${springFoxVersion}",
+
+        http_core                          : "org.apache.httpcomponents:httpcore:${httpCoreVersion}",
+        http_client                        : "org.apache.httpcomponents:httpclient:${httpClientVersion}",
+    
+        powermock_api_mockito2             : "org.powermock:powermock-api-mockito2:${powerMockVersion}",
+        power_mock_junit4                  : "org.powermock:powermock-module-junit4:${powerMockVersion}",
+        power_mock_junit4_rule             : "org.powermock:powermock-module-junit4-rule:${powerMockVersion}",
+    
+        gson                               : "com.google.code.gson:gson:${gsonVersion}",
+        mockito_core                       : "org.mockito:mockito-core:${mockitoCoreVersion}",
+
+        junit                              : "junit:junit:${junitVersion}",
+
+        explorer_api_common                : "org.zowe.explorer.api:explorer-api-common:${explorerApiCommonVersion}",
+        explorer_api_common_test           : "org.zowe.explorer.api:explorer-api-common-test:${explorerApiCommonVersion}"
+    ]
+}
