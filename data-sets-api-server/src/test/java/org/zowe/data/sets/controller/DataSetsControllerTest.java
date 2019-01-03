@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2018
+ * Copyright IBM Corporation 2018, 2019
  */
 package org.zowe.data.sets.controller;
 
@@ -23,24 +23,31 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.zowe.api.common.errors.ApiError;
 import org.zowe.api.common.exceptions.ZoweApiErrorException;
 import org.zowe.api.common.exceptions.ZoweRestExceptionHandler;
 import org.zowe.api.common.utils.JsonUtils;
 import org.zowe.api.common.utils.ZosUtils;
+import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.services.DataSetService;
 
+import java.net.URI;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -118,58 +125,29 @@ public class DataSetsControllerTest {
     }
 
     // TODO LATER - validation dataset names and add getMember validation test
+    // TODO LATER - data set attributes tests
 
-//    @Test
-//    public void test_get_data_set_names_success() throws Exception {
-//
-//        List<String> dataSetNameList = Arrays.asList("TEST", "TEST2");
-//        String expectedJsonString = JsonUtils.convertToJsonString(dataSetNameList);
-//        String filter = "TEST";
-//
-//        when(dataSetService.listDataSetNames(filter)).thenReturn(dataSetNameList);
-//
-//        MvcResult result = mockMvc.perform(get("/api/datasets/{filter}", filter)).andExpect(status().isOk())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andReturn();
-//
-//        verify(dataSetService, times(1)).listDataSetNames(anyString());
-//        verifyNoMoreInteractions(dataSetService);
-//        JSONAssert.assertEquals(expectedJsonString, result.getResponse().getContentAsString(), false);
-//    }
-//
-//    @Test
-//    public void test_get_data_set_names_empty_body() throws Exception {
-//
-//        String dummy = "junk";
-//
-//        when(dataSetService.listDataSetNames(anyString())).thenReturn(Collections.emptyList());
-//
-//        MvcResult result = mockMvc.perform(get("/api/datasets/{filter}", dummy)).andExpect(status().isOk()).andReturn();
-//
-//        verify(dataSetService, times(1)).listDataSetNames(anyString());
-//        verifyNoMoreInteractions(dataSetService);
-//        JSONAssert.assertEquals("[]", result.getResponse().getContentAsString(), false);
-//    }
-//
+    // TODO - consider returning model object in response body, like jobs?
+    @Test
+    public void create_data_set_works_and_returns_location() throws Exception {
 
-//
-//    @Test
-//    public void test_post_new_data_set_returns_location() throws Exception {
-//
-//        String dataSetName = "DSNAME";
-//
-//        DataSetCreateRequest attributes = DataSetCreateRequest.createBuilder().build();
-//        when(dataSetService.createDataSet(attributes)).thenReturn(dataSetName);
-//
-//        String dataSetRequest = JsonUtils.convertToJsonString(attributes);
-//        this.mockMvc.perform(post("/api/datasets").contentType(MediaType.APPLICATION_JSON).content(dataSetRequest))
-//                .andExpect(status().isCreated())
-//                .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/datasets/" + dataSetName));
-//
-//        when(dataSetService.listDataSetMembers(anyString())).thenReturn(Collections.emptyList());
-//
-//        verify(dataSetService, times(1)).createDataSet(attributes);
-//        verifyNoMoreInteractions(dataSetService);
-//    }
+        String dataSetName = "DSNAME";
+
+        DataSetCreateRequest request = DataSetCreateRequest.builder().name(dataSetName).build();
+
+        when(dataSetService.createDataSet(request)).thenReturn(dataSetName);
+
+        URI locationUri = new URI("https://dataSetsURI/datasets/" + dataSetName);
+        mockDataSetUriConstruction(dataSetName, locationUri);
+
+        mockMvc.perform(post("/api/v1/datasets").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .content(JsonUtils.convertToJsonString(request))).andExpect(status().isCreated())
+                .andExpect(header().string("Location", locationUri.toString()));
+
+        verify(dataSetService, times(1)).createDataSet(request);
+        verifyNoMoreInteractions(dataSetService);
+    }
+
 //
 //    @Test
 //    public void test_delete_calls_service_properly() throws Exception {
@@ -180,5 +158,17 @@ public class DataSetsControllerTest {
 //        verify(dataSetService, times(1)).deleteDataSet(dummy);
 //        verifyNoMoreInteractions(dataSetService);
 //    }
+
+    // TODO MAYBE - can we merge with job?
+    private void mockDataSetUriConstruction(String dataSetName, URI uriValue) {
+        ServletUriComponentsBuilder servletUriBuilder = mock(ServletUriComponentsBuilder.class);
+        PowerMockito.mockStatic(ServletUriComponentsBuilder.class);
+        when(ServletUriComponentsBuilder.fromCurrentRequest()).thenReturn(servletUriBuilder);
+        UriComponentsBuilder uriBuilder = mock(UriComponentsBuilder.class);
+        when(servletUriBuilder.path("/{dataSetName}")).thenReturn(uriBuilder);
+        UriComponents uriComponents = mock(UriComponents.class);
+        when(uriBuilder.buildAndExpand(dataSetName)).thenReturn(uriComponents);
+        when(uriComponents.toUri()).thenReturn(uriValue);
+    }
 
 }

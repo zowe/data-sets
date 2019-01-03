@@ -5,9 +5,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2018
+ * Copyright IBM Corporation 2018, 2019
  */
 package org.zowe.data.sets.services;
+
+import org.zowe.data.sets.model.DataSetCreateRequest;
 
 import java.util.List;
 
@@ -15,8 +17,8 @@ public interface DataSetService {
 //  List<String> listDataSetNames(String filter);
 //
     List<String> listDataSetMembers(String dsn);
-//
-//  String createDataSet(DataSetCreateRequest input);
+
+    String createDataSet(DataSetCreateRequest input);
 //
 //  void deleteDataSet(String dataSetName);
 }

@@ -1,0 +1,7 @@
+{
+    "category": 8,
+    "message": "Dynamic allocation Error",
+    "rc": -26868,
+    "reason": 0,
+    "stack": "  1 15300948+00000450 CreateDatasetServlet::createDataset()\n  2 15300118+000000A0 CreateDatasetServlet::doPost()\n  3 153000D0+00000026 CreateDatasetServlet::service()\n  4 1532ED40+0000017E TsoServlet::run()\n  5 1532E718+00000386 main\n  6 06780118+0000127E CEEVROND\n  7 14B06718+000000B4 EDCZHINV\n  8 0661A8D0+000001C6 CEEBBEXT\n"
+}

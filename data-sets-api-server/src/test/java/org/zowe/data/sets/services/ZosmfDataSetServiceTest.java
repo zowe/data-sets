@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2018
+ * Copyright IBM Corporation 2018, 2019
  */
 package org.zowe.data.sets.services;
 
@@ -17,6 +17,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -32,7 +33,11 @@ import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
 import org.zowe.api.common.test.ZoweApiTest;
 import org.zowe.api.common.utils.JsonUtils;
 import org.zowe.api.common.utils.ResponseUtils;
+import org.zowe.data.sets.exceptions.DataSetAlreadyExists;
 import org.zowe.data.sets.exceptions.UnauthorisedDataSetException;
+import org.zowe.data.sets.model.AllocationUnitType;
+import org.zowe.data.sets.model.DataSetCreateRequest;
+import org.zowe.data.sets.model.DataSetOrganisationType;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -65,7 +70,7 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
     @Before
     public void setUp() throws Exception {
         dataService = new ZosmfDataSetService();
-        dataService.zosmfconnector = zosmfConnector;
+        dataService.zosmfConnector = zosmfConnector;
         when(zosmfConnector.getFullUrl(anyString())).thenAnswer(new org.mockito.stubbing.Answer<String>() {
             @Override
             public String answer(org.mockito.invocation.InvocationOnMock invocation) throws Throwable {
@@ -190,67 +195,107 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
 //        verifyNoMoreInteractions(zosmfConnector);
 //    }
 
-    // TODO - validate trying to create PO with dirblk
-//    @Test
-//    public void create_example_sds_dataset_should_transform_request_to_zosmf() throws Exception {
-//        create_dataset_and_verify("STEVENH.TEST.SDS", createBaseRequest().dsorg(DataSetOrganisationType.PO), "TRK");
-//    }
-//
-//    @Test
-//    public void create_example_pds_dataset_should_transform_request_to_zosmf() throws Exception {
-//        create_dataset_and_verify("STEVENH.TEST.PDS", createBaseRequest().dsorg(DataSetOrganisationType.PS).dirblk(10),
-//                "TRK");
-//    }
-//
-//    @Test
-//    public void create_example_pds_dataset_blocks_fails() throws Exception {
-//        Exception expected = new IllegalArgumentException(
-//                "Creating data sets with a z/OS MF connector only supports allocation unit type of track and cylinder");
-//        shouldThrow(expected, () -> create_dataset_and_verify("STEVENH.TEST.PDS",
-//                createBaseRequest().dsorg(DataSetOrganisationType.PS).dirblk(10).alcunit(AllocationUnitType.BLOCK),
-//                "BLOCK"));
-//    }
-//
-//    @Test
-//    public void create_example_pds_dataset_with_cylinders_should_transform_request_to_zosmf() throws Exception {
-//        create_dataset_and_verify("STEVENH.TEST.PDS",
-//                createBaseRequest().dsorg(DataSetOrganisationType.PS).dirblk(10).alcunit(AllocationUnitType.CYLINDER),
-//                "CYL");
-//    }
-//
-//    private void create_dataset_and_verify(String dataSetName,
-//            DataSetCreateRequest.DataSetCreateRequestBuilder requestBuilder, String zosmfAlcunit)
-//            throws IOException, ClientProtocolException, Exception {
-//        DataSetCreateRequest request = requestBuilder.name(dataSetName).build();
-//
-//        HttpResponse response = mockResponse(HttpStatus.SC_CREATED);
-//
-//        JsonObject mockInputJson = new JsonObject();
-//        mockInputJson.addProperty("name", dataSetName);
-//        mockInputJson.addProperty("alcunit", request.getAlcunit().toString());
-//
-//        mockStatic(JsonUtils.class);
-//        when(JsonUtils.convertToJsonObject(request)).thenReturn(mockInputJson);
-//
-//        JsonObject mockRequestBody = new JsonObject();
-//        mockRequestBody.addProperty("alcunit", zosmfAlcunit);
-//
-//        RequestBuilder builder = mockPostBuilder(String.format("restfiles/ds/%s", dataSetName),
-//                mockRequestBody.toString());
-//
-//        when(zosmfConnector.request(builder)).thenReturn(response);
-//
-//        String dataSetCreated = dataService.createDataSet(request);
-//        assertEquals(dataSetName, dataSetCreated);
-//
-//        verify(zosmfConnector, times(1)).request(builder);
-//        verifyNoMoreInteractions(zosmfConnector);
-//    }
-//
-//    private DataSetCreateRequest.DataSetCreateRequestBuilder createBaseRequest() {
-//        return DataSetCreateRequest.createBuilder().volser("zmf046").unit("3390").alcunit(AllocationUnitType.TRACK)
-//                .primary(10).secondary(5).recfm("FB").blksize(400).lrecl(80);
-//    }
+    // TODO - Add tests for dsnType = library for zosmf 2.3 - what else fails on 2.2?
+
+    @Test
+    public void create_example_sds_dataset_should_transform_request_to_zosmf() throws Exception {
+        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PO\",\"primary\":10,\"secondary\":5,\""
+                + "dirblk\":10,\"avgblk\":500,\"recfm\":\"FB\",\"blksize\":400,\"lrecl\":80,\"alcunit\":\"TRK\"}";
+        JsonObject zosmfRequest = JsonUtils.readAsJsonElement(json).getAsJsonObject();
+
+        create_dataset_and_verify("STEVENH.TEST.SDS", createBaseRequest().dsorg(DataSetOrganisationType.PO),
+                zosmfRequest);
+    }
+
+    @Test
+    public void create_example_pds_dataset_should_transform_request_to_zosmf() throws Exception {
+        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PS\",\"primary\":10,\"secondary\":5,\""
+                + "dirblk\":10,\"avgblk\":500,\"recfm\":\"FB\",\"blksize\":400,\"lrecl\":80,\"alcunit\":\"TRK\"}";
+        JsonObject zosmfRequest = JsonUtils.readAsJsonElement(json).getAsJsonObject();
+
+        create_dataset_and_verify("STEVENH.TEST.PDS", createBaseRequest().dsorg(DataSetOrganisationType.PS),
+                zosmfRequest);
+    }
+
+    @Test
+    public void create_example_pds_dataset_with_cylinders_should_transform_request_to_zosmf() throws Exception {
+        int primary = 300;
+        int secondary = 150;
+        int dirblk = 20;
+        int lrecl = 133;
+        int blksize = 0;
+        String recfm = "VB";
+
+        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PS\",\"primary\":" + primary
+                + ",\"secondary\":" + secondary + ",\"" + "dirblk\":" + dirblk + ",\"avgblk\":500,\"recfm\":\"" + recfm
+                + "\",\"blksize\":" + blksize + ",\"lrecl\":" + lrecl + ",\"alcunit\":\"CYL\"}";
+        JsonObject zosmfRequest = JsonUtils.readAsJsonElement(json).getAsJsonObject();
+
+        create_dataset_and_verify("STEVENH.TEST.PDS",
+                createBaseRequest().dsorg(DataSetOrganisationType.PS).recfm(recfm).primary(primary).secondary(secondary)
+                        .dirblk(dirblk).blksize(blksize).lrecl(lrecl).alcunit(AllocationUnitType.CYLINDER),
+                zosmfRequest);
+    }
+
+    @Test
+    public void create_example_pds_dataset_blocks_fails() throws Exception {
+        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PS\",\"primary\":10,\"secondary\":5,\""
+                + "dirblk\":10,\"avgblk\":500,\"recfm\":\"FB\",\"blksize\":400,\"lrecl\":80,\"alcunit\":\"TRK\"}";
+        JsonObject zosmfRequest = JsonUtils.readAsJsonElement(json).getAsJsonObject();
+
+        Exception expected = new IllegalArgumentException(
+                "Creating data sets with a z/OS MF connector only supports allocation unit type of track and cylinder");
+        shouldThrow(expected, () -> create_dataset_and_verify("STEVENH.TEST.PDS",
+                createBaseRequest().dsorg(DataSetOrganisationType.PS).alcunit(AllocationUnitType.BLOCK), zosmfRequest));
+    }
+
+    private void create_dataset_and_verify(String dataSetName,
+            DataSetCreateRequest.DataSetCreateRequestBuilder requestBuilder, JsonObject zosmfRequest)
+            throws IOException, ClientProtocolException, Exception {
+        DataSetCreateRequest request = requestBuilder.name(dataSetName).build();
+
+        HttpResponse response = mockResponse(HttpStatus.SC_CREATED);
+
+        RequestBuilder builder = mockPostBuilder(String.format("restfiles/ds/%s", dataSetName), zosmfRequest);
+
+        when(zosmfConnector.request(builder)).thenReturn(response);
+
+        String dataSetCreated = dataService.createDataSet(request);
+        assertEquals(dataSetName, dataSetCreated);
+
+        verifyInteractions(builder);
+    }
+
+    @Test
+    public void create_data_set_which_already_exists_throws_correct_error() throws Exception {
+        String dataSetName = "STEVENH.EXISTS";
+
+        Exception expectedException = new DataSetAlreadyExists(dataSetName);
+        checkCreateDataSetExceptionAndVerify(dataSetName, expectedException, HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                "createDataSet_exists.json");
+    }
+
+    private void checkCreateDataSetExceptionAndVerify(String dataSetName, Exception expectedException, int statusCode,
+            String file) throws IOException, Exception {
+
+        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PS\",\"primary\":10,\"secondary\":5,\""
+                + "dirblk\":10,\"avgblk\":500,\"recfm\":\"FB\",\"blksize\":400,\"lrecl\":80,\"alcunit\":\"TRK\"}";
+        JsonObject zosmfRequest = JsonUtils.readAsJsonElement(json).getAsJsonObject();
+        DataSetCreateRequest request = createBaseRequest().dsorg(DataSetOrganisationType.PS).name(dataSetName).build();
+
+        HttpResponse response = mockJsonResponse(statusCode, loadTestFile(file));
+        RequestBuilder builder = mockPostBuilder(String.format("restfiles/ds/%s", dataSetName), zosmfRequest);
+
+        when(zosmfConnector.request(builder)).thenReturn(response);
+
+        shouldThrow(expectedException, () -> dataService.createDataSet(request));
+        verifyInteractions(builder);
+    }
+
+    private DataSetCreateRequest.DataSetCreateRequestBuilder createBaseRequest() {
+        return DataSetCreateRequest.builder().volser("zmf046").unit("3390").alcunit(AllocationUnitType.TRACK)
+                .primary(10).secondary(5).recfm("FB").blksize(400).lrecl(80).dirblk(10).avgblk(500);
+    }
 
 //    @Test
 //    public void delete_data_set_should_call_zosmf_correctly() throws Exception {
@@ -311,21 +356,22 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
         return builder;
     }
 
-    private RequestBuilder mockPostBuilder(String relativeUri, Object body) throws Exception {
-        RequestBuilder builder = mock(RequestBuilder.class);
-
-        String jsonString = "dummyJson";
-        mockStatic(JsonUtils.class);
-        when(JsonUtils.convertToJsonString(body)).thenReturn(jsonString);
-        return mockPostBuilder(relativeUri, jsonString);
+    private RequestBuilder mockPostBuilder(String relativeUri, String string) throws Exception {
+        StringEntity stringEntity = mock(StringEntity.class);
+        PowerMockito.whenNew(StringEntity.class).withArguments(string).thenReturn(stringEntity);
+        return mockPostBuilder(relativeUri, stringEntity);
     }
 
-    private RequestBuilder mockPostBuilder(String relativeUri, String jsonString) throws Exception {
-        RequestBuilder builder = mock(RequestBuilder.class);
-
+    private RequestBuilder mockPostBuilder(String relativeUri, JsonObject json) throws Exception {
         StringEntity stringEntity = mock(StringEntity.class);
-        PowerMockito.whenNew(StringEntity.class).withArguments(jsonString, Charset.forName("UTF-8"))
+        PowerMockito.whenNew(StringEntity.class).withArguments(json.toString(), ContentType.APPLICATION_JSON)
                 .thenReturn(stringEntity);
+
+        return mockPostBuilder(relativeUri, stringEntity);
+    }
+
+    private RequestBuilder mockPostBuilder(String relativeUri, StringEntity stringEntity) throws Exception {
+        RequestBuilder builder = mock(RequestBuilder.class);
 
         mockStatic(RequestBuilder.class);
         when(RequestBuilder.post(BASE_URL + relativeUri)).thenReturn(builder);

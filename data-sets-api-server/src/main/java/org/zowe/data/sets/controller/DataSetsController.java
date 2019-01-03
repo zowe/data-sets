@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2016, 2018
+ * Copyright IBM Corporation 2016, 2019
  */
 package org.zowe.data.sets.controller;
 
@@ -18,13 +18,21 @@ import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.zowe.api.common.utils.ZosUtils;
+import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.services.DataSetService;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -53,5 +61,19 @@ public class DataSetsController {
     public List<String> getMembers(
             @ApiParam(value = "Partitioned data set name", required = true) @PathVariable String dataSetName) {
         return dataSetService.listDataSetMembers(dataSetName);
+    }
+
+    @PostMapping(consumes = "application/json")
+    @ApiOperation(value = "Create a data set", notes = "This creates a data set based on the attributes passed in")
+    @ApiResponses({ @ApiResponse(code = 201, message = "Data set successfully created") })
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<?> createDataSet(@RequestBody DataSetCreateRequest input) {
+
+        String dataSetName = dataSetService.createDataSet(input);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{dataSetName}")
+                .buildAndExpand(dataSetName).toUri();
+
+        return ResponseEntity.created(location).build();
     }
 }
