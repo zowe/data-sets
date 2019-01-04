@@ -297,19 +297,35 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
                 .primary(10).secondary(5).recfm("FB").blksize(400).lrecl(80).dirblk(10).avgblk(500);
     }
 
-//    @Test
-//    public void delete_data_set_should_call_zosmf_correctly() throws Exception {
-//        String dataSetName = "STEVENH.TEST.JCL";
-//        HttpResponse response = mockResponse(HttpStatus.SC_NO_CONTENT);
-//        RequestBuilder builder = mockDeleteBuilder(String.format("restfiles/ds/%s", dataSetName));
-//
-//        when(zosmfConnector.request(builder)).thenReturn(response);
-//
-//        dataService.deleteDataSet(dataSetName);
-//
-//        verify(zosmfConnector, times(1)).request(builder);
-//        verifyNoMoreInteractions(zosmfConnector);
-//    }
+    @Test
+    public void delete_data_set_should_call_zosmf_correctly() throws Exception {
+        String dataSetName = "STEVENH.TEST.JCL";
+        HttpResponse response = mockResponse(HttpStatus.SC_NO_CONTENT);
+        RequestBuilder builder = mockDeleteBuilder(String.format("restfiles/ds/%s", dataSetName));
+
+        when(zosmfConnector.request(builder)).thenReturn(response);
+
+        dataService.deleteDataSet(dataSetName);
+
+        verifyInteractions(builder);
+    }
+
+    @Test
+    public void delete_data_set_for_non_existing_data_set_should_throw_exception() throws Exception {
+        String dataSetName = "STEVENH.TEST";
+
+        Exception expectedException = new DataSetNotFoundException(dataSetName);
+
+        HttpResponse response = mockJsonResponse(HttpStatus.SC_NOT_FOUND,
+                loadTestFile("deleteDataSet_doesntExist.json"));
+
+        RequestBuilder requestBuilder = mockDeleteBuilder(String.format("restfiles/ds/%s", dataSetName));
+
+        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+
+        shouldThrow(expectedException, () -> dataService.deleteDataSet(dataSetName));
+        verifyInteractions(requestBuilder);
+    }
 
     // TODO - refactor with datasets
     private void verifyInteractions(RequestBuilder requestBuilder) throws IOException {

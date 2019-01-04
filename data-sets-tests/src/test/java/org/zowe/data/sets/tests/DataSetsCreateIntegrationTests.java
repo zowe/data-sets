@@ -11,7 +11,6 @@
 package org.zowe.data.sets.tests;
 
 import io.restassured.http.ContentType;
-import io.restassured.response.Response;
 
 import org.apache.http.HttpStatus;
 import org.junit.After;
@@ -43,8 +42,7 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
     public void testCreatePds() throws Exception {
         DataSetCreateRequest pdsRequest = createPdsRequest(VALID_DATASET_NAME);
         cleanUp = VALID_DATASET_NAME;
-        Response response = createDataSet(pdsRequest);
-        response.then().statusCode(HttpStatus.SC_CREATED)
+        createDataSet(pdsRequest).then().statusCode(HttpStatus.SC_CREATED)
                 .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + VALID_DATASET_NAME)).body(equalTo(""));
         // TODO - once get Attributes done
         //
@@ -74,27 +72,20 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
     public void testCreateSds() throws Exception {
         DataSetCreateRequest sdsRequest = createSdsRequest(VALID_DATASET_NAME);
         cleanUp = VALID_DATASET_NAME;
-        Response response = createDataSet(sdsRequest);
-        response.then().statusCode(HttpStatus.SC_CREATED)
+        createDataSet(sdsRequest).then().statusCode(HttpStatus.SC_CREATED)
                 .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + VALID_DATASET_NAME)).body(equalTo(""));
         // TODO - once get Attributes done test
     }
 
-    // TODO - test create sds
+    // TODO - work out the rules - sds with dirblk should fail, only on 2.2?
+//    @Test
+//    public void testPostDatasetWithInvalidRequestFails() throws Exception {
+//        DataSetCreateRequest sdsRequestWithDirBlk = createSdsRequest(VALID_DATASET_NAME);
+//        cleanUp = VALID_DATASET_NAME;
+//        sdsRequestWithDirBlk.setDirblk(10);
+//        createDataSet(sdsRequestWithDirBlk).then().statusCode((HttpStatus.SC_BAD_REQUEST));
+//    }
 
-    //
-    // @Test
-    // public void testPostDatasetWithInvalidRequestFails() throws Exception {
-    // CreateDataSetRequest sdsRequestWithDirBlk = createSdsRequest();
-    // sdsRequestWithDirBlk.setDirblk(10);
-    // createDataset(VALID_DATASET_NAME,
-    // sdsRequestWithDirBlk).shouldHaveStatus(HttpStatus.SC_BAD_REQUEST);
-    // }
-    //
-    // @Test
-    // public void testPostDatasetAlreadyExists() throws Exception {
-    // createPds(TEST_JCL_PDS).shouldHaveStatus(HttpStatus.SC_CONFLICT);
-    // }
     //
     // @Test
     // public void testUpdateWithChecksumWorks() throws Exception {

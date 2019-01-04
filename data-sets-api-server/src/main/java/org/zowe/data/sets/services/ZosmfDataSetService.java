@@ -157,35 +157,38 @@ public class ZosmfDataSetService implements DataSetService {
         return requestBody;
     }
 
-    // @Override
-    // public void deleteDataSet(String dataSetName) {
-    // String requestUrl = ZosmfConnector.getFullUrl(String.format("restfiles/ds/%s", dataSetName));
-    // try {
-    // HttpResponse response = zosmfconnector.request(RequestBuilder.delete(requestUrl));
-    // if (ResponseUtils.getStatus(response) == HttpStatus.SC_NO_CONTENT) {
-    // return;
-    // } else {
-    // throw new RuntimeException("Error");
-    // // error handling
-    // // if (responseJSON.get("details").toString().contains(AUTHORIZATION_FAILURE)) {
-    // // throw
-    // // createAuthorizationFailureException(responseJSON.get("details").toString());
-    // // }
-    // // String error =
-    // // String.format(Messages.getString("ZOSMFService.ListFailedForDataset"), dsn);
-    // // //$NON-NLS-1$
-    // // Response errorResponse =
-    // // Response.status(response.getStatus()).entity(error).type(MediaType.TEXT_PLAIN)
-    // // .build();
-    // // throw new WebApplicationException(errorResponse);
-    // }
-    // } catch (IOException e) {
-    // e.printStackTrace();
-    // } catch (Exception e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // }
-    // }
+    @Override
+    public void deleteDataSet(String dataSetName) {
+        String requestUrl = zosmfConnector.getFullUrl(String.format("restfiles/ds/%s", dataSetName));
+        try {
+            HttpResponse response = zosmfConnector.request(RequestBuilder.delete(requestUrl));
+            int statusCode = ResponseUtils.getStatus(response);
+            if (statusCode == HttpStatus.SC_NO_CONTENT) {
+                return;
+            } else {
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    ContentType contentType = ContentType.get(entity);
+                    String mimeType = contentType.getMimeType();
+                    if (mimeType.equals(ContentType.APPLICATION_JSON.getMimeType())) {
+                        JsonObject jsonResponse = ResponseUtils.getEntityAsJsonObject(response);
+                        JsonElement details = jsonResponse.get("details");
+                        if (statusCode == HttpStatus.SC_NOT_FOUND) {
+                            if (details.toString().contains(String.format(
+                                    "ISRZ002 Data set not cataloged - '%s' was not found in catalog.", dataSetName))) {
+                                throw new DataSetNotFoundException(dataSetName);
+                            }
+                        }
+                    }
+                    throw new ZoweApiRestException(getSpringHttpStatusFromCode(statusCode), entity.toString());
+                }
+                throw new NoZosmfResponseEntityException(getSpringHttpStatusFromCode(statusCode), requestUrl);
+            }
+        } catch (IOException e) {
+            log.error("deleteDataSet", e);
+            throw new ServerErrorException(e);
+        }
+    }
 
     // TODO LATER - push up into common once created
     private org.springframework.http.HttpStatus getSpringHttpStatusFromCode(int statusCode) {

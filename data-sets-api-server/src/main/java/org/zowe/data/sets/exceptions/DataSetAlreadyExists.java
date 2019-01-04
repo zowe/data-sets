@@ -20,7 +20,7 @@ public class DataSetAlreadyExists extends ZoweApiRestException {
     private static final long serialVersionUID = 7924627657677036679L;
 
     public DataSetAlreadyExists(String dataSet) {
-        super(HttpStatus.BAD_REQUEST, "The data set ''{0}'' already exists", dataSet);
+        super(HttpStatus.CONFLICT, "The data set ''{0}'' already exists", dataSet);
     }
 
 }

@@ -19,6 +19,6 @@ public interface DataSetService {
     List<String> listDataSetMembers(String dsn);
 
     String createDataSet(DataSetCreateRequest input);
-//
-//  void deleteDataSet(String dataSetName);
+
+    void deleteDataSet(String dataSetName);
 }

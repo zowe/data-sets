@@ -53,8 +53,6 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
     }
 
     protected Response deleteDataSet(String dataSetName) {
-        return null;
-        // TODO - when delete supported
-        // return RestAssured.given().when().delete(dataSetName);
+        return RestAssured.given().when().delete(dataSetName);
     }
 }

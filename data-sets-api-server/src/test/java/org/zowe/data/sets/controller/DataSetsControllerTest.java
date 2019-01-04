@@ -39,11 +39,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -54,6 +56,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ZosUtils.class, ServletUriComponentsBuilder.class })
 public class DataSetsControllerTest {
+
+    private static final String ENDPOINT_ROOT = "/api/v1/datasets";
 
     // TODO - refactor and merge with JobControllerTest?
     private static final String DUMMY_USER = "A_USER";
@@ -83,7 +87,7 @@ public class DataSetsControllerTest {
 
         when(dataSetService.listDataSetMembers(pdsName)).thenReturn(memberList);
 
-        mockMvc.perform(get("/api/v1/datasets/{dsn}/members", pdsName)).andExpect(status().isOk())
+        mockMvc.perform(get(ENDPOINT_ROOT + "/{dsn}/members", pdsName)).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(content().string(JsonUtils.convertToJsonString(memberList)));
 
@@ -98,7 +102,7 @@ public class DataSetsControllerTest {
 
         when(dataSetService.listDataSetMembers(pdsName)).thenReturn(Collections.emptyList());
 
-        mockMvc.perform(get("/api/v1/datasets/{dsn}/members", pdsName)).andExpect(status().isOk())
+        mockMvc.perform(get(ENDPOINT_ROOT + "/{dsn}/members", pdsName)).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(content().string("[]"));
 
@@ -116,7 +120,7 @@ public class DataSetsControllerTest {
 
         when(dataSetService.listDataSetMembers(invalidPdsName)).thenThrow(new ZoweApiErrorException(expectedError));
 
-        mockMvc.perform(get("/api/v1/datasets/{dsn}/members", invalidPdsName))
+        mockMvc.perform(get(ENDPOINT_ROOT + "/{dsn}/members", invalidPdsName))
                 .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
                 .andExpect(jsonPath("$.message").value(errorMessage));
 
@@ -140,7 +144,7 @@ public class DataSetsControllerTest {
         URI locationUri = new URI("https://dataSetsURI/datasets/" + dataSetName);
         mockDataSetUriConstruction(dataSetName, locationUri);
 
-        mockMvc.perform(post("/api/v1/datasets").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+        mockMvc.perform(post(ENDPOINT_ROOT).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(JsonUtils.convertToJsonString(request))).andExpect(status().isCreated())
                 .andExpect(header().string("Location", locationUri.toString()));
 
@@ -148,16 +152,33 @@ public class DataSetsControllerTest {
         verifyNoMoreInteractions(dataSetService);
     }
 
-//
-//    @Test
-//    public void test_delete_calls_service_properly() throws Exception {
-//        String dummy = "junk";
-//
-//        mockMvc.perform(delete("/api/datasets/{dsn}", dummy)).andExpect(status().isNoContent()).andDo(print());
-//
-//        verify(dataSetService, times(1)).deleteDataSet(dummy);
-//        verifyNoMoreInteractions(dataSetService);
-//    }
+    @Test
+    public void test_delete_calls_service_properly() throws Exception {
+        String dummy = "junk";
+
+        mockMvc.perform(delete(ENDPOINT_ROOT + "/{dsn}", dummy)).andExpect(status().isNoContent())
+                .andExpect(jsonPath("$").doesNotExist());
+
+        verify(dataSetService, times(1)).deleteDataSet(dummy);
+        verifyNoMoreInteractions(dataSetService);
+    }
+
+    @Test
+    public void delete_data_set_with_exception_should_be_converted_to_error_message() throws Exception {
+        String dummy = "junk";
+
+        ApiError expectedError = ApiError.builder().message("Delete went wrong").status(HttpStatus.I_AM_A_TEAPOT)
+                .build();
+
+        doThrow(new ZoweApiErrorException(expectedError)).when(dataSetService).deleteDataSet(dummy);
+
+        mockMvc.perform(delete(ENDPOINT_ROOT + "/{dsn}", dummy)).andExpect(status().isIAmATeapot())
+                .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
+                .andExpect(jsonPath("$.message").value(expectedError.getMessage()));
+
+        verify(dataSetService, times(1)).deleteDataSet(dummy);
+        verifyNoMoreInteractions(dataSetService);
+    }
 
     // TODO MAYBE - can we merge with job?
     private void mockDataSetUriConstruction(String dataSetName, URI uriValue) {

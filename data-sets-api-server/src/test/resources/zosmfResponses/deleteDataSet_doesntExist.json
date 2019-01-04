@@ -1,0 +1,10 @@
+{
+    "category": 4,
+    "details": [
+        "ISRZ002 Data set not cataloged - 'STEVENH.TEST' was not found in catalog."
+    ],
+    "message": "LMERASE error",
+    "rc": 8,
+    "reason": 0,
+    "stack": "  1 15334170+000000EE IspfInterface::throwIspfException(int,const char*,int)\n  2 15302230+000004BA DeleteDatasetServlet::deleteDataset3()\n  3 15300A28+00000888 DeleteDatasetServlet::doDelete()\n  4 153009E0+00000026 DeleteDatasetServlet::service()\n  5 1532E800+0000017E TsoServlet::run()\n  6 1532E1D8+00000386 main\n  7 06780118+0000127E CEEVROND\n  8 14B06718+000000B4 EDCZHINV\n  9 0661A8D0+000001C6 CEEBBEXT\n"
+}

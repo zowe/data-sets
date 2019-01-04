@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -75,5 +76,15 @@ public class DataSetsController {
                 .buildAndExpand(dataSetName).toUri();
 
         return ResponseEntity.created(location).build();
+    }
+
+    @DeleteMapping(value = "{dataSetName:.+}")
+    @ApiOperation(value = "Delete a data set or member", notes = "This API deletes a data set or data set member.")
+    @ApiResponses({ @ApiResponse(code = 204, message = "Data set or member successfully deleted") })
+    public ResponseEntity<?> deleteDatasetMember(
+            @ApiParam(value = "Data set name", required = true) @PathVariable String dataSetName) {
+
+        dataSetService.deleteDataSet(dataSetName);
+        return ResponseEntity.noContent().build();
     }
 }
