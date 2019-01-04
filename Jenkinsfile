@@ -134,14 +134,14 @@ pipeline {
                 timeout(time: 30, unit: 'MINUTES') {
                     sh './gradlew coverage'
 
-                   publishHTML(target: [
-                       allowMissing         : false,
-                       alwaysLinkToLastBuild: false,
-                       keepAll              : true,
-                       reportDir            : 'build/reports/jacoco/jacocoFullReport/html',
-                       reportFiles          : 'index.html',
-                       reportName           : "Java Coverage Report"
-                   ])
+                   // publishHTML(target: [
+                   //     allowMissing         : false,
+                   //     alwaysLinkToLastBuild: false,
+                   //     keepAll              : true,
+                   //     reportDir            : 'build/reports/jacoco/jacocoFullReport/html',
+                   //     reportFiles          : 'index.html',
+                   //     reportName           : "Java Coverage Report"
+                   // ])
                     publishHTML(target: [
                         allowMissing         : false,
                         alwaysLinkToLastBuild: false,
