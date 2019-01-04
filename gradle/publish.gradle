@@ -1,7 +1,7 @@
 ext.javaLibraries = [
-    'jobs-api-server',
-    'jobs-model',
-    'jobs-tests'
+    'data-sets-api-server',
+    'data-sets-model',
+    'data-sets-tests'
 ]
 
 // Save this in case we make a packaging subproject 
@@ -31,7 +31,7 @@ configure(subprojects.findAll { it.name in projectsToPublish }) {
     publishing {
         publications {
             mavenJava(MavenPublication) {
-                groupId 'org.zowe.explorer.jobs'
+                groupId 'org.zowe.explorer.datasets'
                 version rootProject.version
                 artifactId "${project.name}"
                 from components.java
@@ -64,9 +64,9 @@ configure(subprojects.findAll { it.name in projectsToPublish }) {
 //noinspection GroovyAssignabilityCheck
 task publishArtifacts {
     group 'Zowe Publishing'
-    description 'Publish jobs-api-server libraries to Zowe Artifactory'
+    description 'Publish data-sets-api-server libraries to Zowe Artifactory'
     doLast {
-        println 'Publish jobs-api-server libraries to Zowe Artifactory'
+        println 'Publish data-sets-api-server libraries to Zowe Artifactory'
     }
 }
 
