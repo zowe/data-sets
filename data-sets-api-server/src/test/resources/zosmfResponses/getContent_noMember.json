@@ -1,0 +1,10 @@
+{
+    "category": 6,
+    "details": [
+        "STEVENH.TEST.JCL(JUNK)"
+    ],
+    "message": "Member not found",
+    "rc": 8,
+    "reason": 524,
+    "stack": "  1 15303D48+00000362 DatasetReader::open()\n  2 15300510+00000170 GetDatasetServlet::doGet()\n  3 1531AD48+00000092 TsoServlet::service()\n  4 15348330+0000017E TsoServlet::run()\n  5 15347D08+00000386 main\n  6 06791118+0000127E CEEVROND\n  7 14B06718+000000B4 EDCZHINV\n  8 0662B8D0+000001C6 CEEBBEXT\n"
+}

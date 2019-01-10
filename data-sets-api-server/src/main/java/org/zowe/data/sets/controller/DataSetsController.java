@@ -15,8 +15,6 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +30,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.zowe.api.common.model.Username;
 import org.zowe.api.common.utils.ZosUtils;
 import org.zowe.data.sets.model.DataSetAttributes;
+import org.zowe.data.sets.model.DataSetContent;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.services.DataSetService;
 
@@ -43,18 +42,17 @@ import java.util.List;
 @Api(value = "Data Sets APIs")
 public class DataSetsController {
 
-    private static final Logger log = LoggerFactory.getLogger(DataSetsController.class);
-
     @Autowired
     private DataSetService dataSetService;
 
     // TODO - push up into common?
-    @GetMapping(value = "/username", produces = { "application/json" })
+    @GetMapping(value = "username", produces = { "application/json" })
     @ApiOperation(value = "Get current userid", nickname = "getCurrentUserName", notes = "This API returns the caller's current TSO userid.", response = Username.class, tags = {
             "System APIs", })
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok", response = Username.class) })
     public Username getCurrentUserName() {
-        return new Username(ZosUtils.getUsername());
+        return new Username(ZosUtils
+            .getUsername());
     }
 
     @GetMapping(value = "{dataSetName}/members", produces = { "application/json" })
@@ -63,39 +61,59 @@ public class DataSetsController {
             @ApiResponse(code = 200, message = "Ok", response = String.class, responseContainer = "List") })
     public List<String> getMembers(
             @ApiParam(value = "Partitioned data set name", required = true) @PathVariable String dataSetName) {
-        return dataSetService.listDataSetMembers(dataSetName);
+        return dataSetService
+            .listDataSetMembers(dataSetName);
     }
 
-    @GetMapping(value = "/{filter:.+}", produces = { "application/json" })
-    @ApiOperation(value = "Get a list of data sets matching the filter", nickname = "getDataSets", notes = "This API returns the attributes of data sets including the RECFM, BLKSIZE, and LRECL.", tags = "Data Sets APIs")
+    @GetMapping(value = "{filter:.+}", produces = { "application/json" })
+    @ApiOperation(value = "Get a list of data sets matching the filter", nickname = "getContent", notes = "This API returns the attributes of data sets including the RECFM, BLKSIZE, and LRECL.", tags = "Data Sets APIs")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Ok", response = String.class, responseContainer = "List") })
     public List<DataSetAttributes> getDataSets(
             @ApiParam(value = "Dataset filter string, e.g. HLQ.\\*\\*, \\*\\*.SUF, etc.", required = true) @PathVariable String filter) {
-        return dataSetService.listDataSets(filter);
+        return dataSetService
+            .listDataSets(filter);
+    }
+
+    @GetMapping(value = "{dataSetName}/content", produces = { "application/json" })
+    @ApiOperation(value = "Get the content of a sequential data set, or PDS member", nickname = "getDataSets", notes = "This API reads content from a sequential data set or member of a partitioned data set.", tags = "Data Sets APIs")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok", response = DataSetContent.class) })
+    public DataSetContent getContent(
+            @ApiParam(value = "Data set name, e.g. HLQ.PS or HLQ.PO(MEMBER)", required = true) @PathVariable String dataSetName) {
+        return dataSetService
+            .getContent(dataSetName);
     }
 
     @PostMapping(consumes = "application/json")
-    @ApiOperation(value = "Create a data set", notes = "This creates a data set based on the attributes passed in")
+    @ApiOperation(value = "Create a data set", notes = "This creates a data set based on the attributes passed in", tags = "Data Sets APIs")
     @ApiResponses({ @ApiResponse(code = 201, message = "Data set successfully created") })
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> createDataSet(@RequestBody DataSetCreateRequest input) {
 
-        String dataSetName = dataSetService.createDataSet(input);
+        String dataSetName = dataSetService
+            .createDataSet(input);
 
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{dataSetName}")
-                .buildAndExpand(dataSetName).toUri();
+        URI location = ServletUriComponentsBuilder
+            .fromCurrentRequest()
+            .path("/{dataSetName}")
+            .buildAndExpand(dataSetName)
+            .toUri();
 
-        return ResponseEntity.created(location).build();
+        return ResponseEntity
+            .created(location)
+            .build();
     }
 
     @DeleteMapping(value = "{dataSetName:.+}")
-    @ApiOperation(value = "Delete a data set or member", notes = "This API deletes a data set or data set member.")
+    @ApiOperation(value = "Delete a data set or member", notes = "This API deletes a data set or data set member.", tags = "Data Sets APIs")
     @ApiResponses({ @ApiResponse(code = 204, message = "Data set or member successfully deleted") })
     public ResponseEntity<?> deleteDatasetMember(
             @ApiParam(value = "Data set name", required = true) @PathVariable String dataSetName) {
 
-        dataSetService.deleteDataSet(dataSetName);
-        return ResponseEntity.noContent().build();
+        dataSetService
+            .deleteDataSet(dataSetName);
+        return ResponseEntity
+            .noContent()
+            .build();
     }
 }

@@ -10,6 +10,7 @@
 package org.zowe.data.sets.services;
 
 import org.zowe.data.sets.model.DataSetAttributes;
+import org.zowe.data.sets.model.DataSetContent;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 
 import java.util.List;
@@ -18,7 +19,9 @@ public interface DataSetService {
 
     List<DataSetAttributes> listDataSets(String filter);
 
-    List<String> listDataSetMembers(String dsn);
+    List<String> listDataSetMembers(String dataSetName);
+
+    DataSetContent getContent(String dataSetName);
 
     String createDataSet(DataSetCreateRequest input);
 
