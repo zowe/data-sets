@@ -30,7 +30,10 @@ import org.zowe.api.common.exceptions.ZoweApiErrorException;
 import org.zowe.api.common.exceptions.ZoweRestExceptionHandler;
 import org.zowe.api.common.utils.JsonUtils;
 import org.zowe.api.common.utils.ZosUtils;
+import org.zowe.data.sets.model.AllocationUnitType;
+import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetCreateRequest;
+import org.zowe.data.sets.model.DataSetOrganisationType;
 import org.zowe.data.sets.services.DataSetService;
 
 import java.net.URI;
@@ -39,6 +42,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -129,7 +133,61 @@ public class DataSetsControllerTest {
     }
 
     // TODO LATER - validation dataset names and add getMember validation test
-    // TODO LATER - data set attributes tests
+
+    @Test
+    public void test_get_data_set_names_success() throws Exception {
+
+        DataSetAttributes cobol = DataSetAttributes.builder().blksize(133).dsorg(DataSetOrganisationType.PO).lrecl(133)
+                .recfm("FB").alcunit(AllocationUnitType.TRACK).volser("P4P020").build();
+        DataSetAttributes rexx = DataSetAttributes.builder().blksize(120).dsorg(DataSetOrganisationType.PS).lrecl(120)
+                .recfm("FB").alcunit(AllocationUnitType.TRACK).volser("P4P023").build();
+        DataSetAttributes vsam = DataSetAttributes.builder().build();
+
+        List<DataSetAttributes> dataSetsList = Arrays.asList(cobol, rexx, vsam);
+        String filter = "TEST";
+
+        when(dataSetService.listDataSets(filter)).thenReturn(dataSetsList);
+
+        mockMvc.perform(get(ENDPOINT_ROOT + "/{filter}", filter)).andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().string(JsonUtils.convertToJsonString(dataSetsList)));
+
+        verify(dataSetService, times(1)).listDataSets(filter);
+        verifyNoMoreInteractions(dataSetService);
+    }
+
+    @Test
+    public void test_get_data_set_names_empty_body() throws Exception {
+
+        String dummy = "junk";
+
+        when(dataSetService.listDataSets(anyString())).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get(ENDPOINT_ROOT + "/{filter}", dummy)).andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().string("[]"));
+
+        verify(dataSetService, times(1)).listDataSets(dummy);
+        verifyNoMoreInteractions(dataSetService);
+    }
+
+    @Test
+    public void get_data_sets_with_exception_should_be_converted_to_error_message() throws Exception {
+
+        String invalidPdsName = "TEST.JCL";
+
+        String errorMessage = MessageFormat.format("No partitioned data set {0} was found", invalidPdsName);
+        ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.BAD_REQUEST).build();
+
+        when(dataSetService.listDataSets(invalidPdsName)).thenThrow(new ZoweApiErrorException(expectedError));
+
+        mockMvc.perform(get(ENDPOINT_ROOT + "/{filter}", invalidPdsName))
+                .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
+                .andExpect(jsonPath("$.message").value(errorMessage));
+
+        verify(dataSetService, times(1)).listDataSets(invalidPdsName);
+        verifyNoMoreInteractions(dataSetService);
+    }
 
     // TODO - consider returning model object in response body, like jobs?
     @Test
