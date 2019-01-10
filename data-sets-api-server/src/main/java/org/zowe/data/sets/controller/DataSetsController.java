@@ -29,7 +29,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.zowe.api.common.model.Username;
 import org.zowe.api.common.utils.ZosUtils;
+import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.services.DataSetService;
 
@@ -46,22 +48,31 @@ public class DataSetsController {
     @Autowired
     private DataSetService dataSetService;
 
+    // TODO - push up into common?
     @GetMapping(value = "/username", produces = { "application/json" })
-    @ApiOperation(value = "Get current userid", nickname = "getCurrentUserName", notes = "This API returns the caller's current TSO userid.", response = String.class, tags = {
+    @ApiOperation(value = "Get current userid", nickname = "getCurrentUserName", notes = "This API returns the caller's current TSO userid.", response = Username.class, tags = {
             "System APIs", })
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok", response = String.class) })
-    public String getCurrentUserName() {
-        return ZosUtils.getUsername();
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok", response = Username.class) })
+    public Username getCurrentUserName() {
+        return new Username(ZosUtils.getUsername());
     }
 
     @GetMapping(value = "{dataSetName}/members", produces = { "application/json" })
     @ApiOperation(value = "Get a list of members for a partitioned data set", nickname = "getMembers", notes = "This API returns a list of members for a given partitioned data set.", tags = "Data Sets APIs")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Ok", response = String.class, responseContainer = "List") })
-
     public List<String> getMembers(
             @ApiParam(value = "Partitioned data set name", required = true) @PathVariable String dataSetName) {
         return dataSetService.listDataSetMembers(dataSetName);
+    }
+
+    @GetMapping(value = "/{filter:.+}", produces = { "application/json" })
+    @ApiOperation(value = "Get a list of data sets matching the filter", nickname = "getDataSets", notes = "This API returns the attributes of data sets including the RECFM, BLKSIZE, and LRECL.", tags = "Data Sets APIs")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Ok", response = String.class, responseContainer = "List") })
+    public List<DataSetAttributes> getDataSets(
+            @ApiParam(value = "Dataset filter string, e.g. HLQ.\\*\\*, \\*\\*.SUF, etc.", required = true) @PathVariable String filter) {
+        return dataSetService.listDataSets(filter);
     }
 
     @PostMapping(consumes = "application/json")

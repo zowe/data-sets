@@ -21,7 +21,8 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
 
     static final String DATASETS_ROOT_ENDPOINT = "datasets";
 
-    static final String HLQ = USER.toUpperCase();
+    static final String HLQ = USER
+        .toUpperCase();
     static final String TEST_JCL_PDS = HLQ + ".TEST.JCL";
     static final String INVALID_DATASET_NAME = HLQ + ".TEST.INVALID";
     static final String UNAUTHORIZED_DATASET = "IBMUSER.NOWRITE.CNTL";
@@ -32,27 +33,55 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
     }
 
     protected static Response getMembers(String dataSetName) {
-        return RestAssured.given().when().get(dataSetName + "/members");
+        return RestAssured
+            .given()
+            .when()
+            .get(dataSetName + "/members");
     }
 
-    protected Response createDataSet(DataSetCreateRequest attributes) {
-        return RestAssured.given().contentType("application/json").body(attributes).when().post();
+    protected static Response getDataSets(String dataSetFilter) {
+        return RestAssured
+            .given()
+            .when()
+            .get(dataSetFilter);
+    }
+
+    protected static Response createDataSet(DataSetCreateRequest attributes) {
+        return RestAssured
+            .given()
+            .contentType("application/json")
+            .body(attributes)
+            .when()
+            .post();
     }
 
     static DataSetCreateRequest createPdsRequest(String dataSetName) {
-        DataSetCreateRequest defaultJclPdsRequest = DataSetCreateRequest.builder().name(dataSetName).blksize(400)
-                .primary(10).lrecl(80).secondary(5).dirblk(21).dsorg(DataSetOrganisationType.PO).recfm("FB")
-                .alcunit(AllocationUnitType.TRACK).build();
+        DataSetCreateRequest defaultJclPdsRequest = DataSetCreateRequest
+            .builder()
+            .name(dataSetName)
+            .blksize(400)
+            .primary(10)
+            .lrecl(80)
+            .secondary(5)
+            .dirblk(21)
+            .dsorg(DataSetOrganisationType.PO)
+            .recfm("FB")
+            .alcunit(AllocationUnitType.TRACK)
+            .build();
         return defaultJclPdsRequest;
     }
 
     static DataSetCreateRequest createSdsRequest(String dataSetName) {
         DataSetCreateRequest sdsRequest = createPdsRequest(dataSetName);
-        sdsRequest.setDsorg(DataSetOrganisationType.PS);
+        sdsRequest
+            .setDsorg(DataSetOrganisationType.PS);
         return sdsRequest;
     }
 
     protected Response deleteDataSet(String dataSetName) {
-        return RestAssured.given().when().delete(dataSetName);
+        return RestAssured
+            .given()
+            .when()
+            .delete(dataSetName);
     }
 }

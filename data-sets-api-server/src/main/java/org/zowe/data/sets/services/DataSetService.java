@@ -9,13 +9,15 @@
  */
 package org.zowe.data.sets.services;
 
+import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 
 import java.util.List;
 
 public interface DataSetService {
-//  List<String> listDataSetNames(String filter);
-//
+
+    List<DataSetAttributes> listDataSets(String filter);
+
     List<String> listDataSetMembers(String dsn);
 
     String createDataSet(DataSetCreateRequest input);

@@ -31,7 +31,11 @@ import org.zowe.api.common.utils.JsonUtils;
 import org.zowe.api.common.utils.ResponseUtils;
 import org.zowe.data.sets.exceptions.DataSetAlreadyExists;
 import org.zowe.data.sets.exceptions.UnauthorisedDataSetException;
+import org.zowe.data.sets.model.AllocationUnitType;
+import org.zowe.data.sets.model.DataSetAttributes;
+import org.zowe.data.sets.model.DataSetAttributes.DataSetAttributesBuilder;
 import org.zowe.data.sets.model.DataSetCreateRequest;
+import org.zowe.data.sets.model.DataSetOrganisationType;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,7 +67,9 @@ public class ZosmfDataSetService implements DataSetService {
                 JsonObject memberResponse = ResponseUtils.getEntityAsJsonObject(response);
                 JsonElement memberJsonArray = memberResponse.get("items");
                 for (JsonElement jsonElement : memberJsonArray.getAsJsonArray()) {
-                    memberNames.add(jsonElement.getAsJsonObject().get("member").getAsString());
+                    memberNames.add(jsonElement.getAsJsonObject()
+                        .get("member")
+                        .getAsString());
                 }
                 return memberNames;
             } else {
@@ -76,11 +82,13 @@ public class ZosmfDataSetService implements DataSetService {
                         JsonObject jsonResponse = ResponseUtils.getEntityAsJsonObject(response);
                         JsonElement details = jsonResponse.get("details");
                         if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-                            if (details.toString().contains(AUTHORIZATION_FAILURE)) {
+                            if (details.toString()
+                                .contains(AUTHORIZATION_FAILURE)) {
                                 throw new UnauthorisedDataSetException(dataSetName);
                             }
                         } else if (statusCode == HttpStatus.SC_NOT_FOUND) {
-                            if (details.toString().contains(DATA_SET_NOT_FOUND)) {
+                            if (details.toString()
+                                .contains(DATA_SET_NOT_FOUND)) {
                                 throw new DataSetNotFoundException(dataSetName);
                             }
                         }
@@ -99,6 +107,47 @@ public class ZosmfDataSetService implements DataSetService {
     }
 
     @Override
+    public List<DataSetAttributes> listDataSets(String filter) {
+        String urlPath = String.format("restfiles/ds?dslevel=%s", filter);
+        String requestUrl = zosmfConnector.getFullUrl(urlPath); // $NON-NLS-1$
+        try {
+            RequestBuilder requestBuilder = RequestBuilder.get(requestUrl);
+            requestBuilder.addHeader("X-IBM-Attributes", "base");
+            HttpResponse response = zosmfConnector.request(requestBuilder);
+            int statusCode = ResponseUtils.getStatus(response);
+            if (statusCode == HttpStatus.SC_OK) {
+                JsonObject dataSetsResponse = ResponseUtils.getEntityAsJsonObject(response);
+                JsonElement dataSetJsonArray = dataSetsResponse.get("items");
+
+                List<DataSetAttributes> dataSets = new ArrayList<>();
+                for (JsonElement jsonElement : dataSetJsonArray.getAsJsonArray()) {
+                    dataSets.add(getDataSetFromJson(jsonElement.getAsJsonObject()));
+                }
+                return dataSets;
+            } else {
+                HttpEntity entity = response.getEntity();
+                // TODO - work out how to tidy when brain is sharper
+                if (entity != null) {
+                    ContentType contentType = ContentType.get(entity);
+                    String mimeType = contentType.getMimeType();
+                    if (mimeType.equals(ContentType.APPLICATION_JSON.getMimeType())) {
+                        JsonObject jsonResponse = ResponseUtils.getEntityAsJsonObject(response);
+                        JsonElement details = jsonResponse.get("details");
+                        throw new ZoweApiRestException(getSpringHttpStatusFromCode(statusCode), details.toString());
+                    } else {
+                        throw new ZoweApiRestException(getSpringHttpStatusFromCode(statusCode), entity.toString());
+                    }
+                } else {
+                    throw new NoZosmfResponseEntityException(getSpringHttpStatusFromCode(statusCode), urlPath);
+                }
+            }
+        } catch (IOException e) {
+            log.error("listDataSets", e);
+            throw new ServerErrorException(e);
+        }
+    }
+
+    @Override
     public String createDataSet(DataSetCreateRequest input) {
         String dataSetName = input.getName();
         String urlPath = String.format("restfiles/ds/%s", dataSetName);
@@ -107,7 +156,8 @@ public class ZosmfDataSetService implements DataSetService {
             JsonObject requestBody = convertIntoZosmfRequestJson(input);
 
             StringEntity requestEntity = new StringEntity(requestBody.toString(), ContentType.APPLICATION_JSON);
-            RequestBuilder requestBuilder = RequestBuilder.post(requestUrl).setEntity(requestEntity);
+            RequestBuilder requestBuilder = RequestBuilder.post(requestUrl)
+                .setEntity(requestEntity);
             HttpResponse response = zosmfConnector.request(requestBuilder);
             int statusCode = ResponseUtils.getStatus(response);
             if (statusCode == HttpStatus.SC_CREATED) {
@@ -120,7 +170,8 @@ public class ZosmfDataSetService implements DataSetService {
                     if (mimeType.equals(ContentType.APPLICATION_JSON.getMimeType())) {
                         JsonObject jsonResponse = ResponseUtils.getEntityAsJsonObject(response);
                         if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-                            String zosmfMessage = jsonResponse.get("message").getAsString();
+                            String zosmfMessage = jsonResponse.get("message")
+                                .getAsString();
                             if ("Dynamic allocation Error".equals(zosmfMessage)) {
                                 throw new DataSetAlreadyExists(dataSetName);
                             }
@@ -174,8 +225,10 @@ public class ZosmfDataSetService implements DataSetService {
                         JsonObject jsonResponse = ResponseUtils.getEntityAsJsonObject(response);
                         JsonElement details = jsonResponse.get("details");
                         if (statusCode == HttpStatus.SC_NOT_FOUND) {
-                            if (details.toString().contains(String.format(
-                                    "ISRZ002 Data set not cataloged - '%s' was not found in catalog.", dataSetName))) {
+                            if (details.toString()
+                                .contains(
+                                        String.format("ISRZ002 Data set not cataloged - '%s' was not found in catalog.",
+                                                dataSetName))) {
                                 throw new DataSetNotFoundException(dataSetName);
                             }
                         }
@@ -190,7 +243,59 @@ public class ZosmfDataSetService implements DataSetService {
         }
     }
 
-    // TODO LATER - push up into common once created
+    private static DataSetAttributes getDataSetFromJson(JsonObject returned) {
+        DataSetAttributesBuilder builder = DataSetAttributes.builder()
+            .catnm(getStringOrNull(returned, "catnm"))
+            .name(getStringOrNull(returned, "dsname"))
+            .migrated("YES".equals(getStringOrNull(returned, "migr")))
+            .volser(getStringOrNull(returned, "vols"))
+            .blksize(getIntegerOrNull(returned, "blksz"))
+            .dev(getStringOrNull(returned, "dev"))
+            .edate(getStringOrNull(returned, "edate"))
+            .cdate(getStringOrNull(returned, "cdate"))
+            .lrecl(getIntegerOrNull(returned, "lrecl"))
+            .recfm(getStringOrNull(returned, "recfm"))
+            .sizex(getIntegerOrNull(returned, "sizex"))
+            .used(getIntegerOrNull(returned, "used"));
+
+        String dsorg = getStringOrNull(returned, "dsorg");
+        if (dsorg != null) {
+            builder.dsorg(DataSetOrganisationType.getByZosmfName(dsorg));
+        }
+        String spacu = getStringOrNull(returned, "spacu");
+        if (spacu != null) {
+            // SJH : spacu returns a plural string, so strip 's' off the end
+            builder.spacu(AllocationUnitType.valueOf(spacu.substring(0, spacu.length() - 1)));
+        }
+        return builder.build();
+    }
+
+       // TODO LATER - push up into common
+    private static String getStringOrNull(JsonObject json, String key) {
+        String value = null;
+        JsonElement jsonElement = json.get(key);
+        if (!(jsonElement == null || jsonElement.isJsonNull() || jsonElement.getAsString()
+            .equals("?"))) {
+            value = jsonElement.getAsString();
+            if (value.equals("?")) {
+                value = null;
+            }
+        }
+        return value;
+    }
+
+       // TODO LATER - push up into common
+    private static Integer getIntegerOrNull(JsonObject json, String key) {
+        Integer value = null;
+        JsonElement jsonElement = json.get(key);
+        if (!(jsonElement == null || jsonElement.isJsonNull() || jsonElement.getAsString()
+            .equals("?"))) {
+            value = jsonElement.getAsInt();
+        }
+        return value;
+    }
+
+    // TODO LATER - push up into common
     private org.springframework.http.HttpStatus getSpringHttpStatusFromCode(int statusCode) {
         return org.springframework.http.HttpStatus.resolve(statusCode);
     }
