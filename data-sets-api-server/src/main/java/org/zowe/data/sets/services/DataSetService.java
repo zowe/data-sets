@@ -23,6 +23,8 @@ public interface DataSetService {
 
     DataSetContent getContent(String dataSetName);
 
+    void putContent(String dataSetName, DataSetContent content);
+
     String createDataSet(DataSetCreateRequest input);
 
     void deleteDataSet(String dataSetName);

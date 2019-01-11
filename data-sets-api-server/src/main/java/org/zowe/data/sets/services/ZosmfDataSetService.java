@@ -189,6 +189,44 @@ public class ZosmfDataSetService implements DataSetService {
     }
 
     @Override
+    public void putContent(String dataSetName, DataSetContent content) {
+        String urlPath = String.format("restfiles/ds/%s", dataSetName);
+        String requestUrl = zosmfConnector.getFullUrl(urlPath); // $NON-NLS-1$
+        try {
+            StringEntity requestEntity = new StringEntity(content.getRecords());
+            RequestBuilder requestBuilder = RequestBuilder.put(requestUrl).setEntity(requestEntity);
+            requestBuilder.addHeader("Content-type", ContentType.TEXT_PLAIN.getMimeType());
+            HttpResponse response = zosmfConnector.request(requestBuilder);
+            int statusCode = ResponseUtils.getStatus(response);
+            if (statusCode != HttpStatus.SC_NO_CONTENT && statusCode != HttpStatus.SC_CREATED) {
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    ContentType contentType = ContentType.get(entity);
+                    String mimeType = contentType.getMimeType();
+                    if (mimeType.equals(ContentType.APPLICATION_JSON.getMimeType())) {
+                        JsonObject jsonResponse = ResponseUtils.getEntityAsJsonObject(response);
+                        String zosmfMessage = jsonResponse.get("message").getAsString();
+                        if ("Data set not found.".equals(zosmfMessage)) {
+                            throw new DataSetNotFoundException(dataSetName);
+                        }
+                        JsonElement details = jsonResponse.get("details");
+                        if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
+                            if (details.toString().contains(AUTHORIZATION_FAILURE)) {
+                                throw new UnauthorisedDataSetException(dataSetName);
+                            }
+                        }
+                    }
+                    throw new ZoweApiRestException(getSpringHttpStatusFromCode(statusCode), entity.toString());
+                }
+                throw new NoZosmfResponseEntityException(getSpringHttpStatusFromCode(statusCode), urlPath);
+            }
+        } catch (IOException e) {
+            log.error("putContent", e);
+            throw new ServerErrorException(e);
+        }
+    }
+
+    @Override
     public String createDataSet(DataSetCreateRequest input) {
         String dataSetName = input.getName();
         String urlPath = String.format("restfiles/ds/%s", dataSetName);

@@ -12,8 +12,9 @@ package org.zowe.data.sets.tests;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.zowe.data.sets.model.AllocationUnitType;
+import org.zowe.data.sets.model.DataSetContent;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.model.DataSetOrganisationType;
 
@@ -26,8 +27,8 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
     static final String INVALID_DATASET_NAME = HLQ + ".TEST.INVALID";
     static final String UNAUTHORIZED_DATASET = "IBMUSER.NOWRITE.CNTL";
 
-    @Before
-    public void setUpEndpoint() {
+    @BeforeClass
+    public static void setUpEndpoint() {
         RestAssured.basePath = DATASETS_ROOT_ENDPOINT;
     }
 
@@ -47,6 +48,10 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
         return RestAssured.given().when().get(dataSetName + "/content");
     }
 
+    protected static Response putDataSetContent(String dataSetName, DataSetContent body) {
+        return RestAssured.given().contentType("application/json").body(body).when().put(dataSetName + "/content");
+    }
+
     static DataSetCreateRequest createPdsRequest(String dataSetName) {
         DataSetCreateRequest defaultJclPdsRequest = DataSetCreateRequest.builder().name(dataSetName).blksize(400)
             .primary(10).lrecl(80).secondary(5).dirblk(21).dsorg(DataSetOrganisationType.PO).recfm("FB")
@@ -60,7 +65,7 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
         return sdsRequest;
     }
 
-    protected Response deleteDataSet(String dataSetName) {
+    protected static Response deleteDataSet(String dataSetName) {
         return RestAssured.given().when().delete(dataSetName);
     }
 
