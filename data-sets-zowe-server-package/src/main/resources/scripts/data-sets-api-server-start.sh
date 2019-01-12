@@ -1,6 +1,6 @@
 # Variables to be replaced:
 # - JAVA_SETUP -- sets JAVA_HOME by ZOWE_JAVA_HOME
-# - SERVER_PORT - The port the jobs server will use
+# - SERVER_PORT - The port the data sets server will use
 # - KEYSTORE - The keystore to use for SSL certificates
 # - KEYSTORE_PASSWORD - The password to access the keystore supplied by KEYSTORE
 # - KEY_ALIAS - The alias of the key within the keystore
