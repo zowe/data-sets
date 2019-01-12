@@ -45,7 +45,7 @@ if (BRANCH_NAME == MASTER_BRANCH) {
     // twice in quick succession
     opts.push(disableConcurrentBuilds())
 } else {
-    if (BRANCH_NAME.equals("issue-15")){
+    if (BRANCH_NAME.equals("package")){
         RELEASE_BRANCH = true   
     }
     // Only keep 5 builds on other branches
