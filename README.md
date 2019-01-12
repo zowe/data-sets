@@ -47,7 +47,7 @@
     -Dserver.ssl.keyStoreType=PKCS12 \
     -Dzosmf.httpsPort=${ZOSMF_PORT} \
     -Dzosmf.ipAddress=${ZOSMF_HOST} \
-    -jar $(ls -1 data-sets-api-server/build/libs/data-sets-api-server-*.jar) &
+    -jar $(ls -1 data-sets-api-server/build/libs/data-sets-api-server-*-boot.jar) &
   ```
 
   *Note: please replace the `${ZOSMF_PORT}` and `${ZOSMF_HOST}` variable in above with your z/OSMF server information.
@@ -68,7 +68,7 @@
 
 ```
 # packaging for Zowe
-./gradlew packageDataSetssApiServer
+./gradlew packageDataSetsApiServer
 # deploy artifact
 ./gradlew publishArtifacts --info -Pdeploy.username=${USERNAME} -Pdeploy.password=${PASSWORD}
 ```
