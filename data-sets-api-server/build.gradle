@@ -34,7 +34,11 @@ dependencies {
     testCompile libraries.explorer_api_common_test
 }
 
+jar {
+    enabled = true
+}
+
 bootJar {
     mainClassName = 'org.zowe.data.sets.DataSetsApplication'
-    archiveName = "${bootJar.baseName}-${bootJar.version}.jar"
+    classifier = 'boot'
 }

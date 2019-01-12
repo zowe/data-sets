@@ -256,7 +256,7 @@ pipeline {
     -Dserver.ssl.keyStoreType=PKCS12 \
     -Dzosmf.httpsPort=${params.INTEGRATION_TEST_ZOSMF_PORT} \
     -Dzosmf.ipAddress=${params.INTEGRATION_TEST_ZOSMF_HOST} \
-    -jar \$(ls -1 data-sets-api-server/build/libs/data-sets-api-server-*.jar) &"""
+    -jar \$(ls -1 data-sets-api-server/build/libs/data-sets-api-server-*-boot.jar) &"""
 
                         // give it a little time to start the server
                         sleep time: 1, unit: 'MINUTES'
