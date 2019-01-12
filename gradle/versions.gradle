@@ -3,7 +3,7 @@ ext {
     springBootVersion = '2.0.4.RELEASE'
     springFoxVersion = '2.8.0'
     lombokVersion = '1.16.20'
-    mockitoCoreVersion = '2.9.0'
+    mockitoCoreVersion = '2.23.4'
     powerMockVersion = "2.0.0-RC.1"
     gsonVersion = '2.8.2'
     httpClientVersion = '4.5.3'

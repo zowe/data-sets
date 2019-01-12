@@ -31,13 +31,10 @@ subprojects {
         }
     }
 }
-/*
-    Keep this commented out as a reminder to re-add it if we have a packaging subproject.
 
 // Packaging project; sonar does not apply
-project(":zowe-package") {
+project(":data-sets-zowe-server-package") {
     sonarqube {
         skipProject = true
     }
 }
-*/
