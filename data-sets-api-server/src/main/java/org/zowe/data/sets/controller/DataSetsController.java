@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -51,8 +52,7 @@ public class DataSetsController {
             "System APIs", })
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok", response = Username.class) })
     public Username getCurrentUserName() {
-        return new Username(ZosUtils
-            .getUsername());
+        return new Username(ZosUtils.getUsername());
     }
 
     @GetMapping(value = "{dataSetName}/members", produces = { "application/json" })
@@ -61,27 +61,24 @@ public class DataSetsController {
             @ApiResponse(code = 200, message = "Ok", response = String.class, responseContainer = "List") })
     public List<String> getMembers(
             @ApiParam(value = "Partitioned data set name", required = true) @PathVariable String dataSetName) {
-        return dataSetService
-            .listDataSetMembers(dataSetName);
+        return dataSetService.listDataSetMembers(dataSetName);
     }
 
     @GetMapping(value = "{filter:.+}", produces = { "application/json" })
-    @ApiOperation(value = "Get a list of data sets matching the filter", nickname = "getContent", notes = "This API returns the attributes of data sets including the RECFM, BLKSIZE, and LRECL.", tags = "Data Sets APIs")
+    @ApiOperation(value = "Get a list of data sets matching the filter", nickname = "getDataSets", notes = "This API returns the attributes of data sets including the RECFM, BLKSIZE, and LRECL.", tags = "Data Sets APIs")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Ok", response = String.class, responseContainer = "List") })
     public List<DataSetAttributes> getDataSets(
             @ApiParam(value = "Dataset filter string, e.g. HLQ.\\*\\*, \\*\\*.SUF, etc.", required = true) @PathVariable String filter) {
-        return dataSetService
-            .listDataSets(filter);
+        return dataSetService.listDataSets(filter);
     }
 
     @GetMapping(value = "{dataSetName}/content", produces = { "application/json" })
-    @ApiOperation(value = "Get the content of a sequential data set, or PDS member", nickname = "getDataSets", notes = "This API reads content from a sequential data set or member of a partitioned data set.", tags = "Data Sets APIs")
+    @ApiOperation(value = "Get the content of a sequential data set, or PDS member", nickname = "getContent", notes = "This API reads content from a sequential data set or member of a partitioned data set.", tags = "Data Sets APIs")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok", response = DataSetContent.class) })
     public DataSetContent getContent(
             @ApiParam(value = "Data set name, e.g. HLQ.PS or HLQ.PO(MEMBER)", required = true) @PathVariable String dataSetName) {
-        return dataSetService
-            .getContent(dataSetName);
+        return dataSetService.getContent(dataSetName);
     }
 
     @PostMapping(consumes = "application/json")
@@ -90,18 +87,22 @@ public class DataSetsController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> createDataSet(@RequestBody DataSetCreateRequest input) {
 
-        String dataSetName = dataSetService
-            .createDataSet(input);
+        String dataSetName = dataSetService.createDataSet(input);
 
-        URI location = ServletUriComponentsBuilder
-            .fromCurrentRequest()
-            .path("/{dataSetName}")
-            .buildAndExpand(dataSetName)
-            .toUri();
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{dataSetName}")
+            .buildAndExpand(dataSetName).toUri();
 
-        return ResponseEntity
-            .created(location)
-            .build();
+        return ResponseEntity.created(location).build();
+    }
+
+    @PutMapping(value = "{dataSetName}/content", produces = { "application/json" })
+    @ApiOperation(value = "Sets the content of a sequential data set, or PDS member", nickname = "putContent", notes = "This API writes content to a sequential data set or partitioned data set member.", tags = "Data Sets APIs")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok") })
+    public ResponseEntity<?> putContent(
+            @ApiParam(value = "Data set name, e.g. HLQ.PS or HLQ.PO(MEMBER)", required = true) @PathVariable String dataSetName,
+            @RequestBody DataSetContent input) {
+        dataSetService.putContent(dataSetName, input);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping(value = "{dataSetName:.+}")
@@ -110,10 +111,7 @@ public class DataSetsController {
     public ResponseEntity<?> deleteDatasetMember(
             @ApiParam(value = "Data set name", required = true) @PathVariable String dataSetName) {
 
-        dataSetService
-            .deleteDataSet(dataSetName);
-        return ResponseEntity
-            .noContent()
-            .build();
+        dataSetService.deleteDataSet(dataSetName);
+        return ResponseEntity.noContent().build();
     }
 }

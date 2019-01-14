@@ -250,6 +250,75 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
         verifyInteractions(requestBuilder);
     }
 
+    @Test
+    public void put_content_should_call_zosmf_and_parse_response_correctly() throws Exception {
+        String jclString = "//ATLJ0000 JOB (ADL),'ATLAS',MSGCLASS=X,CLASS=A,TIME=1440\n" + "//*        TEST JOB\n"
+                + "//UNIT     EXEC PGM=IEFBR14\n";
+        DataSetContent request = new DataSetContent(jclString);
+        String dataSetName = "STEVENH.TEST.JCL";
+
+        HttpResponse response = mockResponse(HttpStatus.SC_NO_CONTENT);
+        RequestBuilder requestBuilder = mockPutBuilder(String.format("restfiles/ds/%s", dataSetName), jclString);
+        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+
+        dataService.putContent(dataSetName, request);
+
+        verifyInteractions(requestBuilder);
+        verify(requestBuilder).addHeader("Content-type", ContentType.TEXT_PLAIN.getMimeType());
+    }
+
+    @Test
+    public void put_content_for_non_existing_member_works() throws Exception {
+        String dataSetName = "STEVENH.TEST.JCL(JUNK)";
+
+        String jclString = "//ATLJ0000 JOB (ADL),'ATLAS',MSGCLASS=X,CLASS=A,TIME=1440\n" + "//*        TEST JOB\n"
+                + "//UNIT     EXEC PGM=IEFBR14\n";
+        DataSetContent request = new DataSetContent(jclString);
+
+        HttpResponse response = mockResponse(HttpStatus.SC_CREATED);
+        RequestBuilder requestBuilder = mockPutBuilder(String.format("restfiles/ds/%s", dataSetName), jclString);
+        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+
+        dataService.putContent(dataSetName, request);
+
+        verifyInteractions(requestBuilder);
+        verify(requestBuilder).addHeader("Content-type", ContentType.TEXT_PLAIN.getMimeType());
+    }
+
+    @Test
+    public void put_content_for_unauthorised_user_throws_correct_error() throws Exception {
+        String dataSetName = "TSTRADM.JCL(JUNK)";
+
+        Exception expectedException = new UnauthorisedDataSetException(dataSetName);
+
+        checkPutContentExceptionAndVerify(dataSetName, expectedException, HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                "putContent_unauthorised.json");
+    }
+
+    @Test
+    public void put_content_for_non_existing_sds_throws_correct_error() throws Exception {
+        String dataSetName = "STEVENH.TEST";
+
+        Exception expectedException = new DataSetNotFoundException(dataSetName);
+        checkPutContentExceptionAndVerify(dataSetName, expectedException, HttpStatus.SC_NOT_FOUND,
+                "putContent_noDataSet.json");
+    }
+
+    private void checkPutContentExceptionAndVerify(String pdsName, Exception expectedException, int statusCode,
+            String file) throws IOException, Exception {
+        HttpResponse response = mockJsonResponse(statusCode, loadTestFile(file));
+
+        String jclString = "//ATLJ0000 JOB (ADL),'ATLAS',MSGCLASS=X,CLASS=A,TIME=1440\n" + "//*        TEST JOB\n"
+                + "//UNIT     EXEC PGM=IEFBR14\n";
+
+        RequestBuilder requestBuilder = mockPutBuilder(String.format("restfiles/ds/%s", pdsName), jclString);
+
+        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+
+        shouldThrow(expectedException, () -> dataService.putContent(pdsName, new DataSetContent(jclString)));
+        verifyInteractions(requestBuilder);
+    }
+
     // TODO - Add tests for dsnType = library for zosmf 2.3 - what else fails on 2.2?
 
     @Test

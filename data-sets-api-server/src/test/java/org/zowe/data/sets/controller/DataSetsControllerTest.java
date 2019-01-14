@@ -53,6 +53,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -125,6 +126,7 @@ public class DataSetsControllerTest {
         when(dataSetService.listDataSetMembers(invalidPdsName)).thenThrow(new ZoweApiErrorException(expectedError));
 
         mockMvc.perform(get(ENDPOINT_ROOT + "/{dsn}/members", invalidPdsName))
+            .andExpect(status().is(expectedError.getStatus().value()))
             .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
             .andExpect(jsonPath("$.message").value(errorMessage));
 
@@ -159,10 +161,59 @@ public class DataSetsControllerTest {
         when(dataSetService.getContent(invalidPdsName)).thenThrow(new ZoweApiErrorException(expectedError));
 
         mockMvc.perform(get(ENDPOINT_ROOT + "/{dsn}/content", invalidPdsName))
+            .andExpect(status().is(expectedError.getStatus().value()))
             .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
             .andExpect(jsonPath("$.message").value(errorMessage));
 
         verify(dataSetService, times(1)).getContent(invalidPdsName);
+        verifyNoMoreInteractions(dataSetService);
+    }
+
+    @Test
+    public void put_data_set_content_success() throws Exception {
+
+        String memberName = "TEST.JCL(MEMBER)";
+        DataSetContent request = new DataSetContent("Test\nFile");
+
+        mockMvc
+            .perform(put(ENDPOINT_ROOT + "/{dsn}/content", memberName)
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(JsonUtils.convertToJsonString(request)))
+            .andExpect(status().isNoContent()).andExpect(content().string(""));
+
+        verify(dataSetService, times(1)).putContent(memberName, request);
+        verifyNoMoreInteractions(dataSetService);
+    }
+
+    @Test
+    public void put_data_set_content_with_exception_should_be_converted_to_error_message() throws Exception {
+
+        String invalidPdsName = "TEST.JCL";
+        DataSetContent request = new DataSetContent("Test\nFile");
+
+        String errorMessage = MessageFormat.format("No data set {0} was found", invalidPdsName);
+        ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.BAD_REQUEST).build();
+
+        doThrow(new ZoweApiErrorException(expectedError)).when(dataSetService).putContent(invalidPdsName, request);
+
+        mockMvc
+            .perform(put(ENDPOINT_ROOT + "/{dsn}/content", invalidPdsName)
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(JsonUtils.convertToJsonString(request)))
+            .andExpect(status().is(expectedError.getStatus().value()))
+            .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
+            .andExpect(jsonPath("$.message").value(errorMessage));
+
+        verify(dataSetService, times(1)).putContent(invalidPdsName, request);
+        verifyNoMoreInteractions(dataSetService);
+    }
+
+    @Test
+    public void put_data_set_content_with_wrong_type_converted_to_error_message() throws Exception {
+
+        String invalidPdsName = "TEST.JCL";
+
+        mockMvc.perform(put(ENDPOINT_ROOT + "/{dsn}/content", invalidPdsName)
+            .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content("JUNK")).andExpect(status().isBadRequest());
+
         verifyNoMoreInteractions(dataSetService);
     }
 
@@ -215,6 +266,7 @@ public class DataSetsControllerTest {
         when(dataSetService.listDataSets(invalidPdsName)).thenThrow(new ZoweApiErrorException(expectedError));
 
         mockMvc.perform(get(ENDPOINT_ROOT + "/{filter}", invalidPdsName))
+            .andExpect(status().is(expectedError.getStatus().value()))
             .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
             .andExpect(jsonPath("$.message").value(errorMessage));
 

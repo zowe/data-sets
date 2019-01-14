@@ -12,9 +12,6 @@ package org.zowe.data.sets.model;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,11 +21,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
-@JsonInclude(Include.NON_NULL)
-@ApiModel(value = "DataSetContent", description = "Response for the Dataset file GET content request")
+@ApiModel(value = "DataSetContent", description = "Data Set file content")
 public class DataSetContent {
 
-    @ApiModelProperty(value = "The content of the data set", dataType = "string", required = true, example = "This is some test content")
+    @ApiModelProperty(value = "The content of the data set, with \\\\n for new lines", dataType = "string", required = true, example = "//TESTJOBX JOB (),MSGCLASS=H\\n// EXEC PGM=IEFBR14")
     private String records;
 }
