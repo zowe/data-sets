@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
 import org.zowe.api.common.errors.ApiError;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
+import org.zowe.data.sets.model.DataSetContent;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -40,14 +41,12 @@ public class DataSetsDeleteIntegrationTests extends AbstractDataSetsIntegrationT
         deleteDataSet(request.getName()).then().statusCode(HttpStatus.SC_NO_CONTENT).body(equalTo(""));
     }
 
-    // TODO - create member needed first
-    // @Test
-    // public void testDeletePdsMemberWorks() throws Exception {
-    // String memberPath = getTestJclMemberPath("TEMP");
-    // createPdsMember(memberPath, "").shouldHaveStatusOk();
-    //
-    // deleteDataset(memberPath).shouldHaveStatusNoContent();
-    // }
+    @Test
+    public void testDeletePdsMemberWorks() throws Exception {
+        String memberPath = getTestJclMemberPath("TEMP");
+        putDataSetContent(memberPath, new DataSetContent("test")).then().statusCode(HttpStatus.SC_NO_CONTENT);
+        deleteDataSet(memberPath).then().statusCode(HttpStatus.SC_NO_CONTENT).body(equalTo(""));
+    }
 
     @Test
     // TODO - need to create the unauthorised dataset in setup script
@@ -63,7 +62,7 @@ public class DataSetsDeleteIntegrationTests extends AbstractDataSetsIntegrationT
 
         // TODO - refactor with other error tests?
         deleteDataSet(INVALID_DATASET_NAME).then().statusCode(expectedError.getStatus().value())
-                .contentType(ContentType.JSON).body("status", equalTo(expectedError.getStatus().name()))
-                .body("message", equalTo(expectedError.getMessage()));
+            .contentType(ContentType.JSON).body("status", equalTo(expectedError.getStatus().name()))
+            .body("message", equalTo(expectedError.getMessage()));
     }
 }

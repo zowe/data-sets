@@ -48,6 +48,7 @@ public class DataSetsPutContentIntegrationTest extends AbstractDataSetsIntegrati
     }
 
     @Test
+    // TODO NOW - check E-Tag works
     public void testPutMemberContent() throws Exception {
         putDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14), content).then()
             .statusCode(HttpStatus.SC_NO_CONTENT);
@@ -55,6 +56,8 @@ public class DataSetsPutContentIntegrationTest extends AbstractDataSetsIntegrati
         getDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14)).then().statusCode(HttpStatus.SC_OK)
             .body("records", equalTo(jcl));
     }
+
+    // TODO now test of incorrect etag
 
     @Test
     public void testPutSequentialDataSetContent() throws Exception {

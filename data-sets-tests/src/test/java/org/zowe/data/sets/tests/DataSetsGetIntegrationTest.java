@@ -11,7 +11,6 @@ package org.zowe.data.sets.tests;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.collection.IsEmptyCollection;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.zowe.data.sets.model.DataSetAttributes;
@@ -26,22 +25,6 @@ import static org.junit.Assert.assertThat;
 
 public class DataSetsGetIntegrationTest extends AbstractDataSetsIntegrationTest {
 
-    // TODO - push up?
-    @BeforeClass
-    public static void initialiseDatasetsIfNescessary() throws Exception {
-        if (getMembers(TEST_JCL_PDS)
-            .statusCode() != HttpStatus.SC_OK) {
-            // TODO NOW - create a pds and member if they don't exist
-//            createDataSet(createPdsRequest(TEST_JCL_PDS));
-//            createPdsMember(getTestJclMemberPath(JOB_IEFBR14), new String(Files
-//                .readAllBytes(Paths
-//                    .get("testFiles/jobIEFBR14"))));
-//            createPdsMember(getTestJclMemberPath(JOB_WITH_STEPS), new String(Files
-//                .readAllBytes(Paths
-//                    .get("testFiles/jobWithSteps"))));
-        }
-    }
-
     @Test
     public void testGetValidDataset() throws Exception {
         String tempDataSet = HLQ + ".TEST.DELETE";
@@ -53,46 +36,21 @@ public class DataSetsGetIntegrationTest extends AbstractDataSetsIntegrationTest 
             String pattern = "yyyy/MM/dd";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
-            String today = simpleDateFormat
-                .format(new Date());
+            String today = simpleDateFormat.format(new Date());
 
-            DataSetAttributes expected = DataSetAttributes
-                .builder()
-                .blksize(pdsRequest
-                    .getBlksize())
-                .catnm(null) // wildcard
-                .dev("3390")
-                .cdate(today)
-                .name(tempDataSet)
-                .migrated(false)
-                .dsorg(pdsRequest
-                    .getDsorg())
-                .edate("***None***")
-                .lrecl(pdsRequest
-                    .getLrecl())
-                .spacu(pdsRequest
-                    .getAlcunit())
-                .recfm(pdsRequest
-                    .getRecfm())
-                .sizex(10)
-                .used(10)
-                .volser(null) // wildcard
-                .build();
+            DataSetAttributes expected = DataSetAttributes.builder().blockSize(pdsRequest.getBlockSize())
+                .deviceType("3390").creationDate(today).name(tempDataSet).migrated(false)
+                .dataSetOrganization(pdsRequest.getDataSetOrganization()).expirationDate("***None***")
+                .recordLength(pdsRequest.getRecordLength()).allocationUnit(pdsRequest.getAllocationUnit())
+                .recordFormat(pdsRequest.getRecordFormat()).allocatedSize(10).used(10).build();
 
-            List<DataSetAttributes> actual = getDataSets(tempDataSet)
-                .then()
-                .statusCode(HttpStatus.SC_OK)
-                .extract()
-                .body()
-                .jsonPath()
-                .getList("", DataSetAttributes.class);
+            List<DataSetAttributes> actual = getDataSets(tempDataSet).then().statusCode(HttpStatus.SC_OK).extract()
+                .body().jsonPath().getList("", DataSetAttributes.class);
 
             // We can't tell the value of some attributes
             for (DataSetAttributes dataSetAttributes : actual) {
-                dataSetAttributes
-                    .setCatnm(null);
-                dataSetAttributes
-                    .setVolser(null);
+                dataSetAttributes.setCatalogName(null);
+                dataSetAttributes.setVolumeSerial(null);
             }
 
             assertThat(actual, hasItem(expected));
@@ -105,27 +63,18 @@ public class DataSetsGetIntegrationTest extends AbstractDataSetsIntegrationTest 
 
     @Test
     public void testGetInvalidDatasets() throws Exception {
-        getDataSets(INVALID_DATASET_NAME)
-            .then()
-            .statusCode(HttpStatus.SC_OK)
-            .body("$", IsEmptyCollection
-                .empty());
+        getDataSets(INVALID_DATASET_NAME).then().statusCode(HttpStatus.SC_OK).body("$", IsEmptyCollection.empty());
     }
 
     @Test
     // TODO - need to create the unauthorised dataset in setup script
     @Ignore("Task 19604")
     public void testGetUnauthoriszedDatasetMembers() throws Exception {
-        getDataSets(UNAUTHORIZED_DATASET)
-            .then()
-            .statusCode(HttpStatus.SC_FORBIDDEN);
+        getDataSets(UNAUTHORIZED_DATASET).then().statusCode(HttpStatus.SC_FORBIDDEN);
     }
 
     private String generateRegexPattern(String initial) {
-        return initial
-            .replace("[", "\\[")
-            .replace("]", "\\]")
-            .replace("*", ".*");
+        return initial.replace("[", "\\[").replace("]", "\\]").replace("*", ".*");
     }
 
 }

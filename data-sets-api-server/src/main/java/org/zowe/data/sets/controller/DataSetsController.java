@@ -65,7 +65,7 @@ public class DataSetsController {
     }
 
     @GetMapping(value = "{filter:.+}", produces = { "application/json" })
-    @ApiOperation(value = "Get a list of data sets matching the filter", nickname = "getDataSets", notes = "This API returns the attributes of data sets including the RECFM, BLKSIZE, and LRECL.", tags = "Data Sets APIs")
+    @ApiOperation(value = "Get a list of data sets matching the filter", nickname = "getDataSets", notes = "This API returns the attributes of data sets matching the filter", tags = "Data Sets APIs")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Ok", response = String.class, responseContainer = "List") })
     public List<DataSetAttributes> getDataSets(
