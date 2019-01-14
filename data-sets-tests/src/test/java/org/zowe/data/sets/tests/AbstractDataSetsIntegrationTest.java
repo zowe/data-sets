@@ -41,9 +41,7 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
         if (getMembers(TEST_JCL_PDS).statusCode() != HttpStatus.SC_OK) {
             createDataSet(createPdsRequest(TEST_JCL_PDS));
             putDataSetContent(getTestJclMemberPath(JOB_IEFBR14),
-                    new DataSetContent(new String(Files.readAllBytes(Paths.get("testFiles/jobIEFBR14")))));
-            putDataSetContent(getTestJclMemberPath(JOB_WITH_STEPS),
-                    new DataSetContent(new String(Files.readAllBytes(Paths.get("testFiles/jobWithSteps")))));
+                    new DataSetContent(new String(Files.readAllBytes(Paths.get("testFiles/IEFBR14")))));
         }
     }
 
