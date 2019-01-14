@@ -37,6 +37,7 @@ import org.zowe.data.sets.model.DataSetAttributes.DataSetAttributesBuilder;
 import org.zowe.data.sets.model.DataSetContent;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.model.DataSetOrganisationType;
+import org.zowe.data.sets.model.ZosmfCreateRequest;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -265,24 +266,8 @@ public class ZosmfDataSetService implements DataSetService {
     }
 
     private JsonObject convertIntoZosmfRequestJson(DataSetCreateRequest input) throws IOException {
-        JsonObject requestBody = JsonUtils.convertToJsonObject(input);
-        // zosmf doesn't have name as a parameter
-        requestBody.remove("name");
-        // ZOSMF has only limited alcunit support
-        switch (input.getAllocationUnit()) {
-        case TRACK:
-            requestBody.remove("alcunit");
-            requestBody.addProperty("alcunit", "TRK");
-            break;
-        case CYLINDER:
-            requestBody.remove("alcunit");
-            requestBody.addProperty("alcunit", "CYL");
-            break;
-        default:
-            throw new IllegalArgumentException(
-                    "Creating data sets with a z/OS MF connector only supports allocation unit type of track and cylinder");
-        }
-        return requestBody;
+        ZosmfCreateRequest request = ZosmfCreateRequest.createFromDataSetCreateRequest(input);
+        return JsonUtils.convertToJsonObject(request);
     }
 
     @Override

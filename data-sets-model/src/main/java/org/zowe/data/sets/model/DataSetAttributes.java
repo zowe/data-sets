@@ -52,7 +52,7 @@ public class DataSetAttributes {
     @ApiModelProperty(value = "Number of directory blocks, dirblk")
     private Integer directoryBlocks;
     @ApiModelProperty(value = "Average block")
-    private Integer avgblk;
+    private Integer averageBlock;
 
     // TODO convert to enum once we know which formats z/OS MF works with?
     @ApiModelProperty(value = "Record format, recfm", required = true)

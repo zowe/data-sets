@@ -29,4 +29,8 @@ public enum DataSetOrganisationType {
         throw new IllegalArgumentException(
                 "Character: " + zosmfName + " was not a recognised data set organisation type");
     }
+
+    public String getZosmfName() {
+        return zosmfName;
+    }
 }

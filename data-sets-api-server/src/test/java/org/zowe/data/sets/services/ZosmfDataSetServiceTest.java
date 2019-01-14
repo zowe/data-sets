@@ -97,7 +97,7 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
 
         DataSetAttributes jcl = DataSetAttributes.builder().blockSize(6160).catalogName("ICFCAT.MV3B.CATALOGA")
             .creationDate("2018/12/18").deviceType("3390").name("STEVENH.DEMO.JCL").migrated(false)
-            .dataSetOrganization(DataSetOrganisationType.PO).deviceType("***None***").recordLength(80)
+            .dataSetOrganization(DataSetOrganisationType.PO).expirationDate("***None***").recordLength(80)
             .allocationUnit(AllocationUnitType.CYLINDER).recordFormat("FB").allocatedSize(15).used(6)
             .volumeSerial("3BP001").build();
 
@@ -328,8 +328,8 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
 
     @Test
     public void create_example_sds_dataset_should_transform_request_to_zosmf() throws Exception {
-        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PO\",\"primary\":10,\"secondary\":5,\""
-                + "dirblk\":10,\"avgblk\":500,\"recfm\":\"FB\",\"blksize\":400,\"lrecl\":80,\"alcunit\":\"TRK\"}";
+        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PO\",\"alcunit\":\"TRK\",\"primary\":10,\"secondary\":5,\""
+                + "dirblk\":10,\"avgblk\":500,\"recfm\":\"FB\",\"blksize\":400,\"lrecl\":80}";
         JsonObject zosmfRequest = JsonUtils.readAsJsonElement(json).getAsJsonObject();
 
         create_dataset_and_verify("STEVENH.TEST.SDS",
@@ -338,8 +338,8 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
 
     @Test
     public void create_example_pds_dataset_should_transform_request_to_zosmf() throws Exception {
-        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PS\",\"primary\":10,\"secondary\":5,\""
-                + "dirblk\":10,\"avgblk\":500,\"recfm\":\"FB\",\"blksize\":400,\"lrecl\":80,\"alcunit\":\"TRK\"}";
+        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PS\",\"alcunit\":\"TRK\",\"primary\":10,\"secondary\":5,\""
+                + "dirblk\":10,\"avgblk\":500,\"recfm\":\"FB\",\"blksize\":400,\"lrecl\":80}";
         JsonObject zosmfRequest = JsonUtils.readAsJsonElement(json).getAsJsonObject();
 
         create_dataset_and_verify("STEVENH.TEST.PDS",
@@ -355,9 +355,10 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
         int blksize = 0;
         String recfm = "VB";
 
-        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PS\",\"primary\":" + primary
-                + ",\"secondary\":" + secondary + ",\"" + "dirblk\":" + dirblk + ",\"avgblk\":500,\"recfm\":\"" + recfm
-                + "\",\"blksize\":" + blksize + ",\"lrecl\":" + lrecl + ",\"alcunit\":\"CYL\"}";
+        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PS\",\"alcunit\":\"CYL\",\"primary\":"
+                + primary + ",\"secondary\":" + secondary + ",\"" + "dirblk\":" + dirblk
+                + ",\"avgblk\":500,\"recfm\":\"" + recfm + "\",\"blksize\":" + blksize + ",\"lrecl\":" + lrecl
+                + ",\"alcunit\":\"CYL\"}";
         JsonObject zosmfRequest = JsonUtils.readAsJsonElement(json).getAsJsonObject();
 
         create_dataset_and_verify("STEVENH.TEST.PDS",
@@ -369,8 +370,8 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
 
     @Test
     public void create_example_pds_dataset_blocks_fails() throws Exception {
-        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PS\",\"primary\":10,\"secondary\":5,\""
-                + "dirblk\":10,\"avgblk\":500,\"recfm\":\"FB\",\"blksize\":400,\"lrecl\":80,\"alcunit\":\"TRK\"}";
+        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PS\",\"alcunit\":\"TRK\",\"primary\":10,\"secondary\":5,\""
+                + "dirblk\":10,\"avgblk\":500,\"recfm\":\"FB\",\"blksize\":400,\"lrecl\":80}";
         JsonObject zosmfRequest = JsonUtils.readAsJsonElement(json).getAsJsonObject();
 
         Exception expected = new IllegalArgumentException(
@@ -410,8 +411,8 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
     private void checkCreateDataSetExceptionAndVerify(String dataSetName, Exception expectedException, int statusCode,
             String file) throws IOException, Exception {
 
-        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PS\",\"primary\":10,\"secondary\":5,\""
-                + "dirblk\":10,\"avgblk\":500,\"recfm\":\"FB\",\"blksize\":400,\"lrecl\":80,\"alcunit\":\"TRK\"}";
+        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PS\",\"alcunit\":\"TRK\",\"primary\":10,\"secondary\":5,\""
+                + "dirblk\":10,\"avgblk\":500,\"recfm\":\"FB\",\"blksize\":400,\"lrecl\":80}";
         JsonObject zosmfRequest = JsonUtils.readAsJsonElement(json).getAsJsonObject();
         DataSetCreateRequest request = createBaseRequest().dataSetOrganization(DataSetOrganisationType.PS)
             .name(dataSetName).build();
@@ -428,7 +429,7 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
     private DataSetCreateRequest.DataSetCreateRequestBuilder createBaseRequest() {
         return DataSetCreateRequest.builder().volumeSerial("zmf046").deviceType("3390")
             .allocationUnit(AllocationUnitType.TRACK).primary(10).secondary(5).recordFormat("FB").blockSize(400)
-            .recordLength(80).directoryBlocks(10).avgblk(500);
+            .recordLength(80).directoryBlocks(10).averageBlock(500);
     }
 
     @Test
