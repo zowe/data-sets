@@ -1,7 +1,8 @@
 ext.javaLibraries = [
     'data-sets-api-server',
     'data-sets-model',
-    'data-sets-tests'
+    'data-sets-tests',
+    'data-sets-zowe-server-package'
 ]
 
 // Save this in case we make a packaging subproject 

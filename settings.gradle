@@ -3,4 +3,4 @@ rootProject.name = 'explorer-data-sets'
 include 'data-sets-api-server'
 include 'data-sets-model'
 include 'data-sets-tests'
-
+include 'data-sets-zowe-server-package'
