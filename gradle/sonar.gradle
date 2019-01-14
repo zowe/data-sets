@@ -7,7 +7,7 @@ sonarqube {
         property "sonar.host.url", project.getProperty('sonar.host.url')
         property "sonar.login", project.hasProperty('sonar.login') ? project.getProperty('sonar.login') : null
         property "sonar.sourceEncoding", "UTF-8"
-        property "sonar.projectKey", "explorer:datasets-api-server"
+        property "sonar.projectKey", "explorer:data-sets-api-server"
         property "sonar.projectName", "Zowe Explorer Data Sets APIs"
         property "sonar.projectVersion", project.version
         property "sonar.language", "java"
@@ -31,13 +31,10 @@ subprojects {
         }
     }
 }
-/*
-    Keep this commented out as a reminder to re-add it if we have a packaging subproject.
 
 // Packaging project; sonar does not apply
-project(":zowe-package") {
+project(":data-sets-zowe-server-package") {
     sonarqube {
         skipProject = true
     }
 }
-*/

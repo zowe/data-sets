@@ -35,3 +35,6 @@ bin/
 
 ### Mac ###
 .DS_Store
+
+### Temporary Certificate###
+*.p12
