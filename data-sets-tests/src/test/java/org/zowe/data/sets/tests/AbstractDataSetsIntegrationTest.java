@@ -75,6 +75,7 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
 
     protected static DataSetCreateRequest createSdsRequest(String dataSetName) {
         DataSetCreateRequest sdsRequest = createPdsRequest(dataSetName);
+        sdsRequest.setDirectoryBlocks(0); //SJH: if directory block != 0 zosmf interprets as PDS
         sdsRequest.setDataSetOrganization(DataSetOrganisationType.PS);
         return sdsRequest;
     }

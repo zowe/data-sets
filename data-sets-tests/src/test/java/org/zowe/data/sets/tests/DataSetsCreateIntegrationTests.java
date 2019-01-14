@@ -18,10 +18,15 @@ import org.junit.Test;
 import org.zowe.api.common.errors.ApiError;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.data.sets.exceptions.DataSetAlreadyExists;
+import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetCreateRequest;
+import org.zowe.data.sets.model.DataSetOrganisationType;
+
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
 
 public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationTest {
 
@@ -44,6 +49,11 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
         cleanUp = VALID_DATASET_NAME;
         createDataSet(pdsRequest).then().statusCode(HttpStatus.SC_CREATED)
             .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + VALID_DATASET_NAME)).body(equalTo(""));
+
+        List<DataSetAttributes> actual = getDataSets(VALID_DATASET_NAME).then().statusCode(HttpStatus.SC_OK).extract()
+            .body().jsonPath().getList("", DataSetAttributes.class);
+        assertEquals("Should have created the correct type", DataSetOrganisationType.PO,
+                actual.get(0).getDataSetOrganization());
     }
 
     @Test
@@ -67,6 +77,12 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
         cleanUp = VALID_DATASET_NAME;
         createDataSet(sdsRequest).then().statusCode(HttpStatus.SC_CREATED)
             .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + VALID_DATASET_NAME)).body(equalTo(""));
+
+        List<DataSetAttributes> actual = getDataSets(VALID_DATASET_NAME).then().statusCode(HttpStatus.SC_OK).extract()
+            .body().jsonPath().getList("", DataSetAttributes.class);
+        assertEquals("Should have created the correct type", DataSetOrganisationType.PS,
+                actual.get(0).getDataSetOrganization());
+
     }
 
     // TODO - work out the rules - sds with dirblk should fail, only on 2.2?
