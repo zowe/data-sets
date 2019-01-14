@@ -37,7 +37,7 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
     }
 
     @BeforeClass
-    public static void initialiseDatasetsIfNescessary() throws Exception {
+    public static void initialiseDatasetsIfNecessary() throws Exception {
         if (getMembers(TEST_JCL_PDS).statusCode() != HttpStatus.SC_OK) {
             createDataSet(createPdsRequest(TEST_JCL_PDS));
             putDataSetContent(getTestJclMemberPath(JOB_IEFBR14),
