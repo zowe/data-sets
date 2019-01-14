@@ -222,10 +222,12 @@ public class DataSetsControllerTest {
     @Test
     public void test_get_data_sets_success() throws Exception {
 
-        DataSetAttributes cobol = DataSetAttributes.builder().blksize(133).dsorg(DataSetOrganisationType.PO).lrecl(133)
-            .recfm("FB").alcunit(AllocationUnitType.TRACK).volser("P4P020").build();
-        DataSetAttributes rexx = DataSetAttributes.builder().blksize(120).dsorg(DataSetOrganisationType.PS).lrecl(120)
-            .recfm("FB").alcunit(AllocationUnitType.TRACK).volser("P4P023").build();
+        DataSetAttributes cobol = DataSetAttributes.builder().blockSize(133)
+            .dataSetOrganization(DataSetOrganisationType.PO).recordLength(133).recordFormat("FB")
+            .allocationUnit(AllocationUnitType.TRACK).volumeSerial("P4P020").build();
+        DataSetAttributes rexx = DataSetAttributes.builder().blockSize(120)
+            .dataSetOrganization(DataSetOrganisationType.PS).recordLength(120).recordFormat("FB")
+            .allocationUnit(AllocationUnitType.TRACK).volumeSerial("P4P023").build();
         DataSetAttributes vsam = DataSetAttributes.builder().build();
 
         List<DataSetAttributes> dataSetsList = Arrays.asList(cobol, rexx, vsam);

@@ -12,11 +12,15 @@ package org.zowe.data.sets.tests;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
+import org.apache.http.HttpStatus;
 import org.junit.BeforeClass;
 import org.zowe.data.sets.model.AllocationUnitType;
 import org.zowe.data.sets.model.DataSetContent;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.model.DataSetOrganisationType;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegrationTest {
 
@@ -30,6 +34,17 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
     @BeforeClass
     public static void setUpEndpoint() {
         RestAssured.basePath = DATASETS_ROOT_ENDPOINT;
+    }
+
+    @BeforeClass
+    public static void initialiseDatasetsIfNescessary() throws Exception {
+        if (getMembers(TEST_JCL_PDS).statusCode() != HttpStatus.SC_OK) {
+            createDataSet(createPdsRequest(TEST_JCL_PDS));
+            putDataSetContent(getTestJclMemberPath(JOB_IEFBR14),
+                    new DataSetContent(new String(Files.readAllBytes(Paths.get("testFiles/jobIEFBR14")))));
+            putDataSetContent(getTestJclMemberPath(JOB_WITH_STEPS),
+                    new DataSetContent(new String(Files.readAllBytes(Paths.get("testFiles/jobWithSteps")))));
+        }
     }
 
     protected static Response getMembers(String dataSetName) {
@@ -52,16 +67,17 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
         return RestAssured.given().contentType("application/json").body(body).when().put(dataSetName + "/content");
     }
 
-    static DataSetCreateRequest createPdsRequest(String dataSetName) {
-        DataSetCreateRequest defaultJclPdsRequest = DataSetCreateRequest.builder().name(dataSetName).blksize(400)
-            .primary(10).lrecl(80).secondary(5).dirblk(21).dsorg(DataSetOrganisationType.PO).recfm("FB")
-            .alcunit(AllocationUnitType.TRACK).build();
+    protected static DataSetCreateRequest createPdsRequest(String dataSetName) {
+        DataSetCreateRequest defaultJclPdsRequest = DataSetCreateRequest.builder().name(dataSetName).blockSize(400)
+            .primary(10).recordLength(80).secondary(5).directoryBlocks(21)
+            .dataSetOrganization(DataSetOrganisationType.PO).recordFormat("FB").allocationUnit(AllocationUnitType.TRACK)
+            .build();
         return defaultJclPdsRequest;
     }
 
     protected static DataSetCreateRequest createSdsRequest(String dataSetName) {
         DataSetCreateRequest sdsRequest = createPdsRequest(dataSetName);
-        sdsRequest.setDsorg(DataSetOrganisationType.PS);
+        sdsRequest.setDataSetOrganization(DataSetOrganisationType.PS);
         return sdsRequest;
     }
 
@@ -69,11 +85,11 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
         return RestAssured.given().when().delete(dataSetName);
     }
 
-    static String getDataSetMemberPath(String pds, String member) {
+    protected static String getDataSetMemberPath(String pds, String member) {
         return pds + "(" + member + ")";
     }
 
-    static String getTestJclMemberPath(String member) {
+    protected static String getTestJclMemberPath(String member) {
         return getDataSetMemberPath(TEST_JCL_PDS, member);
     }
 }

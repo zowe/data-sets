@@ -43,14 +43,7 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
         DataSetCreateRequest pdsRequest = createPdsRequest(VALID_DATASET_NAME);
         cleanUp = VALID_DATASET_NAME;
         createDataSet(pdsRequest).then().statusCode(HttpStatus.SC_CREATED)
-                .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + VALID_DATASET_NAME)).body(equalTo(""));
-        // TODO - once get Attributes done
-        //
-        // JSONArray expected = getExpectedAttributes(VALID_DATASET_NAME, pdsRequest);
-        //
-        // JSONArray actual =
-        // getAttributes(VALID_DATASET_NAME).shouldHaveStatusOk().getEntityAsJsonArray();
-        // assertEquals(expected, actual);
+            .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + VALID_DATASET_NAME)).body(equalTo(""));
     }
 
     @Test
@@ -64,8 +57,8 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
 
         // TODO - refactor with errors in get members
         createDataSet(pdsRequest).then().statusCode(expectedError.getStatus().value()).contentType(ContentType.JSON)
-                .body("status", equalTo(expectedError.getStatus().name()))
-                .body("message", equalTo(expectedError.getMessage()));
+            .body("status", equalTo(expectedError.getStatus().name()))
+            .body("message", equalTo(expectedError.getMessage()));
     }
 
     @Test
@@ -73,8 +66,7 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
         DataSetCreateRequest sdsRequest = createSdsRequest(VALID_DATASET_NAME);
         cleanUp = VALID_DATASET_NAME;
         createDataSet(sdsRequest).then().statusCode(HttpStatus.SC_CREATED)
-                .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + VALID_DATASET_NAME)).body(equalTo(""));
-        // TODO - once get Attributes done test
+            .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + VALID_DATASET_NAME)).body(equalTo(""));
     }
 
     // TODO - work out the rules - sds with dirblk should fail, only on 2.2?
@@ -85,77 +77,4 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
 //        sdsRequestWithDirBlk.setDirblk(10);
 //        createDataSet(sdsRequestWithDirBlk).then().statusCode((HttpStatus.SC_BAD_REQUEST));
 //    }
-
-    //
-    // @Test
-    // public void testUpdateWithChecksumWorks() throws Exception {
-    // createSds(PUT_DATASET_NAME);
-    // cleanUp = PUT_DATASET_NAME;
-    // String checksum = getContent(PUT_DATASET_NAME,
-    // "checksum=true").getEntityAs(DataSetContentResponse.class)
-    // .getChecksum();
-    // updateDatasetContent(PUT_DATASET_NAME, "Some test file",
-    // checksum).shouldHaveStatusOk();
-    // }
-    //
-    // @Test
-    // public void testUpdateWithIncorrectChecksum() throws Exception {
-    // createSds(PUT_DATASET_NAME);
-    // cleanUp = PUT_DATASET_NAME;
-    //
-    // updateDatasetContent(PUT_DATASET_NAME, "Some test file", "junk")
-    // .shouldHaveStatus(HttpStatus.SC_PRECONDITION_FAILED);
-    // // TODO - create proper error message?
-    // }
-    //
-    // @Test
-    // @Ignore("z/os mf error")
-    // public void testUpdateDatasetWhichDoesntExist() throws Exception {
-    // String notExistantFile = HLQ + ".DUMMY";
-    // updateDatasetContent(notExistantFile, "test Content",
-    // null).shouldHaveStatus(HttpStatus.SC_NOT_FOUND);
-    // // TODO - create proper error message?
-    // }
-    //
-    // // TODO LATER actually test the basedns
-    //
-    // // Includes create, attributes and content testing
-    // @Test
-    // public void testPostDatasetCreateWithRecords() throws Exception {
-    //
-    // String expectedContent = "This is my test report\n";
-    // CreateDataSetRequest request = createSdsRequest();
-    // request.setRecfm("VB");
-    // request.setRecords(expectedContent);
-    //
-    // createDataset(VALID_DATASET_NAME, request);
-    // cleanUp = VALID_DATASET_NAME;
-    //
-    // JSONArray expected = getExpectedAttributes(VALID_DATASET_NAME, request);
-    //
-    // // Check attributes
-    // JSONArray actual =
-    // getAttributes(VALID_DATASET_NAME).shouldHaveStatusOk().getEntityAsJsonArray();
-    // assertEquals(expected, actual);
-    //
-    // // Check content
-    // DataSetContentResponse actualContent = getContent(VALID_DATASET_NAME,
-    // "convert=true").shouldHaveStatusOk()
-    // .getEntityAs(DataSetContentResponse.class);
-    // assertEquals(expectedContent, actualContent.getRecords());
-    // }
-    //
-    // private JSONArray getExpectedAttributes(String dataSetName,
-    // CreateDataSetRequest request) {
-    // // TODO LATER - switch response to bring back ints, not strings
-    // JSONObject expectedAttributes = new JSONObject();
-    // expectedAttributes.put("name", dataSetName);
-    // expectedAttributes.put("blksize", request.getBlksize().toString());
-    // expectedAttributes.put("lrecl", request.getLrecl().toString());
-    // expectedAttributes.put("recfm", request.getRecfm());
-    // expectedAttributes.put("dsorg", request.getDsorg().name());
-    // JSONArray expected = new JSONArray();
-    // expected.add(0, expectedAttributes);
-    // return expected;
-    // }
 }

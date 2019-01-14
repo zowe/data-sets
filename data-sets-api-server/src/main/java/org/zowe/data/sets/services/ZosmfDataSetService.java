@@ -269,7 +269,7 @@ public class ZosmfDataSetService implements DataSetService {
         // zosmf doesn't have name as a parameter
         requestBody.remove("name");
         // ZOSMF has only limited alcunit support
-        switch (input.getAlcunit()) {
+        switch (input.getAllocationUnit()) {
         case TRACK:
             requestBody.remove("alcunit");
             requestBody.addProperty("alcunit", "TRK");
@@ -319,22 +319,22 @@ public class ZosmfDataSetService implements DataSetService {
     }
 
     private static DataSetAttributes getDataSetFromJson(JsonObject returned) {
-        DataSetAttributesBuilder builder = DataSetAttributes.builder().catnm(getStringOrNull(returned, "catnm"))
+        DataSetAttributesBuilder builder = DataSetAttributes.builder().catalogName(getStringOrNull(returned, "catnm"))
             .name(getStringOrNull(returned, "dsname")).migrated("YES".equals(getStringOrNull(returned, "migr")))
-            .volser(getStringOrNull(returned, "vols")).blksize(getIntegerOrNull(returned, "blksz"))
-            .dev(getStringOrNull(returned, "dev")).edate(getStringOrNull(returned, "edate"))
-            .cdate(getStringOrNull(returned, "cdate")).lrecl(getIntegerOrNull(returned, "lrecl"))
-            .recfm(getStringOrNull(returned, "recfm")).sizex(getIntegerOrNull(returned, "sizex"))
+            .volumeSerial(getStringOrNull(returned, "vols")).blockSize(getIntegerOrNull(returned, "blksz"))
+            .deviceType(getStringOrNull(returned, "dev")).expirationDate(getStringOrNull(returned, "edate"))
+            .creationDate(getStringOrNull(returned, "cdate")).recordLength(getIntegerOrNull(returned, "lrecl"))
+            .recordFormat(getStringOrNull(returned, "recfm")).allocatedSize(getIntegerOrNull(returned, "sizex"))
             .used(getIntegerOrNull(returned, "used"));
 
         String dsorg = getStringOrNull(returned, "dsorg");
         if (dsorg != null) {
-            builder.dsorg(DataSetOrganisationType.getByZosmfName(dsorg));
+            builder.dataSetOrganization(DataSetOrganisationType.getByZosmfName(dsorg));
         }
         String spacu = getStringOrNull(returned, "spacu");
         if (spacu != null) {
             // SJH : spacu returns a plural string, so strip 's' off the end
-            builder.spacu(AllocationUnitType.valueOf(spacu.substring(0, spacu.length() - 1)));
+            builder.allocationUnit(AllocationUnitType.valueOf(spacu.substring(0, spacu.length() - 1)));
         }
         return builder.build();
     }
