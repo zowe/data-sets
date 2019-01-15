@@ -42,7 +42,7 @@ public class DataSetsGetMembersIntegrationTest extends AbstractDataSetsIntegrati
     @Test
     // TODO - need to create the unauthorised dataset in setup script
     @Ignore("Task 19604")
-    public void testGetUnauthoriszedDatasetMembers() throws Exception {
+    public void testGetUnauthorisedDatasetMembers() throws Exception {
         getMembers(UNAUTHORIZED_DATASET).then().statusCode(HttpStatus.SC_FORBIDDEN);
     }
 }

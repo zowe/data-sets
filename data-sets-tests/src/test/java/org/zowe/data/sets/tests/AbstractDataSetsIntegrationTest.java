@@ -30,6 +30,7 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
     static final String TEST_JCL_PDS = HLQ + ".TEST.JCL";
     static final String INVALID_DATASET_NAME = HLQ + ".TEST.INVALID";
     static final String UNAUTHORIZED_DATASET = "IBMUSER.NOWRITE.CNTL";
+    static final String HEX_IN_QUOTES_REGEX = "^\"[0-9A-F]+\"$";
 
     @BeforeClass
     public static void setUpEndpoint() {
@@ -45,27 +46,33 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
         }
     }
 
-    protected static Response getMembers(String dataSetName) {
+    static Response getMembers(String dataSetName) {
         return RestAssured.given().when().get(dataSetName + "/members");
     }
 
-    protected static Response getDataSets(String dataSetFilter) {
+    static Response getDataSets(String dataSetFilter) {
         return RestAssured.given().when().get(dataSetFilter);
     }
 
-    protected static Response createDataSet(DataSetCreateRequest attributes) {
+    static Response createDataSet(DataSetCreateRequest attributes) {
         return RestAssured.given().contentType("application/json").body(attributes).when().post();
     }
 
-    protected static Response getDataSetContent(String dataSetName) {
+    static Response getDataSetContent(String dataSetName) {
         return RestAssured.given().when().get(dataSetName + "/content");
     }
 
-    protected static Response putDataSetContent(String dataSetName, DataSetContent body) {
+    // TODO - refactor etag supplied and not supplied?
+    static Response putDataSetContent(String dataSetName, DataSetContent body) {
         return RestAssured.given().contentType("application/json").body(body).when().put(dataSetName + "/content");
     }
 
-    protected static DataSetCreateRequest createPdsRequest(String dataSetName) {
+    static Response putDataSetContent(String dataSetName, DataSetContent body, String etag) {
+        return RestAssured.given().contentType("application/json").body(body).header("If-Match", etag).when()
+            .put(dataSetName + "/content");
+    }
+
+    static DataSetCreateRequest createPdsRequest(String dataSetName) {
         DataSetCreateRequest defaultJclPdsRequest = DataSetCreateRequest.builder().name(dataSetName).blockSize(400)
             .primary(10).recordLength(80).secondary(5).directoryBlocks(21)
             .dataSetOrganization(DataSetOrganisationType.PO).recordFormat("FB").allocationUnit(AllocationUnitType.TRACK)
@@ -73,22 +80,22 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
         return defaultJclPdsRequest;
     }
 
-    protected static DataSetCreateRequest createSdsRequest(String dataSetName) {
+    static DataSetCreateRequest createSdsRequest(String dataSetName) {
         DataSetCreateRequest sdsRequest = createPdsRequest(dataSetName);
-        sdsRequest.setDirectoryBlocks(0); //SJH: if directory block != 0 zosmf interprets as PDS
+        sdsRequest.setDirectoryBlocks(0); // SJH: if directory block != 0 zosmf interprets as PDS
         sdsRequest.setDataSetOrganization(DataSetOrganisationType.PS);
         return sdsRequest;
     }
 
-    protected static Response deleteDataSet(String dataSetName) {
+    static Response deleteDataSet(String dataSetName) {
         return RestAssured.given().when().delete(dataSetName);
     }
 
-    protected static String getDataSetMemberPath(String pds, String member) {
+    static String getDataSetMemberPath(String pds, String member) {
         return pds + "(" + member + ")";
     }
 
-    protected static String getTestJclMemberPath(String member) {
+    static String getTestJclMemberPath(String member) {
         return getDataSetMemberPath(TEST_JCL_PDS, member);
     }
 }

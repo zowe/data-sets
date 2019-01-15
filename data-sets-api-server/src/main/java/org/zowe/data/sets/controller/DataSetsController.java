@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,6 +34,7 @@ import org.zowe.api.common.model.Username;
 import org.zowe.api.common.utils.ZosUtils;
 import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetContent;
+import org.zowe.data.sets.model.DataSetContentWithEtag;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.services.DataSetService;
 
@@ -76,9 +79,13 @@ public class DataSetsController {
     @GetMapping(value = "{dataSetName}/content", produces = { "application/json" })
     @ApiOperation(value = "Get the content of a sequential data set, or PDS member", nickname = "getContent", notes = "This API reads content from a sequential data set or member of a partitioned data set.", tags = "Data Sets APIs")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok", response = DataSetContent.class) })
-    public DataSetContent getContent(
+    public ResponseEntity<DataSetContent> getContent(
             @ApiParam(value = "Data set name, e.g. HLQ.PS or HLQ.PO(MEMBER)", required = true) @PathVariable String dataSetName) {
-        return dataSetService.getContent(dataSetName);
+        DataSetContentWithEtag content = dataSetService.getContent(dataSetName);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("ETag", content.getEtag());
+        return new ResponseEntity<>(content.getContent(), headers, HttpStatus.OK);
     }
 
     @PostMapping(consumes = "application/json")
@@ -100,9 +107,11 @@ public class DataSetsController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok") })
     public ResponseEntity<?> putContent(
             @ApiParam(value = "Data set name, e.g. HLQ.PS or HLQ.PO(MEMBER)", required = true) @PathVariable String dataSetName,
-            @RequestBody DataSetContent input) {
-        dataSetService.putContent(dataSetName, input);
-        return ResponseEntity.noContent().build();
+            @RequestBody DataSetContent input, @RequestHeader(value = "If-Match", required = false) String ifMatch) {
+        DataSetContentWithEtag request = new DataSetContentWithEtag(input, ifMatch);
+        String putEtag = dataSetService.putContent(dataSetName, request);
+
+        return ResponseEntity.noContent().eTag(putEtag).build();
     }
 
     @DeleteMapping(value = "{dataSetName:.+}")

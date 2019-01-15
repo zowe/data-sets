@@ -33,6 +33,7 @@ import org.zowe.api.common.utils.ZosUtils;
 import org.zowe.data.sets.model.AllocationUnitType;
 import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetContent;
+import org.zowe.data.sets.model.DataSetContentWithEtag;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.model.DataSetOrganisationType;
 import org.zowe.data.sets.services.DataSetService;
@@ -43,6 +44,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -139,12 +141,15 @@ public class DataSetsControllerTest {
 
         String memberName = "TEST.JCL(MEMBER)";
         DataSetContent expected = new DataSetContent("Test\nFile");
+        String eTag = "\"A7F90DCB9C2F4D4A582E36F85\"";
+        DataSetContentWithEtag response = new DataSetContentWithEtag(expected, eTag);
 
-        when(dataSetService.getContent(memberName)).thenReturn(expected);
+        when(dataSetService.getContent(memberName)).thenReturn(response);
 
         mockMvc.perform(get(ENDPOINT_ROOT + "/{dsn}/content", memberName)).andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(content().string(JsonUtils.convertToJsonString(expected)));
+            .andExpect(content().string(JsonUtils.convertToJsonString(expected)))
+            .andExpect(header().string("ETag", equalTo(eTag)));
 
         verify(dataSetService, times(1)).getContent(memberName);
         verifyNoMoreInteractions(dataSetService);
@@ -171,14 +176,37 @@ public class DataSetsControllerTest {
 
     @Test
     public void put_data_set_content_success() throws Exception {
-
         String memberName = "TEST.JCL(MEMBER)";
-        DataSetContent request = new DataSetContent("Test\nFile");
+        DataSetContent content = new DataSetContent("Test\nFile");
+        DataSetContentWithEtag request = new DataSetContentWithEtag(content, null);
+        String eTag = "A7F90DCB9C2F4D4A582EF85";
+        when(dataSetService.putContent(memberName, request)).thenReturn(eTag);
 
         mockMvc
             .perform(put(ENDPOINT_ROOT + "/{dsn}/content", memberName)
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(JsonUtils.convertToJsonString(request)))
-            .andExpect(status().isNoContent()).andExpect(content().string(""));
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(JsonUtils.convertToJsonString(content)))
+            .andExpect(status().isNoContent()).andExpect(content().string(""))
+            .andExpect(header().string("ETag", equalTo("\"" + eTag + "\"")));
+
+        verify(dataSetService, times(1)).putContent(memberName, request);
+        verifyNoMoreInteractions(dataSetService);
+    }
+
+    // TODO LATER - validation of If-Match / ETag to check if surrounded by double quotes? https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag
+    @Test
+    public void put_data_set_with_if_match_content_success() throws Exception {
+        String ifMatch = "\"CA7F90DCB9C2F4D4A582E\"";
+        String memberName = "TEST.JCL(MEMBER)";
+        DataSetContent content = new DataSetContent("Test\nFile");
+        DataSetContentWithEtag request = new DataSetContentWithEtag(content, ifMatch);
+        String eTag = "\"A7F90DCB9C2F4D4A582EF85\"";
+        when(dataSetService.putContent(memberName, request)).thenReturn(eTag);
+
+        mockMvc
+            .perform(put(ENDPOINT_ROOT + "/{dsn}/content", memberName).header("If-Match", ifMatch)
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(JsonUtils.convertToJsonString(content)))
+            .andExpect(status().isNoContent()).andExpect(content().string(""))
+            .andExpect(header().string("ETag", equalTo(eTag)));
 
         verify(dataSetService, times(1)).putContent(memberName, request);
         verifyNoMoreInteractions(dataSetService);
@@ -188,7 +216,8 @@ public class DataSetsControllerTest {
     public void put_data_set_content_with_exception_should_be_converted_to_error_message() throws Exception {
 
         String invalidPdsName = "TEST.JCL";
-        DataSetContent request = new DataSetContent("Test\nFile");
+        DataSetContent content = new DataSetContent("Test\nFile");
+        DataSetContentWithEtag request = new DataSetContentWithEtag(content, null);
 
         String errorMessage = MessageFormat.format("No data set {0} was found", invalidPdsName);
         ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.BAD_REQUEST).build();
@@ -197,7 +226,7 @@ public class DataSetsControllerTest {
 
         mockMvc
             .perform(put(ENDPOINT_ROOT + "/{dsn}/content", invalidPdsName)
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(JsonUtils.convertToJsonString(request)))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(JsonUtils.convertToJsonString(content)))
             .andExpect(status().is(expectedError.getStatus().value()))
             .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
             .andExpect(jsonPath("$.message").value(errorMessage));

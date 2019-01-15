@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
@@ -28,8 +29,10 @@ import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.util.StringUtils;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
 import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
+import org.zowe.api.common.exceptions.PreconditionFailedException;
 import org.zowe.api.common.test.ZoweApiTest;
 import org.zowe.api.common.utils.JsonUtils;
 import org.zowe.api.common.utils.ResponseUtils;
@@ -38,6 +41,7 @@ import org.zowe.data.sets.exceptions.UnauthorisedDataSetException;
 import org.zowe.data.sets.model.AllocationUnitType;
 import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetContent;
+import org.zowe.data.sets.model.DataSetContentWithEtag;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.model.DataSetOrganisationType;
 
@@ -52,6 +56,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -202,17 +207,26 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
 
     @Test
     public void get_content_should_call_zosmf_and_parse_response_correctly() throws Exception {
-        DataSetContent expected = new DataSetContent("//ATLJ0000 JOB (ADL),'ATLAS',MSGCLASS=X,CLASS=A,TIME=1440\n"
+        String headerTag = "2A7F90DCB9C2F4D4A582E36F859AE41F";
+        DataSetContent content = new DataSetContent("//ATLJ0000 JOB (ADL),'ATLAS',MSGCLASS=X,CLASS=A,TIME=1440\n"
                 + "//*        TEST JOB\n" + "//UNIT     EXEC PGM=IEFBR14");
         String dataSetName = "STEVENH.TEST.JCL";
 
+        DataSetContentWithEtag expected = new DataSetContentWithEtag(content, headerTag);
+
         HttpResponse response = mockTextResponse(HttpStatus.SC_OK, loadTestFile("getContent.json"));
+        Header header = mock(Header.class);
+        when(header.getValue()).thenReturn(headerTag);
+        when(response.getFirstHeader("ETag")).thenReturn(header);
+
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds/%s", dataSetName));
         when(zosmfConnector.request(requestBuilder)).thenReturn(response);
 
         assertEquals(expected, dataService.getContent(dataSetName));
 
         verifyInteractions(requestBuilder);
+        verify(requestBuilder).addHeader("X-IBM-Return-Etag", "true");
+
     }
 
     @Test
@@ -243,6 +257,8 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
                 "getContent_noMember.json");
     }
 
+    // TODO NOW - test if no header returned
+
     private void checkGetContentExceptionAndVerify(String pdsName, Exception expectedException, int statusCode,
             String file) throws IOException, Exception {
         HttpResponse response = mockJsonResponse(statusCode, loadTestFile(file));
@@ -257,34 +273,57 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
 
     @Test
     public void put_content_should_call_zosmf_and_parse_response_correctly() throws Exception {
+        putContentTest("");
+    }
+
+    @Test
+    public void put_content_with_if_match_should_call_zosmf_and_parse_response_correctly() throws Exception {
+        putContentTest("anETag");
+    }
+
+    private void putContentTest(String eTag) throws Exception {
+        String putETag = "2A7F90DCB9C2F4D4A582E36F859AEF";
         String jclString = "//ATLJ0000 JOB (ADL),'ATLAS',MSGCLASS=X,CLASS=A,TIME=1440\n" + "//*        TEST JOB\n"
                 + "//UNIT     EXEC PGM=IEFBR14\n";
-        DataSetContent request = new DataSetContent(jclString);
+        DataSetContent content = new DataSetContent(jclString);
         String dataSetName = "STEVENH.TEST.JCL";
+        DataSetContentWithEtag request = new DataSetContentWithEtag(content, eTag);
 
         HttpResponse response = mockResponse(HttpStatus.SC_NO_CONTENT);
+        Header header = mock(Header.class);
+        when(header.getValue()).thenReturn(putETag);
+        when(response.getFirstHeader("ETag")).thenReturn(header);
         RequestBuilder requestBuilder = mockPutBuilder(String.format("restfiles/ds/%s", dataSetName), jclString);
         when(zosmfConnector.request(requestBuilder)).thenReturn(response);
 
-        dataService.putContent(dataSetName, request);
+        assertEquals(putETag, dataService.putContent(dataSetName, request));
 
         verifyInteractions(requestBuilder);
         verify(requestBuilder).addHeader("Content-type", ContentType.TEXT_PLAIN.getMimeType());
+        if (StringUtils.hasText(eTag)) {
+            verify(requestBuilder).addHeader("If-Match", eTag);
+        } else {
+            verify(requestBuilder, never()).addHeader("X-IBM-Intrdr-Class", "A");
+        }
     }
 
     @Test
     public void put_content_for_non_existing_member_works() throws Exception {
+        String putETag = "2A7F90DCB9C2F4D4A582E36F859AEF";
         String dataSetName = "STEVENH.TEST.JCL(JUNK)";
-
         String jclString = "//ATLJ0000 JOB (ADL),'ATLAS',MSGCLASS=X,CLASS=A,TIME=1440\n" + "//*        TEST JOB\n"
                 + "//UNIT     EXEC PGM=IEFBR14\n";
-        DataSetContent request = new DataSetContent(jclString);
+        DataSetContent content = new DataSetContent(jclString);
+        DataSetContentWithEtag request = new DataSetContentWithEtag(content, "");
 
         HttpResponse response = mockResponse(HttpStatus.SC_CREATED);
+        Header header = mock(Header.class);
+        when(header.getValue()).thenReturn(putETag);
+        when(response.getFirstHeader("ETag")).thenReturn(header);
         RequestBuilder requestBuilder = mockPutBuilder(String.format("restfiles/ds/%s", dataSetName), jclString);
         when(zosmfConnector.request(requestBuilder)).thenReturn(response);
 
-        dataService.putContent(dataSetName, request);
+        assertEquals(putETag, dataService.putContent(dataSetName, request));
 
         verifyInteractions(requestBuilder);
         verify(requestBuilder).addHeader("Content-type", ContentType.TEXT_PLAIN.getMimeType());
@@ -320,7 +359,30 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
 
         when(zosmfConnector.request(requestBuilder)).thenReturn(response);
 
-        shouldThrow(expectedException, () -> dataService.putContent(pdsName, new DataSetContent(jclString)));
+        DataSetContent content = new DataSetContent(jclString);
+        DataSetContentWithEtag request = new DataSetContentWithEtag(content, "");
+        shouldThrow(expectedException, () -> dataService.putContent(pdsName, request));
+        verifyInteractions(requestBuilder);
+    }
+
+    @Test
+    public void put_content_with_invalid_of_match_throws_correct_error() throws Exception {
+        String dataSetName = "TSTRADM.JCL(JUNK)";
+
+        Exception expectedException = new PreconditionFailedException(dataSetName);
+
+        HttpResponse response = mockResponse(HttpStatus.SC_PRECONDITION_FAILED);
+
+        String jclString = "//ATLJ0000 JOB (ADL),'ATLAS',MSGCLASS=X,CLASS=A,TIME=1440\n" + "//*        TEST JOB\n"
+                + "//UNIT     EXEC PGM=IEFBR14\n";
+
+        RequestBuilder requestBuilder = mockPutBuilder(String.format("restfiles/ds/%s", dataSetName), jclString);
+
+        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+
+        DataSetContent content = new DataSetContent(jclString);
+        DataSetContentWithEtag request = new DataSetContentWithEtag(content, "");
+        shouldThrow(expectedException, () -> dataService.putContent(dataSetName, request));
         verifyInteractions(requestBuilder);
     }
 
@@ -462,7 +524,7 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
         verifyInteractions(requestBuilder);
     }
 
-    // TODO - refactor with datasets
+    // TODO - refactor with jobs
     private void verifyInteractions(RequestBuilder requestBuilder) throws IOException {
         verify(zosmfConnector, times(1)).request(requestBuilder);
         verify(zosmfConnector, times(1)).getFullUrl(anyString());

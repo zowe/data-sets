@@ -14,6 +14,7 @@ import com.google.gson.JsonObject;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -22,9 +23,11 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
 import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
 import org.zowe.api.common.exceptions.NoZosmfResponseEntityException;
+import org.zowe.api.common.exceptions.PreconditionFailedException;
 import org.zowe.api.common.exceptions.ServerErrorException;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.JsonUtils;
@@ -35,6 +38,7 @@ import org.zowe.data.sets.model.AllocationUnitType;
 import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetAttributes.DataSetAttributesBuilder;
 import org.zowe.data.sets.model.DataSetContent;
+import org.zowe.data.sets.model.DataSetContentWithEtag;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.model.DataSetOrganisationType;
 import org.zowe.data.sets.model.ZosmfCreateRequest;
@@ -146,14 +150,18 @@ public class ZosmfDataSetService implements DataSetService {
     }
 
     @Override
-    public DataSetContent getContent(String dataSetName) {
+    public DataSetContentWithEtag getContent(String dataSetName) {
         String urlPath = String.format("restfiles/ds/%s", dataSetName);
         String requestUrl = zosmfConnector.getFullUrl(urlPath); // $NON-NLS-1$
         try {
-            HttpResponse response = zosmfConnector.request(RequestBuilder.get(requestUrl));
+            RequestBuilder requestBuilder = RequestBuilder.get(requestUrl);
+            requestBuilder.addHeader("X-IBM-Return-Etag", "true");
+            HttpResponse response = zosmfConnector.request(requestBuilder);
             int statusCode = ResponseUtils.getStatus(response);
             if (statusCode == HttpStatus.SC_OK) {
-                return new DataSetContent(ResponseUtils.getEntity(response));
+                DataSetContent content = new DataSetContent(ResponseUtils.getEntity(response));
+                Header etagHeader = response.getFirstHeader("ETag");
+                return new DataSetContentWithEtag(content, etagHeader.getValue());
             } else {
                 HttpEntity entity = response.getEntity();
                 // TODO - work out how to tidy when brain is sharper
@@ -190,16 +198,26 @@ public class ZosmfDataSetService implements DataSetService {
     }
 
     @Override
-    public void putContent(String dataSetName, DataSetContent content) {
+    public String putContent(String dataSetName, DataSetContentWithEtag contentWithEtag) {
         String urlPath = String.format("restfiles/ds/%s", dataSetName);
         String requestUrl = zosmfConnector.getFullUrl(urlPath); // $NON-NLS-1$
         try {
+            DataSetContent content = contentWithEtag.getContent();
             StringEntity requestEntity = new StringEntity(content.getRecords());
             RequestBuilder requestBuilder = RequestBuilder.put(requestUrl).setEntity(requestEntity);
             requestBuilder.addHeader("Content-type", ContentType.TEXT_PLAIN.getMimeType());
+            String ifMatch = contentWithEtag.getEtag();
+            if (StringUtils.hasText(ifMatch)) {
+                requestBuilder.addHeader("If-Match", ifMatch.replaceAll("\"", ""));// zosmf doesn't conform to spec where ifmatch is in double quotes
+            }
             HttpResponse response = zosmfConnector.request(requestBuilder);
             int statusCode = ResponseUtils.getStatus(response);
-            if (statusCode != HttpStatus.SC_NO_CONTENT && statusCode != HttpStatus.SC_CREATED) {
+            if (statusCode == HttpStatus.SC_NO_CONTENT || statusCode == HttpStatus.SC_CREATED) {
+                Header etagHeader = response.getFirstHeader("ETag");
+                return etagHeader.getValue();
+            } else if (statusCode == HttpStatus.SC_PRECONDITION_FAILED) {
+                throw new PreconditionFailedException(dataSetName);
+            } else {
                 HttpEntity entity = response.getEntity();
                 if (entity != null) {
                     ContentType contentType = ContentType.get(entity);

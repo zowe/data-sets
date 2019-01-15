@@ -10,6 +10,7 @@
 package org.zowe.data.sets.tests;
 
 import org.apache.http.HttpStatus;
+import org.hamcrest.text.MatchesPattern;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -33,6 +34,9 @@ public class DataSetsPutContentIntegrationTest extends AbstractDataSetsIntegrati
     public static void createTempDataSets() throws Exception {
         DataSetCreateRequest pdsRequest = createPdsRequest(TEMP_PDS);
         createDataSet(pdsRequest).then().statusCode(HttpStatus.SC_CREATED);
+        // Create dataset member, so we can get the etag back
+        putDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14), new DataSetContent("test")).then()
+            .statusCode(HttpStatus.SC_NO_CONTENT);
 
         DataSetCreateRequest sdsRequest = createSdsRequest(TEMP_SDS);
         createDataSet(sdsRequest).then().statusCode(HttpStatus.SC_CREATED);
@@ -48,28 +52,42 @@ public class DataSetsPutContentIntegrationTest extends AbstractDataSetsIntegrati
     }
 
     @Test
-    // TODO NOW - check E-Tag works
+    public void testPutMemberContentWithoutIfMatchWorks() throws Exception {
+        putDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14), new DataSetContent("junk\n")).then()
+            .statusCode(HttpStatus.SC_NO_CONTENT).header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
+        getDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14)).then().statusCode(HttpStatus.SC_OK)
+            .body("records", equalTo("junk\n"));
+    }
+
+    @Test
     public void testPutMemberContent() throws Exception {
-        putDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14), content).then()
-            .statusCode(HttpStatus.SC_NO_CONTENT);
-        // .header("ETag", notNullValue())
+        String eTag = getDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14)).then().extract().header("ETag")
+            .toString();
+
+        putDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14), content, eTag).then()
+            .statusCode(HttpStatus.SC_NO_CONTENT).header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
         getDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14)).then().statusCode(HttpStatus.SC_OK)
             .body("records", equalTo(jcl));
     }
 
-    // TODO now test of incorrect etag
-
     @Test
     public void testPutSequentialDataSetContent() throws Exception {
-        putDataSetContent(TEMP_SDS, content).then().statusCode(HttpStatus.SC_NO_CONTENT);
-        // .header("ETag", notNullValue())
+        String eTag = getDataSetContent(TEMP_SDS).then().extract().header("ETag").toString();
+        putDataSetContent(TEMP_SDS, content, eTag).then().statusCode(HttpStatus.SC_NO_CONTENT).header("ETag",
+                MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
         getDataSetContent(TEMP_SDS).then().statusCode(HttpStatus.SC_OK).body("records", equalTo(jcl));
+    }
+
+    @Test
+    public void testPutSequentialDataSetContentWithIncorrectETag() throws Exception {
+        String wrongEtag = "00000aaaa";
+        putDataSetContent(TEMP_SDS, content, wrongEtag).then().statusCode(HttpStatus.SC_PRECONDITION_FAILED);
     }
 
     @Test
     // TODO - need to create the unauthorised dataset in setup script
     @Ignore("Task 19604")
-    public void testPutUnauthoriszedDatasetContent() throws Exception {
+    public void testPutUnauthorisedDatasetContent() throws Exception {
         putDataSetContent(UNAUTHORIZED_DATASET, content).then().statusCode(HttpStatus.SC_FORBIDDEN);
     }
 }
