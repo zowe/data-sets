@@ -39,8 +39,11 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
     }
 
     public static void initialiseDatasetsIfNecessary() throws Exception {
-        if (getMembers(TEST_JCL_PDS).statusCode() != HttpStatus.SC_OK) {
+        Response response = getMembers(TEST_JCL_PDS);
+        if (response.statusCode() != HttpStatus.SC_OK) {
             createDataSet(createPdsRequest(TEST_JCL_PDS)).then().statusCode(HttpStatus.SC_CREATED);
+        }
+        if (!response.getBody().toString().contains(JOB_IEFBR14)) {
             putDataSetContent(getTestJclMemberPath(JOB_IEFBR14),
                     new DataSetContent(new String(Files.readAllBytes(Paths.get("testFiles/IEFBR14"))))).then()
                         .statusCode(HttpStatus.SC_NO_CONTENT);
