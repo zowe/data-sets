@@ -32,7 +32,6 @@ import org.zowe.api.common.exceptions.ServerErrorException;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.JsonUtils;
 import org.zowe.api.common.utils.ResponseUtils;
-import org.zowe.data.sets.exceptions.DataSetAlreadyExists;
 import org.zowe.data.sets.exceptions.UnauthorisedDataSetException;
 import org.zowe.data.sets.model.AllocationUnitType;
 import org.zowe.data.sets.model.DataSetAttributes;
@@ -270,13 +269,14 @@ public class ZosmfDataSetService implements DataSetService {
                     String mimeType = contentType.getMimeType();
                     if (mimeType.equals(ContentType.APPLICATION_JSON.getMimeType())) {
                         JsonObject jsonResponse = ResponseUtils.getEntityAsJsonObject(response);
-                        if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-                            String zosmfMessage = jsonResponse.get("message").getAsString();
-                            if ("Dynamic allocation Error".equals(zosmfMessage)
-                                    && jsonResponse.get("rc").getAsInt() == -26868) {
-                                throw new DataSetAlreadyExists(dataSetName);
-                            }
-                        }
+                        // TODO - work out how to decipher the dynamic allocation error codes
+//                        if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
+//                            String zosmfMessage = jsonResponse.get("message").getAsString();
+//                            if ("Dynamic allocation Error".equals(zosmfMessage)
+//                                    && jsonResponse.get("rc").getAsInt() == -26868) {
+//                                throw new DataSetAlreadyExists(dataSetName);
+//                            }
+//                        }
                         throw new ZoweApiRestException(getSpringHttpStatusFromCode(statusCode),
                                 jsonResponse.toString());
                     }
