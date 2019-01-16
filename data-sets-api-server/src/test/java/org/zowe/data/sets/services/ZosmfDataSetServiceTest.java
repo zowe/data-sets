@@ -33,6 +33,7 @@ import org.springframework.util.StringUtils;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
 import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
 import org.zowe.api.common.exceptions.PreconditionFailedException;
+import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.test.ZoweApiTest;
 import org.zowe.api.common.utils.JsonUtils;
 import org.zowe.api.common.utils.ResponseUtils;
@@ -230,6 +231,26 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
     }
 
     @Test
+    public void get_content_should_work_even_if_no_etag_header_zosmf_and_parse_response_correctly() throws Exception {
+        DataSetContent content = new DataSetContent("//ATLJ0000 JOB (ADL),'ATLAS',MSGCLASS=X,CLASS=A,TIME=1440\n"
+                + "//*        TEST JOB\n" + "//UNIT     EXEC PGM=IEFBR14");
+        String dataSetName = "STEVENH.TEST.JCL";
+
+        DataSetContentWithEtag expected = new DataSetContentWithEtag(content, null);
+
+        HttpResponse response = mockTextResponse(HttpStatus.SC_OK, loadTestFile("getContent.json"));
+
+        RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds/%s", dataSetName));
+        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+
+        assertEquals(expected, dataService.getContent(dataSetName));
+
+        verifyInteractions(requestBuilder);
+        verify(requestBuilder).addHeader("X-IBM-Return-Etag", "true");
+
+    }
+
+    @Test
     public void get_content_for_unauthorised_user_throws_correct_error() throws Exception {
         String dataSetName = "TSTRADM.JCL(JUNK)";
 
@@ -256,8 +277,6 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
         checkGetContentExceptionAndVerify(dataSetName, expectedException, HttpStatus.SC_NOT_FOUND,
                 "getContent_noMember.json");
     }
-
-    // TODO NOW - test if no header returned
 
     private void checkGetContentExceptionAndVerify(String pdsName, Exception expectedException, int statusCode,
             String file) throws IOException, Exception {
@@ -468,6 +487,16 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
         Exception expectedException = new DataSetAlreadyExists(dataSetName);
         checkCreateDataSetExceptionAndVerify(dataSetName, expectedException, HttpStatus.SC_INTERNAL_SERVER_ERROR,
                 "createDataSet_exists.json");
+    }
+
+    // TODO - once we've worked out the error create a better exception
+    @Test
+    public void create_data_set_with_unknown_error_throws_correct_error() throws Exception {
+        String dataSetName = "STEVENH.JUNK";
+        Exception expectedException = new ZoweApiRestException(
+                org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR, loadTestFile("createDataSet_unknown.json"));
+        checkCreateDataSetExceptionAndVerify(dataSetName, expectedException, HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                "createDataSet_unknown.json");
     }
 
     private void checkCreateDataSetExceptionAndVerify(String dataSetName, Exception expectedException, int statusCode,

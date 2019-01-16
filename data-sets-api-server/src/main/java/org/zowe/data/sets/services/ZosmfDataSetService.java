@@ -160,8 +160,12 @@ public class ZosmfDataSetService implements DataSetService {
             int statusCode = ResponseUtils.getStatus(response);
             if (statusCode == HttpStatus.SC_OK) {
                 DataSetContent content = new DataSetContent(ResponseUtils.getEntity(response));
+                String eTag = null;
                 Header etagHeader = response.getFirstHeader("ETag");
-                return new DataSetContentWithEtag(content, etagHeader.getValue());
+                if (etagHeader != null) {
+                    eTag = etagHeader.getValue();
+                }
+                return new DataSetContentWithEtag(content, eTag);
             } else {
                 HttpEntity entity = response.getEntity();
                 // TODO - work out how to tidy when brain is sharper
@@ -268,10 +272,13 @@ public class ZosmfDataSetService implements DataSetService {
                         JsonObject jsonResponse = ResponseUtils.getEntityAsJsonObject(response);
                         if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
                             String zosmfMessage = jsonResponse.get("message").getAsString();
-                            if ("Dynamic allocation Error".equals(zosmfMessage)) {
+                            if ("Dynamic allocation Error".equals(zosmfMessage)
+                                    && jsonResponse.get("rc").getAsInt() == -26868) {
                                 throw new DataSetAlreadyExists(dataSetName);
                             }
                         }
+                        throw new ZoweApiRestException(getSpringHttpStatusFromCode(statusCode),
+                                jsonResponse.toString());
                     }
                     throw new ZoweApiRestException(getSpringHttpStatusFromCode(statusCode), entity.toString());
                 }
