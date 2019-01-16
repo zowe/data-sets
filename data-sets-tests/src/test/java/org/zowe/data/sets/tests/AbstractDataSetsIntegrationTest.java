@@ -33,16 +33,17 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
     static final String HEX_IN_QUOTES_REGEX = "^\"[0-9A-F]+\"$";
 
     @BeforeClass
-    public static void setUpEndpoint() {
+    public static void setUp() throws Exception {
         RestAssured.basePath = DATASETS_ROOT_ENDPOINT;
+        initialiseDatasetsIfNecessary();
     }
 
-    @BeforeClass
     public static void initialiseDatasetsIfNecessary() throws Exception {
         if (getMembers(TEST_JCL_PDS).statusCode() != HttpStatus.SC_OK) {
-            createDataSet(createPdsRequest(TEST_JCL_PDS));
+            createDataSet(createPdsRequest(TEST_JCL_PDS)).then().statusCode(HttpStatus.SC_CREATED);
             putDataSetContent(getTestJclMemberPath(JOB_IEFBR14),
-                    new DataSetContent(new String(Files.readAllBytes(Paths.get("testFiles/IEFBR14")))));
+                    new DataSetContent(new String(Files.readAllBytes(Paths.get("testFiles/IEFBR14"))))).then()
+                        .statusCode(HttpStatus.SC_NO_CONTENT);
         }
     }
 
@@ -74,7 +75,7 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
 
     static DataSetCreateRequest createPdsRequest(String dataSetName) {
         DataSetCreateRequest defaultJclPdsRequest = DataSetCreateRequest.builder().name(dataSetName).blockSize(400)
-            .primary(10).recordLength(80).secondary(5).directoryBlocks(21)
+            .primary(10).recordLength(80).secondary(5).directoryBlocks(20)
             .dataSetOrganization(DataSetOrganisationType.PO).recordFormat("FB").allocationUnit(AllocationUnitType.TRACK)
             .build();
         return defaultJclPdsRequest;
