@@ -42,6 +42,7 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
 
     @Test
     public void testCreatePds() throws Exception {
+        System.out.println("testCreatePds");
         DataSetCreateRequest pdsRequest = createPdsRequest(VALID_DATASET_NAME);
         cleanUp = VALID_DATASET_NAME;
         createDataSet(pdsRequest).then().statusCode(HttpStatus.SC_CREATED)
@@ -55,6 +56,7 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
 
     @Test
     public void testTryingToCreateExistingPdsThrowsError() throws Exception {
+        System.out.println("testTryingToCreateExistingPdsThrowsError");
         DataSetCreateRequest pdsRequest = createPdsRequest(VALID_DATASET_NAME);
         cleanUp = VALID_DATASET_NAME;
         createDataSet(pdsRequest);
@@ -70,6 +72,7 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
 
     @Test
     public void testCreateSds() throws Exception {
+        System.out.println("testCreateSds");
         DataSetCreateRequest sdsRequest = createSdsRequest(VALID_DATASET_NAME);
         cleanUp = VALID_DATASET_NAME;
         createDataSet(sdsRequest).then().statusCode(HttpStatus.SC_CREATED)

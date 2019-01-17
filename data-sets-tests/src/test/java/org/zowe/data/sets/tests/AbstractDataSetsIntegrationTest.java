@@ -37,6 +37,9 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
     public static void setUp() throws Exception {
         RestAssured.basePath = DATASETS_ROOT_ENDPOINT;
         // Create test data
+        Exception ex = new Exception();
+        ex.fillInStackTrace();
+        ex.printStackTrace();
         Response response = createDataSet(createPdsRequest(TEST_JCL_PDS));
         System.out.println("statusLine:" + response.getStatusLine() + " body:" + response.asString());
         response.then().statusCode(HttpStatus.SC_CREATED);

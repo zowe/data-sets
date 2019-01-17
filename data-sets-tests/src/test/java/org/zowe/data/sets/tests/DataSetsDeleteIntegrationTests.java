@@ -26,12 +26,14 @@ public class DataSetsDeleteIntegrationTests extends AbstractDataSetsIntegrationT
 
     @Test
     public void testDeleteSdsWorks() throws Exception {
+        System.out.println("testDeleteSdsWorks");
         String tempPath = HLQ + ".TEMP";
         createAndDelete(createSdsRequest(tempPath));
     }
 
     @Test
     public void testDeletePdsWorks() throws Exception {
+        System.out.println("testDeletePdsWorks");
         String tempPath = HLQ + ".TEMP";
         createAndDelete(createPdsRequest(tempPath));
     }
@@ -43,6 +45,7 @@ public class DataSetsDeleteIntegrationTests extends AbstractDataSetsIntegrationT
 
     @Test
     public void testDeletePdsMemberWorks() throws Exception {
+        System.out.println("testDeletePdsMemberWorks");
         String memberPath = getTestJclMemberPath("TEMP");
         putDataSetContent(memberPath, new DataSetContent("test")).then().statusCode(HttpStatus.SC_NO_CONTENT);
         deleteDataSet(memberPath).then().statusCode(HttpStatus.SC_NO_CONTENT).body(equalTo(""));
@@ -57,6 +60,7 @@ public class DataSetsDeleteIntegrationTests extends AbstractDataSetsIntegrationT
 
     @Test
     public void testDeleteDatasetsInvalidDataset() throws Exception {
+        System.out.println("testDeleteDatasetsInvalidDataset");
         ZoweApiRestException expected = new DataSetNotFoundException(INVALID_DATASET_NAME);
         ApiError expectedError = expected.getApiError();
 
