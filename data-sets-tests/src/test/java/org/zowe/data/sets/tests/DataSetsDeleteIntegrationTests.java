@@ -11,29 +11,41 @@ package org.zowe.data.sets.tests;
 
 import io.restassured.http.ContentType;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpStatus;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
 import org.zowe.api.common.errors.ApiError;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
-import org.zowe.data.sets.model.DataSetContent;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
 public class DataSetsDeleteIntegrationTests extends AbstractDataSetsIntegrationTest {
 
+    private static final String TEST_PDS = HLQ + ".A" + RandomStringUtils.randomAlphanumeric(7);
+
+    @BeforeClass
+    public static void createDataSets() throws Exception {
+        createPdsWithMembers(TEST_PDS, "MEMBER1");
+    }
+
+    @AfterClass
+    public static void cleanup() {
+        deleteDataSet(TEST_PDS);
+    }
+
     @Test
     public void testDeleteSdsWorks() throws Exception {
-        System.out.println("testDeleteSdsWorks");
         String tempPath = HLQ + ".TEMP";
         createAndDelete(createSdsRequest(tempPath));
     }
 
     @Test
     public void testDeletePdsWorks() throws Exception {
-        System.out.println("testDeletePdsWorks");
         String tempPath = HLQ + ".TEMP";
         createAndDelete(createPdsRequest(tempPath));
     }
@@ -45,9 +57,7 @@ public class DataSetsDeleteIntegrationTests extends AbstractDataSetsIntegrationT
 
     @Test
     public void testDeletePdsMemberWorks() throws Exception {
-        System.out.println("testDeletePdsMemberWorks");
-        String memberPath = getTestJclMemberPath("TEMP");
-        putDataSetContent(memberPath, new DataSetContent("test")).then().statusCode(HttpStatus.SC_NO_CONTENT);
+        String memberPath = getDataSetMemberPath(TEST_PDS, "MEMBER1");
         deleteDataSet(memberPath).then().statusCode(HttpStatus.SC_NO_CONTENT).body(equalTo(""));
     }
 

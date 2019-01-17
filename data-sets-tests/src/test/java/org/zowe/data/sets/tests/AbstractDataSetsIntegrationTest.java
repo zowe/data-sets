@@ -13,44 +13,35 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
 import org.apache.http.HttpStatus;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.zowe.data.sets.model.AllocationUnitType;
 import org.zowe.data.sets.model.DataSetContent;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.model.DataSetOrganisationType;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegrationTest {
 
     static final String DATASETS_ROOT_ENDPOINT = "datasets";
 
     static final String HLQ = USER.toUpperCase();
-    static final String TEST_JCL_PDS = HLQ + ".TEMP.TEST.JCL";
     static final String INVALID_DATASET_NAME = HLQ + ".TEST.INVALID";
     static final String UNAUTHORIZED_DATASET = "IBMUSER.NOWRITE.CNTL";
     static final String HEX_IN_QUOTES_REGEX = "^\"[0-9A-F]+\"$";
+    static final String DEFAULT_MEMBER_CONTENT = "//ATLJ0000 JOB (ADL),'ATLAS',MSGCLASS=X,CLASS=A,TIME=1440\n//*        TEST JOB\n";
 
     @BeforeClass
-    public static void setUp() throws Exception {
+    public static void setUpEndpoint() throws Exception {
         RestAssured.basePath = DATASETS_ROOT_ENDPOINT;
-        // Create test data
-        Exception ex = new Exception();
-        ex.fillInStackTrace();
-        ex.printStackTrace();
-        Response response = createDataSet(createPdsRequest(TEST_JCL_PDS));
-        System.out.println("statusLine:" + response.getStatusLine() + " body:" + response.asString());
-        response.then().statusCode(HttpStatus.SC_CREATED);
-        putDataSetContent(getTestJclMemberPath(JOB_IEFBR14),
-                new DataSetContent(new String(Files.readAllBytes(Paths.get("testFiles/IEFBR14"))))).then()
-                    .statusCode(HttpStatus.SC_NO_CONTENT);
     }
 
-    @AfterClass
-    public static void cleanup() {
-        deleteDataSet(TEST_JCL_PDS);
+    static void createPdsWithMembers(String pdsName, String... memberNames) {
+        DataSetContent content = new DataSetContent(DEFAULT_MEMBER_CONTENT);
+
+        createDataSet(createPdsRequest(pdsName)).then().statusCode(HttpStatus.SC_CREATED);
+        for (String member : memberNames) {
+            putDataSetContent(getDataSetMemberPath(pdsName, member), content).then()
+                .statusCode(HttpStatus.SC_NO_CONTENT);
+        }
     }
 
     static Response getMembers(String dataSetName) {
@@ -100,9 +91,5 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
 
     static String getDataSetMemberPath(String pds, String member) {
         return pds + "(" + member + ")";
-    }
-
-    static String getTestJclMemberPath(String member) {
-        return getDataSetMemberPath(TEST_JCL_PDS, member);
     }
 }
