@@ -28,7 +28,7 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
     static final String DATASETS_ROOT_ENDPOINT = "datasets";
 
     static final String HLQ = USER.toUpperCase();
-    static final String TEST_JCL_PDS = HLQ + ".TEST.JCL";
+    static final String TEST_JCL_PDS = HLQ + ".TEMP.TEST.JCL";
     static final String INVALID_DATASET_NAME = HLQ + ".TEST.INVALID";
     static final String UNAUTHORIZED_DATASET = "IBMUSER.NOWRITE.CNTL";
     static final String HEX_IN_QUOTES_REGEX = "^\"[0-9A-F]+\"$";
@@ -37,7 +37,9 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
     public static void setUp() throws Exception {
         RestAssured.basePath = DATASETS_ROOT_ENDPOINT;
         // Create test data
-        createDataSet(createPdsRequest(TEST_JCL_PDS)).then().statusCode(HttpStatus.SC_CREATED);
+        Response response = createDataSet(createPdsRequest(TEST_JCL_PDS));
+        System.out.println("statusLine:" + response.getStatusLine() + " body:" + response.asString());
+        response.then().statusCode(HttpStatus.SC_CREATED);
         putDataSetContent(getTestJclMemberPath(JOB_IEFBR14),
                 new DataSetContent(new String(Files.readAllBytes(Paths.get("testFiles/IEFBR14"))))).then()
                     .statusCode(HttpStatus.SC_NO_CONTENT);
