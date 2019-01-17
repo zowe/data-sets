@@ -15,6 +15,9 @@ import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
 import org.junit.After;
 import org.junit.Test;
+import org.zowe.api.common.errors.ApiError;
+import org.zowe.api.common.exceptions.ZoweApiRestException;
+import org.zowe.data.sets.exceptions.InvalidDirectoryBlockException;
 import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.model.DataSetOrganisationType;
@@ -27,8 +30,7 @@ import static org.junit.Assert.assertEquals;
 
 public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationTest {
 
-    private static final String VALID_DATASET_NAME = HLQ + ".TEST.DELETE";
-    private static final String PUT_DATASET_NAME = HLQ + ".TEST.PUT";
+    private static final String TEST_DATA_SET = HLQ + ".TEST.DELETE";
 
     // TODO - use junit 5 and nest the cleanup?
     private String cleanUp = null;
@@ -42,21 +44,21 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
 
     @Test
     public void testCreatePds() throws Exception {
-        DataSetCreateRequest pdsRequest = createPdsRequest(VALID_DATASET_NAME);
-        cleanUp = VALID_DATASET_NAME;
+        DataSetCreateRequest pdsRequest = createPdsRequest(TEST_DATA_SET);
+        cleanUp = TEST_DATA_SET;
         createDataSet(pdsRequest).then().statusCode(HttpStatus.SC_CREATED)
-            .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + VALID_DATASET_NAME)).body(equalTo(""));
+            .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + TEST_DATA_SET)).body(equalTo(""));
 
-        List<DataSetAttributes> actual = getDataSets(VALID_DATASET_NAME).then().statusCode(HttpStatus.SC_OK).extract()
-            .body().jsonPath().getList("", DataSetAttributes.class);
+        List<DataSetAttributes> actual = getDataSets(TEST_DATA_SET).then().statusCode(HttpStatus.SC_OK).extract().body()
+            .jsonPath().getList("", DataSetAttributes.class);
         assertEquals("Should have created the correct type", DataSetOrganisationType.PO,
                 actual.get(0).getDataSetOrganization());
     }
 
     @Test
     public void testTryingToCreateExistingPdsThrowsError() throws Exception {
-        DataSetCreateRequest pdsRequest = createPdsRequest(VALID_DATASET_NAME);
-        cleanUp = VALID_DATASET_NAME;
+        DataSetCreateRequest pdsRequest = createPdsRequest(TEST_DATA_SET);
+        cleanUp = TEST_DATA_SET;
         createDataSet(pdsRequest);
 
         // TODO - work out how to decipher the dynamic allocation error codes
@@ -70,24 +72,28 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
 
     @Test
     public void testCreateSds() throws Exception {
-        DataSetCreateRequest sdsRequest = createSdsRequest(VALID_DATASET_NAME);
-        cleanUp = VALID_DATASET_NAME;
+        DataSetCreateRequest sdsRequest = createSdsRequest(TEST_DATA_SET);
+        cleanUp = TEST_DATA_SET;
         createDataSet(sdsRequest).then().statusCode(HttpStatus.SC_CREATED)
-            .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + VALID_DATASET_NAME)).body(equalTo(""));
+            .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + TEST_DATA_SET)).body(equalTo(""));
 
-        List<DataSetAttributes> actual = getDataSets(VALID_DATASET_NAME).then().statusCode(HttpStatus.SC_OK).extract()
-            .body().jsonPath().getList("", DataSetAttributes.class);
+        List<DataSetAttributes> actual = getDataSets(TEST_DATA_SET).then().statusCode(HttpStatus.SC_OK).extract().body()
+            .jsonPath().getList("", DataSetAttributes.class);
         assertEquals("Should have created the correct type", DataSetOrganisationType.PS,
                 actual.get(0).getDataSetOrganization());
 
     }
 
-    // TODO - work out the rules - sds with dirblk should fail, only on 2.2?
-//    @Test
-//    public void testPostDatasetWithInvalidRequestFails() throws Exception {
-//        DataSetCreateRequest sdsRequestWithDirBlk = createSdsRequest(VALID_DATASET_NAME);
-//        cleanUp = VALID_DATASET_NAME;
-//        sdsRequestWithDirBlk.setDirblk(10);
-//        createDataSet(sdsRequestWithDirBlk).then().statusCode((HttpStatus.SC_BAD_REQUEST));
-//    }
+    @Test
+    public void testPostDatasetWithInvalidRequestFails() throws Exception {
+        ZoweApiRestException expected = new InvalidDirectoryBlockException(TEST_DATA_SET);
+        ApiError expectedError = expected.getApiError();
+
+        DataSetCreateRequest sdsRequestWithDirBlk = createSdsRequest(TEST_DATA_SET);
+        cleanUp = TEST_DATA_SET;
+        sdsRequestWithDirBlk.setDirectoryBlocks(10);
+        createDataSet(sdsRequestWithDirBlk).then().statusCode(expectedError.getStatus().value())
+            .contentType(ContentType.JSON).body("status", equalTo(expectedError.getStatus().name()))
+            .body("message", equalTo(expectedError.getMessage()));
+    }
 }

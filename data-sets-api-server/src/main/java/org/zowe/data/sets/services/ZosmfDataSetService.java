@@ -32,6 +32,7 @@ import org.zowe.api.common.exceptions.ServerErrorException;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.JsonUtils;
 import org.zowe.api.common.utils.ResponseUtils;
+import org.zowe.data.sets.exceptions.InvalidDirectoryBlockException;
 import org.zowe.data.sets.exceptions.UnauthorisedDataSetException;
 import org.zowe.data.sets.model.AllocationUnitType;
 import org.zowe.data.sets.model.DataSetAttributes;
@@ -251,6 +252,11 @@ public class ZosmfDataSetService implements DataSetService {
     @Override
     public String createDataSet(DataSetCreateRequest input) {
         String dataSetName = input.getName();
+        // TODO MAYBE - consider extracting to common validation mechanism
+        if (input.getDataSetOrganization() == DataSetOrganisationType.PS && input.getDirectoryBlocks() != null
+                && input.getDirectoryBlocks() != 0) {
+            throw new InvalidDirectoryBlockException(dataSetName);
+        }
         String urlPath = String.format("restfiles/ds/%s", dataSetName);
         String requestUrl = zosmfConnector.getFullUrl(urlPath);
         try {
