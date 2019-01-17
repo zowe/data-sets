@@ -19,76 +19,77 @@ import org.zowe.data.sets.model.DataSetContent;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.model.DataSetOrganisationType;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegrationTest {
 
     static final String DATASETS_ROOT_ENDPOINT = "datasets";
 
     static final String HLQ = USER.toUpperCase();
-    static final String TEST_JCL_PDS = HLQ + ".TEST.JCL";
     static final String INVALID_DATASET_NAME = HLQ + ".TEST.INVALID";
     static final String UNAUTHORIZED_DATASET = "IBMUSER.NOWRITE.CNTL";
+    static final String HEX_IN_QUOTES_REGEX = "^\"[0-9A-F]+\"$";
+    static final String DEFAULT_MEMBER_CONTENT = "//ATLJ0000 JOB (ADL),'ATLAS',MSGCLASS=X,CLASS=A,TIME=1440\n//*        TEST JOB\n";
 
     @BeforeClass
-    public static void setUpEndpoint() {
+    public static void setUpEndpoint() throws Exception {
         RestAssured.basePath = DATASETS_ROOT_ENDPOINT;
     }
 
-    @BeforeClass
-    public static void initialiseDatasetsIfNecessary() throws Exception {
-        if (getMembers(TEST_JCL_PDS).statusCode() != HttpStatus.SC_OK) {
-            createDataSet(createPdsRequest(TEST_JCL_PDS));
-            putDataSetContent(getTestJclMemberPath(JOB_IEFBR14),
-                    new DataSetContent(new String(Files.readAllBytes(Paths.get("testFiles/IEFBR14")))));
+    static void createPdsWithMembers(String pdsName, String... memberNames) {
+        DataSetContent content = new DataSetContent(DEFAULT_MEMBER_CONTENT);
+
+        createDataSet(createPdsRequest(pdsName)).then().statusCode(HttpStatus.SC_CREATED);
+        for (String member : memberNames) {
+            putDataSetContent(getDataSetMemberPath(pdsName, member), content).then()
+                .statusCode(HttpStatus.SC_NO_CONTENT);
         }
     }
 
-    protected static Response getMembers(String dataSetName) {
+    static Response getMembers(String dataSetName) {
         return RestAssured.given().when().get(dataSetName + "/members");
     }
 
-    protected static Response getDataSets(String dataSetFilter) {
+    static Response getDataSets(String dataSetFilter) {
         return RestAssured.given().when().get(dataSetFilter);
     }
 
-    protected static Response createDataSet(DataSetCreateRequest attributes) {
+    static Response createDataSet(DataSetCreateRequest attributes) {
         return RestAssured.given().contentType("application/json").body(attributes).when().post();
     }
 
-    protected static Response getDataSetContent(String dataSetName) {
+    static Response getDataSetContent(String dataSetName) {
         return RestAssured.given().when().get(dataSetName + "/content");
     }
 
-    protected static Response putDataSetContent(String dataSetName, DataSetContent body) {
+    // TODO - refactor etag supplied and not supplied?
+    static Response putDataSetContent(String dataSetName, DataSetContent body) {
         return RestAssured.given().contentType("application/json").body(body).when().put(dataSetName + "/content");
     }
 
-    protected static DataSetCreateRequest createPdsRequest(String dataSetName) {
+    static Response putDataSetContent(String dataSetName, DataSetContent body, String etag) {
+        return RestAssured.given().contentType("application/json").body(body).header("If-Match", etag).when()
+            .put(dataSetName + "/content");
+    }
+
+    static DataSetCreateRequest createPdsRequest(String dataSetName) {
         DataSetCreateRequest defaultJclPdsRequest = DataSetCreateRequest.builder().name(dataSetName).blockSize(400)
-            .primary(10).recordLength(80).secondary(5).directoryBlocks(21)
+            .primary(10).recordLength(80).secondary(5).directoryBlocks(20)
             .dataSetOrganization(DataSetOrganisationType.PO).recordFormat("FB").allocationUnit(AllocationUnitType.TRACK)
             .build();
         return defaultJclPdsRequest;
     }
 
-    protected static DataSetCreateRequest createSdsRequest(String dataSetName) {
+    static DataSetCreateRequest createSdsRequest(String dataSetName) {
         DataSetCreateRequest sdsRequest = createPdsRequest(dataSetName);
-        sdsRequest.setDirectoryBlocks(0); //SJH: if directory block != 0 zosmf interprets as PDS
+        sdsRequest.setDirectoryBlocks(0); // SJH: if directory block != 0 zosmf interprets as PDS
         sdsRequest.setDataSetOrganization(DataSetOrganisationType.PS);
         return sdsRequest;
     }
 
-    protected static Response deleteDataSet(String dataSetName) {
+    static Response deleteDataSet(String dataSetName) {
         return RestAssured.given().when().delete(dataSetName);
     }
 
-    protected static String getDataSetMemberPath(String pds, String member) {
+    static String getDataSetMemberPath(String pds, String member) {
         return pds + "(" + member + ")";
-    }
-
-    protected static String getTestJclMemberPath(String member) {
-        return getDataSetMemberPath(TEST_JCL_PDS, member);
     }
 }

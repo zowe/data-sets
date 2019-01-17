@@ -15,7 +15,7 @@ import org.junit.BeforeClass;
 
 import static io.restassured.RestAssured.preemptive;
 
-//TODO NOW - refactor with Jobs
+//TODO - refactor with Jobs
 public abstract class AbstractHttpIntegrationTest {
 
     private final static String SERVER_HOST = System.getProperty("server.host");

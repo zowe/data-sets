@@ -12,24 +12,37 @@ package org.zowe.data.sets.tests;
 import io.restassured.http.ContentType;
 
 import org.apache.http.HttpStatus;
+import org.hamcrest.text.IsEqualIgnoringWhiteSpace;
+import org.hamcrest.text.MatchesPattern;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
 import org.zowe.api.common.errors.ApiError;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 
 public class DataSetsGetContentIntegrationTest extends AbstractDataSetsIntegrationTest {
 
+    private static final String TEST_PDS = HLQ + ".TEMP.GETCONT.JCL";
+
+    @BeforeClass
+    public static void createDataSets() throws Exception {
+        createPdsWithMembers(TEST_PDS, "MEMBER1");
+    }
+
+    @AfterClass
+    public static void cleanup() {
+        deleteDataSet(TEST_PDS);
+    }
+
     @Test
     public void testGetMemberContent() throws Exception {
-        getDataSetContent(getTestJclMemberPath(JOB_IEFBR14)).then().statusCode(HttpStatus.SC_OK)
-            // .header("ETag", notNullValue())
-            .body("records", equalTo(new String(Files.readAllBytes(Paths.get("testFiles/IEFBR14")))));
+        getDataSetContent(getDataSetMemberPath(TEST_PDS, "MEMBER1")).then().statusCode(HttpStatus.SC_OK)
+            .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
+            .body("records", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(DEFAULT_MEMBER_CONTENT + "\n")); // SJH: zosmf appends newline
     }
 
     // SJH: Sequential GET tested in PUT integration tests
@@ -48,7 +61,7 @@ public class DataSetsGetContentIntegrationTest extends AbstractDataSetsIntegrati
     @Test
     // TODO - need to create the unauthorised dataset in setup script
     @Ignore("Task 19604")
-    public void testGetUnauthoriszedDatasetContent() throws Exception {
+    public void testGetUnauthorisedDatasetContent() throws Exception {
         getDataSetContent(UNAUTHORIZED_DATASET).then().statusCode(HttpStatus.SC_FORBIDDEN);
     }
 }

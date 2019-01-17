@@ -12,6 +12,8 @@ package org.zowe.data.sets.tests;
 import io.restassured.http.ContentType;
 
 import org.apache.http.HttpStatus;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
@@ -23,9 +25,21 @@ import static org.hamcrest.CoreMatchers.hasItems;
 
 public class DataSetsGetMembersIntegrationTest extends AbstractDataSetsIntegrationTest {
 
+    private static final String TEST_PDS = HLQ + ".TEMP.GETMEM.JCL";
+
+    @BeforeClass
+    public static void createDataSets() throws Exception {
+        createPdsWithMembers(TEST_PDS, "MEMBER1", "MEMBER2");
+    }
+
+    @AfterClass
+    public static void cleanup() {
+        deleteDataSet(TEST_PDS);
+    }
+
     @Test
     public void testGetValidDatasetMembers() throws Exception {
-        getMembers(TEST_JCL_PDS).then().statusCode(HttpStatus.SC_OK).body("$", hasItems(JOB_IEFBR14, JOB_WITH_STEPS));
+        getMembers(TEST_PDS).then().statusCode(HttpStatus.SC_OK).body("$", hasItems("MEMBER1", "MEMBER2"));
     }
 
     @Test
@@ -42,7 +56,7 @@ public class DataSetsGetMembersIntegrationTest extends AbstractDataSetsIntegrati
     @Test
     // TODO - need to create the unauthorised dataset in setup script
     @Ignore("Task 19604")
-    public void testGetUnauthoriszedDatasetMembers() throws Exception {
+    public void testGetUnauthorisedDatasetMembers() throws Exception {
         getMembers(UNAUTHORIZED_DATASET).then().statusCode(HttpStatus.SC_FORBIDDEN);
     }
 }
