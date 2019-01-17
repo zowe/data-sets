@@ -39,6 +39,7 @@ import org.zowe.api.common.test.ZoweApiTest;
 import org.zowe.api.common.utils.JsonUtils;
 import org.zowe.api.common.utils.ResponseUtils;
 import org.zowe.data.sets.exceptions.DataSetAlreadyExists;
+import org.zowe.data.sets.exceptions.InvalidDirectoryBlockException;
 import org.zowe.data.sets.exceptions.UnauthorisedDataSetException;
 import org.zowe.data.sets.model.AllocationUnitType;
 import org.zowe.data.sets.model.DataSetAttributes;
@@ -410,22 +411,22 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
 
     @Test
     public void create_example_sds_dataset_should_transform_request_to_zosmf() throws Exception {
-        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PO\",\"alcunit\":\"TRK\",\"primary\":10,\"secondary\":5,\""
-                + "dirblk\":10,\"avgblk\":500,\"recfm\":\"FB\",\"blksize\":400,\"lrecl\":80}";
+        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PS\",\"alcunit\":\"TRK\",\"primary\":10,\"secondary\":5,"
+                + "\"avgblk\":500,\"recfm\":\"FB\",\"blksize\":400,\"lrecl\":80}";
         JsonObject zosmfRequest = JsonUtils.readAsJsonElement(json).getAsJsonObject();
 
         create_dataset_and_verify("STEVENH.TEST.SDS",
-                createBaseRequest().dataSetOrganization(DataSetOrganisationType.PO), zosmfRequest);
+                createBaseRequest().dataSetOrganization(DataSetOrganisationType.PS), zosmfRequest);
     }
 
     @Test
     public void create_example_pds_dataset_should_transform_request_to_zosmf() throws Exception {
-        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PS\",\"alcunit\":\"TRK\",\"primary\":10,\"secondary\":5,\""
+        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PO\",\"alcunit\":\"TRK\",\"primary\":10,\"secondary\":5,\""
                 + "dirblk\":10,\"avgblk\":500,\"recfm\":\"FB\",\"blksize\":400,\"lrecl\":80}";
         JsonObject zosmfRequest = JsonUtils.readAsJsonElement(json).getAsJsonObject();
 
         create_dataset_and_verify("STEVENH.TEST.PDS",
-                createBaseRequest().dataSetOrganization(DataSetOrganisationType.PS), zosmfRequest);
+                createBaseRequest().dataSetOrganization(DataSetOrganisationType.PO).directoryBlocks(10), zosmfRequest);
     }
 
     @Test
@@ -437,14 +438,14 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
         int blksize = 0;
         String recfm = "VB";
 
-        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PS\",\"alcunit\":\"CYL\",\"primary\":"
+        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PO\",\"alcunit\":\"CYL\",\"primary\":"
                 + primary + ",\"secondary\":" + secondary + ",\"" + "dirblk\":" + dirblk
                 + ",\"avgblk\":500,\"recfm\":\"" + recfm + "\",\"blksize\":" + blksize + ",\"lrecl\":" + lrecl
                 + ",\"alcunit\":\"CYL\"}";
         JsonObject zosmfRequest = JsonUtils.readAsJsonElement(json).getAsJsonObject();
 
         create_dataset_and_verify("STEVENH.TEST.PDS",
-                createBaseRequest().dataSetOrganization(DataSetOrganisationType.PS).recordFormat(recfm).primary(primary)
+                createBaseRequest().dataSetOrganization(DataSetOrganisationType.PO).recordFormat(recfm).primary(primary)
                     .secondary(secondary).directoryBlocks(dirblk).blockSize(blksize).recordLength(lrecl)
                     .allocationUnit(AllocationUnitType.CYLINDER),
                 zosmfRequest);
@@ -452,7 +453,7 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
 
     @Test
     public void create_example_pds_dataset_blocks_fails() throws Exception {
-        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PS\",\"alcunit\":\"TRK\",\"primary\":10,\"secondary\":5,\""
+        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PO\",\"alcunit\":\"TRK\",\"primary\":10,\"secondary\":5,\""
                 + "dirblk\":10,\"avgblk\":500,\"recfm\":\"FB\",\"blksize\":400,\"lrecl\":80}";
         JsonObject zosmfRequest = JsonUtils.readAsJsonElement(json).getAsJsonObject();
 
@@ -460,7 +461,7 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
                 "Creating data sets with a z/OS MF connector only supports allocation unit type of track and cylinder");
         shouldThrow(expected,
                 () -> create_dataset_and_verify("STEVENH.TEST.PDS", createBaseRequest()
-                    .dataSetOrganization(DataSetOrganisationType.PS).allocationUnit(AllocationUnitType.BLOCK),
+                    .dataSetOrganization(DataSetOrganisationType.PO).allocationUnit(AllocationUnitType.BLOCK),
                         zosmfRequest));
     }
 
@@ -479,6 +480,17 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
         assertEquals(dataSetName, dataSetCreated);
 
         verifyInteractions(builder);
+    }
+
+    @Test
+    public void create_sds_with_dirBlk_fails() throws Exception {
+        String name = "DUMM";
+        DataSetCreateRequest request = DataSetCreateRequest.builder().name(name)
+            .dataSetOrganization(DataSetOrganisationType.PS).directoryBlocks(12).build();
+
+        Exception expected = new InvalidDirectoryBlockException(name);
+        shouldThrow(expected, () -> dataService.createDataSet(request));
+        verifyNoMoreInteractions(zosmfConnector);
     }
 
     @Test
@@ -505,7 +517,7 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
             String file) throws IOException, Exception {
 
         String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PS\",\"alcunit\":\"TRK\",\"primary\":10,\"secondary\":5,\""
-                + "dirblk\":10,\"avgblk\":500,\"recfm\":\"FB\",\"blksize\":400,\"lrecl\":80}";
+                + "avgblk\":500,\"recfm\":\"FB\",\"blksize\":400,\"lrecl\":80}";
         JsonObject zosmfRequest = JsonUtils.readAsJsonElement(json).getAsJsonObject();
         DataSetCreateRequest request = createBaseRequest().dataSetOrganization(DataSetOrganisationType.PS)
             .name(dataSetName).build();
@@ -522,7 +534,7 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
     private DataSetCreateRequest.DataSetCreateRequestBuilder createBaseRequest() {
         return DataSetCreateRequest.builder().volumeSerial("zmf046").deviceType("3390")
             .allocationUnit(AllocationUnitType.TRACK).primary(10).secondary(5).recordFormat("FB").blockSize(400)
-            .recordLength(80).directoryBlocks(10).averageBlock(500);
+            .recordLength(80).averageBlock(500);
     }
 
     @Test
