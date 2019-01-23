@@ -84,6 +84,7 @@ public class DataSetsController {
         DataSetContentWithEtag content = dataSetService.getContent(dataSetName);
 
         HttpHeaders headers = new HttpHeaders();
+        headers.add("Access-Control-Expose-Headers", "ETag");
         headers.add("ETag", content.getEtag());
         return new ResponseEntity<>(content.getContent(), headers, HttpStatus.OK);
     }
