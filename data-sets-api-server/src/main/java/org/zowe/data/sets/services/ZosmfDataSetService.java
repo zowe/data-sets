@@ -44,6 +44,8 @@ import org.zowe.data.sets.model.DataSetOrganisationType;
 import org.zowe.data.sets.model.ZosmfCreateRequest;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,8 +66,8 @@ public class ZosmfDataSetService implements DataSetService {
     @Override
     public List<String> listDataSetMembers(String dataSetName) {
         String urlPath = String.format("restfiles/ds/%s/member", dataSetName);
-        String requestUrl = zosmfConnector.getFullUrl(urlPath); // $NON-NLS-1$
         try {
+            URI requestUrl = zosmfConnector.getFullUrl(urlPath); // $NON-NLS-1$
             HttpResponse response = zosmfConnector.request(RequestBuilder.get(requestUrl));
             int statusCode = ResponseUtils.getStatus(response);
             if (statusCode == HttpStatus.SC_OK) {
@@ -102,7 +104,7 @@ public class ZosmfDataSetService implements DataSetService {
                     throw new NoZosmfResponseEntityException(getSpringHttpStatusFromCode(statusCode), urlPath);
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             log.error("listDataSetMembers", e);
             throw new ServerErrorException(e);
         }
@@ -110,9 +112,9 @@ public class ZosmfDataSetService implements DataSetService {
 
     @Override
     public List<DataSetAttributes> listDataSets(String filter) {
-        String urlPath = String.format("restfiles/ds?dslevel=%s", filter);
-        String requestUrl = zosmfConnector.getFullUrl(urlPath); // $NON-NLS-1$
         try {
+            String query = String.format("dslevel=%s", filter);
+            URI requestUrl = zosmfConnector.getFullUrl("restfiles/ds", query); // $NON-NLS-1$
             RequestBuilder requestBuilder = RequestBuilder.get(requestUrl);
             requestBuilder.addHeader("X-IBM-Attributes", "base");
             HttpResponse response = zosmfConnector.request(requestBuilder);
@@ -140,10 +142,11 @@ public class ZosmfDataSetService implements DataSetService {
                         throw new ZoweApiRestException(getSpringHttpStatusFromCode(statusCode), entity.toString());
                     }
                 } else {
-                    throw new NoZosmfResponseEntityException(getSpringHttpStatusFromCode(statusCode), urlPath);
+                    throw new NoZosmfResponseEntityException(getSpringHttpStatusFromCode(statusCode),
+                            requestUrl.toString());
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             log.error("listDataSets", e);
             throw new ServerErrorException(e);
         }
@@ -152,8 +155,8 @@ public class ZosmfDataSetService implements DataSetService {
     @Override
     public DataSetContentWithEtag getContent(String dataSetName) {
         String urlPath = String.format("restfiles/ds/%s", dataSetName);
-        String requestUrl = zosmfConnector.getFullUrl(urlPath); // $NON-NLS-1$
         try {
+            URI requestUrl = zosmfConnector.getFullUrl(urlPath); // $NON-NLS-1$
             RequestBuilder requestBuilder = RequestBuilder.get(requestUrl);
             requestBuilder.addHeader("X-IBM-Return-Etag", "true");
             HttpResponse response = zosmfConnector.request(requestBuilder);
@@ -195,7 +198,7 @@ public class ZosmfDataSetService implements DataSetService {
                     throw new NoZosmfResponseEntityException(getSpringHttpStatusFromCode(statusCode), urlPath);
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             log.error("getContent", e);
             throw new ServerErrorException(e);
         }
@@ -204,8 +207,8 @@ public class ZosmfDataSetService implements DataSetService {
     @Override
     public String putContent(String dataSetName, DataSetContentWithEtag contentWithEtag) {
         String urlPath = String.format("restfiles/ds/%s", dataSetName);
-        String requestUrl = zosmfConnector.getFullUrl(urlPath); // $NON-NLS-1$
         try {
+            URI requestUrl = zosmfConnector.getFullUrl(urlPath); // $NON-NLS-1$
             DataSetContent content = contentWithEtag.getContent();
             StringEntity requestEntity = new StringEntity(content.getRecords());
             RequestBuilder requestBuilder = RequestBuilder.put(requestUrl).setEntity(requestEntity);
@@ -243,7 +246,7 @@ public class ZosmfDataSetService implements DataSetService {
                 }
                 throw new NoZosmfResponseEntityException(getSpringHttpStatusFromCode(statusCode), urlPath);
             }
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             log.error("putContent", e);
             throw new ServerErrorException(e);
         }
@@ -258,8 +261,8 @@ public class ZosmfDataSetService implements DataSetService {
             throw new InvalidDirectoryBlockException(dataSetName);
         }
         String urlPath = String.format("restfiles/ds/%s", dataSetName);
-        String requestUrl = zosmfConnector.getFullUrl(urlPath);
         try {
+            URI requestUrl = zosmfConnector.getFullUrl(urlPath);
             JsonObject requestBody = convertIntoZosmfRequestJson(input);
 
             StringEntity requestEntity = new StringEntity(requestBody.toString(), ContentType.APPLICATION_JSON);
@@ -290,7 +293,7 @@ public class ZosmfDataSetService implements DataSetService {
                 }
                 throw new NoZosmfResponseEntityException(getSpringHttpStatusFromCode(statusCode), urlPath);
             }
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             log.error("createDataSet", e);
             throw new ServerErrorException(e);
         }
@@ -303,8 +306,8 @@ public class ZosmfDataSetService implements DataSetService {
 
     @Override
     public void deleteDataSet(String dataSetName) {
-        String requestUrl = zosmfConnector.getFullUrl(String.format("restfiles/ds/%s", dataSetName));
         try {
+            URI requestUrl = zosmfConnector.getFullUrl(String.format("restfiles/ds/%s", dataSetName));
             HttpResponse response = zosmfConnector.request(RequestBuilder.delete(requestUrl));
             int statusCode = ResponseUtils.getStatus(response);
             if (statusCode == HttpStatus.SC_NO_CONTENT) {
@@ -326,9 +329,10 @@ public class ZosmfDataSetService implements DataSetService {
                     }
                     throw new ZoweApiRestException(getSpringHttpStatusFromCode(statusCode), entity.toString());
                 }
-                throw new NoZosmfResponseEntityException(getSpringHttpStatusFromCode(statusCode), requestUrl);
+                throw new NoZosmfResponseEntityException(getSpringHttpStatusFromCode(statusCode),
+                        requestUrl.toString());
             }
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             log.error("deleteDataSet", e);
             throw new ServerErrorException(e);
         }

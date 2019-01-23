@@ -49,9 +49,8 @@ import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.model.DataSetOrganisationType;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -78,15 +77,23 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
 
     ZosmfDataSetService dataService;
 
+    // TODO - merge with jobs
     @Before
     public void setUp() throws Exception {
         dataService = new ZosmfDataSetService();
         dataService.zosmfConnector = zosmfConnector;
-        when(zosmfConnector.getFullUrl(anyString())).thenAnswer(new org.mockito.stubbing.Answer<String>() {
+        when(zosmfConnector.getFullUrl(anyString())).thenAnswer(new org.mockito.stubbing.Answer<URI>() {
             @Override
-            public String answer(org.mockito.invocation.InvocationOnMock invocation) throws Throwable {
+            public URI answer(org.mockito.invocation.InvocationOnMock invocation) throws Throwable {
                 Object[] args = invocation.getArguments();
-                return BASE_URL + (String) args[0];
+                return new URI(BASE_URL + (String) args[0]);
+            }
+        });
+        when(zosmfConnector.getFullUrl(anyString(), anyString())).thenAnswer(new org.mockito.stubbing.Answer<URI>() {
+            @Override
+            public URI answer(org.mockito.invocation.InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                return new URI(BASE_URL + (String) args[0] + "?" + (String) args[1]);
             }
         });
     }
@@ -143,7 +150,7 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
         assertEquals(expected, dataService.listDataSets(filter));
 
         verify(requestBuilder).addHeader("X-IBM-Attributes", "base");
-        verifyInteractions(requestBuilder);
+        verifyInteractions(requestBuilder, true);
     }
 
     @Test
@@ -158,7 +165,7 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
         assertEquals(expected, dataService.listDataSets(filter));
 
         verify(requestBuilder).addHeader("X-IBM-Attributes", "base");
-        verifyInteractions(requestBuilder);
+        verifyInteractions(requestBuilder, true);
     }
 
     // TODO - error tests get datasets once we can work out what they are
@@ -568,23 +575,33 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
     }
 
     // TODO - refactor with jobs
-    private void verifyInteractions(RequestBuilder requestBuilder) throws IOException {
+    private void verifyInteractions(RequestBuilder requestBuilder) throws IOException, URISyntaxException {
+        verifyInteractions(requestBuilder, false);
+    }
+
+    // TODO - improve code - remove bool?
+    private void verifyInteractions(RequestBuilder requestBuilder, boolean path)
+            throws IOException, URISyntaxException {
         verify(zosmfConnector, times(1)).request(requestBuilder);
-        verify(zosmfConnector, times(1)).getFullUrl(anyString());
+        if (path) {
+            verify(zosmfConnector, times(1)).getFullUrl(anyString(), anyString());
+        } else {
+            verify(zosmfConnector, times(1)).getFullUrl(anyString());
+        }
         verifyNoMoreInteractions(zosmfConnector);
     }
 
-    private RequestBuilder mockGetBuilder(String relativeUri) {
+    private RequestBuilder mockGetBuilder(String relativeUri) throws URISyntaxException {
         RequestBuilder builder = mock(RequestBuilder.class);
         mockStatic(RequestBuilder.class);
-        when(RequestBuilder.get(BASE_URL + relativeUri)).thenReturn(builder);
+        when(RequestBuilder.get(new URI(BASE_URL + relativeUri))).thenReturn(builder);
         return builder;
     }
 
-    private RequestBuilder mockDeleteBuilder(String relativeUri) {
+    private RequestBuilder mockDeleteBuilder(String relativeUri) throws URISyntaxException {
         RequestBuilder builder = mock(RequestBuilder.class);
         mockStatic(RequestBuilder.class);
-        when(RequestBuilder.delete(BASE_URL + relativeUri)).thenReturn(builder);
+        when(RequestBuilder.delete(new URI(BASE_URL + relativeUri))).thenReturn(builder);
         return builder;
     }
 
@@ -606,7 +623,7 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
         RequestBuilder builder = mock(RequestBuilder.class);
 
         mockStatic(RequestBuilder.class);
-        when(RequestBuilder.put(BASE_URL + relativeUri)).thenReturn(builder);
+        when(RequestBuilder.put(new URI(BASE_URL + relativeUri))).thenReturn(builder);
         when(builder.setHeader(HttpHeaders.CONTENT_TYPE, "application/json")).thenReturn(builder);
         when(builder.setEntity(stringEntity)).thenReturn(builder);
         return builder;
@@ -630,7 +647,7 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
         RequestBuilder builder = mock(RequestBuilder.class);
 
         mockStatic(RequestBuilder.class);
-        when(RequestBuilder.post(BASE_URL + relativeUri)).thenReturn(builder);
+        when(RequestBuilder.post(new URI(BASE_URL + relativeUri))).thenReturn(builder);
         when(builder.setHeader(HttpHeaders.CONTENT_TYPE, "application/json")).thenReturn(builder);
         when(builder.setEntity(stringEntity)).thenReturn(builder);
         return builder;
@@ -683,7 +700,6 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
     }
 
     public String loadTestFile(String relativePath) throws IOException {
-        byte[] encoded = Files.readAllBytes(Paths.get("src/test/resources/zosmfResponses/" + relativePath));
-        return new String(encoded, Charset.forName("UTF8"));
+        return loadFile("src/test/resources/zosmfResponses/" + relativePath);
     }
 }
