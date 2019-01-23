@@ -150,7 +150,7 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
         assertEquals(expected, dataService.listDataSets(filter));
 
         verify(requestBuilder).addHeader("X-IBM-Attributes", "base");
-        verifyInteractions(requestBuilder);
+        verifyInteractions(requestBuilder, true);
     }
 
     @Test
@@ -165,7 +165,7 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
         assertEquals(expected, dataService.listDataSets(filter));
 
         verify(requestBuilder).addHeader("X-IBM-Attributes", "base");
-        verifyInteractions(requestBuilder);
+        verifyInteractions(requestBuilder, true);
     }
 
     // TODO - error tests get datasets once we can work out what they are

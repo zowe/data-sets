@@ -112,9 +112,9 @@ public class ZosmfDataSetService implements DataSetService {
 
     @Override
     public List<DataSetAttributes> listDataSets(String filter) {
-        String urlPath = String.format("restfiles/ds?dslevel=%s", filter);
         try {
-            URI requestUrl = zosmfConnector.getFullUrl(urlPath); // $NON-NLS-1$
+            String query = String.format("dslevel=%s", filter);
+            URI requestUrl = zosmfConnector.getFullUrl("restfiles/ds", query); // $NON-NLS-1$
             RequestBuilder requestBuilder = RequestBuilder.get(requestUrl);
             requestBuilder.addHeader("X-IBM-Attributes", "base");
             HttpResponse response = zosmfConnector.request(requestBuilder);
@@ -142,7 +142,8 @@ public class ZosmfDataSetService implements DataSetService {
                         throw new ZoweApiRestException(getSpringHttpStatusFromCode(statusCode), entity.toString());
                     }
                 } else {
-                    throw new NoZosmfResponseEntityException(getSpringHttpStatusFromCode(statusCode), urlPath);
+                    throw new NoZosmfResponseEntityException(getSpringHttpStatusFromCode(statusCode),
+                            requestUrl.toString());
                 }
             }
         } catch (IOException | URISyntaxException e) {
