@@ -94,7 +94,41 @@ pipeline {
 
     stages {
     
-
+        /************************************************************************
+         * STAGE
+         * -----
+         * Bootstrap gradlew
+         *
+         * TIMEOUT
+         * -------
+         * 5 Minutes
+         *
+         * EXECUTION CONDITIONS
+         * --------------------
+         * - SHOULD_BUILD is true
+         * - The build is still successful
+         *
+         * DESCRIPTION
+         * -----------
+         * Executes `bootstrap_gradle.sh` to bootstrap gradlew (downloads gradle-wrapper).
+         *
+         * OUTPUTS
+         * -------
+         * gradle-wrapper.jar is present in "./gradle/wrapper/" directory.
+         ************************************************************************/
+        stage ('Bootstrap Gradlew') {
+            when {
+                expression {
+                    return SHOULD_BUILD == 'true'
+                }
+            }
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    sh './bootstrap_gradlew.sh'
+                }
+            }
+        }
+        
         /************************************************************************
          * STAGE
          * -----
