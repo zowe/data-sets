@@ -125,7 +125,12 @@ public class ZosmfDataSetService implements DataSetService {
 
                 List<DataSetAttributes> dataSets = new ArrayList<>();
                 for (JsonElement jsonElement : dataSetJsonArray.getAsJsonArray()) {
-                    dataSets.add(getDataSetFromJson(jsonElement.getAsJsonObject()));
+                    try {
+                        DataSetAttributes dataSet = getDataSetFromJson(jsonElement.getAsJsonObject());
+                        dataSets.add(dataSet);
+                    } catch (IllegalArgumentException e) {
+                        log.error("listDataSets", e);
+                    }
                 }
                 return dataSets;
             } else {
