@@ -13,7 +13,19 @@ import io.swagger.annotations.ApiModel;
 
 @ApiModel
 public enum DataSetOrganisationType {
-    PO("PO"), PS("PS"), PO_E("PO-E"), VSAM("VS"), HFS("HFS"), ZFS("ZFS"), DA("DA"), PSU("PSU");
+    PO("PO"), // Partitioned
+    POU("POU"), // Partitioned unmovable
+    PO_E("PO-E"), // Partitioned extended (PDSE)
+    PS("PS"), // Sequential
+    PS_E("PS-E"), // Sequential Extended Format
+    PS_L("PS-L"), // Large Format Sequential
+    PSU("PSU"), // Sequential unmovable
+    VSAM("VS"), // VSAM
+    VSAM_E("VS-E"), // VSAM Extended Format
+    HFS("HFS"), // MVS Hierarchical File System
+    ZFS("ZFS"), DA("DA"), // Direct
+    DAU("DAU"); // Direct unmovable
+
     String zosmfName;
 
     private DataSetOrganisationType(String zosmfName) {
