@@ -13,7 +13,7 @@ import io.swagger.annotations.ApiModel;
 
 @ApiModel
 public enum DataSetOrganisationType {
-    PO("PO"), PS("PS"), PO_E("PO-E"), VSAM("VS"), HFS("HFS"), ZFS("ZFS");
+    PO("PO"), PS("PS"), PO_E("PO-E"), VSAM("VS"), HFS("HFS"), ZFS("ZFS"), DA("DA"), PSU("PSU");
     String zosmfName;
 
     private DataSetOrganisationType(String zosmfName) {
