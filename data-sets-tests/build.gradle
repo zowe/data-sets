@@ -33,7 +33,6 @@ dependencies {
     testCompile libraries.power_mock_junit4_rule
     testCompile libraries.mockito_core
     testCompile libraries.explorer_api_common_test
-    testCompile 'io.rest-assured:rest-assured:3.2.0' //TODO testCompile libraries.restAssured
     testCompile 'org.hamcrest:hamcrest-junit:2.0.0.0' //TODO testCompile libraries.hamcrest
 }
 

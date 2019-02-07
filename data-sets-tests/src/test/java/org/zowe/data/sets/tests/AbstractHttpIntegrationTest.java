@@ -10,10 +10,15 @@
 package org.zowe.data.sets.tests;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 
 import org.junit.BeforeClass;
+import org.zowe.api.common.errors.ApiError;
+import org.zowe.api.common.exceptions.ZoweApiRestException;
 
 import static io.restassured.RestAssured.preemptive;
+import static org.hamcrest.CoreMatchers.equalTo;
 
 //TODO - refactor with Jobs
 public abstract class AbstractHttpIntegrationTest {
@@ -37,4 +42,11 @@ public abstract class AbstractHttpIntegrationTest {
         RestAssured.authentication = preemptive().basic(USER, PASSWORD);
     }
 
+    void verifyExceptionReturn(ZoweApiRestException expected, Response response) {
+        ApiError expectedError = expected.getApiError();
+
+        response.then().statusCode(expectedError.getStatus().value()).contentType(ContentType.JSON)
+            .body("status", equalTo(expectedError.getStatus().name()))
+            .body("message", equalTo(expectedError.getMessage()));
+    }
 }
