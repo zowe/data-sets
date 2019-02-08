@@ -9,7 +9,6 @@
  */
 package org.zowe.data.sets.services.zosmf;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.apache.http.HttpStatus;
@@ -22,7 +21,6 @@ import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
 import org.zowe.api.common.exceptions.PreconditionFailedException;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.ResponseCache;
-import org.zowe.data.sets.exceptions.UnauthorisedDataSetException;
 import org.zowe.data.sets.model.DataSetContent;
 import org.zowe.data.sets.model.DataSetContentWithEtag;
 
@@ -81,12 +79,6 @@ public class PutDataSetContentZosmfRequestRunner extends AbstractZosmfDataSetsRe
         if ("Data set not found.".equals(zosmfMessage)) {
             throw new DataSetNotFoundException(dataSetName);
         }
-        JsonElement details = jsonResponse.get("details");
-        if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-            if (details.toString().contains(AUTHORIZATION_FAILURE)) {
-                throw new UnauthorisedDataSetException(dataSetName);
-            }
-        }
-        return null;
+        return createDataSetException(jsonResponse, statusCode, dataSetName);
     }
 }

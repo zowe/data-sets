@@ -20,7 +20,7 @@ import org.zowe.api.common.exceptions.ZoweApiRestException;
 import static io.restassured.RestAssured.preemptive;
 import static org.hamcrest.CoreMatchers.equalTo;
 
-//TODO - refactor with Jobs
+//TODO - refactor with Jobs https://github.com/zowe/explorer-api-common/issues/11
 public abstract class AbstractHttpIntegrationTest {
 
     private final static String SERVER_HOST = System.getProperty("server.host");
@@ -42,9 +42,11 @@ public abstract class AbstractHttpIntegrationTest {
         RestAssured.authentication = preemptive().basic(USER, PASSWORD);
     }
 
-    void verifyExceptionReturn(ZoweApiRestException expected, Response response) {
-        ApiError expectedError = expected.getApiError();
+    protected void verifyExceptionReturn(ZoweApiRestException expected, Response response) {
+        verifyExceptionReturn(expected.getApiError(), response);
+    }
 
+    void verifyExceptionReturn(ApiError expectedError, Response response) {
         response.then().statusCode(expectedError.getStatus().value()).contentType(ContentType.JSON)
             .body("status", equalTo(expectedError.getStatus().name()))
             .body("message", equalTo(expectedError.getMessage()));

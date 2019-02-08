@@ -67,7 +67,7 @@ public class DataSetsControllerTest {
 
     private static final String ENDPOINT_ROOT = "/api/v1/datasets";
 
-    // TODO - refactor and merge with JobControllerTest?
+    // TODO LATER - move up into ApiControllerTest - https://github.com/zowe/explorer-api-common/issues/11
     private static final String DUMMY_USER = "A_USER";
 
     private MockMvc mockMvc;
