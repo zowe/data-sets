@@ -32,10 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.zowe.api.common.model.Username;
 import org.zowe.api.common.utils.ZosUtils;
-import org.zowe.data.sets.model.DataSetAttributes;
-import org.zowe.data.sets.model.DataSetContent;
-import org.zowe.data.sets.model.DataSetContentWithEtag;
-import org.zowe.data.sets.model.DataSetCreateRequest;
+import org.zowe.data.sets.model.*;
 import org.zowe.data.sets.services.DataSetService;
 
 import java.net.URI;
@@ -68,12 +65,21 @@ public class DataSetsController {
     }
 
     @GetMapping(value = "{filter:.+}", produces = { "application/json" })
-    @ApiOperation(value = "Get a list of data sets matching the filter", nickname = "getDataSets", notes = "This API returns the attributes of data sets matching the filter", tags = "Data Sets APIs")
+    @ApiOperation(value = "Get a list of data sets matching the filter", nickname = "getDataSets", notes = "This API returns the list of data sets matching the filter", tags = "Data Sets APIs")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Ok", response = String.class, responseContainer = "List") })
-    public List<DataSetAttributes> getDataSets(
+    public List<DataSet> getDataSets(
             @ApiParam(value = "Dataset filter string, e.g. HLQ.\\*\\*, \\*\\*.SUF, etc.", required = true) @PathVariable String filter) {
-        return dataSetService.listDataSets(filter);
+        return dataSetService.listDataSet(filter);
+    }
+
+    @GetMapping(value = "{filter:.+}/details", produces = { "application/json" })
+    @ApiOperation(value = "Get a list of data sets with all attributes matching the filter", nickname = "getDataSetAttributes", notes = "This API returns the attributes of data sets matching the filter", tags = "Data Sets APIs")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Ok", response = String.class, responseContainer = "List") })
+    public List<DataSetAttributes> getDataSetAttributes(
+            @ApiParam(value = "Dataset filter string, e.g. HLQ.\\*\\*, \\*\\*.SUF, etc.", required = true) @PathVariable String filter) {
+        return dataSetService.listDataSetAttributes(filter);
     }
 
     @GetMapping(value = "{dataSetName}/content", produces = { "application/json" })

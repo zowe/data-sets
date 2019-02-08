@@ -147,7 +147,7 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds?dslevel=%s", filter));
         when(zosmfConnector.request(requestBuilder)).thenReturn(response);
 
-        assertEquals(expected, dataService.listDataSets(filter));
+        assertEquals(expected, dataService.listDataSetAttributes(filter));
 
         verify(requestBuilder).addHeader("X-IBM-Attributes", "base");
         verifyInteractions(requestBuilder, true);
@@ -162,7 +162,7 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds?dslevel=%s", filter));
         when(zosmfConnector.request(requestBuilder)).thenReturn(response);
 
-        assertEquals(expected, dataService.listDataSets(filter));
+        assertEquals(expected, dataService.listDataSetAttributes(filter));
 
         verify(requestBuilder).addHeader("X-IBM-Attributes", "base");
         verifyInteractions(requestBuilder, true);

@@ -34,14 +34,10 @@ import org.zowe.api.common.utils.JsonUtils;
 import org.zowe.api.common.utils.ResponseUtils;
 import org.zowe.data.sets.exceptions.InvalidDirectoryBlockException;
 import org.zowe.data.sets.exceptions.UnauthorisedDataSetException;
-import org.zowe.data.sets.model.AllocationUnitType;
-import org.zowe.data.sets.model.DataSetAttributes;
+import org.zowe.data.sets.model.*;
+import org.zowe.data.sets.model.DataSet.DataSetBuilder;
 import org.zowe.data.sets.model.DataSetAttributes.DataSetAttributesBuilder;
-import org.zowe.data.sets.model.DataSetContent;
-import org.zowe.data.sets.model.DataSetContentWithEtag;
-import org.zowe.data.sets.model.DataSetCreateRequest;
-import org.zowe.data.sets.model.DataSetOrganisationType;
-import org.zowe.data.sets.model.ZosmfCreateRequest;
+
 
 import java.io.IOException;
 import java.net.URI;
@@ -111,49 +107,85 @@ public class ZosmfDataSetService implements DataSetService {
     }
 
     @Override
-    public List<DataSetAttributes> listDataSets(String filter) {
+    public List<DataSetAttributes> listDataSetAttributes(String filter) {
         try {
             String query = String.format("dslevel=%s", filter);
             URI requestUrl = zosmfConnector.getFullUrl("restfiles/ds", query); // $NON-NLS-1$
             RequestBuilder requestBuilder = RequestBuilder.get(requestUrl);
             requestBuilder.addHeader("X-IBM-Attributes", "base");
             HttpResponse response = zosmfConnector.request(requestBuilder);
+            List<DataSetAttributes> dataSets = new ArrayList<>();
             int statusCode = ResponseUtils.getStatus(response);
             if (statusCode == HttpStatus.SC_OK) {
                 JsonObject dataSetsResponse = ResponseUtils.getEntityAsJsonObject(response);
                 JsonElement dataSetJsonArray = dataSetsResponse.get("items");
-
-                List<DataSetAttributes> dataSets = new ArrayList<>();
                 for (JsonElement jsonElement : dataSetJsonArray.getAsJsonArray()) {
                     try {
-                        DataSetAttributes dataSet = getDataSetFromJson(jsonElement.getAsJsonObject());
+                        DataSetAttributes dataSet = getDataSetAttributesFromJson(jsonElement.getAsJsonObject());
                         dataSets.add(dataSet);
                     } catch (IllegalArgumentException e) {
-                        log.error("listDataSets", e);
+                        log.error("listDataSetAttributes", e);
                     }
                 }
                 return dataSets;
             } else {
-                HttpEntity entity = response.getEntity();
                 // TODO - work out how to tidy when brain is sharper
-                if (entity != null) {
-                    ContentType contentType = ContentType.get(entity);
-                    String mimeType = contentType.getMimeType();
-                    if (mimeType.equals(ContentType.APPLICATION_JSON.getMimeType())) {
-                        JsonObject jsonResponse = ResponseUtils.getEntityAsJsonObject(response);
-                        JsonElement details = jsonResponse.get("details");
-                        throw new ZoweApiRestException(getSpringHttpStatusFromCode(statusCode), details.toString());
-                    } else {
-                        throw new ZoweApiRestException(getSpringHttpStatusFromCode(statusCode), entity.toString());
-                    }
-                } else {
-                    throw new NoZosmfResponseEntityException(getSpringHttpStatusFromCode(statusCode),
-                            requestUrl.toString());
-                }
+                getHttpError(requestUrl, response, statusCode, response.getEntity());
+                return dataSets;
             }
         } catch (IOException | URISyntaxException e) {
-            log.error("listDataSets", e);
+            log.error("listDataSetAttributes", e);
             throw new ServerErrorException(e);
+        }
+    }
+
+    @Override
+    public List<DataSet> listDataSet(String filter) {
+        try {
+            String query = String.format("dslevel=%s", filter);
+            URI requestUrl = zosmfConnector.getFullUrl("restfiles/ds", query); // $NON-NLS-1$
+            RequestBuilder requestBuilder = RequestBuilder.get(requestUrl);
+            requestBuilder.addHeader("X-IBM-Attributes", "dsname");
+            HttpResponse response = zosmfConnector.request(requestBuilder);
+            int statusCode = ResponseUtils.getStatus(response);
+            List<DataSet> dataSets = new ArrayList<>();
+            if (statusCode == HttpStatus.SC_OK) {
+                JsonObject dataSetsResponse = ResponseUtils.getEntityAsJsonObject(response);
+                JsonElement dataSetJsonArray = dataSetsResponse.get("items");
+                for (JsonElement jsonElement : dataSetJsonArray.getAsJsonArray()) {
+                    try {
+                        DataSet dataSet = getDataSetFromJson(jsonElement.getAsJsonObject());
+                        dataSets.add(dataSet);
+                    } catch (IllegalArgumentException e) {
+                        log.error("listDataSet", e);
+                    }
+                }
+                return dataSets;
+            } else {
+                // TODO - work out how to tidy when brain is sharper
+                getHttpError(requestUrl, response, statusCode, response.getEntity());
+                return dataSets;
+            }
+        } catch (IOException | URISyntaxException e) {
+            log.error("listDataSet", e);
+            throw new ServerErrorException(e);
+        }
+    }
+
+    private HttpEntity getHttpError(URI requestUrl, HttpResponse response, int statusCode, HttpEntity entity) throws IOException {
+        if (entity != null) {
+            ContentType contentType = ContentType.get(entity);
+            String mimeType = contentType.getMimeType();
+            if (mimeType.equals(ContentType.APPLICATION_JSON.getMimeType())) {
+                JsonObject jsonResponse = ResponseUtils.getEntityAsJsonObject(response);
+                JsonElement details = jsonResponse.get("details");
+                throw new ZoweApiRestException(getSpringHttpStatusFromCode(statusCode), details.toString());
+            } else {
+                throw new ZoweApiRestException(getSpringHttpStatusFromCode(statusCode), entity.toString());
+            }
+        } else {
+            throw new NoZosmfResponseEntityException(getSpringHttpStatusFromCode(statusCode),
+                    requestUrl.toString());
         }
     }
 
@@ -343,7 +375,7 @@ public class ZosmfDataSetService implements DataSetService {
         }
     }
 
-    private static DataSetAttributes getDataSetFromJson(JsonObject returned) {
+    private static DataSetAttributes getDataSetAttributesFromJson(JsonObject returned) {
         DataSetAttributesBuilder builder = DataSetAttributes.builder().catalogName(getStringOrNull(returned, "catnm"))
             .name(getStringOrNull(returned, "dsname")).migrated("YES".equals(getStringOrNull(returned, "migr")))
             .volumeSerial(getStringOrNull(returned, "vols")).blockSize(getIntegerOrNull(returned, "blksz"))
@@ -363,6 +395,15 @@ public class ZosmfDataSetService implements DataSetService {
         }
         return builder.build();
     }
+
+    private static DataSet getDataSetFromJson(JsonObject returned) {
+        DataSetBuilder builder = DataSet.builder()
+                .name(getStringOrNull(returned, "dsname")).migrated("YES".equals(getStringOrNull(returned, "migr")));
+        return builder.build();
+    }
+
+
+
 
     // TODO LATER - push up into common
     private static String getStringOrNull(JsonObject json, String key) {

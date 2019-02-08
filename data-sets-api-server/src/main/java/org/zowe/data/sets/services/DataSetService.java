@@ -9,6 +9,7 @@
  */
 package org.zowe.data.sets.services;
 
+import org.zowe.data.sets.model.DataSet;
 import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetContentWithEtag;
 import org.zowe.data.sets.model.DataSetCreateRequest;
@@ -17,7 +18,8 @@ import java.util.List;
 
 public interface DataSetService {
 
-    List<DataSetAttributes> listDataSets(String filter);
+    List<DataSetAttributes> listDataSetAttributes(String filter);
+    List<DataSet> listDataSet(String filter);
 
     List<String> listDataSetMembers(String dataSetName);
 
