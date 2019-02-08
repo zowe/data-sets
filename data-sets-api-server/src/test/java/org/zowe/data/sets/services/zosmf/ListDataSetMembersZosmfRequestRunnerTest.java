@@ -9,7 +9,6 @@
  */
 package org.zowe.data.sets.services.zosmf;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.junit.Test;
@@ -30,7 +29,7 @@ public class ListDataSetMembersZosmfRequestRunnerTest extends AbstractZosmfReque
         List<String> expected = Arrays.asList("IEFBR14", "JOB1DD");
         String dataSetName = "STEVENH.TEST.JCL";
 
-        HttpResponse response = mockJsonResponse(HttpStatus.SC_OK, loadTestFile("zosmf_getMembers.json"));
+        mockJsonResponse(HttpStatus.SC_OK, loadTestFile("zosmf_getMembers.json"));
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds/%s/member", dataSetName));
         when(zosmfConnector.request(requestBuilder)).thenReturn(response);
 
@@ -60,7 +59,7 @@ public class ListDataSetMembersZosmfRequestRunnerTest extends AbstractZosmfReque
 
     private void checkGetPdsMemberNameExceptionAndVerify(String pdsName, Exception expectedException, int statusCode,
             String file) throws IOException, Exception {
-        HttpResponse response = mockJsonResponse(statusCode, loadTestFile(file));
+        mockJsonResponse(statusCode, loadTestFile(file));
 
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds/%s/member", pdsName));
 

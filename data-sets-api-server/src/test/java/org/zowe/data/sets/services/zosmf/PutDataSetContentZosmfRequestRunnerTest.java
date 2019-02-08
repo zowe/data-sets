@@ -10,7 +10,6 @@
 package org.zowe.data.sets.services.zosmf;
 
 import org.apache.http.Header;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.ContentType;
@@ -56,8 +55,7 @@ public class PutDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
         String dataSetName = "STEVENH.TEST.JCL";
         DataSetContentWithEtag request = new DataSetContentWithEtag(content, eTag);
 
-        HttpResponse response = mock(HttpResponse.class);
-        ResponseCache responseCache = mockResponseCache(response, HttpStatus.SC_NO_CONTENT);
+        ResponseCache responseCache = mockResponseCache(HttpStatus.SC_NO_CONTENT);
         Header header = mock(Header.class);
         when(header.getValue()).thenReturn(putETag);
         when(responseCache.getFirstHeader("ETag")).thenReturn(header);
@@ -84,8 +82,7 @@ public class PutDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
         DataSetContent content = new DataSetContent(jclString);
         DataSetContentWithEtag request = new DataSetContentWithEtag(content, "");
 
-        HttpResponse response = mock(HttpResponse.class);
-        ResponseCache responseCache = mockResponseCache(response, HttpStatus.SC_CREATED);
+        ResponseCache responseCache = mockResponseCache(HttpStatus.SC_CREATED);
         Header header = mock(Header.class);
         when(header.getValue()).thenReturn(putETag);
         when(responseCache.getFirstHeader("ETag")).thenReturn(header);
@@ -119,7 +116,7 @@ public class PutDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
 
     private void checkPutContentExceptionAndVerify(String dataSetName, Exception expectedException, int statusCode,
             String file) throws IOException, Exception {
-        HttpResponse response = mockJsonResponse(statusCode, loadTestFile(file));
+        mockJsonResponse(statusCode, loadTestFile(file));
 
         String jclString = "//ATLJ0000 JOB (ADL),'ATLAS',MSGCLASS=X,CLASS=A,TIME=1440\n" + "//*        TEST JOB\n"
                 + "//UNIT     EXEC PGM=IEFBR14\n";
@@ -141,8 +138,7 @@ public class PutDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
 
         Exception expectedException = new PreconditionFailedException(dataSetName);
 
-        HttpResponse response = mock(HttpResponse.class);
-        mockResponseCache(response, HttpStatus.SC_PRECONDITION_FAILED);
+        mockResponseCache(HttpStatus.SC_PRECONDITION_FAILED);
 
         String jclString = "//ATLJ0000 JOB (ADL),'ATLAS',MSGCLASS=X,CLASS=A,TIME=1440\n" + "//*        TEST JOB\n"
                 + "//UNIT     EXEC PGM=IEFBR14\n";

@@ -10,10 +10,8 @@
 package org.zowe.data.sets.services.zosmf;
 
 import org.apache.http.Header;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
-import org.apache.http.entity.ContentType;
 import org.junit.Test;
 import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
 import org.zowe.api.common.utils.ResponseCache;
@@ -39,15 +37,7 @@ public class GetDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
 
         DataSetContentWithEtag expected = new DataSetContentWithEtag(content, headerTag);
 
-        // TODO NOW - something smarter with this and mockTextResponse
-        // HttpResponse response = mockTextResponse(HttpStatus.SC_OK, loadTestFile("getContent.json"));
-        HttpResponse response = mock(HttpResponse.class);
-        ResponseCache responseCache = mockResponseCache(response, HttpStatus.SC_OK);
-        when(responseCache.getEntity()).thenReturn(loadTestFile("getContent.json"));
-
-        ContentType contentType = mock(ContentType.class);
-        when(responseCache.getContentType()).thenReturn(contentType);
-        when(contentType.getMimeType()).thenReturn(ContentType.TEXT_PLAIN.getMimeType());
+        ResponseCache responseCache = mockTextResponse(HttpStatus.SC_OK, loadTestFile("getContent.json"));
 
         Header header = mock(Header.class);
         when(header.getValue()).thenReturn(headerTag);
@@ -71,7 +61,7 @@ public class GetDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
 
         DataSetContentWithEtag expected = new DataSetContentWithEtag(content, null);
 
-        HttpResponse response = mockTextResponse(HttpStatus.SC_OK, loadTestFile("getContent.json"));
+        mockTextResponse(HttpStatus.SC_OK, loadTestFile("getContent.json"));
 
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds/%s", dataSetName));
         when(zosmfConnector.request(requestBuilder)).thenReturn(response);
@@ -113,7 +103,7 @@ public class GetDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
 
     private void checkGetContentExceptionAndVerify(String dataSetName, Exception expectedException, int statusCode,
             String file) throws IOException, Exception {
-        HttpResponse response = mockJsonResponse(statusCode, loadTestFile(file));
+        mockJsonResponse(statusCode, loadTestFile(file));
 
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds/%s", dataSetName));
 

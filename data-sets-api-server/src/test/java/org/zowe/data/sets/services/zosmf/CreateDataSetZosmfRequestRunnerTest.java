@@ -11,7 +11,6 @@ package org.zowe.data.sets.services.zosmf;
 
 import com.google.gson.JsonObject;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.RequestBuilder;
@@ -32,7 +31,6 @@ import org.zowe.data.sets.model.DataSetOrganisationType;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
@@ -103,8 +101,7 @@ public class CreateDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRun
             throws IOException, ClientProtocolException, Exception {
         DataSetCreateRequest request = requestBuilder.name(dataSetName).build();
 
-        HttpResponse response = mock(HttpResponse.class);
-        ResponseCache responseCache = mockResponseCache(response, HttpStatus.SC_CREATED);
+        ResponseCache responseCache = mockResponseCache(HttpStatus.SC_CREATED);
 
         RequestBuilder builder = mockPostBuilder(String.format("restfiles/ds/%s", dataSetName), zosmfRequest);
 
@@ -154,7 +151,7 @@ public class CreateDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRun
         DataSetCreateRequest request = createBaseRequest().dataSetOrganization(DataSetOrganisationType.PS)
             .name(dataSetName).build();
 
-        HttpResponse response = mockJsonResponse(statusCode, loadTestFile(file));
+        mockJsonResponse(statusCode, loadTestFile(file));
         RequestBuilder builder = mockPostBuilder(String.format("restfiles/ds/%s", dataSetName), zosmfRequest);
 
         when(zosmfConnector.request(builder)).thenReturn(response);
