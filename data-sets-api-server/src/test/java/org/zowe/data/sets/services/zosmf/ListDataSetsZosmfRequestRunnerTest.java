@@ -9,7 +9,6 @@
  */
 package org.zowe.data.sets.services.zosmf;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.junit.Test;
@@ -69,7 +68,7 @@ public class ListDataSetsZosmfRequestRunnerTest extends AbstractZosmfRequestRunn
         List<DataSetAttributes> expected = Arrays.asList(stevenh, cobol, jcl, migrated, sds, vsam, vsamData, vsamIndex);
         String filter = "STEVENH*";
 
-        HttpResponse response = mockJsonResponse(HttpStatus.SC_OK, loadTestFile("getDataSets.json"));
+        mockJsonResponse(HttpStatus.SC_OK, loadTestFile("getDataSets.json"));
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds?dslevel=%s", filter));
         when(zosmfConnector.request(requestBuilder)).thenReturn(response);
 
@@ -84,7 +83,7 @@ public class ListDataSetsZosmfRequestRunnerTest extends AbstractZosmfRequestRunn
         List<DataSetAttributes> expected = Collections.emptyList();
         String filter = "STEVENH*";
 
-        HttpResponse response = mockJsonResponse(HttpStatus.SC_OK, loadTestFile("getDataSets_noResults.json"));
+        mockJsonResponse(HttpStatus.SC_OK, loadTestFile("getDataSets_noResults.json"));
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds?dslevel=%s", filter));
         when(zosmfConnector.request(requestBuilder)).thenReturn(response);
 

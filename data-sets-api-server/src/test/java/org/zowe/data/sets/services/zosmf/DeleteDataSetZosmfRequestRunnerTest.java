@@ -9,13 +9,11 @@
  */
 package org.zowe.data.sets.services.zosmf;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.junit.Test;
 import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class DeleteDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRunnerTest {
@@ -23,8 +21,7 @@ public class DeleteDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRun
     @Test
     public void delete_data_set_should_call_zosmf_correctly() throws Exception {
         String dataSetName = "STEVENH.TEST.JCL";
-        HttpResponse response = mock(HttpResponse.class);
-        mockResponseCache(response, HttpStatus.SC_NO_CONTENT);
+        mockResponseCache(HttpStatus.SC_NO_CONTENT);
         RequestBuilder builder = mockDeleteBuilder(String.format("restfiles/ds/%s", dataSetName));
 
         when(zosmfConnector.request(builder)).thenReturn(response);
@@ -40,8 +37,7 @@ public class DeleteDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRun
 
         Exception expectedException = new DataSetNotFoundException(dataSetName);
 
-        HttpResponse response = mockJsonResponse(HttpStatus.SC_NOT_FOUND,
-                loadTestFile("deleteDataSet_doesntExist.json"));
+        mockJsonResponse(HttpStatus.SC_NOT_FOUND, loadTestFile("deleteDataSet_doesntExist.json"));
 
         RequestBuilder requestBuilder = mockDeleteBuilder(String.format("restfiles/ds/%s", dataSetName));
 
