@@ -66,9 +66,6 @@ public class ListDataSetsZosmfRequestRunnerTest extends AbstractZosmfRequestRunn
             .dataSetOrganization(DataSetOrganisationType.VSAM).expirationDate("***None***")
             .allocationUnit(AllocationUnitType.TRACK).allocatedSize(1).volumeSerial("3BP001").build();
 
-        // TODO - extx, rdate vol, mvol, ovf
-        // https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.3.0/com.ibm.zos.v2r3.izua700/IZUHPINFO_API_RESTFILES_JSON_Documents.htm?
-
         List<DataSetAttributes> expected = Arrays.asList(stevenh, cobol, jcl, migrated, sds, vsam, vsamData, vsamIndex);
         String filter = "STEVENH*";
 

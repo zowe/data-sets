@@ -15,10 +15,8 @@ import com.google.gson.JsonObject;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
-import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.ResponseCache;
-import org.zowe.data.sets.exceptions.UnauthorisedDataSetException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -59,16 +57,6 @@ public class ListDataSetMembersZosmfRequestRunner extends AbstractZosmfDataSetsR
 
     @Override
     protected ZoweApiRestException createException(JsonObject jsonResponse, int statusCode) {
-        JsonElement details = jsonResponse.get("details");
-        if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-            if (details.toString().contains(AUTHORIZATION_FAILURE)) {
-                throw new UnauthorisedDataSetException(dataSetName);
-            }
-        } else if (statusCode == HttpStatus.SC_NOT_FOUND) {
-            if (details.toString().contains(DATA_SET_NOT_FOUND)) {
-                throw new DataSetNotFoundException(dataSetName);
-            }
-        }
-        return null;
+        return createDataSetException(jsonResponse, statusCode, dataSetName);
     }
 }

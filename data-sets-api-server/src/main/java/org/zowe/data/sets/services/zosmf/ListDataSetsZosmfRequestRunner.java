@@ -17,10 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
-import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.ResponseCache;
-import org.zowe.data.sets.exceptions.UnauthorisedDataSetException;
 import org.zowe.data.sets.model.AllocationUnitType;
 import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetAttributes.DataSetAttributesBuilder;
@@ -74,17 +72,7 @@ public class ListDataSetsZosmfRequestRunner extends AbstractZosmfDataSetsRequest
 
     @Override
     protected ZoweApiRestException createException(JsonObject jsonResponse, int statusCode) {
-        JsonElement details = jsonResponse.get("details");
-        if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-            if (details.toString().contains(AUTHORIZATION_FAILURE)) {
-                throw new UnauthorisedDataSetException(filter);
-            }
-        } else if (statusCode == HttpStatus.SC_NOT_FOUND) {
-            if (details.toString().contains(DATA_SET_NOT_FOUND)) {
-                throw new DataSetNotFoundException(filter);
-            }
-        }
-        return null;
+        return createDataSetException(jsonResponse, statusCode, filter);
     }
 
     private DataSetAttributes getDataSetFromJson(JsonObject returned) {

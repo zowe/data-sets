@@ -43,8 +43,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
-//TODO MARK - speak to Mark about how to get this moved to common test
-//TODO NOW - review prepares
+//TODO MARK - speak to Mark about how to get this moved to common test https://github.com/zowe/explorer-api-common/issues/11
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ResponseUtils.class, RequestBuilder.class, JsonUtils.class, ContentType.class,
         AbstractZosmfRequestRunner.class })
@@ -78,7 +77,6 @@ public abstract class AbstractZosmfRequestRunnerTest extends ZoweApiTest {
         verifyInteractions(requestBuilder, false);
     }
 
-    // TODO - improve code - remove bool?
     void verifyInteractions(RequestBuilder requestBuilder, boolean path) throws IOException, URISyntaxException {
         verify(zosmfConnector, times(1)).request(requestBuilder);
         if (path) {
@@ -94,8 +92,8 @@ public abstract class AbstractZosmfRequestRunnerTest extends ZoweApiTest {
         RequestBuilder builder = mock(RequestBuilder.class);
         mockStatic(RequestBuilder.class);
         URI uri = new URI(BASE_URL + relativeUri);
-        when(RequestBuilder.get(uri)).thenReturn(builder);
         when(builder.getUri()).thenReturn(uri);
+        when(RequestBuilder.get(uri)).thenReturn(builder);
         return builder;
     }
 
@@ -103,8 +101,8 @@ public abstract class AbstractZosmfRequestRunnerTest extends ZoweApiTest {
         RequestBuilder builder = mock(RequestBuilder.class);
         mockStatic(RequestBuilder.class);
         URI uri = new URI(BASE_URL + relativeUri);
-        when(RequestBuilder.delete(uri)).thenReturn(builder);
         when(builder.getUri()).thenReturn(uri);
+        when(RequestBuilder.delete(uri)).thenReturn(builder);
         return builder;
     }
 
@@ -118,19 +116,17 @@ public abstract class AbstractZosmfRequestRunnerTest extends ZoweApiTest {
         StringEntity stringEntity = mock(StringEntity.class);
         PowerMockito.whenNew(StringEntity.class).withArguments(json.toString(), ContentType.APPLICATION_JSON)
             .thenReturn(stringEntity);
-
         return mockPutBuilder(relativeUri, stringEntity);
     }
 
     RequestBuilder mockPutBuilder(String relativeUri, StringEntity stringEntity) throws Exception {
         RequestBuilder builder = mock(RequestBuilder.class);
-
         mockStatic(RequestBuilder.class);
         URI uri = new URI(BASE_URL + relativeUri);
+        when(builder.getUri()).thenReturn(uri);
         when(RequestBuilder.put(uri)).thenReturn(builder);
         when(builder.setHeader(HttpHeaders.CONTENT_TYPE, "application/json")).thenReturn(builder);
         when(builder.setEntity(stringEntity)).thenReturn(builder);
-        when(builder.getUri()).thenReturn(uri);
         return builder;
     }
 

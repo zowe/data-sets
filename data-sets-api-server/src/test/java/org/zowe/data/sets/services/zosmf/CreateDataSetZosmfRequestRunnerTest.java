@@ -136,7 +136,6 @@ public class CreateDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRun
                 "createDataSet_exists.json");
     }
 
-    // TODO - once we've worked out the error create a better exception
     @Test
     public void create_data_set_with_unknown_error_throws_correct_error() throws Exception {
         String dataSetName = "STEVENH.JUNK";

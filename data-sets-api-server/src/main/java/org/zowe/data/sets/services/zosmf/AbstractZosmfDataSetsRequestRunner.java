@@ -9,14 +9,35 @@
  */
 package org.zowe.data.sets.services.zosmf;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.http.HttpStatus;
+import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
+import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.zosmf.services.AbstractZosmfRequestRunner;
+import org.zowe.data.sets.exceptions.UnauthorisedDataSetException;
 
 @Slf4j
 public abstract class AbstractZosmfDataSetsRequestRunner<T> extends AbstractZosmfRequestRunner<T> {
 
-    static final String AUTHORIZATION_FAILURE = "ISRZ002 Authorization failed";
-    static final String DATA_SET_NOT_FOUND = "ISRZ002 Data set not cataloged";
+    private static final String AUTHORIZATION_FAILURE = "ISRZ002 Authorization failed";
+    private static final String DATA_SET_NOT_FOUND = "ISRZ002 Data set not cataloged";
+
+    ZoweApiRestException createDataSetException(JsonObject jsonResponse, int statusCode, String dataSetName) {
+        JsonElement details = jsonResponse.get("details");
+        if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
+            if (details.toString().contains(AUTHORIZATION_FAILURE)) {
+                throw new UnauthorisedDataSetException(dataSetName);
+            }
+        } else if (statusCode == HttpStatus.SC_NOT_FOUND) {
+            if (details.toString().contains(DATA_SET_NOT_FOUND)) {
+                throw new DataSetNotFoundException(dataSetName);
+            }
+        }
+        return null;
+    }
 
 }
