@@ -34,10 +34,9 @@ import org.zowe.api.common.utils.JsonUtils;
 import org.zowe.api.common.utils.ResponseUtils;
 import org.zowe.data.sets.exceptions.InvalidDirectoryBlockException;
 import org.zowe.data.sets.exceptions.UnauthorisedDataSetException;
+import org.zowe.data.sets.mapper.DataSetMapper;
 import org.zowe.data.sets.model.*;
-import org.zowe.data.sets.model.DataSet.DataSetBuilder;
 import org.zowe.data.sets.model.DataSetAttributes.DataSetAttributesBuilder;
-
 
 import java.io.IOException;
 import java.net.URI;
@@ -154,8 +153,7 @@ public class ZosmfDataSetService implements DataSetService {
                 JsonElement dataSetJsonArray = dataSetsResponse.get("items");
                 for (JsonElement jsonElement : dataSetJsonArray.getAsJsonArray()) {
                     try {
-                        DataSet dataSet = getDataSetFromJson(jsonElement.getAsJsonObject());
-                        dataSets.add(dataSet);
+                        dataSets.add(DataSetMapper.INSTANCE.zosToDataSetDTO(jsonElement.getAsJsonObject()));
                     } catch (IllegalArgumentException e) {
                         log.error("listDataSet", e);
                     }
@@ -377,12 +375,12 @@ public class ZosmfDataSetService implements DataSetService {
 
     private static DataSetAttributes getDataSetAttributesFromJson(JsonObject returned) {
         DataSetAttributesBuilder builder = DataSetAttributes.builder().catalogName(getStringOrNull(returned, "catnm"))
-            .name(getStringOrNull(returned, "dsname")).migrated("YES".equals(getStringOrNull(returned, "migr")))
-            .volumeSerial(getStringOrNull(returned, "vols")).blockSize(getIntegerOrNull(returned, "blksz"))
-            .deviceType(getStringOrNull(returned, "dev")).expirationDate(getStringOrNull(returned, "edate"))
-            .creationDate(getStringOrNull(returned, "cdate")).recordLength(getIntegerOrNull(returned, "lrecl"))
-            .recordFormat(getStringOrNull(returned, "recfm")).allocatedSize(getIntegerOrNull(returned, "sizex"))
-            .used(getIntegerOrNull(returned, "used"));
+                .name(getStringOrNull(returned, "dsname")).migrated("YES".equals(getStringOrNull(returned, "migr")))
+                .volumeSerial(getStringOrNull(returned, "vols")).blockSize(getIntegerOrNull(returned, "blksz"))
+                .deviceType(getStringOrNull(returned, "dev")).expirationDate(getStringOrNull(returned, "edate"))
+                .creationDate(getStringOrNull(returned, "cdate")).recordLength(getIntegerOrNull(returned, "lrecl"))
+                .recordFormat(getStringOrNull(returned, "recfm")).allocatedSize(getIntegerOrNull(returned, "sizex"))
+                .used(getIntegerOrNull(returned, "used"));
 
         String dsorg = getStringOrNull(returned, "dsorg");
         if (dsorg != null) {
@@ -397,12 +395,8 @@ public class ZosmfDataSetService implements DataSetService {
     }
 
     private static DataSet getDataSetFromJson(JsonObject returned) {
-        DataSetBuilder builder = DataSet.builder()
-                .name(getStringOrNull(returned, "dsname")).migrated("YES".equals(getStringOrNull(returned, "migr")));
-        return builder.build();
+        return DataSetMapper.INSTANCE.zosToDataSetDTO(returned);
     }
-
-
 
 
     // TODO LATER - push up into common
