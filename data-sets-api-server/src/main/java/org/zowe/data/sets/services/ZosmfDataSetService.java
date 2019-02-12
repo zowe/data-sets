@@ -374,52 +374,11 @@ public class ZosmfDataSetService implements DataSetService {
     }
 
     private static DataSetAttributes getDataSetAttributesFromJson(JsonObject returned) {
-        DataSetAttributesBuilder builder = DataSetAttributes.builder().catalogName(getStringOrNull(returned, "catnm"))
-                .name(getStringOrNull(returned, "dsname")).migrated("YES".equals(getStringOrNull(returned, "migr")))
-                .volumeSerial(getStringOrNull(returned, "vols")).blockSize(getIntegerOrNull(returned, "blksz"))
-                .deviceType(getStringOrNull(returned, "dev")).expirationDate(getStringOrNull(returned, "edate"))
-                .creationDate(getStringOrNull(returned, "cdate")).recordLength(getIntegerOrNull(returned, "lrecl"))
-                .recordFormat(getStringOrNull(returned, "recfm")).allocatedSize(getIntegerOrNull(returned, "sizex"))
-                .used(getIntegerOrNull(returned, "used"));
-
-        String dsorg = getStringOrNull(returned, "dsorg");
-        if (dsorg != null) {
-            builder.dataSetOrganization(DataSetOrganisationType.getByZosmfName(dsorg));
-        }
-        String spacu = getStringOrNull(returned, "spacu");
-        if (spacu != null) {
-            // SJH : spacu returns a plural string, so strip 's' off the end
-            builder.allocationUnit(AllocationUnitType.valueOf(spacu.substring(0, spacu.length() - 1)));
-        }
-        return builder.build();
+        return DataSetMapper.INSTANCE.zosToDataSetAttributesDTO(returned);
     }
 
     private static DataSet getDataSetFromJson(JsonObject returned) {
         return DataSetMapper.INSTANCE.zosToDataSetDTO(returned);
-    }
-
-
-    // TODO LATER - push up into common
-    private static String getStringOrNull(JsonObject json, String key) {
-        String value = null;
-        JsonElement jsonElement = json.get(key);
-        if (!(jsonElement == null || jsonElement.isJsonNull() || jsonElement.getAsString().equals("?"))) {
-            value = jsonElement.getAsString();
-            if (value.equals("?")) {
-                value = null;
-            }
-        }
-        return value;
-    }
-
-    // TODO LATER - push up into common
-    private static Integer getIntegerOrNull(JsonObject json, String key) {
-        Integer value = null;
-        JsonElement jsonElement = json.get(key);
-        if (!(jsonElement == null || jsonElement.isJsonNull() || jsonElement.getAsString().equals("?"))) {
-            value = jsonElement.getAsInt();
-        }
-        return value;
     }
 
     // TODO LATER - push up into common

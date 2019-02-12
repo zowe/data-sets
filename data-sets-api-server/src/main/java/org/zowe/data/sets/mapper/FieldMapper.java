@@ -14,6 +14,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.mapstruct.Qualifier;
+import org.zowe.data.sets.model.AllocationUnitType;
+import org.zowe.data.sets.model.DataSetAttributes;
+import org.zowe.data.sets.model.DataSetOrganisationType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -26,33 +29,161 @@ public class FieldMapper {
     @Retention(RetentionPolicy.SOURCE)
     public @interface dsname {
     }
+
     @Qualifier
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.SOURCE)
     public @interface migr {
     }
+
     @Qualifier
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.SOURCE)
     public @interface blksz {
     }
 
+    @Qualifier
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface catnm {
+    }
+
+    @Qualifier
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface vols {
+    }
+
+    @Qualifier
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface dev {
+    }
+
+    @Qualifier
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface dsorg {
+    }
+    @Qualifier
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface spacu {
+    }
+    @Qualifier
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface edate {
+    }
+    @Qualifier
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface cdate {
+    }
+    @Qualifier
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface lrecl {
+    }
+    @Qualifier
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface recfm {
+    }
+    @Qualifier
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface sizex {
+    }
+    @Qualifier
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface used {
+    }
+
     @dsname
     public String name(JsonObject in) {
-        return getStringOrNull(in,"dsname");
+        return getStringOrNull(in, "dsname");
     }
 
     @migr
     public boolean migrated(JsonObject in) {
-        return "YES".equals(getStringOrNull(in,"migr"));
+        return "YES".equals(getStringOrNull(in, "migr"));
     }
 
     @blksz
     public Integer blocksize(JsonObject in) {
-        return getIntegerOrNull(in,"blksz");
+        return getIntegerOrNull(in, "blksz");
     }
 
-    private  Integer getIntegerOrNull(JsonObject json, String key) {
+    @catnm
+    public String catalogName(JsonObject in) {
+        return getStringOrNull(in, "catnm");
+    }
+
+    @vols
+    public String volumeSerial(JsonObject in) {
+        return getStringOrNull(in, "vols");
+    }
+
+    @dev
+    public String deviceType(JsonObject in) {
+        return getStringOrNull(in, "dev");
+    }
+
+    @dsorg
+    public DataSetOrganisationType dataSetOrganization(JsonObject in) {
+        DataSetOrganisationType value = null;
+        String dsorg = getStringOrNull(in, "dsorg");
+        if (dsorg != null) {
+            value = DataSetOrganisationType.getByZosmfName(dsorg);
+        }
+        return value;
+    }
+
+
+    @spacu
+    public AllocationUnitType allocationUnit(JsonObject in) {
+        AllocationUnitType value = null;
+        String spacu = getStringOrNull(in, "spacu");
+        if (spacu != null) {
+            // SJH : spacu returns a plural string, so strip 's' off the end
+            value = AllocationUnitType.valueOf(spacu.substring(0, spacu.length() - 1));
+        }
+        return value;
+    }
+
+    @edate
+    public Integer expirationDate(JsonObject in) {
+        return getIntegerOrNull(in, "edate");
+    }
+
+    @cdate
+    public Integer creationDate(JsonObject in) {
+        return getIntegerOrNull(in, "cdate");
+    }
+
+    @lrecl
+    public Integer recordLength(JsonObject in) {
+        return getIntegerOrNull(in, "lrecl");
+    }
+
+    @recfm
+    public String recordFormat(JsonObject in) {
+        return getStringOrNull(in, "recfm");
+    }
+
+    @sizex
+    public Integer allocatedSize(JsonObject in) {
+        return getIntegerOrNull(in, "sizex");
+    }
+
+    @used
+    public Integer used(JsonObject in) {
+        return getIntegerOrNull(in, "used");
+    }
+
+    private Integer getIntegerOrNull(JsonObject json, String key) {
         Integer value = null;
         JsonElement jsonElement = json.get(key);
         if (!(jsonElement == null || jsonElement.isJsonNull() || jsonElement.getAsString().equals("?"))) {
@@ -60,7 +191,8 @@ public class FieldMapper {
         }
         return value;
     }
-    private  String getStringOrNull(JsonObject json, String key) {
+
+    private String getStringOrNull(JsonObject json, String key) {
         String value = null;
         JsonElement jsonElement = json.get(key);
         if (!(jsonElement == null || jsonElement.isJsonNull() || jsonElement.getAsString().equals("?"))) {

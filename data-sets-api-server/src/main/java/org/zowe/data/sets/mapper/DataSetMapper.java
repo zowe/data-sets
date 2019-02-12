@@ -20,14 +20,28 @@ import org.zowe.data.sets.model.DataSetAttributes;
 @Mapper(uses = FieldMapper.class)
 public interface DataSetMapper {
     DataSetMapper INSTANCE = Mappers.getMapper(DataSetMapper.class);
+
     @Mappings({
-    @Mapping(source = "zosObject", target = "name", qualifiedBy = FieldMapper.dsname.class ),
-    @Mapping(source = "zosObject", target = "migrated", qualifiedBy = FieldMapper.migr.class )
+            @Mapping(source = "zosObject", target = "name", qualifiedBy = FieldMapper.dsname.class),
+            @Mapping(source = "zosObject", target = "migrated", qualifiedBy = FieldMapper.migr.class)
     })
     DataSet zosToDataSetDTO(JsonObject zosObject);
+
     @Mappings({
-            @Mapping(source = "zosObject", target = "name", qualifiedBy = FieldMapper.dsname.class ),
-            @Mapping(source = "zosObject", target = "migrated", qualifiedBy = FieldMapper.migr.class )
+            @Mapping(source = "zosObject", target = "name", qualifiedBy = FieldMapper.dsname.class),
+            @Mapping(source = "zosObject", target = "volumeSerial", qualifiedBy = FieldMapper.vols.class),
+            @Mapping(source = "zosObject", target = "deviceType", qualifiedBy = FieldMapper.dev.class),
+            @Mapping(source = "zosObject", target = "dataSetOrganization", qualifiedBy = FieldMapper.dsorg.class),
+            @Mapping(source = "zosObject", target = "allocationUnit", qualifiedBy = FieldMapper.spacu.class),
+            @Mapping(source = "zosObject", target = "recordFormat", qualifiedBy = FieldMapper.recfm.class),
+            @Mapping(source = "zosObject", target = "blockSize", qualifiedBy = FieldMapper.blksz.class),
+            @Mapping(source = "zosObject", target = "recordLength", qualifiedBy = FieldMapper.lrecl.class),
+            @Mapping(source = "zosObject", target = "allocatedSize", qualifiedBy = FieldMapper.sizex.class),
+            @Mapping(source = "zosObject", target = "used", qualifiedBy = FieldMapper.used.class),
+            @Mapping(source = "zosObject", target = "migrated", qualifiedBy = FieldMapper.migr.class),
+            @Mapping(source = "zosObject", target = "catalogName", qualifiedBy = FieldMapper.catnm.class),
+            @Mapping(source = "zosObject", target = "creationDate", qualifiedBy = FieldMapper.cdate.class),
+            @Mapping(source = "zosObject", target = "expirationDate", qualifiedBy = FieldMapper.edate.class)
     })
     DataSetAttributes zosToDataSetAttributesDTO(JsonObject zosObject);
 }
