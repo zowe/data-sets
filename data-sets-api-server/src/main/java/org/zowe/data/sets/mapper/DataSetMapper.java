@@ -15,6 +15,7 @@ import com.google.gson.JsonObject;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import org.zowe.data.sets.model.DataSet;
+import org.zowe.data.sets.model.DataSetAttributes;
 
 @Mapper(uses = FieldMapper.class)
 public interface DataSetMapper {
@@ -24,4 +25,9 @@ public interface DataSetMapper {
     @Mapping(source = "zosObject", target = "migrated", qualifiedBy = FieldMapper.migr.class )
     })
     DataSet zosToDataSetDTO(JsonObject zosObject);
+    @Mappings({
+            @Mapping(source = "zosObject", target = "name", qualifiedBy = FieldMapper.dsname.class ),
+            @Mapping(source = "zosObject", target = "migrated", qualifiedBy = FieldMapper.migr.class )
+    })
+    DataSetAttributes zosToDataSetAttributesDTO(JsonObject zosObject);
 }

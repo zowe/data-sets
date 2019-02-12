@@ -153,7 +153,7 @@ public class ZosmfDataSetService implements DataSetService {
                 JsonElement dataSetJsonArray = dataSetsResponse.get("items");
                 for (JsonElement jsonElement : dataSetJsonArray.getAsJsonArray()) {
                     try {
-                        dataSets.add(DataSetMapper.INSTANCE.zosToDataSetDTO(jsonElement.getAsJsonObject()));
+                        dataSets.add(getDataSetFromJson(jsonElement.getAsJsonObject()));
                     } catch (IllegalArgumentException e) {
                         log.error("listDataSet", e);
                     }
