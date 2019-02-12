@@ -49,7 +49,7 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
     }
 
     static Response getDataSetsDetails(String dataSetFilter) {
-        return RestAssured.given().when().get(dataSetFilter+ "/details");
+        return RestAssured.given().when().get(dataSetFilter + "/details");
     }
 
     static Response createDataSet(DataSetCreateRequest attributes) {
