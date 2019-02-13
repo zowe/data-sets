@@ -14,6 +14,11 @@ import org.zowe.api.common.exceptions.ZoweApiRestException;
 
 public class UnauthorisedDataSetException extends ZoweApiRestException {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -6046392398632846991L;
+
     public UnauthorisedDataSetException(String dataSet) {
         super(HttpStatus.FORBIDDEN, "You are not authorised to access data set ''{0}''", dataSet);
     }

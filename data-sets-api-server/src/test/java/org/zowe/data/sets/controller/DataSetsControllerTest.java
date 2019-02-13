@@ -305,7 +305,7 @@ public class DataSetsControllerTest {
         verifyNoMoreInteractions(dataSetService);
     }
 
-    // TODO - consider returning model object in response body, like jobs?
+    // TODO MAYBE - consider returning model object in response body, like jobs?
     @Test
     public void create_data_set_works_and_returns_location() throws Exception {
 
@@ -355,7 +355,6 @@ public class DataSetsControllerTest {
         verifyNoMoreInteractions(dataSetService);
     }
 
-    // TODO MAYBE - can we merge with job?
     private void mockDataSetUriConstruction(String dataSetName, URI uriValue) {
         ServletUriComponentsBuilder servletUriBuilder = mock(ServletUriComponentsBuilder.class);
         PowerMockito.mockStatic(ServletUriComponentsBuilder.class);

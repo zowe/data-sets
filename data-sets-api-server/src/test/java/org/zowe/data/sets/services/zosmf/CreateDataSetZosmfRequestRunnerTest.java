@@ -21,7 +21,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.JsonUtils;
-import org.zowe.api.common.utils.ResponseCache;
 import org.zowe.data.sets.exceptions.DataSetAlreadyExists;
 import org.zowe.data.sets.exceptions.InvalidDirectoryBlockException;
 import org.zowe.data.sets.model.AllocationUnitType;
@@ -38,7 +37,7 @@ import static org.mockito.Mockito.when;
 @PrepareForTest({ CreateDataSetZosmfRequestRunner.class })
 public class CreateDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRunnerTest {
 
-    // TODO - Add tests for dsnType = library for zosmf 2.3 - what else fails on 2.2?
+    // TODO - Add tests for dsnType = library for zosmf 2.3 - what else fails on 2.2? https://github.com/zowe/data-sets/issues/47
 
     @Test
     public void create_example_sds_dataset_should_transform_request_to_zosmf() throws Exception {
@@ -101,7 +100,7 @@ public class CreateDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRun
             throws IOException, ClientProtocolException, Exception {
         DataSetCreateRequest request = requestBuilder.name(dataSetName).build();
 
-        ResponseCache responseCache = mockResponseCache(HttpStatus.SC_CREATED);
+        mockResponseCache(HttpStatus.SC_CREATED);
 
         RequestBuilder builder = mockPostBuilder(String.format("restfiles/ds/%s", dataSetName), zosmfRequest);
 

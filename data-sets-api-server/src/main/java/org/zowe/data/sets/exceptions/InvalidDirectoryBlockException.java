@@ -14,6 +14,11 @@ import org.zowe.api.common.exceptions.ZoweApiRestException;
 
 public class InvalidDirectoryBlockException extends ZoweApiRestException {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -6481891748477944651L;
+
     public InvalidDirectoryBlockException(String dataSet) {
         super(HttpStatus.BAD_REQUEST,
                 "The create request of data set ''{0}'' failed. A sequential data set can not have a directory block value not equal to 0",
