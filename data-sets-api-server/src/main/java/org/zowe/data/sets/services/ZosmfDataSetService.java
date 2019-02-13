@@ -36,7 +36,6 @@ import org.zowe.data.sets.exceptions.InvalidDirectoryBlockException;
 import org.zowe.data.sets.exceptions.UnauthorisedDataSetException;
 import org.zowe.data.sets.mapper.DataSetMapper;
 import org.zowe.data.sets.model.*;
-import org.zowe.data.sets.model.DataSetAttributes.DataSetAttributesBuilder;
 
 import java.io.IOException;
 import java.net.URI;
