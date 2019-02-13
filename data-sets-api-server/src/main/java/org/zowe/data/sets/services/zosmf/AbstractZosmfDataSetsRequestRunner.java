@@ -12,15 +12,12 @@ package org.zowe.data.sets.services.zosmf;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.http.HttpStatus;
 import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.zosmf.services.AbstractZosmfRequestRunner;
 import org.zowe.data.sets.exceptions.UnauthorisedDataSetException;
 
-@Slf4j
 public abstract class AbstractZosmfDataSetsRequestRunner<T> extends AbstractZosmfRequestRunner<T> {
 
     private static final String AUTHORIZATION_FAILURE = "ISRZ002 Authorization failed";
