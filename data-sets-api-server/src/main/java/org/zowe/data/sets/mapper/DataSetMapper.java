@@ -41,7 +41,11 @@ public interface DataSetMapper {
             @Mapping(source = "zosObject", target = "migrated", qualifiedBy = FieldMapper.migr.class),
             @Mapping(source = "zosObject", target = "catalogName", qualifiedBy = FieldMapper.catnm.class),
             @Mapping(source = "zosObject", target = "creationDate", qualifiedBy = FieldMapper.cdate.class),
-            @Mapping(source = "zosObject", target = "expirationDate", qualifiedBy = FieldMapper.edate.class)
+            @Mapping(source = "zosObject", target = "expirationDate", qualifiedBy = FieldMapper.edate.class),
+            @Mapping(source = "zosObject", target = "primary", ignore =true),
+            @Mapping(source = "zosObject", target = "secondary", ignore =true),
+            @Mapping(source = "zosObject", target = "directoryBlocks", ignore =true),
+            @Mapping(source = "zosObject", target = "averageBlock", ignore =true)
     })
     DataSetAttributes zosToDataSetAttributesDTO(JsonObject zosObject);
 }

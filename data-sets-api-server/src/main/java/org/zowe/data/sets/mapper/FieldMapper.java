@@ -15,7 +15,6 @@ import com.google.gson.JsonObject;
 
 import org.mapstruct.Qualifier;
 import org.zowe.data.sets.model.AllocationUnitType;
-import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetOrganisationType;
 
 import java.lang.annotation.ElementType;
