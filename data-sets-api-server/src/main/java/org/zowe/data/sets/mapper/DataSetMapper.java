@@ -12,7 +12,9 @@ package org.zowe.data.sets.mapper;
 
 import com.google.gson.JsonObject;
 
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import org.zowe.data.sets.model.DataSet;
 import org.zowe.data.sets.model.DataSetAttributes;
@@ -42,10 +44,10 @@ public interface DataSetMapper {
             @Mapping(source = "zosObject", target = "catalogName", qualifiedBy = FieldMapper.catnm.class),
             @Mapping(source = "zosObject", target = "creationDate", qualifiedBy = FieldMapper.cdate.class),
             @Mapping(source = "zosObject", target = "expirationDate", qualifiedBy = FieldMapper.edate.class),
-            @Mapping(source = "zosObject", target = "primary", ignore =true),
-            @Mapping(source = "zosObject", target = "secondary", ignore =true),
-            @Mapping(source = "zosObject", target = "directoryBlocks", ignore =true),
-            @Mapping(source = "zosObject", target = "averageBlock", ignore =true)
+            @Mapping(source = "zosObject", target = "primary", ignore = true),
+            @Mapping(source = "zosObject", target = "secondary", ignore = true),
+            @Mapping(source = "zosObject", target = "directoryBlocks", ignore = true),
+            @Mapping(source = "zosObject", target = "averageBlock", ignore = true)
     })
     DataSetAttributes zosToDataSetAttributesDTO(JsonObject zosObject);
 }

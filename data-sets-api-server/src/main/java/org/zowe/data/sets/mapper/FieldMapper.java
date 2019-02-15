@@ -153,13 +153,13 @@ public class FieldMapper {
     }
 
     @edate
-    public Integer expirationDate(JsonObject in) {
-        return getIntegerOrNull(in, "edate");
+    public String expirationDate(JsonObject in) {
+        return getStringOrNull(in, "edate");
     }
 
     @cdate
-    public Integer creationDate(JsonObject in) {
-        return getIntegerOrNull(in, "cdate");
+    public String creationDate(JsonObject in) {
+        return getStringOrNull(in, "cdate");
     }
 
     @lrecl
