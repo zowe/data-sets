@@ -72,9 +72,4 @@ public class DataSetsGetIntegrationTest extends AbstractDataSetsIntegrationTest 
     public void testGetUnauthorisedDatasetMembers() throws Exception {
         getDataSets(UNAUTHORIZED_DATASET).then().statusCode(HttpStatus.SC_FORBIDDEN);
     }
-
-    private String generateRegexPattern(String initial) {
-        return initial.replace("[", "\\[").replace("]", "\\]").replace("*", ".*");
-    }
-
 }
