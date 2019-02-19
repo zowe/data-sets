@@ -13,5 +13,5 @@ import io.swagger.annotations.ApiModel;
 
 @ApiModel
 public enum AllocationUnitType {
-    TRACK, CYLINDER, BLOCK, BYTE, KILOBYTES, MEGABYTES, BYTES, RECORDS;
+    TRACK, CYLINDER, BLOCK, BYTE, KILOBYTE, MEGABYTE, RECORD;
 }
