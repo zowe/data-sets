@@ -60,7 +60,6 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
         return RestAssured.given().when().get(dataSetName + "/content");
     }
 
-    // TODO - refactor etag supplied and not supplied?
     static Response putDataSetContent(String dataSetName, DataSetContent body) {
         return RestAssured.given().contentType("application/json").body(body).when().put(dataSetName + "/content");
     }

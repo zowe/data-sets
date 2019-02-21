@@ -20,8 +20,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-//TODO - give attributes better names? Same for Create
-
 @Data
 @Builder(toBuilder = true)
 @NoArgsConstructor
@@ -62,7 +60,9 @@ public class DataSetAttributes {
     @ApiModelProperty(value = "Record length, lrecl", required = true)
     private Integer recordLength;
 
-    // TODO - dsnType - dataSetNameType
+    // TODO - dsnType - dataSetNameType https://github.com/zowe/data-sets/issues/30
+    // TODO - extx, rdate vol, mvol, ovf
+    // https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.3.0/com.ibm.zos.v2r3.izua700/IZUHPINFO_API_RESTFILES_JSON_Documents.htm?
 
     // not valid in create - seperate into super model?
     @ApiModelProperty(value = "Allocate size, sizex")

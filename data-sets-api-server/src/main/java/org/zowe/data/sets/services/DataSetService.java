@@ -19,7 +19,8 @@ import java.util.List;
 public interface DataSetService {
 
     List<DataSetAttributes> listDataSetAttributes(String filter);
-    List<DataSet> listDataSet(String filter);
+
+    List<DataSet> listDataSets(String filter);
 
     List<String> listDataSetMembers(String dataSetName);
 

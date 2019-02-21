@@ -21,7 +21,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder // TODO - required? (toBuilder = true, builderMethodName = "createBuilder")
+@Builder // TODO - required in merging with DataSetAttributes? (toBuilder = true, builderMethodName = "createBuilder")
 @NoArgsConstructor
 @AllArgsConstructor
 

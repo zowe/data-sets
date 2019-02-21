@@ -9,8 +9,6 @@
  */
 package org.zowe.data.sets.tests;
 
-import io.restassured.http.ContentType;
-
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpStatus;
 import org.junit.AfterClass;
@@ -74,9 +72,6 @@ public class DataSetsDeleteIntegrationTests extends AbstractDataSetsIntegrationT
         ZoweApiRestException expected = new DataSetNotFoundException(INVALID_DATASET_NAME);
         ApiError expectedError = expected.getApiError();
 
-        // TODO - refactor with other error tests?
-        deleteDataSet(INVALID_DATASET_NAME).then().statusCode(expectedError.getStatus().value())
-            .contentType(ContentType.JSON).body("status", equalTo(expectedError.getStatus().name()))
-            .body("message", equalTo(expectedError.getMessage()));
+        verifyExceptionReturn(expectedError, deleteDataSet(INVALID_DATASET_NAME));
     }
 }
