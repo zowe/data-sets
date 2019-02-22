@@ -15,6 +15,9 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
@@ -22,52 +25,49 @@ import org.zowe.api.common.utils.ResponseCache;
 import org.zowe.data.sets.model.UnixFileAtributes;
 import org.zowe.data.sets.model.UnixFileAtributes.UnixFileAtributesBuilder;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
 public class ListUnixDirectoryZosmfRunner extends AbstractZosmfDataSetsRequestRunner<List<UnixFileAtributes>> {
 
-	private String path;
+    private String path;
 
-	public ListUnixDirectoryZosmfRunner(String path) {
-		this.path = path;
-	}
+    public ListUnixDirectoryZosmfRunner(String path) {
+        this.path = path;
+    }
 
-	@Override
-	protected RequestBuilder prepareQuery(ZosmfConnector zosmfConnector) throws URISyntaxException {
-		String query = String.format("path=%s", path);
-		URI requestUrl = zosmfConnector.getFullUrl("restfiles/fs", query);
-		RequestBuilder requestBuilder = RequestBuilder.get(requestUrl);
-		return requestBuilder;
-	}
+    @Override
+    protected RequestBuilder prepareQuery(ZosmfConnector zosmfConnector) throws URISyntaxException {
+        String query = String.format("path=%s", path);
+        URI requestUrl = zosmfConnector.getFullUrl("restfiles/fs", query);
+        RequestBuilder requestBuilder = RequestBuilder.get(requestUrl);
+        return requestBuilder;
+    }
 
-	@Override
-	protected int[] getSuccessStatus() {
-		return new int[] { HttpStatus.SC_OK };
-	}
+    @Override
+    protected int[] getSuccessStatus() {
+        return new int[] { HttpStatus.SC_OK };
+    }
 
-	@Override
-	protected List<UnixFileAtributes> getResult(ResponseCache responseCache) throws IOException {
-		JsonObject directoryListResponse = responseCache.getEntityAsJsonObject();
+    @Override
+    protected List<UnixFileAtributes> getResult(ResponseCache responseCache) throws IOException {
+        JsonObject directoryListResponse = responseCache.getEntityAsJsonObject();
         JsonElement directoryListArray = directoryListResponse.get("items");
         
         List<UnixFileAtributes> directoryListing = new ArrayList<UnixFileAtributes>();
-        for(JsonElement jsonElement : directoryListArray.getAsJsonArray()) {
-        	UnixFileAtributes fileAttributes = getFileFromJson(jsonElement.getAsJsonObject());
-        	directoryListing.add(fileAttributes);
+        for (JsonElement jsonElement : directoryListArray.getAsJsonArray()) {
+            UnixFileAtributes fileAttributes = getFileFromJson(jsonElement.getAsJsonObject());
+            directoryListing.add(fileAttributes);
         }
         return directoryListing;
-	}
-	
-	private UnixFileAtributes getFileFromJson(JsonObject jsonObject) {
-		UnixFileAtributesBuilder builder = UnixFileAtributes.builder().name(getStringOrNull(jsonObject, "name"))
-				.accessMode(getStringOrNull(jsonObject, "mode"))
-				.size(getIntegerOrNull(jsonObject, "size"))
-				.userId(getStringOrNull(jsonObject, "uid"))
-				.user(getStringOrNull(jsonObject, "user"))
-				.groupId(getStringOrNull(jsonObject, "gid"))
-				.group(getStringOrNull(jsonObject, "group"))
-				.lastModified(getStringOrNull(jsonObject, "mtime"));
-		return builder.build();
-	}
+    }
+    
+    private UnixFileAtributes getFileFromJson(JsonObject jsonObject) {
+        UnixFileAtributesBuilder builder = UnixFileAtributes.builder().name(getStringOrNull(jsonObject, "name"))
+                .accessMode(getStringOrNull(jsonObject, "mode"))
+                .size(getIntegerOrNull(jsonObject, "size"))
+                .userId(getStringOrNull(jsonObject, "uid"))
+                .user(getStringOrNull(jsonObject, "user"))
+                .groupId(getStringOrNull(jsonObject, "gid"))
+                .group(getStringOrNull(jsonObject, "group"))
+                .lastModified(getStringOrNull(jsonObject, "mtime"));
+        return builder.build();
+    }
 }
