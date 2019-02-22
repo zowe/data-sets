@@ -24,6 +24,13 @@ import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetContent;
 import org.zowe.data.sets.model.DataSetContentWithEtag;
 import org.zowe.data.sets.model.DataSetCreateRequest;
+import org.zowe.data.sets.services.zosmf.CreateDataSetZosmfRequestRunner;
+import org.zowe.data.sets.services.zosmf.DeleteDataSetZosmfRequestRunner;
+import org.zowe.data.sets.services.zosmf.GetDataSetContentZosmfRequestRunner;
+import org.zowe.data.sets.services.zosmf.ListDataSetMembersZosmfRequestRunner;
+import org.zowe.data.sets.services.zosmf.ListDataSetsZosmfRequestRunner;
+import org.zowe.data.sets.services.zosmf.PutDataSetContentZosmfRequestRunner;
+import org.zowe.data.sets.services.zosmf.ZosmfService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,17 +41,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ZosmfDataSetService.class })
+@PrepareForTest({ ZosmfService.class })
 public class ZosmfDataSetServiceTest extends ZoweApiTest {
 
     @Mock
     ZosmfConnector zosmfConnector;
 
-    ZosmfDataSetService dataService;
+    ZosmfService dataService;
 
     @Before
     public void setUp() throws Exception {
-        dataService = new ZosmfDataSetService();
+        dataService = new ZosmfService();
         dataService.zosmfConnector = zosmfConnector;
     }
 

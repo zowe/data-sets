@@ -12,6 +12,7 @@ package org.zowe.data.sets.services;
 import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetContentWithEtag;
 import org.zowe.data.sets.model.DataSetCreateRequest;
+import org.zowe.data.sets.model.UnixFileAtributes;
 
 import java.util.List;
 
@@ -28,4 +29,6 @@ public interface DataSetService {
     String createDataSet(DataSetCreateRequest input);
 
     void deleteDataSet(String dataSetName);
+
+	List<UnixFileAtributes> listUnixDirectory(String path);
 }
