@@ -69,7 +69,7 @@ public class ZosmfService implements DataSetService {
     
     @Override
     public List<UnixFileAtributes> listUnixDirectory(String path) {
-    	ListUnixDirectoryZosmfRunner runner = new ListUnixDirectoryZosmfRunner(path);
-    	return runner.run(zosmfConnector);
+        ListUnixDirectoryZosmfRunner runner = new ListUnixDirectoryZosmfRunner(path);
+        return runner.run(zosmfConnector);
     }
 }

@@ -27,28 +27,28 @@ import lombok.NoArgsConstructor;
 @JsonInclude(Include.NON_NULL)
 @ApiModel(value = "UnixFileAttribues", description = "Attributes of a Unix File or Directory")
 public class UnixFileAtributes {
-	
-	@ApiModelProperty(value = "Path", required = true)
-	private String name;
-	
-	@ApiModelProperty(value = "Access mode", required = true)
-	private String accessMode;
-	
-	@ApiModelProperty(value = "Size on disk", required = true)
-	private Integer size;
-	
-	@ApiModelProperty(value = "User ID value", required = true)
-	private String userId;
-	
-	@ApiModelProperty(value = "Owner", required = true)
-	private String user;
-	
-	@ApiModelProperty(value = "Group ID value", required = true)
-	private String groupId;
-	
-	@ApiModelProperty(value = "Group", required = true)
-	private String group;
-	
-	@ApiModelProperty(value = "Last Modified", required = true)
-	private String lastModified;
+    
+    @ApiModelProperty(value = "Path", required = true)
+    private String name;
+    
+    @ApiModelProperty(value = "Access mode", required = true)
+    private String accessMode;
+    
+    @ApiModelProperty(value = "Size on disk", required = true)
+    private Integer size;
+    
+    @ApiModelProperty(value = "User ID value", required = true)
+    private String userId;
+    
+    @ApiModelProperty(value = "Owner", required = true)
+    private String user;
+    
+    @ApiModelProperty(value = "Group ID value", required = true)
+    private String groupId;
+    
+    @ApiModelProperty(value = "Group", required = true)
+    private String group;
+    
+    @ApiModelProperty(value = "Last Modified", required = true)
+    private String lastModified;
 }
