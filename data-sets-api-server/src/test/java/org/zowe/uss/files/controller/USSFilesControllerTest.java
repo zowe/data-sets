@@ -81,7 +81,7 @@ public class USSFilesControllerTest {
         
         when(dataSetService.listUnixDirectory(path)).thenReturn(directoryListing);
         
-        mockMvc.perform(get(ENDPOINT_ROOT + "/ussFiles?path={path}", path)).andExpect(status().isOk())
+        mockMvc.perform(get(ENDPOINT_ROOT + "?path={path}", path)).andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(content().string(JsonUtils.convertToJsonString(directoryListing)));
         
@@ -89,7 +89,7 @@ public class USSFilesControllerTest {
         verifyNoMoreInteractions(dataSetService);
     }
     
-    @Test
+    //@Test
     public void get_directory_listing_with_exception_should_be_converted_to_error_message() {}    
     
 }
