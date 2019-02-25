@@ -1,0 +1,15 @@
+{
+    "category": 6,
+    "details": [
+        "IKJ56225I DATA SET STEVENH.TEST ALREADY IN USE, TRY LATER+    ",
+        "IKJ56225I DATA SET IS ALLOCATED TO ANOTHER JOB OR USER    ",
+        "IEFA110I DATA SET CONTENTION    ",
+        "DATA SET STEVENH.TEST IN USE BY    ",
+        "SYSNAME  JOBNAME  ASID      ",
+        "MV3B     STEVENH  00DE      "
+    ],
+    "message": "Dynamic allocation failed",
+    "rc": 8,
+    "reason": 34603530,
+    "stack": "  1 15316170+000013A8 DatasetAllocation::allocate()\n  2 15313F98+0000036C DatasetReader::allocate()\n  3 15304A90+000000B2 DatasetReader::open()\n  4 15301258+00000170 GetDatasetServlet::doGet()\n  5 1531BA90+00000092 TsoServlet::service()\n  6 15349078+0000017E TsoServlet::run()\n  7 15348A50+00000386 main\n  8 0679E050+0000127E CEEVROND\n  9 14B05450+000000B4 EDCZHINV\n 10 06637650+000001C6 CEEBBEXT\n"
+}
