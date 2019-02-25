@@ -15,6 +15,7 @@ import org.apache.http.client.methods.RequestBuilder;
 import org.junit.Test;
 import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
 import org.zowe.api.common.utils.ResponseCache;
+import org.zowe.data.sets.exceptions.DataSetLockedException;
 import org.zowe.data.sets.exceptions.UnauthorisedDataSetException;
 import org.zowe.data.sets.model.DataSetContent;
 import org.zowe.data.sets.model.DataSetContentWithEtag;
@@ -99,6 +100,14 @@ public class GetDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
         Exception expectedException = new DataSetNotFoundException(dataSetName);
         checkGetContentExceptionAndVerify(dataSetName, expectedException, HttpStatus.SC_NOT_FOUND,
                 "getContent_noMember.json");
+    }
+
+    @Test
+    public void get_content_for_locked_data_set_throws_correct_error() throws Exception {
+        String dataSetName = "STEVENH.TEST";
+        Exception expectedException = new DataSetLockedException(dataSetName, "MV3B", "STEVENH", "00DE");
+        checkGetContentExceptionAndVerify(dataSetName, expectedException, HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                "dataSet_locked.json");
     }
 
     private void checkGetContentExceptionAndVerify(String dataSetName, Exception expectedException, int statusCode,
