@@ -33,7 +33,7 @@ public abstract class AbstractZosmfDataSetsRequestRunner<T> extends AbstractZosm
             } else if (details.toString().contains("IEFA110I")) {
                 // Extract the last line which has the details
                 JsonArray array = details.getAsJsonArray();
-                String[] dataLine = array.get(array.size() - 1).getAsString().replace("\"", "").split("\\s+");
+                String[] dataLine = array.get(array.size() - 1).getAsString().split("\\s+");
                 throw new DataSetLockedException(dataSetName, dataLine[0], dataLine[1], dataLine[2]);
             }
         } else if (statusCode == HttpStatus.SC_NOT_FOUND) {
