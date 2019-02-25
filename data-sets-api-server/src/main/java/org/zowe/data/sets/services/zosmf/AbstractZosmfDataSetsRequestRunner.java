@@ -9,6 +9,7 @@
  */
 package org.zowe.data.sets.services.zosmf;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -31,8 +32,8 @@ public abstract class AbstractZosmfDataSetsRequestRunner<T> extends AbstractZosm
                 throw new UnauthorisedDataSetException(dataSetName);
             } else if (details.toString().contains("IEFA110I")) {
                 // Extract the last line which has the details
-                String[] commaSplit = details.toString().split(",");
-                String[] dataLine = commaSplit[commaSplit.length - 1].replace("\"", "").split("\\s+");
+                JsonArray array = details.getAsJsonArray();
+                String[] dataLine = array.get(array.size() - 1).getAsString().replace("\"", "").split("\\s+");
                 throw new DataSetLockedException(dataSetName, dataLine[0], dataLine[1], dataLine[2]);
             }
         } else if (statusCode == HttpStatus.SC_NOT_FOUND) {
