@@ -1,0 +1,10 @@
+{
+	"category":16,
+	"rc":16,
+	"reason":1,
+	"message":"opendir() failed",
+	"stack":"  1 152F58B8+00000934 ListFilesServlet::doGet()\n  2 152FCB08+00000086 TsoServlet::service()\n  3 15326C58+0000017E TsoServlet::run()\n  4 15326630+00000386 main\n  5 0679E050+0000127E CEEVROND\n  6 14B05450+000000B4 EDCZHINV\n  7 06637650+000001C6 CEEBBEXT\n",
+	"details":[
+		"EDC5111I Permission denied. (errno2=0xEF076015)"
+	]
+}

@@ -9,6 +9,8 @@
  */
 package org.zowe.data.sets.model;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -25,30 +27,27 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 
 @JsonInclude(Include.NON_NULL)
-@ApiModel(value = "UnixFileAttribues", description = "Attributes of a Unix File or Directory")
-public class UnixFileAtributes {
+@ApiModel(value = "UnixDirectoryAttributesWithChildren", description = "Attributes of a Unix Directory with its children")
+public class UnixDirectoryAttributesWithChildren {
     
-    @ApiModelProperty(value = "Path", required = true)
-    private String name;
+    @ApiModelProperty(value = "type", required = true)
+    private UnixEntityType type;
     
-    @ApiModelProperty(value = "Access mode", required = true)
-    private String accessMode;
+    @ApiModelProperty(value = "Owner", required = true)
+    private String owner;
+    
+    @ApiModelProperty(value = "group", required = true)
+    private String group;
+    
+    @ApiModelProperty(value = "Symbolic permissions", required = true)
+    private String permissionsSymbolic;
     
     @ApiModelProperty(value = "Size on disk", required = true)
     private Integer size;
     
-    @ApiModelProperty(value = "User ID value", required = true)
-    private String userId;
-    
-    @ApiModelProperty(value = "Owner", required = true)
-    private String user;
-    
-    @ApiModelProperty(value = "Group ID value", required = true)
-    private String groupId;
-    
-    @ApiModelProperty(value = "Group", required = true)
-    private String group;
-    
     @ApiModelProperty(value = "Last Modified", required = true)
     private String lastModified;
+    
+    @ApiModelProperty(value = "children", required = true)
+    private List<UnixDirectoryChild> children;
 }

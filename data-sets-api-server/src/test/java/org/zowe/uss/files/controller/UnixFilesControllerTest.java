@@ -23,14 +23,19 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.zowe.api.common.errors.ApiError;
+import org.zowe.api.common.exceptions.ZoweApiErrorException;
 import org.zowe.api.common.exceptions.ZoweRestExceptionHandler;
 import org.zowe.api.common.utils.JsonUtils;
 import org.zowe.api.common.utils.ZosUtils;
-import org.zowe.data.sets.model.UnixFileAtributes;
+import org.zowe.data.sets.model.UnixDirectoryAttributesWithChildren;
+import org.zowe.data.sets.model.UnixDirectoryChild;
+import org.zowe.data.sets.model.UnixEntityType;
 import org.zowe.data.sets.services.DataSetService;
 
 import static org.mockito.Mockito.verify;
@@ -39,12 +44,13 @@ import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ZosUtils.class, ServletUriComponentsBuilder.class })
-public class USSFilesControllerTest {
+public class UnixFilesControllerTest {
     
-    private static final String ENDPOINT_ROOT = "/api/v1/ussFiles";
+    private static final String ENDPOINT_ROOT = "/api/v1/unixfiles";
 
     // TODO LATER - move up into ApiControllerTest - https://github.com/zowe/explorer-api-common/issues/11
     // Same Comment in DataSetsControllerTest
@@ -56,12 +62,12 @@ public class USSFilesControllerTest {
     private DataSetService dataSetService;
 
     @InjectMocks
-    private USSFilesControllerTest ussFilesController;
+    private UnixFilesController unixFilesController;
     
     @Before
     public void init() {
         MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(ussFilesController)
+        mockMvc = MockMvcBuilders.standaloneSetup(unixFilesController)
             .setControllerAdvice(new ZoweRestExceptionHandler()).build();
         PowerMockito.mockStatic(ZosUtils.class);
         when(ZosUtils.getUsername()).thenReturn(DUMMY_USER);
@@ -69,27 +75,43 @@ public class USSFilesControllerTest {
     
     @Test
     public void get_directory_listing_success() throws Exception {
-        UnixFileAtributes file = UnixFileAtributes.builder().name("FileA")
-                .accessMode("-r--r--r--").size(12345).userId("317").user(DUMMY_USER)
-                .groupId("234").group("IZUUSR").lastModified("2019-02-13T16:04:19").build();
-        UnixFileAtributes directory = UnixFileAtributes.builder().name("DirectoryA")
-                .accessMode("drwxrwxrwx").size(12345).userId("317").user(DUMMY_USER)
-                .groupId("234").group("IZUADMIN").lastModified("2019-02-13T16:04:19").build();
+        UnixDirectoryChild file = UnixDirectoryChild.builder().name("FileA").type(UnixEntityType.FILE)
+                .link("somelink").build();
+        UnixDirectoryChild directory = UnixDirectoryChild.builder().name("DirectoryA").type(UnixEntityType.DIRECTORY)
+                .link("somelink").build();
         
-        List<UnixFileAtributes> directoryListing = Arrays.asList(file, directory);
+        List<UnixDirectoryChild> children = Arrays.asList(file, directory);
+        
+        UnixDirectoryAttributesWithChildren listedDirectory = UnixDirectoryAttributesWithChildren.builder()
+                .owner("IBMUSER").group("GROUP1").type(UnixEntityType.DIRECTORY).permissionsSymbolic("dr-x---rwx")
+                .size(8192).lastModified("2019-02-03T16:04:19").children(children).build();
         String path = "/u/ibmuser";
         
-        when(dataSetService.listUnixDirectory(path)).thenReturn(directoryListing);
+        when(dataSetService.listUnixDirectory(path)).thenReturn(listedDirectory);
         
         mockMvc.perform(get(ENDPOINT_ROOT + "?path={path}", path)).andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-            .andExpect(content().string(JsonUtils.convertToJsonString(directoryListing)));
+            .andExpect(content().string(JsonUtils.convertToJsonString(listedDirectory)));
         
         verify(dataSetService, times(1)).listUnixDirectory(path);
         verifyNoMoreInteractions(dataSetService);
     }
     
-    //@Test
-    public void get_directory_listing_with_exception_should_be_converted_to_error_message() {}    
-    
+    @Test
+    public void get_directory_listing_with_exception_should_be_converted_to_error_message() throws Exception {
+        String invalidPath = "/not/authorised";
+        
+        String errorMessage = String.format("You are not authorised to access directory ''{0}''", invalidPath);
+        ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.FORBIDDEN).build();
+        
+        when(dataSetService.listUnixDirectory(invalidPath)).thenThrow(new ZoweApiErrorException(expectedError));
+        
+        mockMvc.perform(get(ENDPOINT_ROOT + "?path={path}", invalidPath))
+            .andExpect(status().is(expectedError.getStatus().value()))
+            .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
+            .andExpect(jsonPath("$.message").value(errorMessage));
+        
+        verify(dataSetService, times(1)).listUnixDirectory(invalidPath);
+        verifyNoMoreInteractions(dataSetService);
+    }
 }
