@@ -9,19 +9,19 @@
  */
 package org.zowe.uss.files.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.zowe.data.sets.services.DataSetService;
-import org.zowe.data.sets.model.UnixDirectoryAttributesWithChildren;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.zowe.data.sets.model.UnixDirectoryAttributesWithChildren;
+import org.zowe.data.sets.services.DataSetService;
 
 @RestController
 @RequestMapping("/api/v1/unixfiles")
