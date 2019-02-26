@@ -32,6 +32,7 @@ import org.zowe.data.sets.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.data.sets.model.UnixDirectoryChild;
 import org.zowe.data.sets.model.UnixEntityType;
 import org.zowe.data.sets.services.DataSetService;
+import org.zowe.unix.files.controller.UnixFilesController;
 
 import java.util.Arrays;
 import java.util.List;
