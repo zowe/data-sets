@@ -7,7 +7,7 @@
  *
  * Copyright IBM Corporation 2019
  */
-package org.zowe.uss.files.controller;
+package org.zowe.unix.files.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
