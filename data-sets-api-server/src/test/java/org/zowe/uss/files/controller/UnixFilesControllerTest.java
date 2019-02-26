@@ -9,11 +9,6 @@
  */
 package org.zowe.uss.files.controller;
 
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,13 +33,17 @@ import org.zowe.data.sets.model.UnixDirectoryChild;
 import org.zowe.data.sets.model.UnixEntityType;
 import org.zowe.data.sets.services.DataSetService;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ZosUtils.class, ServletUriComponentsBuilder.class })

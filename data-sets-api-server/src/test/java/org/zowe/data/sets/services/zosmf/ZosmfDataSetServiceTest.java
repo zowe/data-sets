@@ -25,13 +25,6 @@ import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetContent;
 import org.zowe.data.sets.model.DataSetContentWithEtag;
 import org.zowe.data.sets.model.DataSetCreateRequest;
-import org.zowe.data.sets.services.zosmf.CreateDataSetZosmfRequestRunner;
-import org.zowe.data.sets.services.zosmf.DeleteDataSetZosmfRequestRunner;
-import org.zowe.data.sets.services.zosmf.GetDataSetContentZosmfRequestRunner;
-import org.zowe.data.sets.services.zosmf.ListDataSetMembersZosmfRequestRunner;
-import org.zowe.data.sets.services.zosmf.ListDataSetsZosmfRequestRunner;
-import org.zowe.data.sets.services.zosmf.PutDataSetContentZosmfRequestRunner;
-import org.zowe.data.sets.services.zosmf.ZosmfService;
 
 import java.util.Arrays;
 import java.util.List;

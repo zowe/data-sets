@@ -9,14 +9,6 @@
  */
 package org.zowe.data.sets.services.zosmf;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -35,8 +27,16 @@ import org.zowe.data.sets.exceptions.UnauthorisedDirectoryException;
 import org.zowe.data.sets.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.data.sets.model.UnixDirectoryAttributesWithChildren.UnixDirectoryAttributesWithChildrenBuilder;
 import org.zowe.data.sets.model.UnixDirectoryChild;
-import org.zowe.data.sets.model.UnixEntityType;
 import org.zowe.data.sets.model.UnixDirectoryChild.UnixDirectoryChildBuilder;
+import org.zowe.data.sets.model.UnixEntityType;
+
+import javax.servlet.http.HttpServletRequest;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ListUnixDirectoryZosmfRunner extends AbstractZosmfRequestRunner<UnixDirectoryAttributesWithChildren> {
 
@@ -87,7 +87,7 @@ public class ListUnixDirectoryZosmfRunner extends AbstractZosmfRequestRunner<Uni
         for (JsonElement jsonElement : directoryListArray) {
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             // Skip self and parent
-            if(!getStringOrNull(jsonObject, "name").equals(".") && !getStringOrNull(jsonObject, "name").equals("..")) {
+            if (!getStringOrNull(jsonObject, "name").equals(".") && !getStringOrNull(jsonObject, "name").equals("..")) {
                 UnixDirectoryChildBuilder builder = UnixDirectoryChild.builder().name(getStringOrNull(jsonObject, "name"))
                         .type(getEntityTypeFromSymbolicPermissions(getStringOrNull(jsonObject, "mode")))
                         .link(constructLinkString(getStringOrNull(jsonObject, "name")));
@@ -98,7 +98,7 @@ public class ListUnixDirectoryZosmfRunner extends AbstractZosmfRequestRunner<Uni
     }
     
     private UnixEntityType getEntityTypeFromSymbolicPermissions(String permissions) {
-        if(permissions.startsWith("d")) {
+        if (permissions.startsWith("d")) {
             return UnixEntityType.DIRECTORY;
         }
         return UnixEntityType.FILE;
