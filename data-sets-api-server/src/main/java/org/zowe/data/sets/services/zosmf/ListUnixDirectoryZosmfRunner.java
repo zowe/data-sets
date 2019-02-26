@@ -15,18 +15,34 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
+import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.ResponseCache;
-import org.zowe.data.sets.model.UnixFileAtributes;
-import org.zowe.data.sets.model.UnixFileAtributes.UnixFileAtributesBuilder;
+import org.zowe.api.common.zosmf.services.AbstractZosmfRequestRunner;
+import org.zowe.data.sets.exceptions.PathNameNotValidException;
+import org.zowe.data.sets.exceptions.UnauthorisedDirectoryException;
+import org.zowe.data.sets.model.UnixDirectoryAttributesWithChildren;
+import org.zowe.data.sets.model.UnixDirectoryAttributesWithChildren.UnixDirectoryAttributesWithChildrenBuilder;
+import org.zowe.data.sets.model.UnixDirectoryChild;
+import org.zowe.data.sets.model.UnixEntityType;
+import org.zowe.data.sets.model.UnixDirectoryChild.UnixDirectoryChildBuilder;
 
-public class ListUnixDirectoryZosmfRunner extends AbstractZosmfDataSetsRequestRunner<List<UnixFileAtributes>> {
+public class ListUnixDirectoryZosmfRunner extends AbstractZosmfRequestRunner<UnixDirectoryAttributesWithChildren> {
 
+    @Autowired
+    ZosmfConnector zosmfConnector;
+    
     private String path;
 
     public ListUnixDirectoryZosmfRunner(String path) {
@@ -47,27 +63,64 @@ public class ListUnixDirectoryZosmfRunner extends AbstractZosmfDataSetsRequestRu
     }
 
     @Override
-    protected List<UnixFileAtributes> getResult(ResponseCache responseCache) throws IOException {
+    protected UnixDirectoryAttributesWithChildren getResult(ResponseCache responseCache) throws IOException {
         JsonObject directoryListResponse = responseCache.getEntityAsJsonObject();
         JsonElement directoryListArray = directoryListResponse.get("items");
+        List<UnixDirectoryChild> directoryChildren = getChildrenFromJsonArray(directoryListArray.getAsJsonArray());
         
-        List<UnixFileAtributes> directoryListing = new ArrayList<UnixFileAtributes>();
-        for (JsonElement jsonElement : directoryListArray.getAsJsonArray()) {
-            UnixFileAtributes fileAttributes = getFileFromJson(jsonElement.getAsJsonObject());
-            directoryListing.add(fileAttributes);
-        }
-        return directoryListing;
+        JsonObject directoryObject = directoryListArray.getAsJsonArray().get(0).getAsJsonObject();
+        UnixDirectoryAttributesWithChildrenBuilder builder = UnixDirectoryAttributesWithChildren.builder()
+                .owner(getStringOrNull(directoryObject, "user"))
+                .group(getStringOrNull(directoryObject, "group"))
+                .type(getEntityTypeFromSymbolicPermissions(getStringOrNull(directoryObject, "mode")))
+                .permissionsSymbolic(getStringOrNull(directoryObject, "mode"))
+                .size(getIntegerOrNull(directoryObject, "size"))
+                .lastModified(getStringOrNull(directoryObject, "mtime"))
+                .children(directoryChildren);
+        
+        return builder.build();
     }
     
-    private UnixFileAtributes getFileFromJson(JsonObject jsonObject) {
-        UnixFileAtributesBuilder builder = UnixFileAtributes.builder().name(getStringOrNull(jsonObject, "name"))
-                .accessMode(getStringOrNull(jsonObject, "mode"))
-                .size(getIntegerOrNull(jsonObject, "size"))
-                .userId(getStringOrNull(jsonObject, "uid"))
-                .user(getStringOrNull(jsonObject, "user"))
-                .groupId(getStringOrNull(jsonObject, "gid"))
-                .group(getStringOrNull(jsonObject, "group"))
-                .lastModified(getStringOrNull(jsonObject, "mtime"));
-        return builder.build();
+    private List<UnixDirectoryChild> getChildrenFromJsonArray(JsonArray directoryListArray) {
+        List<UnixDirectoryChild> directoryChildren = new ArrayList<UnixDirectoryChild>();
+        
+        for (JsonElement jsonElement : directoryListArray) {
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            // Skip self and parent
+            if(!getStringOrNull(jsonObject, "name").equals(".") && !getStringOrNull(jsonObject, "name").equals("..")) {
+                UnixDirectoryChildBuilder builder = UnixDirectoryChild.builder().name(getStringOrNull(jsonObject, "name"))
+                        .type(getEntityTypeFromSymbolicPermissions(getStringOrNull(jsonObject, "mode")))
+                        .link(constructLinkString(getStringOrNull(jsonObject, "name")));
+                directoryChildren.add(builder.build());
+            }
+        }
+        return directoryChildren;
+    }
+    
+    private UnixEntityType getEntityTypeFromSymbolicPermissions(String permissions) {
+        if(permissions.startsWith("d")) {
+            return UnixEntityType.DIRECTORY;
+        }
+        return UnixEntityType.FILE;
+        
+    }
+
+    private String constructLinkString(String fileName) {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        return String.format("%s%s/%s", request.getRequestURL(), this.path, fileName);
+    }
+    
+    @Override
+    protected ZoweApiRestException createException(JsonObject jsonResponse, int statusCode) {
+        JsonElement details = jsonResponse.get("details");
+        JsonElement message = jsonResponse.get("message");
+        if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
+            if (null != details && details.toString().contains("EDC5111I Permission denied. (errno2=0xEF076015)")) {
+                throw new UnauthorisedDirectoryException(path);
+            } else if (message.toString().contains("Path name is not valid")) {
+                throw new PathNameNotValidException(path);
+            }
+        }
+        return null;
     }
 }

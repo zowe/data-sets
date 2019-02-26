@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.zowe.data.sets.services.DataSetService;
-import org.zowe.data.sets.model.UnixFileAtributes;
+import org.zowe.data.sets.model.UnixDirectoryAttributesWithChildren;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,20 +23,18 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/v1/ussFiles")
-@Api(value = "USS Files APIs")
-public class USSFilesController {
+@RequestMapping("/api/v1/unixfiles")
+@Api(value = "Unix Files APIs")
+public class UnixFilesController {
     
     @Autowired
     private DataSetService dataSetService;
     
     @GetMapping(value = "", produces = { "application/json" })
-    @ApiOperation(value = "Get a list of a directories contents", nickname = "getDirectoryListing", notes = "This API gets a list of files and directories for a given path", tags = "USS Files APIs")
+    @ApiOperation(value = "Get a list of a directories contents", nickname = "getDirectoryListing", notes = "This API gets a list of files and directories for a given path", tags = "Unix Files APIs")
     @ApiResponses({ @ApiResponse(code = 200, message = "Ok", response = String.class, responseContainer = "List")})
-    public List<UnixFileAtributes> getDirectoryListing(
+    public UnixDirectoryAttributesWithChildren getDirectoryListing(
             @ApiParam(value = "Path of Directory to be listed", required = true) @RequestParam String path) {
         return dataSetService.listUnixDirectory(path);
     }

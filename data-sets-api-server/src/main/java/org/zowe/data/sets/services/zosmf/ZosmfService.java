@@ -15,7 +15,7 @@ import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
 import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetContentWithEtag;
 import org.zowe.data.sets.model.DataSetCreateRequest;
-import org.zowe.data.sets.model.UnixFileAtributes;
+import org.zowe.data.sets.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.data.sets.services.DataSetService;
 
 import java.util.List;
@@ -68,7 +68,7 @@ public class ZosmfService implements DataSetService {
     }
     
     @Override
-    public List<UnixFileAtributes> listUnixDirectory(String path) {
+    public UnixDirectoryAttributesWithChildren listUnixDirectory(String path) {
         ListUnixDirectoryZosmfRunner runner = new ListUnixDirectoryZosmfRunner(path);
         return runner.run(zosmfConnector);
     }
