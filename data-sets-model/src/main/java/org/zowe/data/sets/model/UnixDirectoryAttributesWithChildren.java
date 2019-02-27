@@ -31,13 +31,13 @@ import java.util.List;
 @ApiModel(value = "UnixDirectoryAttributesWithChildren", description = "Attributes of a Unix Directory with its children")
 public class UnixDirectoryAttributesWithChildren {
     
-    @ApiModelProperty(value = "type", required = true)
+    @ApiModelProperty(value = "Type", required = true)
     private UnixEntityType type;
     
     @ApiModelProperty(value = "Owner", required = true)
     private String owner;
     
-    @ApiModelProperty(value = "group", required = true)
+    @ApiModelProperty(value = "Group", required = true)
     private String group;
     
     @ApiModelProperty(value = "Symbolic permissions", required = true)
@@ -49,6 +49,6 @@ public class UnixDirectoryAttributesWithChildren {
     @ApiModelProperty(value = "Last Modified", required = true)
     private String lastModified;
     
-    @ApiModelProperty(value = "children", required = true)
+    @ApiModelProperty(value = "Children", required = true)
     private List<UnixDirectoryChild> children;
 }

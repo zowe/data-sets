@@ -107,7 +107,11 @@ public class ListUnixDirectoryZosmfRunner extends AbstractZosmfRequestRunner<Uni
 
     private String constructLinkString(String fileName) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        return String.format("%s%s/%s", request.getRequestURL(), this.path, fileName);
+        String requestURL = request.getRequestURL().toString();
+        if (requestURL.charAt(requestURL.length() - 1) == '/') {
+            requestURL = requestURL.substring(0, requestURL.length() - 1);
+        }
+        return String.format("%s%s/%s", requestURL, this.path, fileName);
     }
     
     @Override
