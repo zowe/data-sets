@@ -12,10 +12,13 @@ ext {
     slf4jVersion = "1.7.25"
     jsonPathVersion = "2.4.0"
     junitVersion = "4.12"
+    mapStructVersion = "1.2.0.Final"
     explorerApiCommonVersion = "0.1.0-SNAPSHOT"
 
     libraries = [
         lombok                             : "org.projectlombok:lombok:${lombokVersion}",
+        mapstruct                          : "org.mapstruct:mapstruct:${mapStructVersion}",
+        mapstruct_processor                : "org.mapstruct:mapstruct-processor:${mapStructVersion}",
         slf4j_simple                       : "org.slf4j:slf4j-simple:${slf4jVersion}",
         slf4j_api                          : "org.slf4j:slf4j-api:${slf4jVersion}",
         spring_boot_gradle_plugin          : "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}",

@@ -47,10 +47,10 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
         DataSetCreateRequest pdsRequest = createPdsRequest(TEST_DATA_SET);
         cleanUp = TEST_DATA_SET;
         createDataSet(pdsRequest).then().statusCode(HttpStatus.SC_CREATED)
-            .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + TEST_DATA_SET)).body(equalTo(""));
+                .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + TEST_DATA_SET)).body(equalTo(""));
 
-        List<DataSetAttributes> actual = getDataSets(TEST_DATA_SET).then().statusCode(HttpStatus.SC_OK).extract().body()
-            .jsonPath().getList("", DataSetAttributes.class);
+        List<DataSetAttributes> actual = getDataSetsDetails(TEST_DATA_SET).then().statusCode(HttpStatus.SC_OK).extract().body()
+                .jsonPath().getList("", DataSetAttributes.class);
         assertEquals("Should have created the correct type", DataSetOrganisationType.PO,
                 actual.get(0).getDataSetOrganization());
     }
@@ -75,10 +75,10 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
         DataSetCreateRequest sdsRequest = createSdsRequest(TEST_DATA_SET);
         cleanUp = TEST_DATA_SET;
         createDataSet(sdsRequest).then().statusCode(HttpStatus.SC_CREATED)
-            .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + TEST_DATA_SET)).body(equalTo(""));
+                .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + TEST_DATA_SET)).body(equalTo(""));
 
-        List<DataSetAttributes> actual = getDataSets(TEST_DATA_SET).then().statusCode(HttpStatus.SC_OK).extract().body()
-            .jsonPath().getList("", DataSetAttributes.class);
+        List<DataSetAttributes> actual = getDataSetsDetails(TEST_DATA_SET).then().statusCode(HttpStatus.SC_OK).extract().body()
+                .jsonPath().getList("", DataSetAttributes.class);
         assertEquals("Should have created the correct type", DataSetOrganisationType.PS,
                 actual.get(0).getDataSetOrganization());
 
@@ -93,7 +93,7 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
         cleanUp = TEST_DATA_SET;
         sdsRequestWithDirBlk.setDirectoryBlocks(10);
         createDataSet(sdsRequestWithDirBlk).then().statusCode(expectedError.getStatus().value())
-            .contentType(ContentType.JSON).body("status", equalTo(expectedError.getStatus().name()))
-            .body("message", equalTo(expectedError.getMessage()));
+                .contentType(ContentType.JSON).body("status", equalTo(expectedError.getStatus().name()))
+                .body("message", equalTo(expectedError.getMessage()));
     }
 }

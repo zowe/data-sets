@@ -39,13 +39,13 @@ public class DataSetsGetIntegrationTest extends AbstractDataSetsIntegrationTest 
             String today = simpleDateFormat.format(new Date());
 
             DataSetAttributes expected = DataSetAttributes.builder().blockSize(pdsRequest.getBlockSize())
-                .deviceType("3390").creationDate(today).name(tempDataSet).migrated(false)
-                .dataSetOrganization(pdsRequest.getDataSetOrganization()).expirationDate("***None***")
-                .recordLength(pdsRequest.getRecordLength()).allocationUnit(pdsRequest.getAllocationUnit())
-                .recordFormat(pdsRequest.getRecordFormat()).allocatedSize(10).used(10).build();
+                    .deviceType("3390").creationDate(today).name(tempDataSet).migrated(false)
+                    .dataSetOrganization(pdsRequest.getDataSetOrganization()).expirationDate("***None***")
+                    .recordLength(pdsRequest.getRecordLength()).allocationUnit(pdsRequest.getAllocationUnit())
+                    .recordFormat(pdsRequest.getRecordFormat()).allocatedSize(10).used(10).build();
 
-            List<DataSetAttributes> actual = getDataSets(tempDataSet).then().statusCode(HttpStatus.SC_OK).extract()
-                .body().jsonPath().getList("", DataSetAttributes.class);
+            List<DataSetAttributes> actual = getDataSetsDetails(tempDataSet).then().statusCode(HttpStatus.SC_OK).extract()
+                    .body().jsonPath().getList("", DataSetAttributes.class);
 
             // We can't tell the value of some attributes
             for (DataSetAttributes dataSetAttributes : actual) {
@@ -63,13 +63,13 @@ public class DataSetsGetIntegrationTest extends AbstractDataSetsIntegrationTest 
 
     @Test
     public void testGetInvalidDatasets() throws Exception {
-        getDataSets(INVALID_DATASET_NAME).then().statusCode(HttpStatus.SC_OK).body("$", IsEmptyCollection.empty());
+        getDataSetsDetails(INVALID_DATASET_NAME).then().statusCode(HttpStatus.SC_OK).body("$", IsEmptyCollection.empty());
     }
 
     @Test
     // TODO - need to create the unauthorised dataset in setup script
     @Ignore("Task 19604")
     public void testGetUnauthorisedDatasetMembers() throws Exception {
-        getDataSets(UNAUTHORIZED_DATASET).then().statusCode(HttpStatus.SC_FORBIDDEN);
+        getDataSetsDetails(UNAUTHORIZED_DATASET).then().statusCode(HttpStatus.SC_FORBIDDEN);
     }
 }

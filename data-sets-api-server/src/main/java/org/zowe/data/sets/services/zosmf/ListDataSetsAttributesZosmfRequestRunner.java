@@ -20,7 +20,7 @@ import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.ResponseCache;
 import org.zowe.data.sets.mapper.DataSetMapper;
-import org.zowe.data.sets.model.DataSet;
+import org.zowe.data.sets.model.DataSetAttributes;
 
 import java.io.IOException;
 import java.net.URI;
@@ -29,11 +29,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-public class ListDataSetsZosmfRequestRunner extends AbstractZosmfDataSetsRequestRunner<List<DataSet>> {
+public class ListDataSetsAttributesZosmfRequestRunner extends AbstractZosmfDataSetsRequestRunner<List<DataSetAttributes>> {
 
     private String filter;
 
-    public ListDataSetsZosmfRequestRunner(String filter) {
+    public ListDataSetsAttributesZosmfRequestRunner(String filter) {
         this.filter = filter;
     }
 
@@ -47,23 +47,22 @@ public class ListDataSetsZosmfRequestRunner extends AbstractZosmfDataSetsRequest
         String query = String.format("dslevel=%s", filter);
         URI requestUrl = zosmfConnector.getFullUrl("restfiles/ds", query); // $NON-NLS-1$
         RequestBuilder requestBuilder = RequestBuilder.get(requestUrl);
-        requestBuilder.addHeader("X-IBM-Attributes", "dsname");
+        requestBuilder.addHeader("X-IBM-Attributes", "base");
         return requestBuilder;
     }
 
     @Override
-
-    protected List<DataSet> getResult(ResponseCache responseCache) throws IOException {
+    protected List<DataSetAttributes> getResult(ResponseCache responseCache) throws IOException {
         JsonObject dataSetsResponse = responseCache.getEntityAsJsonObject();
         JsonElement dataSetJsonArray = dataSetsResponse.get("items");
 
-        List<DataSet> dataSets = new ArrayList<>();
+        List<DataSetAttributes> dataSets = new ArrayList<>();
         for (JsonElement jsonElement : dataSetJsonArray.getAsJsonArray()) {
             try {
-                DataSet dataSet = DataSetMapper.INSTANCE.zosToDataSetDTO(jsonElement.getAsJsonObject());
+                DataSetAttributes dataSet = DataSetMapper.INSTANCE.zosToDataSetAttributesDTO(jsonElement.getAsJsonObject());
                 dataSets.add(dataSet);
             } catch (IllegalArgumentException e) {
-                log.error("listDataSets", e);
+                log.error("listDataSetAttributes", e);
             }
         }
         return dataSets;

@@ -262,13 +262,13 @@ public class DataSetsControllerTest {
         List<DataSetAttributes> dataSetsList = Arrays.asList(cobol, rexx, vsam);
         String filter = "TEST";
 
-        when(dataSetService.listDataSets(filter)).thenReturn(dataSetsList);
+        when(dataSetService.listDataSetAttributes(filter)).thenReturn(dataSetsList);
 
         mockMvc.perform(get(ENDPOINT_ROOT + "/{filter}", filter)).andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(content().string(JsonUtils.convertToJsonString(dataSetsList)));
 
-        verify(dataSetService, times(1)).listDataSets(filter);
+        verify(dataSetService, times(1)).listDataSetAttributes(filter);
         verifyNoMoreInteractions(dataSetService);
     }
 
@@ -277,12 +277,12 @@ public class DataSetsControllerTest {
 
         String dummy = "junk";
 
-        when(dataSetService.listDataSets(anyString())).thenReturn(Collections.emptyList());
+        when(dataSetService.listDataSetAttributes(anyString())).thenReturn(Collections.emptyList());
 
         mockMvc.perform(get(ENDPOINT_ROOT + "/{filter}", dummy)).andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andExpect(content().string("[]"));
 
-        verify(dataSetService, times(1)).listDataSets(dummy);
+        verify(dataSetService, times(1)).listDataSetAttributes(dummy);
         verifyNoMoreInteractions(dataSetService);
     }
 
@@ -294,14 +294,14 @@ public class DataSetsControllerTest {
         String errorMessage = MessageFormat.format("No partitioned data set {0} was found", invalidPdsName);
         ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.BAD_REQUEST).build();
 
-        when(dataSetService.listDataSets(invalidPdsName)).thenThrow(new ZoweApiErrorException(expectedError));
+        when(dataSetService.listDataSetAttributes(invalidPdsName)).thenThrow(new ZoweApiErrorException(expectedError));
 
         mockMvc.perform(get(ENDPOINT_ROOT + "/{filter}", invalidPdsName))
             .andExpect(status().is(expectedError.getStatus().value()))
             .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
             .andExpect(jsonPath("$.message").value(errorMessage));
 
-        verify(dataSetService, times(1)).listDataSets(invalidPdsName);
+        verify(dataSetService, times(1)).listDataSetAttributes(invalidPdsName);
         verifyNoMoreInteractions(dataSetService);
     }
 

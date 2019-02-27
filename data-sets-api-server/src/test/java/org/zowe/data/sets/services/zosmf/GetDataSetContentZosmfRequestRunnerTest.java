@@ -32,8 +32,8 @@ public class GetDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
     @Test
     public void get_content_should_call_zosmf_and_parse_response_correctly() throws Exception {
         String headerTag = "2A7F90DCB9C2F4D4A582E36F859AE41F";
-        DataSetContent content = new DataSetContent("//ATLJ0000 JOB (ADL),'ATLAS',MSGCLASS=X,CLASS=A,TIME=1440\n"
-                + "//*        TEST JOB\n" + "//UNIT     EXEC PGM=IEFBR14");
+        DataSetContent content = new DataSetContent("//ATLJ0000 JOB (ADL),'ATLAS',MSGCLASS=X,CLASS=A,TIME=1440" + System.lineSeparator()
+                + "//*        TEST JOB" + System.lineSeparator() + "//UNIT     EXEC PGM=IEFBR14");
         String dataSetName = "STEVENH.TEST.JCL";
 
         DataSetContentWithEtag expected = new DataSetContentWithEtag(content, headerTag);
@@ -56,8 +56,8 @@ public class GetDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
 
     @Test
     public void get_content_should_work_even_if_no_etag_header_zosmf_and_parse_response_correctly() throws Exception {
-        DataSetContent content = new DataSetContent("//ATLJ0000 JOB (ADL),'ATLAS',MSGCLASS=X,CLASS=A,TIME=1440\n"
-                + "//*        TEST JOB\n" + "//UNIT     EXEC PGM=IEFBR14");
+        DataSetContent content = new DataSetContent("//ATLJ0000 JOB (ADL),'ATLAS',MSGCLASS=X,CLASS=A,TIME=1440" + System.lineSeparator()
+                + "//*        TEST JOB" + System.lineSeparator() + "//UNIT     EXEC PGM=IEFBR14");
         String dataSetName = "STEVENH.TEST.JCL";
 
         DataSetContentWithEtag expected = new DataSetContentWithEtag(content, null);
@@ -111,7 +111,7 @@ public class GetDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
     }
 
     private void checkGetContentExceptionAndVerify(String dataSetName, Exception expectedException, int statusCode,
-            String file) throws IOException, Exception {
+                                                   String file) throws IOException, Exception {
         mockJsonResponse(statusCode, loadTestFile(file));
 
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds/%s", dataSetName));
