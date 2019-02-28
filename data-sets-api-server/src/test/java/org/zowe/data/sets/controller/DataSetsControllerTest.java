@@ -66,12 +66,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @PrepareForTest({ ZosUtils.class, ServletUriComponentsBuilder.class })
 public class DataSetsControllerTest {
 
-    private static final String EMPTY_ITEMS = "{\"items\":[]}";
-
     private static final String ENDPOINT_ROOT = "/api/v1/datasets";
 
     // TODO LATER - move up into ApiControllerTest - https://github.com/zowe/explorer-api-common/issues/11
     private static final String DUMMY_USER = "A_USER";
+    private static final String EMPTY_ITEMS = "{\"items\":[]}";
 
     private MockMvc mockMvc;
 
