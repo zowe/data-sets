@@ -28,6 +28,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.zowe.api.common.errors.ApiError;
 import org.zowe.api.common.exceptions.ZoweApiErrorException;
 import org.zowe.api.common.exceptions.ZoweRestExceptionHandler;
+import org.zowe.api.common.model.ItemsWrapper;
 import org.zowe.api.common.utils.JsonUtils;
 import org.zowe.api.common.utils.ZosUtils;
 import org.zowe.data.sets.model.AllocationUnitType;
@@ -65,6 +66,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @PrepareForTest({ ZosUtils.class, ServletUriComponentsBuilder.class })
 public class DataSetsControllerTest {
 
+    private static final String EMPTY_ITEMS = "{\"items\":[]}";
+
     private static final String ENDPOINT_ROOT = "/api/v1/datasets";
 
     // TODO LATER - move up into ApiControllerTest - https://github.com/zowe/explorer-api-common/issues/11
@@ -91,13 +94,14 @@ public class DataSetsControllerTest {
     public void get_data_set_member_names_success() throws Exception {
 
         List<String> memberList = Arrays.asList("MEMBER1", "MEMBER2");
+        ItemsWrapper<String> items = new ItemsWrapper<String>(memberList);
         String pdsName = "TEST.JCL";
 
-        when(dataSetService.listDataSetMembers(pdsName)).thenReturn(memberList);
+        when(dataSetService.listDataSetMembers(pdsName)).thenReturn(items);
 
         mockMvc.perform(get(ENDPOINT_ROOT + "/{dsn}/members", pdsName)).andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(content().string(JsonUtils.convertToJsonString(memberList)));
+            .andExpect(content().string(JsonUtils.convertToJsonString(items)));
 
         verify(dataSetService, times(1)).listDataSetMembers(pdsName);
         verifyNoMoreInteractions(dataSetService);
@@ -108,10 +112,11 @@ public class DataSetsControllerTest {
 
         String pdsName = "TEST.JCL";
 
-        when(dataSetService.listDataSetMembers(pdsName)).thenReturn(Collections.emptyList());
+        when(dataSetService.listDataSetMembers(pdsName)).thenReturn(new ItemsWrapper<String>(Collections.emptyList()));
 
         mockMvc.perform(get(ENDPOINT_ROOT + "/{dsn}/members", pdsName)).andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andExpect(content().string("[]"));
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string(EMPTY_ITEMS));
 
         verify(dataSetService, times(1)).listDataSetMembers(pdsName);
         verifyNoMoreInteractions(dataSetService);
@@ -260,13 +265,14 @@ public class DataSetsControllerTest {
         DataSetAttributes vsam = DataSetAttributes.builder().build();
 
         List<DataSetAttributes> dataSetsList = Arrays.asList(cobol, rexx, vsam);
+        ItemsWrapper<DataSetAttributes> response = new ItemsWrapper<DataSetAttributes>(dataSetsList);
         String filter = "TEST";
 
-        when(dataSetService.listDataSets(filter)).thenReturn(dataSetsList);
+        when(dataSetService.listDataSets(filter)).thenReturn(response);
 
         mockMvc.perform(get(ENDPOINT_ROOT + "/{filter}", filter)).andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(content().string(JsonUtils.convertToJsonString(dataSetsList)));
+            .andExpect(content().string(JsonUtils.convertToJsonString(response)));
 
         verify(dataSetService, times(1)).listDataSets(filter);
         verifyNoMoreInteractions(dataSetService);
@@ -277,10 +283,13 @@ public class DataSetsControllerTest {
 
         String dummy = "junk";
 
-        when(dataSetService.listDataSets(anyString())).thenReturn(Collections.emptyList());
+        ItemsWrapper<DataSetAttributes> empty = new ItemsWrapper<DataSetAttributes>(Collections.emptyList());
+
+        when(dataSetService.listDataSets(anyString())).thenReturn(empty);
 
         mockMvc.perform(get(ENDPOINT_ROOT + "/{filter}", dummy)).andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)).andExpect(content().string("[]"));
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string(EMPTY_ITEMS));
 
         verify(dataSetService, times(1)).listDataSets(dummy);
         verifyNoMoreInteractions(dataSetService);

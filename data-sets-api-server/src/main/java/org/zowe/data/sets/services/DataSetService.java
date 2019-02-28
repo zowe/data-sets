@@ -9,19 +9,17 @@
  */
 package org.zowe.data.sets.services;
 
+import org.zowe.api.common.model.ItemsWrapper;
 import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetContentWithEtag;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.model.UnixDirectoryAttributesWithChildren;
 
-import java.util.List;
-
-//TODO:: Rename to generalised file service
 public interface DataSetService {
 
-    List<DataSetAttributes> listDataSets(String filter);
+    ItemsWrapper<DataSetAttributes> listDataSets(String filter);
 
-    List<String> listDataSetMembers(String dataSetName);
+    ItemsWrapper<String> listDataSetMembers(String dataSetName);
 
     DataSetContentWithEtag getContent(String dataSetName);
 
