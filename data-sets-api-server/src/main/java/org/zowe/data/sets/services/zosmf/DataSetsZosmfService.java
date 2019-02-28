@@ -15,13 +15,12 @@ import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
 import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetContentWithEtag;
 import org.zowe.data.sets.model.DataSetCreateRequest;
-import org.zowe.data.sets.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.data.sets.services.DataSetService;
 
 import java.util.List;
 
 @Service
-public class ZosmfService implements DataSetService {
+public class DataSetsZosmfService implements DataSetService {
 
     @Autowired
     ZosmfConnector zosmfConnector;
@@ -65,11 +64,5 @@ public class ZosmfService implements DataSetService {
     public void deleteDataSet(String dataSetName) {
         DeleteDataSetZosmfRequestRunner runner = new DeleteDataSetZosmfRequestRunner(dataSetName);
         runner.run(zosmfConnector);
-    }
-    
-    @Override
-    public UnixDirectoryAttributesWithChildren listUnixDirectory(String path) {
-        ListUnixDirectoryZosmfRunner runner = new ListUnixDirectoryZosmfRunner(path);
-        return runner.run(zosmfConnector);
     }
 }

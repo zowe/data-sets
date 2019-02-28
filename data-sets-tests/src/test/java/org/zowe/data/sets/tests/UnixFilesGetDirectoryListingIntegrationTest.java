@@ -18,10 +18,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.zowe.api.common.errors.ApiError;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
-import org.zowe.data.sets.exceptions.PathNameNotValidException;
-import org.zowe.data.sets.model.UnixDirectoryAttributesWithChildren;
-import org.zowe.data.sets.model.UnixDirectoryChild;
-import org.zowe.data.sets.model.UnixEntityType;
+import org.zowe.unix.files.exceptions.PathNameNotValidException;
+import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
+import org.zowe.unix.files.model.UnixDirectoryChild;
+import org.zowe.unix.files.model.UnixEntityType;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;

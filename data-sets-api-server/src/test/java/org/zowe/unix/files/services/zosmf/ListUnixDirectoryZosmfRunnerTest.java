@@ -7,7 +7,7 @@
  *
  * Copyright IBM Corporation 2019
  */
-package org.zowe.data.sets.services.zosmf;
+package org.zowe.unix.files.services.zosmf;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
@@ -15,10 +15,12 @@ import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.zowe.data.sets.exceptions.UnauthorisedDirectoryException;
-import org.zowe.data.sets.model.UnixDirectoryAttributesWithChildren;
-import org.zowe.data.sets.model.UnixDirectoryChild;
-import org.zowe.data.sets.model.UnixEntityType;
+import org.zowe.data.sets.services.zosmf.AbstractZosmfRequestRunnerTest;
+import org.zowe.unix.files.exceptions.UnauthorisedDirectoryException;
+import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
+import org.zowe.unix.files.model.UnixDirectoryChild;
+import org.zowe.unix.files.model.UnixEntityType;
+import org.zowe.unix.files.services.zosmf.ListUnixDirectoryZosmfRunner;
 
 import java.util.Arrays;
 import java.util.List;

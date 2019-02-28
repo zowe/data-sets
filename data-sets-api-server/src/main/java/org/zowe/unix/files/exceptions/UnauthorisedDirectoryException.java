@@ -7,20 +7,19 @@
  *
  * Copyright IBM Corporation 2019
  */
-package org.zowe.data.sets.exceptions;
+package org.zowe.unix.files.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 
-public class PathNameNotValidException  extends ZoweApiRestException {
-    
+public class UnauthorisedDirectoryException extends ZoweApiRestException {
+
     /**
      * 
      */
-    private static final long serialVersionUID = -2079479272866830096L;
+    private static final long serialVersionUID = 5056221873442698156L;
 
-    public PathNameNotValidException(String path) {
-        super(HttpStatus.BAD_REQUEST, "Requested path ''{0}'' is not valid", path);
+    public UnauthorisedDirectoryException(String path) {
+        super(HttpStatus.FORBIDDEN, "You are not authorised to access directory ''{0}''", path);
     }
-
 }

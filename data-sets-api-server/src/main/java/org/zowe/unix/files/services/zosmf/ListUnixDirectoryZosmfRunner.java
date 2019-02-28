@@ -7,7 +7,7 @@
  *
  * Copyright IBM Corporation 2019
  */
-package org.zowe.data.sets.services.zosmf;
+package org.zowe.unix.files.services.zosmf;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -22,13 +22,13 @@ import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.ResponseCache;
 import org.zowe.api.common.zosmf.services.AbstractZosmfRequestRunner;
-import org.zowe.data.sets.exceptions.PathNameNotValidException;
-import org.zowe.data.sets.exceptions.UnauthorisedDirectoryException;
-import org.zowe.data.sets.model.UnixDirectoryAttributesWithChildren;
-import org.zowe.data.sets.model.UnixDirectoryAttributesWithChildren.UnixDirectoryAttributesWithChildrenBuilder;
-import org.zowe.data.sets.model.UnixDirectoryChild;
-import org.zowe.data.sets.model.UnixDirectoryChild.UnixDirectoryChildBuilder;
-import org.zowe.data.sets.model.UnixEntityType;
+import org.zowe.unix.files.exceptions.PathNameNotValidException;
+import org.zowe.unix.files.exceptions.UnauthorisedDirectoryException;
+import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
+import org.zowe.unix.files.model.UnixDirectoryChild;
+import org.zowe.unix.files.model.UnixEntityType;
+import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren.UnixDirectoryAttributesWithChildrenBuilder;
+import org.zowe.unix.files.model.UnixDirectoryChild.UnixDirectoryChildBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 
