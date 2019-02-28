@@ -21,7 +21,6 @@ import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.model.ItemsWrapper;
 import org.zowe.api.common.test.ZoweApiTest;
-import org.zowe.data.sets.exceptions.UnauthorisedDirectoryException;
 import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetContent;
 import org.zowe.data.sets.model.DataSetContentWithEtag;
@@ -35,19 +34,18 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-//TODO:: Rename to coincide with renaming of ZosmfDataSetService
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ZosmfService.class })
-public class ZosmfDataSetServiceTest extends ZoweApiTest {
+@PrepareForTest({ DataSetsZosmfService.class })
+public class DataSetsZosmfServiceTest extends ZoweApiTest {
 
     @Mock
     ZosmfConnector zosmfConnector;
 
-    ZosmfService dataService;
+    DataSetsZosmfService dataService;
 
     @Before
     public void setUp() throws Exception {
-        dataService = new ZosmfService();
+        dataService = new DataSetsZosmfService();
         dataService.zosmfConnector = zosmfConnector;
     }
 
@@ -203,28 +201,5 @@ public class ZosmfDataSetServiceTest extends ZoweApiTest {
         when(runner.run(zosmfConnector)).thenThrow(expectedException);
         PowerMockito.whenNew(DeleteDataSetZosmfRequestRunner.class).withArguments(name).thenReturn(runner);
         shouldThrow(expectedException, () -> dataService.deleteDataSet(name));
-    }
-    
-    @Test
-    public void testGetUnixDirectoryListRunnerValueCorrectlyReturned() throws Exception {
-        String path = "/a/path"; 
-        
-        ListUnixDirectoryZosmfRunner runner = mock(ListUnixDirectoryZosmfRunner.class);
-        PowerMockito.whenNew(ListUnixDirectoryZosmfRunner.class).withArguments(path).thenReturn(runner);
-        dataService.listUnixDirectory(path);
-        
-        verify(runner).run(zosmfConnector);
-    }
-    
-    @Test
-    public void testGetUnixDirectoryListRunnerExceptionThrown() throws Exception {
-        String path = "/a/path";
-        
-        ZoweApiRestException expectedException = new UnauthorisedDirectoryException(path);
-        
-        ListUnixDirectoryZosmfRunner runner = mock(ListUnixDirectoryZosmfRunner.class);
-        when(runner.run(zosmfConnector)).thenThrow(expectedException);
-        PowerMockito.whenNew(ListUnixDirectoryZosmfRunner.class).withArguments(path).thenReturn(runner);
-        shouldThrow(expectedException, () -> dataService.listUnixDirectory(path));
     }
 }

@@ -28,11 +28,11 @@ import org.zowe.api.common.exceptions.ZoweApiErrorException;
 import org.zowe.api.common.exceptions.ZoweRestExceptionHandler;
 import org.zowe.api.common.utils.JsonUtils;
 import org.zowe.api.common.utils.ZosUtils;
-import org.zowe.data.sets.model.UnixDirectoryAttributesWithChildren;
-import org.zowe.data.sets.model.UnixDirectoryChild;
-import org.zowe.data.sets.model.UnixEntityType;
-import org.zowe.data.sets.services.DataSetService;
 import org.zowe.unix.files.controller.UnixFilesController;
+import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
+import org.zowe.unix.files.model.UnixDirectoryChild;
+import org.zowe.unix.files.model.UnixEntityType;
+import org.zowe.unix.files.services.UnixFilesService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -59,7 +59,7 @@ public class UnixFilesControllerTest {
     private MockMvc mockMvc;
 
     @Mock
-    private DataSetService dataSetService;
+    private UnixFilesService unixFilesService;
 
     @InjectMocks
     private UnixFilesController unixFilesController;
@@ -87,14 +87,14 @@ public class UnixFilesControllerTest {
                 .size(8192).lastModified("2019-02-03T16:04:19").children(children).build();
         String path = "/u/ibmuser";
         
-        when(dataSetService.listUnixDirectory(path)).thenReturn(listedDirectory);
+        when(unixFilesService.listUnixDirectory(path)).thenReturn(listedDirectory);
         
         mockMvc.perform(get(ENDPOINT_ROOT + "?path={path}", path)).andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(content().string(JsonUtils.convertToJsonString(listedDirectory)));
         
-        verify(dataSetService, times(1)).listUnixDirectory(path);
-        verifyNoMoreInteractions(dataSetService);
+        verify(unixFilesService, times(1)).listUnixDirectory(path);
+        verifyNoMoreInteractions(unixFilesService);
     }
     
     @Test
@@ -104,14 +104,14 @@ public class UnixFilesControllerTest {
         String errorMessage = String.format("You are not authorised to access directory ''{0}''", invalidPath);
         ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.FORBIDDEN).build();
         
-        when(dataSetService.listUnixDirectory(invalidPath)).thenThrow(new ZoweApiErrorException(expectedError));
+        when(unixFilesService.listUnixDirectory(invalidPath)).thenThrow(new ZoweApiErrorException(expectedError));
         
         mockMvc.perform(get(ENDPOINT_ROOT + "?path={path}", invalidPath))
             .andExpect(status().is(expectedError.getStatus().value()))
             .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
             .andExpect(jsonPath("$.message").value(errorMessage));
         
-        verify(dataSetService, times(1)).listUnixDirectory(invalidPath);
-        verifyNoMoreInteractions(dataSetService);
+        verify(unixFilesService, times(1)).listUnixDirectory(invalidPath);
+        verifyNoMoreInteractions(unixFilesService);
     }
 }

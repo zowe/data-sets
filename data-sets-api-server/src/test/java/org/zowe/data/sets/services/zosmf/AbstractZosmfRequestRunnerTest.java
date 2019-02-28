@@ -43,6 +43,7 @@ import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 //TODO MARK - speak to Mark about how to get this moved to common test https://github.com/zowe/explorer-api-common/issues/11
+//TODO Class used by both org.zowe.data.sets and org.zowe.unix.files, when moving to api-common consider this
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ RequestBuilder.class, JsonUtils.class, ContentType.class, AbstractZosmfRequestRunner.class })
 public abstract class AbstractZosmfRequestRunnerTest extends ZoweApiTest {
@@ -50,10 +51,10 @@ public abstract class AbstractZosmfRequestRunnerTest extends ZoweApiTest {
     static final String BASE_URL = "https://dummy.com/zosmf/";
 
     @Mock
-    ZosmfConnector zosmfConnector;
+    protected ZosmfConnector zosmfConnector;
 
     @Mock
-    HttpResponse response;
+    protected HttpResponse response;
 
     @Before
     public void setUp() throws Exception {
@@ -78,7 +79,7 @@ public abstract class AbstractZosmfRequestRunnerTest extends ZoweApiTest {
         verifyInteractions(requestBuilder, false);
     }
 
-    void verifyInteractions(RequestBuilder requestBuilder, boolean path) throws IOException, URISyntaxException {
+    protected void verifyInteractions(RequestBuilder requestBuilder, boolean path) throws IOException, URISyntaxException {
         verify(zosmfConnector, times(1)).request(requestBuilder);
         if (path) {
             verify(zosmfConnector, times(1)).getFullUrl(anyString(), anyString());
@@ -89,7 +90,7 @@ public abstract class AbstractZosmfRequestRunnerTest extends ZoweApiTest {
     }
 
     // TODO - refactor common bits together
-    RequestBuilder mockGetBuilder(String relativeUri) throws URISyntaxException {
+    protected RequestBuilder mockGetBuilder(String relativeUri) throws URISyntaxException {
         RequestBuilder builder = mock(RequestBuilder.class);
         mockStatic(RequestBuilder.class);
         URI uri = new URI(BASE_URL + relativeUri);
@@ -157,7 +158,7 @@ public abstract class AbstractZosmfRequestRunnerTest extends ZoweApiTest {
         return builder;
     }
 
-    ResponseCache mockJsonResponse(int statusCode, String jsonString) throws Exception {
+    protected ResponseCache mockJsonResponse(int statusCode, String jsonString) throws Exception {
 
         ResponseCache responseCache = mockResponseAndContentType(statusCode, jsonString, ContentType.APPLICATION_JSON);
 
@@ -197,7 +198,7 @@ public abstract class AbstractZosmfRequestRunnerTest extends ZoweApiTest {
         return responseCache;
     }
 
-    String loadTestFile(String relativePath) throws IOException {
+    protected String loadTestFile(String relativePath) throws IOException {
         return loadFile("src/test/resources/zosmfResponses/" + relativePath);
     }
 
