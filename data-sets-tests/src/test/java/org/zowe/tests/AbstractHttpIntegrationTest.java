@@ -7,7 +7,7 @@
  *
  * Copyright IBM Corporation 2018, 2019
  */
-package org.zowe.data.sets.tests;
+package org.zowe.tests;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -46,7 +46,7 @@ public abstract class AbstractHttpIntegrationTest {
         verifyExceptionReturn(expected.getApiError(), response);
     }
 
-    void verifyExceptionReturn(ApiError expectedError, Response response) {
+    protected void verifyExceptionReturn(ApiError expectedError, Response response) {
         response.then().statusCode(expectedError.getStatus().value()).contentType(ContentType.JSON)
             .body("status", equalTo(expectedError.getStatus().name()))
             .body("message", equalTo(expectedError.getMessage()));

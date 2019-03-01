@@ -12,15 +12,14 @@ package org.zowe.unix.files.exceptions;
 import org.springframework.http.HttpStatus;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 
-public class UnauthorisedFileException extends ZoweApiRestException {
-    
+public class FileNotFoundException extends ZoweApiRestException {
+
     /**
      * 
      */
-    private static final long serialVersionUID = 6715020740317057740L;
+    private static final long serialVersionUID = 5481519411291501932L;
 
-    public UnauthorisedFileException(String path) {
-        super(HttpStatus.FORBIDDEN, "You are not authorised to access file ''{0}''", path);
+    public FileNotFoundException(String path) {
+        super(HttpStatus.NOT_FOUND, "Requested file ''{0}'' not found", path);
     }
-
 }

@@ -15,8 +15,6 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +26,8 @@ import org.springframework.web.servlet.HandlerMapping;
 import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.unix.files.model.UnixFileContent;
 import org.zowe.unix.files.services.UnixFilesService;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/v1/unixfiles")
@@ -50,7 +50,7 @@ public class UnixFilesController {
     notes = "This API gets a the contetns of a Unix file. Try it out function will not work due to the encoding of forward slashes, "
             + "it should be noted that requests to this endpoint should only contain unencoded slashes", tags = "Unix Files APIs")
     @ApiResponses({ @ApiResponse(code = 200, message = "Ok", response = UnixFileContent.class)})
-    public UnixFileContent getUnixFileContent(@PathVariable String path, HttpServletRequest request){
+    public UnixFileContent getUnixFileContent(@PathVariable String path, HttpServletRequest request) {
         String requestPath = request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
         String fullPath = requestPath.substring(requestPath.indexOf("/api/v1/unixfiles") + 17);
 

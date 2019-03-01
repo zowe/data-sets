@@ -1,0 +1,10 @@
+{
+	"category":6,
+	"rc":8,
+	"reason":93782076,
+	"message":"fopen() error",
+	"stack":"  1 152F7C10+000002DE PosixFileControl::open(const char*)\n  2 152F5878+000006D2 GetFileServlet::doGet()\n  3 15302260+0000008A TsoServlet::service()\n  4 1532C940+0000017E TsoServlet::run()\n  5 1532C318+00000386 main\n  6 0679E050+0000127E CEEVROND\n  7 14B05450+000000B4 EDCZHINV\n  8 06637650+000001C6 CEEBBEXT\n",
+	"details":[
+		"EDC5135I Not a directory. (errno2=0x0594003C)"
+	]
+}

@@ -1,8 +1,13 @@
+/*
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright IBM Corporation 2019
+ */
 package org.zowe.unix.files.services.zosmf;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +20,10 @@ import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.test.ZoweApiTest;
 import org.zowe.unix.files.exceptions.UnauthorisedDirectoryException;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ UnixFilesZosmfService.class })

@@ -7,7 +7,7 @@
  *
  * Copyright IBM Corporation 2019
  */
-package org.zowe.data.sets.tests;
+package org.zowe.unix.files.tests;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -18,6 +18,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.zowe.api.common.errors.ApiError;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
+import org.zowe.tests.AbstractHttpIntegrationTest;
 import org.zowe.unix.files.exceptions.PathNameNotValidException;
 import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.unix.files.model.UnixDirectoryChild;

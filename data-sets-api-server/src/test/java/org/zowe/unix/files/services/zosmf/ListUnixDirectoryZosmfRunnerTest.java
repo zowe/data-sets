@@ -20,7 +20,6 @@ import org.zowe.unix.files.exceptions.UnauthorisedDirectoryException;
 import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.unix.files.model.UnixDirectoryChild;
 import org.zowe.unix.files.model.UnixEntityType;
-import org.zowe.unix.files.services.zosmf.ListUnixDirectoryZosmfRunner;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,7 +38,7 @@ public class ListUnixDirectoryZosmfRunnerTest extends AbstractZosmfRequestRunner
         
         List<UnixDirectoryChild> children = Arrays.asList(file, directory);
         
-        UnixDirectoryAttributesWithChildren listedDirectory = UnixDirectoryAttributesWithChildren.builder()
+        UnixDirectoryAttributesWithChildren expectedListedDirectory = UnixDirectoryAttributesWithChildren.builder()
                 .owner("IBMUSER").group("GROUP1").type(UnixEntityType.DIRECTORY).permissionsSymbolic("dr-x---rwx")
                 .size(8192).lastModified("2019-02-03T16:04:19").children(children).build();
         
@@ -52,7 +51,7 @@ public class ListUnixDirectoryZosmfRunnerTest extends AbstractZosmfRequestRunner
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
         
-        assertEquals(listedDirectory, new ListUnixDirectoryZosmfRunner(path).run(zosmfConnector));
+        assertEquals(expectedListedDirectory, new ListUnixDirectoryZosmfRunner(path).run(zosmfConnector));
         
         verifyInteractions(requestBuilder, true);
     }
