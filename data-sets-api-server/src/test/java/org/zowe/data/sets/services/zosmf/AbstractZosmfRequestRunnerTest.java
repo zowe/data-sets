@@ -174,7 +174,7 @@ public abstract class AbstractZosmfRequestRunnerTest extends ZoweApiTest {
         return responseCache;
     }
 
-    ResponseCache mockTextResponse(int statusCode, String text) throws Exception {
+    protected ResponseCache mockTextResponse(int statusCode, String text) throws Exception {
         return mockResponseAndContentType(statusCode, text, ContentType.TEXT_PLAIN);
     }
 

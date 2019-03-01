@@ -7,7 +7,7 @@
  *
  * Copyright IBM Corporation 2019
  */
-package org.zowe.uss.files.controller;
+package org.zowe.unix.files.controller;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,10 +28,10 @@ import org.zowe.api.common.exceptions.ZoweApiErrorException;
 import org.zowe.api.common.exceptions.ZoweRestExceptionHandler;
 import org.zowe.api.common.utils.JsonUtils;
 import org.zowe.api.common.utils.ZosUtils;
-import org.zowe.unix.files.controller.UnixFilesController;
 import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.unix.files.model.UnixDirectoryChild;
 import org.zowe.unix.files.model.UnixEntityType;
+import org.zowe.unix.files.model.UnixFileContent;
 import org.zowe.unix.files.services.UnixFilesService;
 
 import java.util.Arrays;
@@ -112,6 +112,38 @@ public class UnixFilesControllerTest {
             .andExpect(jsonPath("$.message").value(errorMessage));
         
         verify(unixFilesService, times(1)).listUnixDirectory(invalidPath);
+        verifyNoMoreInteractions(unixFilesService);
+    }
+    
+    @Test
+    public void get_unix_file_content_success() throws Exception {
+        String path = "/file";
+        
+        UnixFileContent fileContent = new UnixFileContent("Some file content");
+        
+        when(unixFilesService.getUnixFileContent(path)).thenReturn(fileContent);
+        
+        mockMvc.perform(get(ENDPOINT_ROOT + path)).andExpect(status().isOk())
+            .andExpect(content().string(JsonUtils.convertToJsonString(fileContent)));
+        
+        verify(unixFilesService, times(1)).getUnixFileContent(path);
+        verifyNoMoreInteractions(unixFilesService);
+    }
+    
+    @Test
+    public void get_unix_file_content_with_exception_should_be_converted_to_error_message() throws Exception {
+        String path = "/notAuth";
+        
+        String errorMessage = String.format("You are not authorised to access file %s", path);
+        ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.FORBIDDEN).build();
+        
+        when(unixFilesService.getUnixFileContent(path)).thenThrow(new ZoweApiErrorException(expectedError));
+        
+        mockMvc.perform(get(ENDPOINT_ROOT + path)).andExpect(status().isForbidden())
+            .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
+            .andExpect(jsonPath("$.message").value(errorMessage));
+        
+        verify(unixFilesService, times(1)).getUnixFileContent(path);
         verifyNoMoreInteractions(unixFilesService);
     }
 }

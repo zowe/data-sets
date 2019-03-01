@@ -7,7 +7,7 @@
  *
  * Copyright IBM Corporation 2018
  */
-package org.zowe.data.sets;
+package org.zowe;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,9 +17,9 @@ import org.springframework.context.annotation.ComponentScan;
 
 // @EnableApiDiscovery
 @ComponentScan({ "org.zowe" })
-public class DataSetsApplication {
+public class DataSetsAndUnixFilesApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DataSetsApplication.class, args);
+        SpringApplication.run(DataSetsAndUnixFilesApplication.class, args);
     }
 }
