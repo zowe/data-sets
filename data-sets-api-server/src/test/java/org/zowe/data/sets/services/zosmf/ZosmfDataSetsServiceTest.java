@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ZosmfDataSetService.class })
-public class ZosmfDataSetServiceTest extends ZoweApiTest {
+public class ZosmfDataSetsServiceTest extends ZoweApiTest {
 
     @Mock
     ZosmfConnector zosmfConnector;

@@ -39,6 +39,6 @@ jar {
 }
 
 bootJar {
-    mainClassName = 'org.zowe.data.sets.DataSetsApplication'
+    mainClassName = 'org.zowe.DataSetsAndUnixFilesApplication'
     classifier = 'boot'
 }
