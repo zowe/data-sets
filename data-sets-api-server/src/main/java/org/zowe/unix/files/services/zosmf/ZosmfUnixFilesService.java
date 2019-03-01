@@ -17,7 +17,7 @@ import org.zowe.unix.files.model.UnixFileContent;
 import org.zowe.unix.files.services.UnixFilesService;
 
 @Service
-public class UnixFilesZosmfService implements UnixFilesService {
+public class ZosmfUnixFilesService implements UnixFilesService {
     
     @Autowired
     ZosmfConnector zosmfConnector;

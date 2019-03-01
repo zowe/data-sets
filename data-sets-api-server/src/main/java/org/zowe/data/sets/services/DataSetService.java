@@ -14,6 +14,8 @@ import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetContentWithEtag;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 
+import java.util.List;
+
 public interface DataSetService {
 
     ItemsWrapper<DataSetAttributes> listDataSets(String filter);

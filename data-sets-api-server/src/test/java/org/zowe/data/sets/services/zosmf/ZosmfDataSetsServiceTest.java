@@ -35,17 +35,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ DataSetsZosmfService.class })
-public class DataSetsZosmfServiceTest extends ZoweApiTest {
+@PrepareForTest({ ZosmfDataSetService.class })
+public class ZosmfDataSetsServiceTest extends ZoweApiTest {
 
     @Mock
     ZosmfConnector zosmfConnector;
 
-    DataSetsZosmfService dataService;
+    ZosmfDataSetService dataService;
 
     @Before
     public void setUp() throws Exception {
-        dataService = new DataSetsZosmfService();
+        dataService = new ZosmfDataSetService();
         dataService.zosmfConnector = zosmfConnector;
     }
 
