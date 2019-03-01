@@ -20,7 +20,7 @@ import org.zowe.data.sets.services.DataSetService;
 import java.util.List;
 
 @Service
-public class DataSetsZosmfService implements DataSetService {
+public class ZosmfDataSetService implements DataSetService {
 
     @Autowired
     ZosmfConnector zosmfConnector;

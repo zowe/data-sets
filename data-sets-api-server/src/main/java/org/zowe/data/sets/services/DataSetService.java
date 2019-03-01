@@ -15,7 +15,6 @@ import org.zowe.data.sets.model.DataSetCreateRequest;
 
 import java.util.List;
 
-//TODO:: Rename to generalised file service
 public interface DataSetService {
 
     List<DataSetAttributes> listDataSets(String filter);

@@ -26,18 +26,18 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ UnixFilesZosmfService.class })
-public class UnixFileZosmfServiceTest extends ZoweApiTest {
+@PrepareForTest({ ZosmfUnixFilesService.class })
+public class ZosmfUnixFileServiceTest extends ZoweApiTest {
 
     @Mock
     ZosmfConnector zosmfConnector;
 
-    UnixFilesZosmfService unixFilesZosmfService;
+    ZosmfUnixFilesService zosmfUnixFilesService;
     
     @Before
     public void setUp() throws Exception {
-        unixFilesZosmfService = new UnixFilesZosmfService();
-        unixFilesZosmfService.zosmfConnector = zosmfConnector;
+        zosmfUnixFilesService = new ZosmfUnixFilesService();
+        zosmfUnixFilesService.zosmfConnector = zosmfConnector;
     }    
     
     @Test
@@ -46,7 +46,7 @@ public class UnixFileZosmfServiceTest extends ZoweApiTest {
         
         ListUnixDirectoryZosmfRunner runner = mock(ListUnixDirectoryZosmfRunner.class);
         PowerMockito.whenNew(ListUnixDirectoryZosmfRunner.class).withArguments(path).thenReturn(runner);
-        unixFilesZosmfService.listUnixDirectory(path);
+        zosmfUnixFilesService.listUnixDirectory(path);
         
         verify(runner).run(zosmfConnector);
     }
@@ -60,6 +60,6 @@ public class UnixFileZosmfServiceTest extends ZoweApiTest {
         ListUnixDirectoryZosmfRunner runner = mock(ListUnixDirectoryZosmfRunner.class);
         when(runner.run(zosmfConnector)).thenThrow(expectedException);
         PowerMockito.whenNew(ListUnixDirectoryZosmfRunner.class).withArguments(path).thenReturn(runner);
-        shouldThrow(expectedException, () -> unixFilesZosmfService.listUnixDirectory(path));
+        shouldThrow(expectedException, () -> zosmfUnixFilesService.listUnixDirectory(path));
     }
 }
