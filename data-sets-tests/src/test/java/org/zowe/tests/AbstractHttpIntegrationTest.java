@@ -31,8 +31,8 @@ public abstract class AbstractHttpIntegrationTest {
     protected final static String USER = System.getProperty("server.username");
     private final static String PASSWORD = System.getProperty("server.password");
 
-    static final String JOB_IEFBR14 = "IEFBR14";
-    static final String JOB_WITH_STEPS = "JOB1DD";
+    protected static final String JOB_IEFBR14 = "IEFBR14";
+    protected static final String JOB_WITH_STEPS = "JOB1DD";
 
     @BeforeClass
     public static void setUpConnection() {
