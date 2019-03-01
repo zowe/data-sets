@@ -114,9 +114,9 @@ public class ListUnixDirectoryZosmfRunner extends AbstractZosmfRequestRunner<Uni
     
     @Override
     protected ZoweApiRestException createException(JsonObject jsonResponse, int statusCode) {
-        JsonElement details = jsonResponse.get("details");
-        JsonElement message = jsonResponse.get("message");
         if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
+            JsonElement details = jsonResponse.get("details");
+            JsonElement message = jsonResponse.get("message");
             if (null != details && details.toString().contains("EDC5111I Permission denied. (errno2=0xEF076015)")) {
                 throw new UnauthorisedDirectoryException(path);
             } else if (message.toString().contains("Path name is not valid")) {

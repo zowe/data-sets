@@ -26,7 +26,7 @@ public class UnixFilesGetFileContentTest extends AbstractHttpIntegrationTest {
 
     static final String UNIX_FILES_ENDPOINT = "unixfiles";
     
-    //TODO:: How can we test without ability to first create a file
+    //TODO:: Need known testable file with content see: https://github.com/zowe/data-sets/issues/62
     @Test
     @Ignore
     public void testGetUnixFileContent() throws Exception {}
