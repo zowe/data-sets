@@ -16,6 +16,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
+import org.zowe.api.common.model.ItemsWrapper;
 import org.zowe.api.common.utils.ResponseCache;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListDataSetMembersZosmfRequestRunner extends AbstractZosmfDataSetsRequestRunner<List<String>> {
+public class ListDataSetMembersZosmfRequestRunner extends AbstractZosmfDataSetsRequestRunner<ItemsWrapper<String>> {
 
     private String dataSetName;
 
@@ -45,14 +46,14 @@ public class ListDataSetMembersZosmfRequestRunner extends AbstractZosmfDataSetsR
     }
 
     @Override
-    protected List<String> getResult(ResponseCache responseCache) throws IOException {
+    protected ItemsWrapper<String> getResult(ResponseCache responseCache) throws IOException {
         List<String> memberNames = new ArrayList<>();
         JsonObject memberResponse = responseCache.getEntityAsJsonObject();
         JsonElement memberJsonArray = memberResponse.get("items");
         for (JsonElement jsonElement : memberJsonArray.getAsJsonArray()) {
             memberNames.add(jsonElement.getAsJsonObject().get("member").getAsString());
         }
-        return memberNames;
+        return new ItemsWrapper<String>(memberNames);
     }
 
     @Override

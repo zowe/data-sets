@@ -9,17 +9,16 @@
  */
 package org.zowe.data.sets.services;
 
+import org.zowe.api.common.model.ItemsWrapper;
 import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetContentWithEtag;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 
-import java.util.List;
-
 public interface DataSetService {
 
-    List<DataSetAttributes> listDataSets(String filter);
+    ItemsWrapper<DataSetAttributes> listDataSets(String filter);
 
-    List<String> listDataSetMembers(String dataSetName);
+    ItemsWrapper<String> listDataSetMembers(String dataSetName);
 
     DataSetContentWithEtag getContent(String dataSetName);
 

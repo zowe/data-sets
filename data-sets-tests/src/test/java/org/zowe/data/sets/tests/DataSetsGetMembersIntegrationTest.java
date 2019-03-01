@@ -39,7 +39,7 @@ public class DataSetsGetMembersIntegrationTest extends AbstractDataSetsIntegrati
 
     @Test
     public void testGetValidDatasetMembers() throws Exception {
-        getMembers(TEST_PDS).then().statusCode(HttpStatus.SC_OK).body("$", hasItems("MEMBER1", "MEMBER2"));
+        getMembers(TEST_PDS).then().statusCode(HttpStatus.SC_OK).body("items", hasItems("MEMBER1", "MEMBER2"));
     }
 
     @Test

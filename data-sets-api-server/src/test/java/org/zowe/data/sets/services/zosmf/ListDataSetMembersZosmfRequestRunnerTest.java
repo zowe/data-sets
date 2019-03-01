@@ -13,6 +13,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.junit.Test;
 import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
+import org.zowe.api.common.model.ItemsWrapper;
 import org.zowe.data.sets.exceptions.UnauthorisedDataSetException;
 
 import java.io.IOException;
@@ -26,7 +27,8 @@ public class ListDataSetMembersZosmfRequestRunnerTest extends AbstractZosmfReque
 
     @Test
     public void list_member_names_should_call_zosmf_and_parse_response_correctly() throws Exception {
-        List<String> expected = Arrays.asList("IEFBR14", "JOB1DD");
+        List<String> members = Arrays.asList("IEFBR14", "JOB1DD");
+        ItemsWrapper<String> expected = new ItemsWrapper<>(members);
         String dataSetName = "STEVENH.TEST.JCL";
 
         mockJsonResponse(HttpStatus.SC_OK, loadTestFile("zosmf_getMembers.json"));
