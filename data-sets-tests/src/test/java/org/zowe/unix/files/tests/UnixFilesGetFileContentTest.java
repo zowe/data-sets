@@ -13,6 +13,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import org.apache.http.HttpStatus;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.zowe.api.common.errors.ApiError;
@@ -25,6 +26,11 @@ import static org.hamcrest.CoreMatchers.equalTo;
 public class UnixFilesGetFileContentTest extends AbstractHttpIntegrationTest {
 
     static final String UNIX_FILES_ENDPOINT = "unixfiles";
+    
+    @BeforeClass
+    public static void setUpEndpoint() throws Exception {
+        RestAssured.basePath = UNIX_FILES_ENDPOINT;
+    }
     
     //TODO:: Need known testable file with content see: https://github.com/zowe/data-sets/issues/62
     @Test
@@ -41,7 +47,7 @@ public class UnixFilesGetFileContentTest extends AbstractHttpIntegrationTest {
         ZoweApiRestException expectedException = new FileNotFoundException(invalidPath);
         ApiError expectedError = expectedException.getApiError();
         
-        RestAssured.given().when().get(UNIX_FILES_ENDPOINT + invalidPath).then()
+        RestAssured.given().when().get(invalidPath).then()
             .statusCode(HttpStatus.SC_NOT_FOUND).contentType(ContentType.JSON)
             .body("message", equalTo(expectedError.getMessage()));
     }
