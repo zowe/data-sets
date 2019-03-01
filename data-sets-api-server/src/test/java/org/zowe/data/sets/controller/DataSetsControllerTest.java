@@ -264,14 +264,14 @@ public class DataSetsControllerTest {
         DataSetAttributes vsam = DataSetAttributes.builder().build();
 
         List<DataSetAttributes> dataSetsList = Arrays.asList(cobol, rexx, vsam);
-        ItemsWrapper<DataSetAttributes> response = new ItemsWrapper<DataSetAttributes>(dataSetsList);
+        ItemsWrapper<DataSetAttributes> wrapperList = new ItemsWrapper<DataSetAttributes>(dataSetsList);
         String filter = "TEST";
 
-        when(dataSetService.listDataSets(filter)).thenReturn(response);
+        when(dataSetService.listDataSets(filter)).thenReturn(wrapperList);
 
         mockMvc.perform(get(ENDPOINT_ROOT + "/{filter}", filter)).andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(content().string(JsonUtils.convertToJsonString(response)));
+            .andExpect(content().string(JsonUtils.convertToJsonString(wrapperList)));
 
         verify(dataSetService, times(1)).listDataSets(filter);
         verifyNoMoreInteractions(dataSetService);
