@@ -70,10 +70,9 @@ public class ListDataSetAttributesZosmfRequestRunnerTest extends AbstractZosmfRe
         ItemsWrapper<DataSetAttributes> expected = new ItemsWrapper<DataSetAttributes>(dataSets);
         String filter = "STEVENH*";
 
-        mockJsonResponse(HttpStatus.SC_OK, loadTestFile("getDataSets.json"));
+        mockJsonResponse(HttpStatus.SC_OK, loadTestFile("getDataSetsAttributes.json"));
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds?dslevel=%s", filter));
         when(zosmfConnector.request(requestBuilder)).thenReturn(response);
-
 
         assertEquals(expected, new ListDataSetsAttributesZosmfRequestRunner(filter).run(zosmfConnector));
 

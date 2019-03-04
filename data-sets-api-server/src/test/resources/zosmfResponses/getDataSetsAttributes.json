@@ -128,7 +128,19 @@
             "used": "?",
             "vol": "3BP001",
             "vols": "3BP001"
+        },
+        {
+            "catnm": "ICFCAT.MV3B.CATALOGA",
+            "dev": "3390",
+            "dsname": "JUNK.DSORG",
+            "dsorg": "QQ"
+        },
+        {
+            "catnm": "ICFCAT.MV3B.CATALOGA",
+            "dev": "3390",
+            "dsname": "JUNK.ALCUNIT",
+            "spacu": "QQ"
         }
     ],
-    "returnedRows": 8
+    "returnedRows": 10
 }
