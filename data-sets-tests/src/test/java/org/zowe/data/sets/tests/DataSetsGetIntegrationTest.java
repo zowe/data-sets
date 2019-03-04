@@ -46,7 +46,6 @@ public class DataSetsGetIntegrationTest extends AbstractDataSetsIntegrationTest 
 
             List<DataSetAttributes> actual = getDataSetsDetails(tempDataSet).then().statusCode(HttpStatus.SC_OK).extract()
                     .body().jsonPath().getList("", DataSetAttributes.class);
-
             // We can't tell the value of some attributes
             for (DataSetAttributes dataSetAttributes : actual) {
                 dataSetAttributes.setCatalogName(null);

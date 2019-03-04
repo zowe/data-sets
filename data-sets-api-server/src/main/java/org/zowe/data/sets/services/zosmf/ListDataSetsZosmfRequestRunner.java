@@ -18,6 +18,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
+import org.zowe.api.common.model.ItemsWrapper;
 import org.zowe.api.common.utils.ResponseCache;
 import org.zowe.data.sets.mapper.DataSetMapper;
 import org.zowe.data.sets.model.DataSet;
@@ -29,7 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-public class ListDataSetsZosmfRequestRunner extends AbstractZosmfDataSetsRequestRunner<List<DataSet>> {
+public class ListDataSetsZosmfRequestRunner
+        extends AbstractZosmfDataSetsRequestRunner<ItemsWrapper<DataSet>> {
 
     private String filter;
 
@@ -52,8 +54,7 @@ public class ListDataSetsZosmfRequestRunner extends AbstractZosmfDataSetsRequest
     }
 
     @Override
-
-    protected List<DataSet> getResult(ResponseCache responseCache) throws IOException {
+    protected ItemsWrapper<DataSet> getResult(ResponseCache responseCache) throws IOException {
         JsonObject dataSetsResponse = responseCache.getEntityAsJsonObject();
         JsonElement dataSetJsonArray = dataSetsResponse.get("items");
 
@@ -66,7 +67,7 @@ public class ListDataSetsZosmfRequestRunner extends AbstractZosmfDataSetsRequest
                 log.error("listDataSets", e);
             }
         }
-        return dataSets;
+        return new ItemsWrapper<>(dataSets);
     }
 
     @Override

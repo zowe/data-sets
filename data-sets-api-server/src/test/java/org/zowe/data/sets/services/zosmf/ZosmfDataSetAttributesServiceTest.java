@@ -19,17 +19,17 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
 import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
+import org.zowe.api.common.model.ItemsWrapper;
 import org.zowe.api.common.test.ZoweApiTest;
 import org.zowe.data.sets.model.*;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ZosmfDataSetService.class })
+@PrepareForTest({ZosmfDataSetService.class})
 public class ZosmfDataSetAttributesServiceTest extends ZoweApiTest {
 
     @Mock
@@ -47,7 +47,7 @@ public class ZosmfDataSetAttributesServiceTest extends ZoweApiTest {
     public void testListDataSetMembersRunnerValueCorrectlyReturned() throws Exception {
         String dataSetName = "DATA.SET.NAME";
 
-        List<String> expected = Arrays.asList("MEMBER1", "MEMBER2", "MEMBER3");
+        ItemsWrapper<String> expected = new ItemsWrapper<>(Arrays.asList("MEMBER1", "MEMBER2", "MEMBER3"));
 
         ListDataSetMembersZosmfRequestRunner runner = mock(ListDataSetMembersZosmfRequestRunner.class);
         when(runner.run(zosmfConnector)).thenReturn(expected);
@@ -75,7 +75,7 @@ public class ZosmfDataSetAttributesServiceTest extends ZoweApiTest {
         DataSet att1 = DataSet.builder().name("dataset1").build();
         DataSet att2 = DataSet.builder().name("dataset2").build();
 
-        List<DataSet> expected = Arrays.asList(att1, att2);
+        ItemsWrapper<DataSet> expected = new ItemsWrapper<>(Arrays.asList(att1, att2));
 
         ListDataSetsZosmfRequestRunner runner = mock(ListDataSetsZosmfRequestRunner.class);
         when(runner.run(zosmfConnector)).thenReturn(expected);

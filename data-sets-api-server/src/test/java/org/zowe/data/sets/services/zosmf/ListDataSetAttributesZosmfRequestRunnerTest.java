@@ -12,6 +12,7 @@ package org.zowe.data.sets.services.zosmf;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.junit.Test;
+import org.zowe.api.common.model.ItemsWrapper;
 import org.zowe.data.sets.model.AllocationUnitType;
 import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetOrganisationType;
@@ -65,7 +66,8 @@ public class ListDataSetAttributesZosmfRequestRunnerTest extends AbstractZosmfRe
                 .dataSetOrganization(DataSetOrganisationType.VSAM).expirationDate("***None***")
                 .allocationUnit(AllocationUnitType.TRACK).allocatedSize(1).volumeSerial("3BP001").build();
 
-        List<DataSetAttributes> expected = Arrays.asList(stevenh, cobol, jcl, migrated, sds, vsam, vsamData, vsamIndex);
+        List<DataSetAttributes> dataSets = Arrays.asList(stevenh, cobol, jcl, migrated, sds, vsam, vsamData, vsamIndex);
+        ItemsWrapper<DataSetAttributes> expected = new ItemsWrapper<DataSetAttributes>(dataSets);
         String filter = "STEVENH*";
 
         mockJsonResponse(HttpStatus.SC_OK, loadTestFile("getDataSets.json"));
@@ -81,7 +83,7 @@ public class ListDataSetAttributesZosmfRequestRunnerTest extends AbstractZosmfRe
 
     @Test
     public void get_data_set_attributes_no_results_should_call_zosmf_and_parse_response_correctly() throws Exception {
-        List<DataSetAttributes> expected = Collections.emptyList();
+        ItemsWrapper<DataSetAttributes> expected = new ItemsWrapper<DataSetAttributes>(Collections.emptyList());
         String filter = "STEVENH*";
 
         mockJsonResponse(HttpStatus.SC_OK, loadTestFile("getDataSets_noResults.json"));

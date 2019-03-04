@@ -18,6 +18,7 @@ import org.zowe.data.sets.model.AllocationUnitType;
 import org.zowe.data.sets.model.DataSetContent;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.model.DataSetOrganisationType;
+import org.zowe.tests.AbstractHttpIntegrationTest;
 
 public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegrationTest {
 

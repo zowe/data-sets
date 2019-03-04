@@ -7,7 +7,7 @@
  *
  * Copyright IBM Corporation 2018
  */
-package org.zowe.data.sets.spring;
+package org.zowe.spring;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

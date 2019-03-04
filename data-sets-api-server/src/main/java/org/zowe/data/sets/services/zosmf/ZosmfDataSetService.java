@@ -5,20 +5,19 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2018, 2019
+ * Copyright IBM Corporation 2019
  */
 package org.zowe.data.sets.services.zosmf;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
+import org.zowe.api.common.model.ItemsWrapper;
 import org.zowe.data.sets.model.DataSet;
 import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetContentWithEtag;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.services.DataSetService;
-
-import java.util.List;
 
 @Service
 public class ZosmfDataSetService implements DataSetService {
@@ -31,20 +30,21 @@ public class ZosmfDataSetService implements DataSetService {
     // https://www.ibm.com/support/knowledgecenter/SSLTBW_2.3.0/com.ibm.zos.v2r3.izua700/IZUHPINFO_API_RESTFILES_Error_Categories.htm
 
     @Override
-    public List<DataSetAttributes> listDataSetAttributes(String filter) {
+    public ItemsWrapper<String> listDataSetMembers(String dataSetName) {
+        ListDataSetMembersZosmfRequestRunner runner = new ListDataSetMembersZosmfRequestRunner(dataSetName);
+        return runner.run(zosmfConnector);
+    }
+
+
+    @Override
+    public ItemsWrapper<DataSetAttributes> listDataSetAttributes(String filter) {
         ListDataSetsAttributesZosmfRequestRunner runner = new ListDataSetsAttributesZosmfRequestRunner(filter);
         return runner.run(zosmfConnector);
     }
 
     @Override
-    public List<DataSet> listDataSets(String filter) {
+    public ItemsWrapper<DataSet> listDataSets(String filter) {
         ListDataSetsZosmfRequestRunner runner = new ListDataSetsZosmfRequestRunner(filter);
-        return runner.run(zosmfConnector);
-    }
-
-    @Override
-    public List<String> listDataSetMembers(String dataSetName) {
-        ListDataSetMembersZosmfRequestRunner runner = new ListDataSetMembersZosmfRequestRunner(dataSetName);
         return runner.run(zosmfConnector);
     }
 

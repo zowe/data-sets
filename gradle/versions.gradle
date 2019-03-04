@@ -1,5 +1,5 @@
 ext {
-
+//TODO MARK - shouldn't this inherit from parent?
     springBootVersion = '2.0.4.RELEASE'
     springFoxVersion = '2.8.0'
     lombokVersion = '1.16.20'
@@ -13,7 +13,7 @@ ext {
     jsonPathVersion = "2.4.0"
     junitVersion = "4.12"
     mapStructVersion = "1.2.0.Final"
-    explorerApiCommonVersion = "0.1.0-SNAPSHOT"
+    explorerApiCommonVersion = "0.2.0-SNAPSHOT"
 
     libraries = [
         lombok                             : "org.projectlombok:lombok:${lombokVersion}",
@@ -47,6 +47,7 @@ ext {
         junit                              : "junit:junit:${junitVersion}",
 
         explorer_api_common                : "org.zowe.explorer.api:explorer-api-common:${explorerApiCommonVersion}",
+        explorer_api_common_model          : "org.zowe.explorer.api:explorer-api-common-model:${explorerApiCommonVersion}",
         explorer_api_common_test           : "org.zowe.explorer.api:explorer-api-common-test:${explorerApiCommonVersion}"
     ]
 }
