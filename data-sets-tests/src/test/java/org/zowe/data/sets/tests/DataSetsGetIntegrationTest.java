@@ -45,7 +45,7 @@ public class DataSetsGetIntegrationTest extends AbstractDataSetsIntegrationTest 
                     .recordFormat(pdsRequest.getRecordFormat()).allocatedSize(10).used(10).build();
 
             List<DataSetAttributes> actual = getDataSetsDetails(tempDataSet).then().statusCode(HttpStatus.SC_OK).extract()
-                    .body().jsonPath().getList("", DataSetAttributes.class);
+                    .body().jsonPath().getList("items", DataSetAttributes.class);
             // We can't tell the value of some attributes
             for (DataSetAttributes dataSetAttributes : actual) {
                 dataSetAttributes.setCatalogName(null);
@@ -62,7 +62,7 @@ public class DataSetsGetIntegrationTest extends AbstractDataSetsIntegrationTest 
 
     @Test
     public void testGetInvalidDatasets() throws Exception {
-        getDataSetsDetails(INVALID_DATASET_NAME).then().statusCode(HttpStatus.SC_OK).body("$", IsEmptyCollection.empty());
+        getDataSetsDetails(INVALID_DATASET_NAME).then().statusCode(HttpStatus.SC_OK).body("items", IsEmptyCollection.empty());
     }
 
     @Test

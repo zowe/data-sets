@@ -50,7 +50,7 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
                 .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + TEST_DATA_SET)).body(equalTo(""));
 
         List<DataSetAttributes> actual = getDataSetsDetails(TEST_DATA_SET).then().statusCode(HttpStatus.SC_OK).extract().body()
-                .jsonPath().getList("", DataSetAttributes.class);
+                .jsonPath().getList("items", DataSetAttributes.class);
         assertEquals("Should have created the correct type", DataSetOrganisationType.PO,
                 actual.get(0).getDataSetOrganization());
     }
@@ -78,7 +78,7 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
                 .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + TEST_DATA_SET)).body(equalTo(""));
 
         List<DataSetAttributes> actual = getDataSetsDetails(TEST_DATA_SET).then().statusCode(HttpStatus.SC_OK).extract().body()
-                .jsonPath().getList("", DataSetAttributes.class);
+                .jsonPath().getList("items", DataSetAttributes.class);
         assertEquals("Should have created the correct type", DataSetOrganisationType.PS,
                 actual.get(0).getDataSetOrganization());
 
