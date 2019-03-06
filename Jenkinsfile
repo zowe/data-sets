@@ -325,7 +325,7 @@ EOF"""
                                 // create TEST_DIRECTORY_ROOT
                                 sh """SSHPASS=${PASSWORD} sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
 cd ~ && \
-  (iconv -f ISO8859-1 -t IBM-1047 prepare-integration-test-folders.sh > prepare-integration-test-folders.sh.new) && mv prepare-integration-test-folders.sh.new install-zowe.sh && chmod +x prepare-integration-test-folders.sh
+  (iconv -f ISO8859-1 -t IBM-1047 prepare-integration-test-folders.sh > prepare-integration-test-folders.sh.new) && mv prepare-integration-test-folders.sh.new prepare-integration-test-folders.sh && chmod +x prepare-integration-test-folders.sh
 ./prepare-integration-test-folders.sh ${params.INTEGRATION_TEST_DIRECTORY_ROOT} || { echo "[prepare-integration-test-folders] failed"; exit 1; }
 echo "[prepare-integration-test-folders] succeeds" && exit 0
 EOF"""
