@@ -318,12 +318,18 @@ pipeline {
                     steps {
                         timeout(time: 20, unit: 'MINUTES') {
                             withCredentials([usernamePassword(credentialsId: params.INTEGRATION_TEST_ZOSMF_CREDENTIAL, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                              // send file to test image host
-                              sh """SSHPASS=${PASSWORD} sshpass -e sftp -o BatchMode=no -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -b - -P ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
+                                // send file to test image host
+                                sh """SSHPASS=${PASSWORD} sshpass -e sftp -o BatchMode=no -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -b - -P ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
+cd ~
 put scripts/prepare-integration-test-folders.sh
 EOF"""
-                              // create TEST_DIRECTORY_ROOT
-                              sh "SSHPASS=${PASSWORD} sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} 'chmod +x prepare-integration-test-folders.sh && prepare-integration-test-folders.sh ${params.INTEGRATION_TEST_DIRECTORY_ROOT}'"
+                                // create TEST_DIRECTORY_ROOT
+                                sh """SSHPASS=${PASSWORD} sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
+cd ~ && \
+  (iconv -f ISO8859-1 -t IBM-1047 prepare-integration-test-folders.sh > prepare-integration-test-folders.sh.new) && mv prepare-integration-test-folders.sh.new install-zowe.sh && chmod +x prepare-integration-test-folders.sh
+./prepare-integration-test-folders.sh ${params.INTEGRATION_TEST_DIRECTORY_ROOT} || { echo "[prepare-integration-test-folders] failed"; exit 1; }
+echo "[prepare-integration-test-folders] succeeds" && exit 0
+EOF"""
                             }
                         }
                     }
