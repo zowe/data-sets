@@ -68,6 +68,20 @@ customParameters.push(string(
   trim: true,
   required: true
 ))
+customParameters.push(string(
+  name: 'INTEGRATION_TEST_SSH_PORT',
+  description: 'SSH port for integration test server',
+  defaultValue: '2022',
+  trim: true,
+  required: true
+))
+customParameters.push(string(
+  name: 'INTEGRATION_TEST_DIRECTORY_ROOT',
+  description: 'Root directory for integration test',
+  defaultValue: '/zaas1/datasetsIntegrationTest',
+  trim: true,
+  required: true
+))
 customParameters.push(credentials(
   name: 'INTEGRATION_TEST_ZOSMF_CREDENTIAL',
   description: 'z/OSMF credential for integration test',
@@ -90,6 +104,9 @@ pipeline {
 
         // Environment variable for flow control. Indicates if the git source was updated by the pipeline.
         GIT_SOURCE_UPDATED = "false"
+
+        // Environment variable for integration test.
+        TEST_DIRECTORY_ROOT = "${params.INTEGRATION_TEST_DIRECTORY_ROOT}"
     }
 
     stages {
@@ -294,6 +311,21 @@ pipeline {
 
                         // give it a little time to start the server
                         sleep time: 1, unit: 'MINUTES'
+                    }
+                }
+
+                stage('Prepare Test Directory') {
+                    steps {
+                        timeout(time: 20, unit: 'MINUTES') {
+                            withCredentials([usernamePassword(credentialsId: params.INTEGRATION_TEST_ZOSMF_CREDENTIAL, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                              // send file to test image host
+                              sh """SSHPASS=${PASSWORD} sshpass -e sftp -o BatchMode=no -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -b - -P ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
+put scripts/prepare-integration-test-folders.sh
+EOF"""
+                              // create TEST_DIRECTORY_ROOT
+                              sh "SSHPASS=${PASSWORD} sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} 'chmod +x prepare-integration-test-folders.sh && prepare-integration-test-folders.sh ${params.INTEGRATION_TEST_DIRECTORY_ROOT}'"
+                            }
+                        }
                     }
                 }
 
