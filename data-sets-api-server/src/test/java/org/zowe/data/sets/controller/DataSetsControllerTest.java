@@ -31,12 +31,7 @@ import org.zowe.api.common.exceptions.ZoweRestExceptionHandler;
 import org.zowe.api.common.model.ItemsWrapper;
 import org.zowe.api.common.utils.JsonUtils;
 import org.zowe.api.common.utils.ZosUtils;
-import org.zowe.data.sets.model.AllocationUnitType;
-import org.zowe.data.sets.model.DataSetAttributes;
-import org.zowe.data.sets.model.DataSetContent;
-import org.zowe.data.sets.model.DataSetContentWithEtag;
-import org.zowe.data.sets.model.DataSetCreateRequest;
-import org.zowe.data.sets.model.DataSetOrganisationType;
+import org.zowe.data.sets.model.*;
 import org.zowe.data.sets.services.DataSetService;
 
 import java.net.URI;
@@ -255,6 +250,61 @@ public class DataSetsControllerTest {
     @Test
     public void test_get_data_sets_success() throws Exception {
 
+        DataSet ds = DataSet.builder().build();
+
+        List<DataSet> dataSetsList = Arrays.asList(ds);
+        ItemsWrapper<DataSet> wrapperList = new ItemsWrapper<>(dataSetsList);
+        String filter = "TEST";
+
+        when(dataSetService.listDataSets(filter)).thenReturn(wrapperList);
+
+        mockMvc.perform(get(ENDPOINT_ROOT + "/{filter}/list", filter)).andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().string(JsonUtils.convertToJsonString(wrapperList)));
+
+        verify(dataSetService, times(1)).listDataSets(filter);
+        verifyNoMoreInteractions(dataSetService);
+    }
+
+    @Test
+    public void test_get_data_sets_empty_body() throws Exception {
+
+        String dummy = "junk";
+
+        ItemsWrapper<DataSet> empty = new ItemsWrapper<>(Collections.emptyList());
+
+        when(dataSetService.listDataSets(anyString())).thenReturn(empty);
+
+        mockMvc.perform(get(ENDPOINT_ROOT + "/{filter}/list", dummy)).andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().string(EMPTY_ITEMS));
+
+        verify(dataSetService, times(1)).listDataSets(dummy);
+        verifyNoMoreInteractions(dataSetService);
+    }
+
+    @Test
+    public void get_data_sets_with_exception_should_be_converted_to_error_message() throws Exception {
+
+        String invalidPdsName = "TEST.JCL";
+
+        String errorMessage = MessageFormat.format("No partitioned data set {0} was found", invalidPdsName);
+        ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.BAD_REQUEST).build();
+
+        when(dataSetService.listDataSets(invalidPdsName)).thenThrow(new ZoweApiErrorException(expectedError));
+
+        mockMvc.perform(get(ENDPOINT_ROOT + "/{filter}/list", invalidPdsName))
+                .andExpect(status().is(expectedError.getStatus().value()))
+                .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
+                .andExpect(jsonPath("$.message").value(errorMessage));
+
+        verify(dataSetService, times(1)).listDataSets(invalidPdsName);
+        verifyNoMoreInteractions(dataSetService);
+    }
+
+    @Test
+    public void test_get_data_sets_attributes_success() throws Exception {
+
         DataSetAttributes cobol = DataSetAttributes.builder().blockSize(133)
                 .dataSetOrganization(DataSetOrganisationType.PO).recordLength(133).recordFormat("FB")
                 .allocationUnit(AllocationUnitType.TRACK).volumeSerial("P4P020").build();
@@ -278,7 +328,7 @@ public class DataSetsControllerTest {
     }
 
     @Test
-    public void test_get_data_sets_empty_body() throws Exception {
+    public void test_get_data_sets_attributes_empty_body() throws Exception {
 
         String dummy = "junk";
 
@@ -295,7 +345,7 @@ public class DataSetsControllerTest {
     }
 
     @Test
-    public void get_data_sets_with_exception_should_be_converted_to_error_message() throws Exception {
+    public void get_data_sets_attributes_with_exception_should_be_converted_to_error_message() throws Exception {
 
         String invalidPdsName = "TEST.JCL";
 
