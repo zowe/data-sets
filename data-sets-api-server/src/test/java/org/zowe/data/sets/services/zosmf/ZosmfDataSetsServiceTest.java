@@ -88,6 +88,21 @@ public class ZosmfDataSetsServiceTest extends ZoweApiTest {
     }
 
     @Test
+    public void testListDataSetAttributesRunnerValueCorrectlyReturned() throws Exception {
+        String filter = "DATA.SET.NAME*";
+
+        DataSetAttributes att1 = DataSetAttributes.builder().name("dataset1").build();
+        DataSetAttributes att2 = DataSetAttributes.builder().name("dataset2").build();
+
+        ItemsWrapper<DataSetAttributes> expected = new ItemsWrapper<>(Arrays.asList(att1, att2));
+
+        ListDataSetsAttributesZosmfRequestRunner runner = mock(ListDataSetsAttributesZosmfRequestRunner.class);
+        when(runner.run(zosmfConnector)).thenReturn(expected);
+        PowerMockito.whenNew(ListDataSetsAttributesZosmfRequestRunner.class).withArguments(filter).thenReturn(runner);
+        assertEquals(expected, dataService.listDataSetAttributes(filter));
+    }
+
+    @Test
     public void testListDataSetsRunnerExceptionThrown() throws Exception {
         String filter = "DATA.SET.NAME";
 
@@ -98,6 +113,19 @@ public class ZosmfDataSetsServiceTest extends ZoweApiTest {
         PowerMockito.whenNew(ListDataSetsZosmfRequestRunner.class).withArguments(filter).thenReturn(runner);
 
         shouldThrow(expectedException, () -> dataService.listDataSets(filter));
+    }
+
+    @Test
+    public void testListDataSetAttributesRunnerExceptionThrown() throws Exception {
+        String filter = "DATA.SET.NAME";
+
+        ZoweApiRestException expectedException = new DataSetNotFoundException(filter);
+
+        ListDataSetsAttributesZosmfRequestRunner runner = mock(ListDataSetsAttributesZosmfRequestRunner.class);
+        when(runner.run(zosmfConnector)).thenThrow(expectedException);
+        PowerMockito.whenNew(ListDataSetsAttributesZosmfRequestRunner.class).withArguments(filter).thenReturn(runner);
+
+        shouldThrow(expectedException, () -> dataService.listDataSetAttributes(filter));
     }
 
     @Test
