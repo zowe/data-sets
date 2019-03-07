@@ -13,11 +13,9 @@ import org.apache.http.HttpStatus;
 import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.zowe.data.sets.model.DataSetAttributes;
+import org.zowe.data.sets.model.DataSet;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -32,26 +30,10 @@ public class DataSetsGetIntegrationTest extends AbstractDataSetsIntegrationTest 
         createDataSet(pdsRequest);
 
         try {
+            DataSet expected = DataSet.builder().name(tempDataSet).migrated(false).build();
 
-            String pattern = "yyyy/MM/dd";
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-
-            String today = simpleDateFormat.format(new Date());
-
-            DataSetAttributes expected = DataSetAttributes.builder().blockSize(pdsRequest.getBlockSize())
-                    .deviceType("3390").creationDate(today).name(tempDataSet).migrated(false)
-                    .dataSetOrganization(pdsRequest.getDataSetOrganization()).expirationDate("***None***")
-                    .recordLength(pdsRequest.getRecordLength()).allocationUnit(pdsRequest.getAllocationUnit())
-                    .recordFormat(pdsRequest.getRecordFormat()).allocatedSize(10).used(10).build();
-
-            List<DataSetAttributes> actual = getDataSetsDetails(tempDataSet).then().statusCode(HttpStatus.SC_OK).extract()
-                    .body().jsonPath().getList("items", DataSetAttributes.class);
-            // We can't tell the value of some attributes
-            for (DataSetAttributes dataSetAttributes : actual) {
-                dataSetAttributes.setCatalogName(null);
-                dataSetAttributes.setVolumeSerial(null);
-            }
-
+            List<DataSet> actual = getDataSets(tempDataSet).then().statusCode(HttpStatus.SC_OK).extract()
+                    .body().jsonPath().getList("items", DataSet.class);
             assertThat(actual, hasItem(expected));
         } finally {
             deleteDataSet(tempDataSet);
@@ -62,13 +44,13 @@ public class DataSetsGetIntegrationTest extends AbstractDataSetsIntegrationTest 
 
     @Test
     public void testGetInvalidDatasets() throws Exception {
-        getDataSetsDetails(INVALID_DATASET_NAME).then().statusCode(HttpStatus.SC_OK).body("items", IsEmptyCollection.empty());
+        getDataSets(INVALID_DATASET_NAME).then().statusCode(HttpStatus.SC_OK).body("items", IsEmptyCollection.empty());
     }
 
     @Test
     // TODO - need to create the unauthorised dataset in setup script
     @Ignore("Task 19604")
     public void testGetUnauthorisedDatasetMembers() throws Exception {
-        getDataSetsDetails(UNAUTHORIZED_DATASET).then().statusCode(HttpStatus.SC_FORBIDDEN);
+        getDataSets(UNAUTHORIZED_DATASET).then().statusCode(HttpStatus.SC_FORBIDDEN);
     }
 }
