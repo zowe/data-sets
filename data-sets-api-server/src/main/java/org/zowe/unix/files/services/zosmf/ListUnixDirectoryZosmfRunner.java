@@ -109,7 +109,11 @@ public class ListUnixDirectoryZosmfRunner extends AbstractZosmfRequestRunner<Uni
         if (requestURL.charAt(requestURL.length() - 1) == '/') {
             requestURL = requestURL.substring(0, requestURL.length() - 1);
         }
-        return String.format("%s%s/%s", requestURL, this.path, fileName);
+        if (this.path.equals("/")) {
+            return String.format("%s/%s", requestURL, fileName);
+        } else {
+            return String.format("%s%s/%s", requestURL, this.path, fileName);
+        }
     }
     
     @Override
@@ -117,7 +121,7 @@ public class ListUnixDirectoryZosmfRunner extends AbstractZosmfRequestRunner<Uni
         if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
             JsonElement details = jsonResponse.get("details");
             JsonElement message = jsonResponse.get("message");
-            if (null != details && details.toString().contains("EDC5111I Permission denied. (errno2=0xEF076015)")) {
+            if (null != details && details.toString().contains("EDC5111I Permission denied.")) {
                 throw new UnauthorisedDirectoryException(path);
             } else if (message.toString().contains("Path name is not valid")) {
                 throw new PathNameNotValidException(path);
