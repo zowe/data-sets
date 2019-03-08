@@ -7,6 +7,7 @@ ext {
 	server_port = project.hasProperty('server.port') ? project.getProperty('server.port') : -1
 	username = project.hasProperty('server.username') ? project.getProperty('server.username') : "undefined"
 	password = project.hasProperty('server.password') ? project.getProperty('server.password') : "undefined"
+	server_test_directory = project.hasProperty('server.test.directory') ? project.getProperty('server.test.directory') : "undefined"
 }
 
 dependencies {
@@ -41,6 +42,7 @@ test {
 	systemProperty "server.port", server_port
 	systemProperty "server.username", username
 	systemProperty "server.password", password
+	systemProperty "server.test.directory", server_test_directory
 }
 
 task validate << {
@@ -48,6 +50,7 @@ task validate << {
 	checkAndThrow("server_port", -1, "server.port");
 	checkAndThrow("username", "undefined", "server.username");
 	checkAndThrow("password", "undefined", "server.password");
+	checkAndThrow("server_test_directory", "undefined", "server.test.directory");
 }	
 
 task runIntegrationTests(dependsOn: ['validate', 'test']){
