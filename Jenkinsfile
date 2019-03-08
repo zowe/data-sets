@@ -344,7 +344,8 @@ EOF"""
     -Pserver.host=localhost \
     -Pserver.port=8443 \
     -Pserver.username=${USERNAME} \
-    -Pserver.password=${PASSWORD}"""
+    -Pserver.password=${PASSWORD} \
+    -Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}"""
                                     } catch (err) {
                                         // ignore test failures
                                         // FIXME: after fix all failed test during test, this stage
