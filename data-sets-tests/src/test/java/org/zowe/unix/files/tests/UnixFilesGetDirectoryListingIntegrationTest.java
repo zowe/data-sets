@@ -24,14 +24,15 @@ import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.unix.files.model.UnixDirectoryChild;
 import org.zowe.unix.files.model.UnixEntityType;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractHttpIntegrationTest {
 
@@ -50,9 +51,9 @@ public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractHttpInt
         final String directoryWithAccess = "directoryInDirectoryWithAccess";
         
         UnixDirectoryChild file = UnixDirectoryChild.builder().name(fileWithAccess)
-                .type(UnixEntityType.FILE).link(BASE_URL+UNIX_FILES_ENDPOINT + testDirectoryPath + '/' + fileWithAccess).build();
+                .type(UnixEntityType.FILE).link(BASE_URL + UNIX_FILES_ENDPOINT + testDirectoryPath + '/' + fileWithAccess).build();
         UnixDirectoryChild directory = UnixDirectoryChild.builder().name(directoryWithAccess)
-                .type(UnixEntityType.DIRECTORY).link(BASE_URL+UNIX_FILES_ENDPOINT + testDirectoryPath + '/' + directoryWithAccess).build();
+                .type(UnixEntityType.DIRECTORY).link(BASE_URL + UNIX_FILES_ENDPOINT + testDirectoryPath + '/' + directoryWithAccess).build();
         List<UnixDirectoryChild> children = new ArrayList<UnixDirectoryChild>();
         children.addAll(Arrays.asList(file, directory));
         
