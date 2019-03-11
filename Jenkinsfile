@@ -291,6 +291,20 @@ pipeline {
                 }
             }
             stages {
+                stage('Prepare Build ID') {
+                    steps {
+                        // generate unique build ID
+                        script {
+                            def releaseIdentifier = getReleaseIdentifier()
+                            def buildIdentifier = getBuildIdentifier()
+                            uniqueBuildId = "datasets-integration-test-${zoweVersion}-${buildIdentifier}"
+                            if (!uniqueBuildId) {
+                                error "Cannot determine unique build ID."
+                            }
+                        }
+                    }
+                }
+
                 stage('Prepare Certificate') {
                     steps {
                         sh """keytool -genkeypair -keystore localhost.keystore.p12 -storetype PKCS12 \
@@ -321,11 +335,6 @@ pipeline {
                 stage('Prepare Test Directory') {
                     steps {
                         timeout(time: 20, unit: 'MINUTES') {
-                            // generate unique build ID
-                            def releaseIdentifier = getReleaseIdentifier()
-                            def buildIdentifier = getBuildIdentifier()
-                            uniqueBuildId = "datasets-integration-test-${zoweVersion}-${buildIdentifier}"
-
                             withCredentials([usernamePassword(credentialsId: params.INTEGRATION_TEST_ZOSMF_CREDENTIAL, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                                 // send file to test image host
                                 sh """SSHPASS=${PASSWORD} sshpass -e sftp -o BatchMode=no -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -b - -P ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
