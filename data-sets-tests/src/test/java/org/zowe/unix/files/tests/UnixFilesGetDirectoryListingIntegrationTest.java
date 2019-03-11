@@ -59,7 +59,7 @@ public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractHttpInt
         
         
         UnixDirectoryAttributesWithChildren response = RestAssured.given().when().get("?path=" + testDirectoryPath)
-                .then().statusCode(HttpStatus.SC_OK).extract()
+                .then().log().all().statusCode(HttpStatus.SC_OK).extract()
                 .body().as(UnixDirectoryAttributesWithChildren.class);
         
         assertFalse(response.getOwner().isEmpty());
@@ -77,7 +77,7 @@ public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractHttpInt
         final String testDirectoryPath = TEST_DIRECTORY + "/directoryWithAccess/directoryInDirectoryWithAccess"; 
         
         UnixDirectoryAttributesWithChildren response = RestAssured.given().when().get("?path=" + testDirectoryPath)
-                .then().statusCode(HttpStatus.SC_OK).extract()
+                .then().log().all().statusCode(HttpStatus.SC_OK).extract()
                 .body().as(UnixDirectoryAttributesWithChildren.class);
         
         assertEquals(response.getType(), UnixEntityType.DIRECTORY);
@@ -89,7 +89,7 @@ public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractHttpInt
         final String testDirectoryPath = TEST_DIRECTORY + "/directoryWithoutAccess";
         ApiError expectedError = new UnauthorisedDirectoryException(testDirectoryPath).getApiError();
         
-        RestAssured.given().when().get("?path=" + testDirectoryPath).then()
+        RestAssured.given().when().get("?path=" + testDirectoryPath).then().log().all()
             .statusCode(HttpStatus.SC_FORBIDDEN).contentType(ContentType.JSON)
             .body("message", equalTo(expectedError.getMessage()));
     }
@@ -100,7 +100,7 @@ public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractHttpInt
         ZoweApiRestException expected = new PathNameNotValidException(invalidPath);
         ApiError expectedError = expected.getApiError();
         
-        RestAssured.given().when().get("?path=" + invalidPath).then()
+        RestAssured.given().when().get("?path=" + invalidPath).then().log().all()
                 .statusCode(HttpStatus.SC_BAD_REQUEST).contentType(ContentType.JSON)
                 .body("message", equalTo(expectedError.getMessage()));
     }

@@ -38,7 +38,7 @@ public class UnixFilesGetFileContentTest extends AbstractHttpIntegrationTest {
         final String expectedContent =  "Hello world\nhello world on new line.\n";
         
         RestAssured.given().when().get(TEST_DIRECTORY + "/fileWithAccess")
-            .then().statusCode(HttpStatus.SC_OK)
+            .then().log().all().statusCode(HttpStatus.SC_OK)
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(expectedContent + "\n"));
     }
     
@@ -48,7 +48,7 @@ public class UnixFilesGetFileContentTest extends AbstractHttpIntegrationTest {
         ApiError expectedError = new UnauthorisedFileException(unauthorisedFile).getApiError();
         
         RestAssured.given().when().get(unauthorisedFile)
-            .then().statusCode(HttpStatus.SC_FORBIDDEN)
+            .then().log().all().statusCode(HttpStatus.SC_FORBIDDEN)
             .body("message", equalTo(expectedError.getMessage()));
     }
     
@@ -57,7 +57,7 @@ public class UnixFilesGetFileContentTest extends AbstractHttpIntegrationTest {
         String invalidPath = "/u/zzzzzztxt";
         ApiError expectedError = new FileNotFoundException(invalidPath).getApiError();
         
-        RestAssured.given().when().get(invalidPath).then()
+        RestAssured.given().when().get(invalidPath).then().log().all()
             .statusCode(HttpStatus.SC_NOT_FOUND).contentType(ContentType.JSON)
             .body("message", equalTo(expectedError.getMessage()));
     }
