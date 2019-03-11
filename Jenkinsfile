@@ -93,10 +93,9 @@ opts.push(parameters(customParameters))
 
 properties(opts)
 
-// generate unique build ID
-def releaseIdentifier = getReleaseIdentifier()
-def buildIdentifier = getBuildIdentifier()
-def uniqueBuildId = "datasets-integration-test-${zoweVersion}-${buildIdentifier}"
+// unique Build ID
+// this value should be updated before using it
+def uniqueBuildId = ""
 
 pipeline {
     agent {
@@ -290,9 +289,6 @@ pipeline {
                 expression {
                     return currentBuild.resultIsBetterOrEqualTo(BUILD_SUCCESS)
                 }
-                expression {
-                    return uniqueBuildId
-                }
             }
             stages {
                 stage('Prepare Certificate') {
@@ -325,6 +321,11 @@ pipeline {
                 stage('Prepare Test Directory') {
                     steps {
                         timeout(time: 20, unit: 'MINUTES') {
+                            // generate unique build ID
+                            def releaseIdentifier = getReleaseIdentifier()
+                            def buildIdentifier = getBuildIdentifier()
+                            uniqueBuildId = "datasets-integration-test-${zoweVersion}-${buildIdentifier}"
+
                             withCredentials([usernamePassword(credentialsId: params.INTEGRATION_TEST_ZOSMF_CREDENTIAL, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                                 // send file to test image host
                                 sh """SSHPASS=${PASSWORD} sshpass -e sftp -o BatchMode=no -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -b - -P ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
@@ -491,18 +492,20 @@ EOF"""
             // publish any test results found
             junit allowEmptyResults: true, testResults: '**/test-results/**/*.xml'
 
-            // remove temporary folder
-            withCredentials([usernamePassword(credentialsId: params.INTEGRATION_TEST_ZOSMF_CREDENTIAL, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                // delete TEST_DIRECTORY_ROOT/uniqueBuildId
-                sh """SSHPASS=${PASSWORD} sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
+            script {
+                // remove temporary folder
+                if (uniqueBuildId) {
+                    withCredentials([usernamePassword(credentialsId: params.INTEGRATION_TEST_ZOSMF_CREDENTIAL, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        // delete TEST_DIRECTORY_ROOT/uniqueBuildId
+                        sh """SSHPASS=${PASSWORD} sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
 cd ~ && \
   [ -d "${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}" ] && \
   rm -fr "${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}"
 echo "[cleanup-integration-test-folders] done" && exit 0
 EOF"""
-            }
+                   }
+                }
 
-            script {
                 def buildStatus = currentBuild.currentResult
 
                 if (SHOULD_BUILD == 'true') {
