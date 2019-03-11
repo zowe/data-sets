@@ -73,7 +73,7 @@ public class DataSetsController {
     }
 
     @GetMapping(value = "{filter:.+}/list", produces = {"application/json"})
-    @ApiOperation(value = "Get a list of data sets with all attributes matching the filter", nickname = "getDataSets", notes = "This API returns the list of data sets matching the filter", tags = "Data Sets APIs")
+    @ApiOperation(value = "Get a list of data sets without attributes matching the filter", nickname = "getDataSets", notes = "This API returns the list of data sets matching the filter", tags = "Data Sets APIs")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Ok", response = String.class, responseContainer = "List")})
     public ItemsWrapper<DataSet> getDataSets(
