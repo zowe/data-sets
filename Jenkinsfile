@@ -78,7 +78,7 @@ customParameters.push(string(
 customParameters.push(string(
   name: 'INTEGRATION_TEST_DIRECTORY_ROOT',
   description: 'Root directory for integration test',
-  defaultValue: '/zaas1/datasetsIntegrationTest',
+  defaultValue: '/zaas1',
   trim: true,
   required: true
 ))
@@ -92,6 +92,11 @@ customParameters.push(credentials(
 opts.push(parameters(customParameters))
 
 properties(opts)
+
+// generate unique build ID
+def releaseIdentifier = getReleaseIdentifier()
+def buildIdentifier = getBuildIdentifier()
+def uniqueBuildId = "datasets-integration-test-${zoweVersion}-${buildIdentifier}"
 
 pipeline {
     agent {
@@ -285,6 +290,9 @@ pipeline {
                 expression {
                     return currentBuild.resultIsBetterOrEqualTo(BUILD_SUCCESS)
                 }
+                expression {
+                    return uniqueBuildId
+                }
             }
             stages {
                 stage('Prepare Certificate') {
@@ -322,11 +330,11 @@ pipeline {
                                 sh """SSHPASS=${PASSWORD} sshpass -e sftp -o BatchMode=no -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -b - -P ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
 put scripts/prepare-integration-test-folders.sh
 EOF"""
-                                // create TEST_DIRECTORY_ROOT
+                                // create TEST_DIRECTORY_ROOT/uniqueBuildId
                                 sh """SSHPASS=${PASSWORD} sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
 cd ~ && \
   (iconv -f ISO8859-1 -t IBM-1047 prepare-integration-test-folders.sh > prepare-integration-test-folders.sh.new) && mv prepare-integration-test-folders.sh.new prepare-integration-test-folders.sh && chmod +x prepare-integration-test-folders.sh
-./prepare-integration-test-folders.sh ${params.INTEGRATION_TEST_DIRECTORY_ROOT} || { echo "[prepare-integration-test-folders] failed"; exit 1; }
+./prepare-integration-test-folders.sh ${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId} || { echo "[prepare-integration-test-folders] failed"; exit 1; }
 echo "[prepare-integration-test-folders] succeeds" && exit 0
 EOF"""
                             }
@@ -481,6 +489,17 @@ EOF"""
         always {
             // publish any test results found
             junit allowEmptyResults: true, testResults: '**/test-results/**/*.xml'
+
+            // remove temporary folder
+            withCredentials([usernamePassword(credentialsId: params.INTEGRATION_TEST_ZOSMF_CREDENTIAL, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                // delete TEST_DIRECTORY_ROOT/uniqueBuildId
+                sh """SSHPASS=${PASSWORD} sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
+cd ~ && \
+  [ -d "${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}" ] && \
+  rm -fr "${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}"
+echo "[cleanup-integration-test-folders] done" && exit 0
+EOF"""
+            }
 
             script {
                 def buildStatus = currentBuild.currentResult
