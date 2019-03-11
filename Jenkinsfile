@@ -297,7 +297,7 @@ pipeline {
                         script {
                             def releaseIdentifier = getReleaseIdentifier()
                             def buildIdentifier = getBuildIdentifier()
-                            uniqueBuildId = "datasets-integration-test-${zoweVersion}-${buildIdentifier}"
+                            uniqueBuildId = "datasets-integration-test-${releaseIdentifier}-${buildIdentifier}"
                             if (!uniqueBuildId) {
                                 error "Cannot determine unique build ID."
                             }
