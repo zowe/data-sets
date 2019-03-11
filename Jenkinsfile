@@ -90,7 +90,7 @@ customParameters.push(credentials(
   required: true
 ))
 customParameters.push(credentials(
-  name: 'INTEGRATION_TEST_DIRECTORY_INIT_USER',
+  name: 'INTEGRATION_TEST_ZOSMF_CREDENTIAL',
   description: 'z/OSMF credential for integration test',
   credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
   defaultValue: 'ssh-zdt-test-image-guest',
@@ -302,9 +302,8 @@ pipeline {
                     steps {
                         // generate unique build ID
                         script {
-                            def releaseIdentifier = getReleaseIdentifier()
                             def buildIdentifier = getBuildIdentifier()
-                            uniqueBuildId = "datasets-integration-test-${releaseIdentifier}-${buildIdentifier}"
+                            uniqueBuildId = "datasets-integration-test-${buildIdentifier}"
                             if (!uniqueBuildId) {
                                 error "Cannot determine unique build ID."
                             }
