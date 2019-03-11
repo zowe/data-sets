@@ -86,7 +86,7 @@ customParameters.push(credentials(
   name: 'INTEGRATION_TEST_DIRECTORY_INIT_USER',
   description: 'z/OSMF credential to initialize integration test folders / files',
   credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
-  defaultValue: 'ssh-zdt-test-image-guest-tstr001',
+  defaultValue: 'ssh-zdt-test-image-guest-tstr002',
   required: true
 ))
 customParameters.push(credentials(
