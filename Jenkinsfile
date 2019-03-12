@@ -83,6 +83,13 @@ customParameters.push(string(
   required: true
 ))
 customParameters.push(credentials(
+  name: 'INTEGRATION_TEST_DIRECTORY_INIT_USER',
+  description: 'z/OSMF credential to initialize integration test folders / files',
+  credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
+  defaultValue: 'ssh-zdt-test-image-guest-tstr002',
+  required: true
+))
+customParameters.push(credentials(
   name: 'INTEGRATION_TEST_ZOSMF_CREDENTIAL',
   description: 'z/OSMF credential for integration test',
   credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
@@ -295,9 +302,8 @@ pipeline {
                     steps {
                         // generate unique build ID
                         script {
-                            def releaseIdentifier = getReleaseIdentifier()
                             def buildIdentifier = getBuildIdentifier()
-                            uniqueBuildId = "datasets-integration-test-${releaseIdentifier}-${buildIdentifier}"
+                            uniqueBuildId = "datasets-integration-test-${buildIdentifier}"
                             if (!uniqueBuildId) {
                                 error "Cannot determine unique build ID."
                             }
@@ -335,7 +341,7 @@ pipeline {
                 stage('Prepare Test Directory') {
                     steps {
                         timeout(time: 20, unit: 'MINUTES') {
-                            withCredentials([usernamePassword(credentialsId: params.INTEGRATION_TEST_ZOSMF_CREDENTIAL, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                            withCredentials([usernamePassword(credentialsId: params.INTEGRATION_TEST_DIRECTORY_INIT_USER, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                                 // send file to test image host
                                 sh """SSHPASS=${PASSWORD} sshpass -e sftp -o BatchMode=no -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -b - -P ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
 put scripts/prepare-integration-test-folders.sh
@@ -504,7 +510,7 @@ EOF"""
             script {
                 // remove temporary folder
                 if (uniqueBuildId) {
-                    withCredentials([usernamePassword(credentialsId: params.INTEGRATION_TEST_ZOSMF_CREDENTIAL, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    withCredentials([usernamePassword(credentialsId: params.INTEGRATION_TEST_DIRECTORY_INIT_USER, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         // delete TEST_DIRECTORY_ROOT/uniqueBuildId
                         sh """SSHPASS=${PASSWORD} sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
 cd ~ && \
