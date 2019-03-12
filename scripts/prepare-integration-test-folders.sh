@@ -33,3 +33,4 @@ EOF
 cp "$TEST_DIRECTORY_ROOT/fileWithAccess" "$TEST_DIRECTORY_ROOT/fileWithoutAccess"
 chmod a-r "$TEST_DIRECTORY_ROOT/fileWithoutAccess"
 
+ls -al $TEST_DIRECTORY_ROOT
