@@ -21,7 +21,7 @@ touch "$TEST_DIRECTORY_ROOT/$DIRECTORY_WITH_ACCESS/fileInDirectoryWithAccess"
 mkdir "$TEST_DIRECTORY_ROOT/$DIRECTORY_WITHOUT_ACCESS"
 mkdir "$TEST_DIRECTORY_ROOT/$DIRECTORY_WITHOUT_ACCESS/directoryInDirectoryWithAccess"
 touch "$TEST_DIRECTORY_ROOT/$DIRECTORY_WITHOUT_ACCESS/fileInDirectoryWithAccess"
-chmod a-r "$TEST_DIRECTORY_ROOT/directoryWithoutAccess"
+chmod 700 "$TEST_DIRECTORY_ROOT/directoryWithoutAccess"
 
 #Create readable file
 cat <<EOF >$TEST_DIRECTORY_ROOT/fileWithAccess
@@ -31,6 +31,6 @@ EOF
 
 #Create unreadable file
 cp "$TEST_DIRECTORY_ROOT/fileWithAccess" "$TEST_DIRECTORY_ROOT/fileWithoutAccess"
-chmod a-r "$TEST_DIRECTORY_ROOT/fileWithoutAccess"
+chmod 600 "$TEST_DIRECTORY_ROOT/fileWithoutAccess"
 
 ls -al $TEST_DIRECTORY_ROOT
