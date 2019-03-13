@@ -1,9 +1,9 @@
 target/
-!.mvn/wrapper/maven-wrapper.jar
+.mvn/
 .history/
 
 # Gradle
-
+gradle/wrapper/gradle-wrapper.jar
 .idea/
 
 ### STS ###
@@ -35,3 +35,6 @@ bin/
 
 ### Mac ###
 .DS_Store
+
+### Temporary Certificate###
+*.p12

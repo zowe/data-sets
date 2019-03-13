@@ -1,0 +1,10 @@
+{
+    "category": 6,
+    "details": [
+        "IKJ56228I DATA SET STEVENH.TEST NOT IN CATALOG OR CATALOG CAN NOT BE ACCESSED    "
+    ],
+    "message": "Data set not found.",
+    "rc": 8,
+    "reason": 386400778,
+    "stack": "  1 15312558+000013A8 DatasetAllocation::allocate()\n  2 153029E0+000003CC DatasetWriter::allocate()\n  3 15300510+00000164 PutDatasetServlet::doPut()\n  4 15318CF8+000000DC TsoServlet::service()\n  5 15345FF8+0000017E TsoServlet::run()\n  6 153459D0+00000386 main\n  7 06791118+0000127E CEEVROND\n  8 14B06718+000000B4 EDCZHINV\n  9 0662B8D0+000001C6 CEEBBEXT\n"
+}

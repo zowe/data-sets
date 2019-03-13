@@ -12,6 +12,7 @@ package org.zowe.data.sets.tests;
 import io.restassured.http.ContentType;
 
 import org.apache.http.HttpStatus;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -24,22 +25,21 @@ import static org.hamcrest.CoreMatchers.hasItems;
 
 public class DataSetsGetMembersIntegrationTest extends AbstractDataSetsIntegrationTest {
 
-    // TODO - push up?
+    private static final String TEST_PDS = HLQ + ".TEMP.GETMEM.JCL";
+
     @BeforeClass
-    public static void initialiseDatasetsIfNescessary() throws Exception {
-        if (getMembers(TEST_JCL_PDS).statusCode() != HttpStatus.SC_OK) {
-            // TODO - create a pds and member if they don't exist
-//            createPds(TEST_JCL_PDS);
-//            createPdsMember(getTestJclMemberPath(JOB_IEFBR14),
-//                    new String(Files.readAllBytes(Paths.get("testFiles/jobIEFBR14"))));
-//            createPdsMember(getTestJclMemberPath(JOB_WITH_STEPS),
-//                    new String(Files.readAllBytes(Paths.get("testFiles/jobWithSteps"))));
-        }
+    public static void createDataSets() throws Exception {
+        createPdsWithMembers(TEST_PDS, "MEMBER1", "MEMBER2");
+    }
+
+    @AfterClass
+    public static void cleanup() {
+        deleteDataSet(TEST_PDS);
     }
 
     @Test
     public void testGetValidDatasetMembers() throws Exception {
-        getMembers(TEST_JCL_PDS).then().statusCode(HttpStatus.SC_OK).body("$", hasItems(JOB_IEFBR14, JOB_WITH_STEPS));
+        getMembers(TEST_PDS).then().statusCode(HttpStatus.SC_OK).body("items", hasItems("MEMBER1", "MEMBER2"));
     }
 
     @Test
@@ -49,14 +49,14 @@ public class DataSetsGetMembersIntegrationTest extends AbstractDataSetsIntegrati
         ApiError expectedError = expected.getApiError();
 
         getMembers(INVALID_DATASET_NAME).then().statusCode(expectedError.getStatus().value())
-                .contentType(ContentType.JSON).body("status", equalTo(expectedError.getStatus().name()))
-                .body("message", equalTo(expectedError.getMessage()));
+            .contentType(ContentType.JSON).body("status", equalTo(expectedError.getStatus().name()))
+            .body("message", equalTo(expectedError.getMessage()));
     }
 
     @Test
     // TODO - need to create the unauthorised dataset in setup script
     @Ignore("Task 19604")
-    public void testGetUnauthoriszedDatasetMembers() throws Exception {
+    public void testGetUnauthorisedDatasetMembers() throws Exception {
         getMembers(UNAUTHORIZED_DATASET).then().statusCode(HttpStatus.SC_FORBIDDEN);
     }
 }

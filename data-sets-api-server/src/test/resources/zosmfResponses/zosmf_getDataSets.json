@@ -1,8 +1,0 @@
-{"items":[
-  {"dsname":"STEVENH.DEMO.COBOL","blksz":"133","catnm":"ICFCAT.SYSPLEX4.CATALOGA","cdate":"2018/02/06","dev":"3390","dsntp":"PDS","dsorg":"PO","edate":"***None***","extx":"1","lrecl":"133","migr":"NO","mvol":"N","ovf":"NO","rdate":"2018/02/08","recfm":"FB","sizex":"300","spacu":"TRACKS","used":"1","vol":"P4P020"},
-  {"dsname":"STEVENH.PDSE","blksz":"32720","catnm":"ICFCAT.SYSPLEX4.CATALOGA","cdate":"2017/09/08","dev":"3390","dsntp":"LIBRARY","dsorg":"PO-E","edate":"***None***","extx":"1","lrecl":"80","migr":"NO","mvol":"N","ovf":"NO","rdate":"2018/02/23","recfm":"FB","sizex":"201","spacu":"BLOCKS","used":"1","vol":"P4P027"},
-  {"dsname":"STEVENH.REXXSDS","blksz":"120","catnm":"ICFCAT.SYSPLEX4.CATALOGA","cdate":"2018/02/23","dev":"3390","dsorg":"PS","edate":"***None***","extx":"1","lrecl":"120","migr":"NO","mvol":"N","ovf":"NO","rdate":"2018/02/23","recfm":"FB","sizex":"300","spacu":"TRACKS","used":"0","vol":"P4P023"},
-  {"dsname":"STEVENH.VSAM","catnm":"ICFCAT.SYSPLEX4.CATALOGA","dsorg":"VS","migr":"NO","mvol":"N","vol":"*VSAM*"},
-  {"dsname":"STEVENH.VSAM.DATA","blksz":"?","catnm":"ICFCAT.SYSPLEX4.CATALOGA","cdate":"2017/09/26","dev":"3390","dsorg":"VS","edate":"***None***","extx":"1","lrecl":"?","migr":"NO","mvol":"N","ovf":"NO","rdate":"2017/09/27","recfm":"?","sizex":"45","spacu":"CYLINDERS","used":"?","vol":"P4P005"},
-  {"dsname":"STEVENH.VSAM.INDEX","blksz":"?","catnm":"ICFCAT.SYSPLEX4.CATALOGA","cdate":"2017/09/26","dev":"3390","dsorg":"VS","edate":"***None***","extx":"1","lrecl":"?","migr":"NO","mvol":"N","ovf":"NO","rdate":"***None***","recfm":"?","sizex":"1","spacu":"TRACKS","used":"?","vol":"P4P005"}
-],"returnedRows":5,"JSONversion":1}

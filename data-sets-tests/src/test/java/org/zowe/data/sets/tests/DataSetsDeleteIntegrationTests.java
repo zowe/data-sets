@@ -9,9 +9,10 @@
  */
 package org.zowe.data.sets.tests;
 
-import io.restassured.http.ContentType;
-
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpStatus;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
@@ -22,6 +23,18 @@ import org.zowe.data.sets.model.DataSetCreateRequest;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 public class DataSetsDeleteIntegrationTests extends AbstractDataSetsIntegrationTest {
+
+    private static final String TEST_PDS = HLQ + ".A" + RandomStringUtils.randomAlphanumeric(7);
+
+    @BeforeClass
+    public static void createDataSets() throws Exception {
+        createPdsWithMembers(TEST_PDS, "MEMBER1");
+    }
+
+    @AfterClass
+    public static void cleanup() {
+        deleteDataSet(TEST_PDS);
+    }
 
     @Test
     public void testDeleteSdsWorks() throws Exception {
@@ -40,14 +53,11 @@ public class DataSetsDeleteIntegrationTests extends AbstractDataSetsIntegrationT
         deleteDataSet(request.getName()).then().statusCode(HttpStatus.SC_NO_CONTENT).body(equalTo(""));
     }
 
-    // TODO - create member needed first
-    // @Test
-    // public void testDeletePdsMemberWorks() throws Exception {
-    // String memberPath = getTestJclMemberPath("TEMP");
-    // createPdsMember(memberPath, "").shouldHaveStatusOk();
-    //
-    // deleteDataset(memberPath).shouldHaveStatusNoContent();
-    // }
+    @Test
+    public void testDeletePdsMemberWorks() throws Exception {
+        String memberPath = getDataSetMemberPath(TEST_PDS, "MEMBER1");
+        deleteDataSet(memberPath).then().statusCode(HttpStatus.SC_NO_CONTENT).body(equalTo(""));
+    }
 
     @Test
     // TODO - need to create the unauthorised dataset in setup script
@@ -58,12 +68,10 @@ public class DataSetsDeleteIntegrationTests extends AbstractDataSetsIntegrationT
 
     @Test
     public void testDeleteDatasetsInvalidDataset() throws Exception {
+        System.out.println("testDeleteDatasetsInvalidDataset");
         ZoweApiRestException expected = new DataSetNotFoundException(INVALID_DATASET_NAME);
         ApiError expectedError = expected.getApiError();
 
-        // TODO - refactor with other error tests?
-        deleteDataSet(INVALID_DATASET_NAME).then().statusCode(expectedError.getStatus().value())
-                .contentType(ContentType.JSON).body("status", equalTo(expectedError.getStatus().name()))
-                .body("message", equalTo(expectedError.getMessage()));
+        verifyExceptionReturn(expectedError, deleteDataSet(INVALID_DATASET_NAME));
     }
 }

@@ -1,3 +1,15 @@
+buildscript {
+    repositories mavenRepositories
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+
 dependencies {
     compile project(':data-sets-model')
     compile libraries.spring_boot_starter_actuator
@@ -12,6 +24,8 @@ dependencies {
     compile libraries.springFoxSwagger2
     compile libraries.springFoxSwaggerUI
     compile libraries.lombok
+    compile libraries.mapstruct
+    compile libraries.mapstruct_processor
     compile libraries.explorer_api_common
 
     testCompile libraries.spring_boot_starter_test
@@ -20,4 +34,13 @@ dependencies {
     testCompile libraries.power_mock_junit4_rule
     testCompile libraries.mockito_core
     testCompile libraries.explorer_api_common_test
+}
+
+jar {
+    enabled = true
+}
+
+bootJar {
+    mainClassName = 'org.zowe.DataSetsAndUnixFilesApplication'
+    classifier = 'boot'
 }

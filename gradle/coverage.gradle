@@ -1,6 +1,6 @@
 ext.javaProjectsWithUnitTests = [
-    'jobs-api-server',
-    'jobs-tests'
+    'data-sets-api-server',
+    'data-sets-tests'
     
 ]
 
