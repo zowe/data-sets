@@ -57,8 +57,8 @@ public class UnixFilesGetFileContentTest extends AbstractHttpIntegrationTest {
         String invalidPath = "/u/zzzzzztxt";
         ApiError expectedError = new FileNotFoundException(invalidPath).getApiError();
         
-        RestAssured.given().when().get(invalidPath).then()
-            .statusCode(HttpStatus.SC_NOT_FOUND).contentType(ContentType.JSON)
+        RestAssured.given().when().get(invalidPath)
+            .then().statusCode(HttpStatus.SC_NOT_FOUND).contentType(ContentType.JSON)
             .body("message", equalTo(expectedError.getMessage()));
     }
     
