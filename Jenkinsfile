@@ -68,16 +68,41 @@ customParameters.push(string(
   trim: true,
   required: true
 ))
+customParameters.push(string(
+  name: 'INTEGRATION_TEST_SSH_PORT',
+  description: 'SSH port for integration test server',
+  defaultValue: '2022',
+  trim: true,
+  required: true
+))
+customParameters.push(string(
+  name: 'INTEGRATION_TEST_DIRECTORY_ROOT',
+  description: 'Root directory for integration test',
+  defaultValue: '/zaas1',
+  trim: true,
+  required: true
+))
+customParameters.push(credentials(
+  name: 'INTEGRATION_TEST_DIRECTORY_INIT_USER',
+  description: 'z/OSMF credential to initialize integration test folders / files',
+  credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
+  defaultValue: 'ssh-zdt-test-image-guest',
+  required: true
+))
 customParameters.push(credentials(
   name: 'INTEGRATION_TEST_ZOSMF_CREDENTIAL',
   description: 'z/OSMF credential for integration test',
   credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
-  defaultValue: 'ssh-zdt-test-image-guest',
+  defaultValue: 'ssh-zdt-test-image-guest-fvt',
   required: true
 ))
 opts.push(parameters(customParameters))
 
 properties(opts)
+
+// unique Build ID
+// this value should be updated before using it
+def uniqueBuildId = ""
 
 pipeline {
     agent {
@@ -90,6 +115,9 @@ pipeline {
 
         // Environment variable for flow control. Indicates if the git source was updated by the pipeline.
         GIT_SOURCE_UPDATED = "false"
+
+        // Environment variable for integration test.
+        TEST_DIRECTORY_ROOT = "${params.INTEGRATION_TEST_DIRECTORY_ROOT}"
     }
 
     stages {
@@ -270,6 +298,19 @@ pipeline {
                 }
             }
             stages {
+                stage('Prepare Build ID') {
+                    steps {
+                        // generate unique build ID
+                        script {
+                            def buildIdentifier = getBuildIdentifier()
+                            uniqueBuildId = "datasets-integration-test-${buildIdentifier}"
+                            if (!uniqueBuildId) {
+                                error "Cannot determine unique build ID."
+                            }
+                        }
+                    }
+                }
+
                 stage('Prepare Certificate') {
                     steps {
                         sh """keytool -genkeypair -keystore localhost.keystore.p12 -storetype PKCS12 \
@@ -297,6 +338,26 @@ pipeline {
                     }
                 }
 
+                stage('Prepare Test Directory') {
+                    steps {
+                        timeout(time: 20, unit: 'MINUTES') {
+                            withCredentials([usernamePassword(credentialsId: params.INTEGRATION_TEST_DIRECTORY_INIT_USER, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                                // send file to test image host
+                                sh """SSHPASS=${PASSWORD} sshpass -e sftp -o BatchMode=no -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -b - -P ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
+put scripts/prepare-integration-test-folders.sh
+EOF"""
+                                // create TEST_DIRECTORY_ROOT/uniqueBuildId
+                                sh """SSHPASS=${PASSWORD} sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
+cd ~ && \
+  (iconv -f ISO8859-1 -t IBM-1047 prepare-integration-test-folders.sh > prepare-integration-test-folders.sh.new) && mv prepare-integration-test-folders.sh.new prepare-integration-test-folders.sh && chmod +x prepare-integration-test-folders.sh
+./prepare-integration-test-folders.sh ${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId} || { echo "[prepare-integration-test-folders] failed"; exit 1; }
+echo "[prepare-integration-test-folders] succeeds" && exit 0
+EOF"""
+                            }
+                        }
+                    }
+                }
+
                 stage('Start Test') {
                     steps {
                         timeout(time: 20, unit: 'MINUTES') {
@@ -307,7 +368,8 @@ pipeline {
     -Pserver.host=localhost \
     -Pserver.port=8443 \
     -Pserver.username=${USERNAME} \
-    -Pserver.password=${PASSWORD}"""
+    -Pserver.password=${PASSWORD} \
+    -Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}"""
                                     } catch (err) {
                                         // ignore test failures
                                         // FIXME: after fix all failed test during test, this stage
@@ -446,6 +508,19 @@ pipeline {
             junit allowEmptyResults: true, testResults: '**/test-results/**/*.xml'
 
             script {
+                // remove temporary folder
+                if (uniqueBuildId) {
+                    withCredentials([usernamePassword(credentialsId: params.INTEGRATION_TEST_DIRECTORY_INIT_USER, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        // delete TEST_DIRECTORY_ROOT/uniqueBuildId
+                        sh """SSHPASS=${PASSWORD} sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
+cd ~ && \
+  [ -d "${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}" ] && \
+  rm -fr "${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}"
+echo "[cleanup-integration-test-folders] done" && exit 0
+EOF"""
+                   }
+                }
+
                 def buildStatus = currentBuild.currentResult
 
                 if (SHOULD_BUILD == 'true') {
