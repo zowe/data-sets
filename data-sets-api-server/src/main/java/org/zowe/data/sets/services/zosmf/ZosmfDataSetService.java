@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
 import org.zowe.api.common.model.ItemsWrapper;
+import org.zowe.data.sets.model.DataSet;
 import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetContentWithEtag;
 import org.zowe.data.sets.model.DataSetCreateRequest;
@@ -34,8 +35,15 @@ public class ZosmfDataSetService implements DataSetService {
         return runner.run(zosmfConnector);
     }
 
+
     @Override
-    public ItemsWrapper<DataSetAttributes> listDataSets(String filter) {
+    public ItemsWrapper<DataSetAttributes> listDataSetAttributes(String filter) {
+        ListDataSetsAttributesZosmfRequestRunner runner = new ListDataSetsAttributesZosmfRequestRunner(filter);
+        return runner.run(zosmfConnector);
+    }
+
+    @Override
+    public ItemsWrapper<DataSet> listDataSets(String filter) {
         ListDataSetsZosmfRequestRunner runner = new ListDataSetsZosmfRequestRunner(filter);
         return runner.run(zosmfConnector);
     }

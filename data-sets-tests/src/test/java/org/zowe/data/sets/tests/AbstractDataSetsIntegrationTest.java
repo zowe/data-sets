@@ -41,7 +41,7 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
         createDataSet(createPdsRequest(pdsName)).then().statusCode(HttpStatus.SC_CREATED);
         for (String member : memberNames) {
             putDataSetContent(getDataSetMemberPath(pdsName, member), content).then()
-                .statusCode(HttpStatus.SC_NO_CONTENT);
+                    .statusCode(HttpStatus.SC_NO_CONTENT);
         }
     }
 
@@ -49,8 +49,12 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
         return RestAssured.given().when().get(dataSetName + "/members");
     }
 
-    static Response getDataSets(String dataSetFilter) {
+    static Response getDataSetsDetails(String dataSetFilter) {
         return RestAssured.given().when().get(dataSetFilter);
+    }
+
+    static Response getDataSets(String dataSetFilter) {
+        return RestAssured.given().when().get(dataSetFilter + "/list");
     }
 
     static Response createDataSet(DataSetCreateRequest attributes) {
@@ -67,14 +71,14 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
 
     static Response putDataSetContent(String dataSetName, DataSetContent body, String etag) {
         return RestAssured.given().contentType("application/json").body(body).header("If-Match", etag).when()
-            .put(dataSetName + "/content");
+                .put(dataSetName + "/content");
     }
 
     static DataSetCreateRequest createPdsRequest(String dataSetName) {
         DataSetCreateRequest defaultJclPdsRequest = DataSetCreateRequest.builder().name(dataSetName).blockSize(400)
-            .primary(10).recordLength(80).secondary(5).directoryBlocks(20)
-            .dataSetOrganization(DataSetOrganisationType.PO).recordFormat("FB").allocationUnit(AllocationUnitType.TRACK)
-            .build();
+                .primary(10).recordLength(80).secondary(5).directoryBlocks(20)
+                .dataSetOrganization(DataSetOrganisationType.PO).recordFormat("FB").allocationUnit(AllocationUnitType.TRACK)
+                .build();
         return defaultJclPdsRequest;
     }
 

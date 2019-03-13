@@ -16,34 +16,34 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.methods.RequestBuilder;
 import org.zowe.api.common.model.ItemsWrapper;
 import org.zowe.data.sets.mapper.DataSetMapper;
-import org.zowe.data.sets.model.DataSet;
+import org.zowe.data.sets.model.DataSetAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-public class ListDataSetsZosmfRequestRunner
-        extends AbstractListDataSetsZosmfRequestRunner<ItemsWrapper<DataSet>> {
+public class ListDataSetsAttributesZosmfRequestRunner extends AbstractListDataSetsZosmfRequestRunner<ItemsWrapper<DataSetAttributes>> {
 
-    public ListDataSetsZosmfRequestRunner(String filter) {
+    public ListDataSetsAttributesZosmfRequestRunner(String filter) {
         super(filter);
     }
 
     @Override
     protected void addHeaders(RequestBuilder builder) {
-        builder.addHeader("X-IBM-Attributes", "dsname");
+        builder.addHeader("X-IBM-Attributes", "base");
     }
 
     @Override
-    protected ItemsWrapper<DataSet> retrieveItems(JsonElement items) {
-        List<DataSet> dataSets = new ArrayList<>();
+    protected ItemsWrapper<DataSetAttributes> retrieveItems(JsonElement items) {
+        List<DataSetAttributes> dataSets = new ArrayList<>();
         for (JsonElement jsonElement : items.getAsJsonArray()) {
             try {
-                dataSets.add(DataSetMapper.INSTANCE.zosToDataSetDTO(jsonElement.getAsJsonObject()));
+                dataSets.add(DataSetMapper.INSTANCE.zosToDataSetAttributesDTO(jsonElement.getAsJsonObject()));
             } catch (IllegalArgumentException e) {
-                log.error("listDataSets", e);
+                log.error("listDataSetAttributes", e);
             }
         }
         return new ItemsWrapper<>(dataSets);
     }
+
 }
