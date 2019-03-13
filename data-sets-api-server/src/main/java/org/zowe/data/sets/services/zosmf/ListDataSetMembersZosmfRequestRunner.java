@@ -53,7 +53,7 @@ public class ListDataSetMembersZosmfRequestRunner extends AbstractZosmfDataSetsR
         for (JsonElement jsonElement : memberJsonArray.getAsJsonArray()) {
             memberNames.add(jsonElement.getAsJsonObject().get("member").getAsString());
         }
-        return new ItemsWrapper<String>(memberNames);
+        return new ItemsWrapper<>(memberNames);
     }
 
     @Override
