@@ -35,7 +35,6 @@ buildscript {
         classpath "gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:${licenseGradlePluginVerion}"
         classpath 'org.owasp:dependency-check-gradle:3.3.4'
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
-        classpath "net.ltgt.gradle:gradle-apt-plugin:0.21"
     }
 }
 
@@ -52,7 +51,6 @@ allprojects {
     apply plugin: 'maven'
     apply plugin: 'com.github.hierynomus.license'
     apply plugin: 'org.owasp.dependencycheck'
-    apply plugin: 'net.ltgt.apt'
 
     repositories mavenRepositories
 
