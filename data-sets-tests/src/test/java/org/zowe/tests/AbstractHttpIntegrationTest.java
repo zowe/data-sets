@@ -33,6 +33,8 @@ public abstract class AbstractHttpIntegrationTest {
 
     protected static final String JOB_IEFBR14 = "IEFBR14";
     protected static final String JOB_WITH_STEPS = "JOB1DD";
+    
+    protected static final String HEX_IN_QUOTES_REGEX = "^\"[0-9A-F]+\"$";
 
     @BeforeClass
     public static void setUpConnection() {

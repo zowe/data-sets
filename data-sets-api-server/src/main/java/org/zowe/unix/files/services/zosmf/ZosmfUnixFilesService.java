@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
 import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
-import org.zowe.unix.files.model.UnixFileContent;
+import org.zowe.unix.files.model.UnixFileContentWithETag;
 import org.zowe.unix.files.services.UnixFilesService;
 
 @Service
@@ -29,7 +29,7 @@ public class ZosmfUnixFilesService implements UnixFilesService {
     }
 
     @Override
-    public UnixFileContent getUnixFileContent(String path) {
+    public UnixFileContentWithETag getUnixFileContentWithETag(String path) {
         GetUnixFileContentRunner runner = new GetUnixFileContentRunner(path);
         return runner.run(zosmfConnector);
     }
