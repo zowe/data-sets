@@ -12,6 +12,7 @@ package org.zowe.unix.files.services.zosmf;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +24,13 @@ import org.zowe.unix.files.exceptions.FileNotFoundException;
 import org.zowe.unix.files.exceptions.PathNameNotValidException;
 import org.zowe.unix.files.exceptions.UnauthorisedFileException;
 import org.zowe.unix.files.model.UnixFileContent;
+import org.zowe.unix.files.model.UnixFileContentWithETag;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public class GetUnixFileContentRunner extends AbstractZosmfRequestRunner<UnixFileContent> {
+public class GetUnixFileContentRunner extends AbstractZosmfRequestRunner<UnixFileContentWithETag> {
     
     @Autowired
     ZosmfConnector zosmfConnector;
@@ -52,8 +54,14 @@ public class GetUnixFileContentRunner extends AbstractZosmfRequestRunner<UnixFil
     }
 
     @Override
-    protected UnixFileContent getResult(ResponseCache responseCache) throws IOException {
-        return new UnixFileContent(responseCache.getEntity());
+    protected UnixFileContentWithETag getResult(ResponseCache responseCache) throws IOException {
+        UnixFileContent content = new UnixFileContent(responseCache.getEntity());
+        String eTag = null;
+        Header eTagHeader = responseCache.getFirstHeader("ETag");
+        if (eTagHeader != null) {
+            eTag = eTagHeader.getValue();
+        }
+        return new UnixFileContentWithETag(content, eTag);
     }
     
     @Override
