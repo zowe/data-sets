@@ -9,30 +9,41 @@
  */
 package org.zowe.unix.files.services.zosmf;
 
+import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.junit.Test;
+import org.zowe.api.common.utils.ResponseCache;
 import org.zowe.data.sets.services.zosmf.AbstractZosmfRequestRunnerTest;
 import org.zowe.unix.files.exceptions.PathNameNotValidException;
 import org.zowe.unix.files.exceptions.UnauthorisedFileException;
 import org.zowe.unix.files.model.UnixFileContent;
+import org.zowe.unix.files.model.UnixFileContentWithETag;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class GetUnixFileContentRunnerTest extends AbstractZosmfRequestRunnerTest {
     
     @Test
     public void get_unix_file_content_should_call_zosmf_and_parse_response_correctly() throws Exception {
-        UnixFileContent expectedFileContent = new UnixFileContent(loadTestFile("getUnixFileContent.json"));
-
         String path = "/u/directory/file.txt";
+        UnixFileContent expectedFileContent = new UnixFileContent(loadTestFile("getUnixFileContent.json"));
+        String eTag = "E1B212479173E273A8ACFD682BCBEADE";
+
+        UnixFileContentWithETag expected = new UnixFileContentWithETag(expectedFileContent, eTag);
         
-        mockTextResponse(HttpStatus.SC_OK, loadTestFile("getUnixFileContent.json"));
+        ResponseCache responseCache = mockTextResponse(HttpStatus.SC_OK, loadTestFile("getUnixFileContent.json"));
+
+        Header header = mock(Header.class);
+        when(header.getValue()).thenReturn(eTag);
+        when(responseCache.getFirstHeader("ETag")).thenReturn(header);
+        
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/fs%s", path));
         when(zosmfConnector.request(requestBuilder)).thenReturn(response);
         
-        assertEquals(expectedFileContent, new GetUnixFileContentRunner(path).run(zosmfConnector));
+        assertEquals(expected, new GetUnixFileContentRunner(path).run(zosmfConnector));
         
         verifyInteractions(requestBuilder, false);
     }
