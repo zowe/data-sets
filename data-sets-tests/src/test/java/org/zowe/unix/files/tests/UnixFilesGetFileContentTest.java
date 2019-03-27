@@ -14,6 +14,7 @@ import io.restassured.http.ContentType;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.text.IsEqualIgnoringWhiteSpace;
+import org.hamcrest.text.MatchesPattern;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.zowe.api.common.errors.ApiError;
@@ -39,6 +40,7 @@ public class UnixFilesGetFileContentTest extends AbstractHttpIntegrationTest {
         
         RestAssured.given().when().get(TEST_DIRECTORY + "/fileWithAccess")
             .then().statusCode(HttpStatus.SC_OK)
+            .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(expectedContent + "\n"));
     }
     
