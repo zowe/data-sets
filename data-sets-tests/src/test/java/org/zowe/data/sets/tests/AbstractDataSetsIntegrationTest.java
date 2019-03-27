@@ -27,7 +27,6 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegr
     static final String HLQ = USER.toUpperCase();
     static final String INVALID_DATASET_NAME = HLQ + ".TEST.INVALID";
     static final String UNAUTHORIZED_DATASET = "IBMUSER.NOWRITE.CNTL";
-    static final String HEX_IN_QUOTES_REGEX = "^\"[0-9A-F]+\"$";
     static final String DEFAULT_MEMBER_CONTENT = "//ATLJ0000 JOB (ADL),'ATLAS',MSGCLASS=X,CLASS=A,TIME=1440\n//*        TEST JOB\n";
 
     @BeforeClass

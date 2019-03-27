@@ -10,10 +10,10 @@
 package org.zowe.unix.files.services;
 
 import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
-import org.zowe.unix.files.model.UnixFileContent;
+import org.zowe.unix.files.model.UnixFileContentWithETag;
 
 public interface UnixFilesService {
     UnixDirectoryAttributesWithChildren listUnixDirectory(String path);
     
-    UnixFileContent getUnixFileContent(String path);
+    UnixFileContentWithETag getUnixFileContentWithETag(String path);
 }

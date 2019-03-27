@@ -32,17 +32,20 @@ import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.unix.files.model.UnixDirectoryChild;
 import org.zowe.unix.files.model.UnixEntityType;
 import org.zowe.unix.files.model.UnixFileContent;
+import org.zowe.unix.files.model.UnixFileContentWithETag;
 import org.zowe.unix.files.services.UnixFilesService;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -118,15 +121,18 @@ public class UnixFilesControllerTest {
     @Test
     public void get_unix_file_content_success() throws Exception {
         String path = "/file";
-        
+        String eTag = "\"E1B212479173E273A8ACFD682BCBEADE\"";
         UnixFileContent fileContent = new UnixFileContent("Some file content");
         
-        when(unixFilesService.getUnixFileContent(path)).thenReturn(fileContent);
+        UnixFileContentWithETag fileContentWithETag = new UnixFileContentWithETag(fileContent, eTag);
+        
+        when(unixFilesService.getUnixFileContentWithETag(path)).thenReturn(fileContentWithETag);
         
         mockMvc.perform(get(ENDPOINT_ROOT + path)).andExpect(status().isOk())
-            .andExpect(content().string(JsonUtils.convertToJsonString(fileContent)));
+            .andExpect(content().string(JsonUtils.convertToJsonString(fileContent)))
+            .andExpect(header().string("ETag", equalTo(eTag)));
         
-        verify(unixFilesService, times(1)).getUnixFileContent(path);
+        verify(unixFilesService, times(1)).getUnixFileContentWithETag(path);
         verifyNoMoreInteractions(unixFilesService);
     }
     
@@ -137,13 +143,13 @@ public class UnixFilesControllerTest {
         String errorMessage = String.format("You are not authorised to access file %s", path);
         ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.FORBIDDEN).build();
         
-        when(unixFilesService.getUnixFileContent(path)).thenThrow(new ZoweApiErrorException(expectedError));
+        when(unixFilesService.getUnixFileContentWithETag(path)).thenThrow(new ZoweApiErrorException(expectedError));
         
         mockMvc.perform(get(ENDPOINT_ROOT + path)).andExpect(status().isForbidden())
             .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
             .andExpect(jsonPath("$.message").value(errorMessage));
         
-        verify(unixFilesService, times(1)).getUnixFileContent(path);
+        verify(unixFilesService, times(1)).getUnixFileContentWithETag(path);
         verifyNoMoreInteractions(unixFilesService);
     }
 }
