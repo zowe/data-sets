@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public class GetUnixFileContentRunner extends AbstractZosmfRequestRunner<UnixFileContentWithETag> {
+public class GetUnixFileContentRunner extends AbstractZosmfUnixFilesRequestRunner<UnixFileContentWithETag> {
     
     @Autowired
     ZosmfConnector zosmfConnector;
@@ -67,20 +67,10 @@ public class GetUnixFileContentRunner extends AbstractZosmfRequestRunner<UnixFil
     @Override
     protected ZoweApiRestException createException(JsonObject jsonResponse, int statusCode) {
         JsonElement details = jsonResponse.get("details");
-        if (null != details) {
-            if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-                if (details.toString().contains("EDC5135I Not a directory.")) {
-                    throw new PathNameNotValidException(path);
-                } else if (details.toString().contains("EDC5111I Permission denied.")) {
-                    throw new UnauthorisedFileException(path);
-                }
-            } else if (statusCode == HttpStatus.SC_NOT_FOUND) {
-                if (details.toString().contains("EDC5129I No such file or directory.")) {
-                    throw new FileNotFoundException(path);
-                }
-            }
+        if (details.toString().contains("EDC5135I Not a directory.")) {
+            throw new PathNameNotValidException(path);
         }
-        return null;
+        return createUnixFileException(jsonResponse, statusCode, path);
     }
 
 }

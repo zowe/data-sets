@@ -16,4 +16,8 @@ public interface UnixFilesService {
     UnixDirectoryAttributesWithChildren listUnixDirectory(String path);
     
     UnixFileContentWithETag getUnixFileContentWithETag(String path);
+    
+    String putUnixFileContent(String path, UnixFileContentWithETag content, boolean convert);
+    
+    String getUnixFileChtag(String path);
 }

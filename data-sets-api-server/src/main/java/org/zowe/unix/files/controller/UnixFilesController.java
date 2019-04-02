@@ -21,6 +21,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,19 +51,51 @@ public class UnixFilesController {
         return unixFileService.listUnixDirectory(path);
     }
     
+    private String getPathFromRequest(HttpServletRequest request) {
+        String requestPath = request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
+        String fullPath = requestPath.substring(requestPath.indexOf("/api/v1/unixfiles") + 17);
+        return fullPath;
+    }
+    
     @GetMapping(value = "{path}/**", produces = { "application/json" })
     @ApiOperation(value = "Get the contents of a Unix file", nickname = "getUnixFileContents", 
     notes = "This API gets a the contetns of a Unix file. Try it out function will not work due to the encoding of forward slashes, "
-            + "it should be noted that requests to this endpoint should only contain unencoded slashes", tags = "Unix Files APIs")
+            + "it should be noted that requests to this endpoint should only contain unencoded slashes and not include wild card characters",
+            tags = "Unix Files APIs")
     @ApiResponses({ @ApiResponse(code = 200, message = "Ok", response = UnixFileContent.class)})
     public ResponseEntity<UnixFileContent> getUnixFileContent(@PathVariable String path, HttpServletRequest request) {
-        String requestPath = request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
-        String fullPath = requestPath.substring(requestPath.indexOf("/api/v1/unixfiles") + 17);
+        String fullPath = getPathFromRequest(request);
         UnixFileContentWithETag content = unixFileService.getUnixFileContentWithETag(fullPath);
         
         HttpHeaders headers = new HttpHeaders();
         headers.add("Access-Control-Expose-Headers", "ETag");
         headers.add("ETag", content.getETag());
         return new ResponseEntity<>(content.getContent(), headers, HttpStatus.OK);
+    }
+    
+    @PutMapping(value = "{path}/**", produces = { "application/json" })
+    @ApiOperation(value = "Update the contents of a Unix file", nickname = "putUnixFileContents", 
+        notes = "This API will update the contents of a Unix file. Try it out function will not work due to the encoding of forward slashes, "
+            + "it should be noted that requests to this endpoint should only contain unencoded slashes and not include wild card characters",
+            tags = "Unix Files APIs")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Ok")})
+    public ResponseEntity<?> putUnixFileContent(
+            @PathVariable String path, HttpServletRequest request,
+            @RequestBody UnixFileContent input, 
+            @RequestHeader(value = "If-Match", required = false) String ifMatch,
+            @RequestHeader(value = "Convert", required = false) Boolean convert) {
+        UnixFileContentWithETag contentWithETag = new UnixFileContentWithETag(input, ifMatch);
+        String fullPath = getPathFromRequest(request);
+        if (convert == null) {
+            String codepage = unixFileService.getUnixFileChtag(fullPath);
+            if (codepage.contains("ISO8859") || codepage.contains("IBM-850") || codepage.contains("UTF")) {
+                convert = true;
+            } else {
+                convert = false;
+            }
+        }
+        String putETag = unixFileService.putUnixFileContent(fullPath, contentWithETag, convert);
+        
+        return ResponseEntity.noContent().eTag(putETag).build();
     }
 }

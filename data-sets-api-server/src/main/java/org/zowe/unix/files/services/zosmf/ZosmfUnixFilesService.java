@@ -33,4 +33,16 @@ public class ZosmfUnixFilesService implements UnixFilesService {
         GetUnixFileContentRunner runner = new GetUnixFileContentRunner(path);
         return runner.run(zosmfConnector);
     }
+    
+    @Override
+    public String putUnixFileContent(String path, UnixFileContentWithETag content, boolean convert) {
+        PutUnixFileContentZosmfRunner runner = new PutUnixFileContentZosmfRunner(path, content, convert);
+        return runner.run(zosmfConnector);
+    }
+    
+    @Override
+    public String getUnixFileChtag(String path) {
+        GetUnixFileChtagRunner runner = new GetUnixFileChtagRunner(path);
+        return runner.run(zosmfConnector);
+    }
 }
