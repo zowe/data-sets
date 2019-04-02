@@ -9,9 +9,7 @@
  */
 package org.zowe.unix.files.services.zosmf;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.google.gson.JsonObject;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
@@ -27,8 +25,9 @@ import org.zowe.unix.files.exceptions.NotAFileException;
 import org.zowe.unix.files.model.UnixFileContent;
 import org.zowe.unix.files.model.UnixFileContentWithETag;
 
-import com.google.gson.JsonObject;
-
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class PutUnixFileContentZosmfRunner extends AbstractZosmfUnixFilesRequestRunner<String> {
 
@@ -56,7 +55,7 @@ public class PutUnixFileContentZosmfRunner extends AbstractZosmfUnixFilesRequest
             requestBuilder.addHeader("If-Match", ifMatch.replaceAll("\"", ""));
         }
         requestBuilder.addHeader("Content-type", ContentType.TEXT_PLAIN.getMimeType());
-        if(convert) {
+        if (convert) {
             requestBuilder.addHeader("X-IBM-Data-Type", "binary");
         }
         return requestBuilder;

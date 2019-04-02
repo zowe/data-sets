@@ -19,10 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.ResponseCache;
-import org.zowe.api.common.zosmf.services.AbstractZosmfRequestRunner;
-import org.zowe.unix.files.exceptions.FileNotFoundException;
 import org.zowe.unix.files.exceptions.PathNameNotValidException;
-import org.zowe.unix.files.exceptions.UnauthorisedFileException;
 import org.zowe.unix.files.model.UnixFileContent;
 import org.zowe.unix.files.model.UnixFileContentWithETag;
 

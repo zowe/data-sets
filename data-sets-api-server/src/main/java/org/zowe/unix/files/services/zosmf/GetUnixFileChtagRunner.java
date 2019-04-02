@@ -9,9 +9,10 @@
  */
 package org.zowe.unix.files.services.zosmf;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.google.gson.JsonObject;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
@@ -22,14 +23,13 @@ import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.ResponseCache;
 import org.zowe.unix.files.exceptions.NotAFileException;
 
-import com.google.gson.JsonObject;
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetUnixFileChtagRunner extends AbstractZosmfUnixFilesRequestRunner<String>{
+public class GetUnixFileChtagRunner extends AbstractZosmfUnixFilesRequestRunner<String> {
     
     private String path;
 
@@ -59,7 +59,7 @@ public class GetUnixFileChtagRunner extends AbstractZosmfUnixFilesRequestRunner<
             String category = jsonResponse.get("category").toString();
             String returnCode = jsonResponse.get("rc").toString();
             //No helpful message in response so check category and status code
-            if (null != category && category.equals("7") && null != returnCode && returnCode.equals("266")){
+            if (null != category && category.equals("7") && null != returnCode && returnCode.equals("266")) {
                throw new NotAFileException(path);
             }
         }
