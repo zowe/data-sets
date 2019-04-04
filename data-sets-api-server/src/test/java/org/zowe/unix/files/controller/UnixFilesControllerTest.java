@@ -172,6 +172,7 @@ public class UnixFilesControllerTest {
             .andExpect(header().string("ETag", eTag));
         
         verify(unixFilesService, times(1)).putUnixFileContent(path, fileContentWithETag, false);
+        verify(unixFilesService, times(1)).getUnixFileContentWithETag(path);
         verifyNoMoreInteractions(unixFilesService);
     }
     
@@ -195,6 +196,7 @@ public class UnixFilesControllerTest {
             .andExpect(header().string("ETag", eTag));
         
         verify(unixFilesService, times(1)).putUnixFileContent(path, fileContentWithETag, false);
+        verify(unixFilesService, times(1)).getUnixFileContentWithETag(path);
         verifyNoMoreInteractions(unixFilesService);
     }
     
@@ -216,6 +218,7 @@ public class UnixFilesControllerTest {
             .andExpect(header().string("ETag", eTag));
         
         verify(unixFilesService, times(1)).putUnixFileContent(path, fileContentWithETag, false);
+        verify(unixFilesService, times(1)).getUnixFileContentWithETag(path);
         verify(unixFilesService, times(1)).getUnixFileChtag(path);
         verifyNoMoreInteractions(unixFilesService);
     }
@@ -241,6 +244,7 @@ public class UnixFilesControllerTest {
             .andExpect(jsonPath("$.message").value(errorMessage));
         
         verify(unixFilesService, times(1)).putUnixFileContent(path,fileContentWithETag, false);
+        verify(unixFilesService, times(1)).getUnixFileContentWithETag(path);
         verifyNoMoreInteractions(unixFilesService);
     }
     
@@ -261,8 +265,29 @@ public class UnixFilesControllerTest {
             .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
             .andExpect(jsonPath("$.message").value(errorMessage));
         
+        verify(unixFilesService, times(1)).getUnixFileContentWithETag(path);
         verify(unixFilesService, times(1)).getUnixFileChtag(path);
         verifyNoMoreInteractions(unixFilesService);
     }
     
+    @Test
+    public void put_unix_file_content_when_not_found_should_be_converted_to_error_message() throws Exception {
+        String path = "/directory";
+        UnixFileContent fileContent = new UnixFileContent("Some file content");
+        
+        String errorMessage = String.format("Requested file %s not found", path);
+        ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.NOT_FOUND).build();
+        
+        when(unixFilesService.getUnixFileContentWithETag(path)).thenThrow(new ZoweApiErrorException(expectedError));
+        
+        mockMvc.perform(put(ENDPOINT_ROOT + path)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtils.convertToJsonString(fileContent.getContent())))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
+            .andExpect(jsonPath("$.message").value(errorMessage));
+        
+        verify(unixFilesService, times(1)).getUnixFileContentWithETag(path);
+        verifyNoMoreInteractions(unixFilesService);
+    }
 }

@@ -84,8 +84,13 @@ public class UnixFilesController {
             @RequestBody UnixFileContent input, 
             @RequestHeader(value = "If-Match", required = false) String ifMatch,
             @RequestHeader(value = "Convert", required = false) Boolean convert) {
+
         UnixFileContentWithETag contentWithETag = new UnixFileContentWithETag(input, ifMatch);
         String fullPath = getPathFromRequest(request);
+        
+        //Ensure file already exists
+        unixFileService.getUnixFileContentWithETag(fullPath);
+        
         if (convert == null) {
             String codepage = unixFileService.getUnixFileChtag(fullPath);
             if (codepage.contains("ISO8859") || codepage.contains("IBM-850") || codepage.contains("UTF")) {

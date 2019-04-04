@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.ResponseCache;
-import org.zowe.unix.files.exceptions.PathNameNotValidException;
+import org.zowe.unix.files.exceptions.NotAFileException;
 import org.zowe.unix.files.model.UnixFileContent;
 import org.zowe.unix.files.model.UnixFileContentWithETag;
 
@@ -64,8 +64,8 @@ public class GetUnixFileContentRunner extends AbstractZosmfUnixFilesRequestRunne
     @Override
     protected ZoweApiRestException createException(JsonObject jsonResponse, int statusCode) {
         JsonElement details = jsonResponse.get("details");
-        if (details.toString().contains("EDC5135I Not a directory.")) {
-            throw new PathNameNotValidException(path);
+        if (details.getAsString().contains("EDC5121I Invalid argument.")) {
+            throw new NotAFileException(path);
         }
         return createUnixFileException(jsonResponse, statusCode, path);
     }

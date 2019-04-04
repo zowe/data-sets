@@ -9,8 +9,6 @@
  */
 package org.zowe.unix.files.services.zosmf;
 
-import com.google.gson.JsonObject;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -19,9 +17,7 @@ import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
-import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.ResponseCache;
-import org.zowe.unix.files.exceptions.NotAFileException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -42,7 +38,8 @@ public class GetUnixFileChtagRunner extends AbstractZosmfUnixFilesRequestRunner<
     protected RequestBuilder prepareQuery(ZosmfConnector zosmfConnector) throws URISyntaxException, IOException {
         URI requestUrl = zosmfConnector.getFullUrl("restfiles/fs" + path);
         StringEntity requestEntity = new StringEntity("{ \"request\": \"chtag\", \"action\": \"list\" }");
-        RequestBuilder requestBuilder = RequestBuilder.put(requestUrl).setEntity(requestEntity);
+        RequestBuilder requestBuilder = RequestBuilder.put(requestUrl);
+        requestBuilder.setEntity(requestEntity);
         requestBuilder.addHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType());
         return requestBuilder;
     }
@@ -51,18 +48,5 @@ public class GetUnixFileChtagRunner extends AbstractZosmfUnixFilesRequestRunner<
     protected String getResult(ResponseCache responseCache) throws IOException {
         String codepage = responseCache.getEntityAsJsonObject().get("stdout").getAsString();
         return codepage;
-    }
-
-    @Override
-    protected ZoweApiRestException createException(JsonObject jsonResponse, int statusCode) throws IOException {
-        if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-            String category = jsonResponse.get("category").toString();
-            String returnCode = jsonResponse.get("rc").toString();
-            //No helpful message in response so check category and status code
-            if (null != category && category.equals("7") && null != returnCode && returnCode.equals("266")) {
-               throw new NotAFileException(path);
-            }
-        }
-        return createUnixFileException(jsonResponse, statusCode, path);
     }
 }

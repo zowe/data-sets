@@ -21,7 +21,6 @@ import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
 import org.zowe.api.common.exceptions.PreconditionFailedException;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.ResponseCache;
-import org.zowe.unix.files.exceptions.NotAFileException;
 import org.zowe.unix.files.model.UnixFileContent;
 import org.zowe.unix.files.model.UnixFileContentWithETag;
 
@@ -73,9 +72,6 @@ public class PutUnixFileContentZosmfRunner extends AbstractZosmfUnixFilesRequest
     
     @Override
     protected ZoweApiRestException createException(JsonObject jsonResponse, int statusCode) throws IOException {
-        if (jsonResponse.get("details").toString().contains("EDC5123I Is a directory.")) {
-            throw new NotAFileException(path);
-        }
         return createUnixFileException(jsonResponse, statusCode, path);
     }
 
