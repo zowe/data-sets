@@ -28,7 +28,6 @@ server:
     keyStorePassword: ${server.ssl.keyStorePassword}
     keyStoreType: ${server.ssl.keyStoreType}
     keyAlias: ${server.ssl.keyAlias}
-    enabled-protocols: TLSv1.2
     
 zosmf:
   ipAddress: ${zosmf.ipAddress}
