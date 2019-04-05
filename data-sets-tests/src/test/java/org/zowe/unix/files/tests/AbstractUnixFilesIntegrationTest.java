@@ -9,10 +9,10 @@
  */
 package org.zowe.unix.files.tests;
 
+import io.restassured.RestAssured;
+
 import org.junit.BeforeClass;
 import org.zowe.tests.AbstractHttpIntegrationTest;
-
-import io.restassured.RestAssured;
 
 public class AbstractUnixFilesIntegrationTest extends AbstractHttpIntegrationTest {
     static final String UNIX_FILES_ENDPOINT = "unixfiles";

@@ -59,7 +59,7 @@ public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesInt
     private void testPutUnixFileWithError(String path, ApiError expectedError, boolean ifMatch) {
         final UnixFileContent content = new UnixFileContent("New testable content");
         
-        if(ifMatch) {
+        if (ifMatch) {
             RestAssured.given().contentType("application/json").body(content).header("If-Match", "wrong")
                 .when().put(path)
                 .then().statusCode(expectedError.getStatus().value())
