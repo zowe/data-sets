@@ -17,7 +17,7 @@ import org.zowe.data.sets.services.zosmf.AbstractZosmfRequestRunnerTest;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-public class GetUnixFileChtagRunnerTest extends AbstractZosmfRequestRunnerTest{
+public class GetUnixFileChtagRunnerTest extends AbstractZosmfRequestRunnerTest {
     
     @Test
     public void get_unix_file_chtag_should_call_zosmf_and_parse_response_correctly() throws Exception {

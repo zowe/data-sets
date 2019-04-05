@@ -103,7 +103,7 @@ public class PutUnixFileContentRunnerTest extends AbstractZosmfRequestRunnerTest
         UnixFileContent content = new UnixFileContent("hello world");
         UnixFileContentWithETag contentWithETag = new UnixFileContentWithETag(content, null);
         
-        if(null != testFile) {
+        if (null != testFile) {
             mockJsonResponse(returnCode, loadTestFile(testFile));
         } else {
             mockResponseCache(returnCode);            
