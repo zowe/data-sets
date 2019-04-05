@@ -65,8 +65,7 @@ public class DataSetsController {
 
     @GetMapping(value = "{filter:.+}", produces = {"application/json"})
     @ApiOperation(value = "Get a list of data sets matching the filter", nickname = "getDataSetAttributes", notes = "This API returns the attributes of data sets matching the filter", tags = "Data Sets APIs")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Ok", response = String.class, responseContainer = "List")})
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Ok")})
     public ItemsWrapper<DataSetAttributes> getDataSetAttributes(
             @ApiParam(value = "Dataset filter string, e.g. HLQ.\\*\\*, \\*\\*.SUF, etc.", required = true) @PathVariable String filter) {
         return dataSetService.listDataSetAttributes(filter);
@@ -74,8 +73,7 @@ public class DataSetsController {
 
     @GetMapping(value = "{filter:.+}/list", produces = {"application/json"})
     @ApiOperation(value = "Get a list of data sets without attributes matching the filter", nickname = "getDataSets", notes = "This API returns the list of data sets matching the filter", tags = "Data Sets APIs")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Ok", response = String.class, responseContainer = "List")})
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Ok")})
     public ItemsWrapper<DataSet> getDataSets(
             @ApiParam(value = "Dataset filter string, e.g. HLQ.\\*\\*, \\*\\*.SUF, etc.", required = true) @PathVariable String filter) {
         return dataSetService.listDataSets(filter);
