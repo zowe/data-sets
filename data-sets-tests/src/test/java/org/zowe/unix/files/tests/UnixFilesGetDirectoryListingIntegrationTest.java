@@ -13,11 +13,9 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import org.apache.http.HttpStatus;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.zowe.api.common.errors.ApiError;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
-import org.zowe.tests.AbstractHttpIntegrationTest;
 import org.zowe.unix.files.exceptions.PathNameNotValidException;
 import org.zowe.unix.files.exceptions.UnauthorisedDirectoryException;
 import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
@@ -34,15 +32,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 
-public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractHttpIntegrationTest {
-
-    static final String UNIX_FILES_ENDPOINT = "unixfiles";
-    static final String TEST_DIRECTORY = System.getProperty("server.test.directory");
-    
-    @BeforeClass
-    public static void setUpEndpoint() throws Exception {
-        RestAssured.basePath = UNIX_FILES_ENDPOINT;
-    }
+public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractUnixFilesIntegrationTest {
 
     @Test
     public void testGetDirectoryList() throws Exception {
