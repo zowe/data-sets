@@ -104,26 +104,42 @@ public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesInt
         final UnixFileContent content = new UnixFileContent("New testable content \\n testPutUnixFileContentWithConvertTrueAndAsciiFile");
         
         RestAssured.given().contentType("application/json").body(content).header("Convert", true)
-            .when().put(TEST_DIRECTORY + "/asciiFile")
+            .when().put(TEST_DIRECTORY + "/editableAsciiTaggedFile")
             .then().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
         
         //TODO:: Need convert header for Get request
-        RestAssured.given().header("Convert", true).when().get(TEST_DIRECTORY + "/asciiFile")
+        RestAssured.given().header("Convert", true).when().get(TEST_DIRECTORY + "/editableAsciiTaggedFile")
             .then().statusCode(HttpStatus.SC_OK)
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(content.getContent()));
     }
+    
+    //Unable to test with current get request
+//  @Test
+  public void testPutUnixFileContentWithConvertNullAndAsciiFile() throws Exception {
+      final UnixFileContent content = new UnixFileContent("New testable content \\n testPutUnixFileContentWithConvertTrueAndAsciiFile");
+      
+      RestAssured.given().contentType("application/json").body(content)
+          .when().put(TEST_DIRECTORY + "/editableAsciiTaggedFile")
+          .then().statusCode(HttpStatus.SC_NO_CONTENT)
+          .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
+      
+      //TODO:: Need convert header for Get request
+      RestAssured.given().header("Convert", true).when().get(TEST_DIRECTORY + "/editableAsciiTaggedFile")
+          .then().statusCode(HttpStatus.SC_OK)
+          .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(content.getContent()));
+  }
     
     @Test
     public void testPutUnixFileContentWithConvertFalseAndEbcdicFile() throws Exception {
         final UnixFileContent content = new UnixFileContent("New testable content \\n testPutUnixFileContentWithConvertFalseAndEbcdicFile");
         
         RestAssured.given().contentType("application/json").body(content).header("Convert", false)
-            .when().put(TEST_DIRECTORY + "/ebcdicFile")
+            .when().put(TEST_DIRECTORY + "/editableEbcdicTaggedFile")
             .then().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
         
-        RestAssured.given().when().get(TEST_DIRECTORY + "/ebcdicFile")
+        RestAssured.given().when().get(TEST_DIRECTORY + "/editableEbcdicTaggedFile")
             .then().statusCode(HttpStatus.SC_OK)
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(content.getContent()));
     }
@@ -133,29 +149,12 @@ public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesInt
         final UnixFileContent content = new UnixFileContent("New testable content \\n testPutUnixFileContentWithConvertNullAndEbcdicFile");
         
         RestAssured.given().contentType("application/json").body(content)
-            .when().put(TEST_DIRECTORY + "/ebcdicFile")
+            .when().put(TEST_DIRECTORY + "/editableEbcdicTaggedFile")
             .then().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
         
-        RestAssured.given().when().get(TEST_DIRECTORY + "/ebcdicFile")
+        RestAssured.given().when().get(TEST_DIRECTORY + "/editableEbcdicTaggedFile")
             .then().statusCode(HttpStatus.SC_OK)
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(content.getContent()));
-    }
-    
-    //Unable to test with current get request
-//  @Test
-  public void testPutUnixFileContentWithConvertNullAndAsciiFile() throws Exception {
-      final UnixFileContent content = new UnixFileContent("New testable content \\n testPutUnixFileContentWithConvertNullAndAsciiFile");
-      
-      RestAssured.given().contentType("application/json").body(content)
-          .when().put(TEST_DIRECTORY + "/asciiFile")
-          .then().statusCode(HttpStatus.SC_NO_CONTENT)
-          .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
-      
-      //TODO:: Need convert header for Get request
-      RestAssured.given().header("Convert", true).when().get(TEST_DIRECTORY + "/asciiFile")
-          .then().statusCode(HttpStatus.SC_OK)
-          .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(content.getContent()));
-  }
-    
+    }    
 }

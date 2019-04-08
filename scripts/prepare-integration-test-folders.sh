@@ -33,4 +33,17 @@ EOF
 cp "$TEST_DIRECTORY_ROOT/fileWithAccess" "$TEST_DIRECTORY_ROOT/fileWithoutAccess"
 chmod 600 "$TEST_DIRECTORY_ROOT/fileWithoutAccess"
 
-ls -al $TEST_DIRECTORY_ROOT
+#Create editable files
+touch "$TEST_DIRECTORY_ROOT/editableFile"
+chtag -r "$TEST_DIRECTORY_ROOT/editableFile"
+
+touch "$TEST_DIRECTORY_ROOT/editableAsciiTaggedFile"
+chtag -t -c ISO8859-1 "$TEST_DIRECTORY_ROOT/editableAsciiTaggedFile"
+
+touch "$TEST_DIRECTORY_ROOT/editableEbcdicTaggedFile"
+chtag -t -c IBM-1047 "$TEST_DIRECTORY_ROOT/editableEbcdicTaggedFile"
+
+touch "$TEST_DIRECTORY_ROOT/editableEbcdicFileUntaggedFile"
+chtag -r "$TEST_DIRECTORY_ROOT/editableEbcdicFileUntaggedFile"
+
+ls -alT $TEST_DIRECTORY_ROOT
