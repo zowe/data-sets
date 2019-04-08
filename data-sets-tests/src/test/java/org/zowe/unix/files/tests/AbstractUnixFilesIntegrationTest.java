@@ -16,7 +16,7 @@ import org.zowe.tests.AbstractHttpIntegrationTest;
 
 public class AbstractUnixFilesIntegrationTest extends AbstractHttpIntegrationTest {
     static final String UNIX_FILES_ENDPOINT = "unixfiles";
-    static final String TEST_DIRECTORY = "/u/jcain/testDir";
+    static final String TEST_DIRECTORY = System.getProperty("server.test.directory");
     
     @BeforeClass
     public static void setUpEndpoint() throws Exception {
