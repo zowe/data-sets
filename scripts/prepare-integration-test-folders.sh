@@ -49,4 +49,4 @@ EOF
 cp "$TEST_DIRECTORY_ROOT/fileWithAccess" "$TEST_DIRECTORY_ROOT/fileWithoutAccess"
 chmod 600 "$TEST_DIRECTORY_ROOT/fileWithoutAccess"
 
-ls -al $TEST_DIRECTORY_ROOT
+ls -alT $TEST_DIRECTORY_ROOT

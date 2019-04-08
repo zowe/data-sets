@@ -51,7 +51,7 @@ public class UnixFilesGetFileContentTest extends AbstractHttpIntegrationTest {
         RestAssured.given().header("Convert", true).when().get(TEST_DIRECTORY + "/fileWithAccessAscii")
             .then().statusCode(HttpStatus.SC_OK)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
-            .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(expectedContent + "\n"));
+            .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(expectedContent));
     }
     
     @Test
@@ -61,7 +61,7 @@ public class UnixFilesGetFileContentTest extends AbstractHttpIntegrationTest {
         RestAssured.given().header("Convert", false).when().get(TEST_DIRECTORY + "/fileWithAccessEbcdic")
             .then().statusCode(HttpStatus.SC_OK)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
-            .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(expectedContent + "\n"));
+            .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(expectedContent));
     }
     
     @Test
