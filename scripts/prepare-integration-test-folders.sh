@@ -29,6 +29,22 @@ Hello world
 hello world on new line.
 EOF
 
+#Create readable ascii file
+touch "$TEST_DIRECTORY_ROOT/$DIRECTORY_WITH_ACCESS/fileWithAccessAscii"
+chtag -t -c ISO8859-1 "$TEST_DIRECTORY_ROOT/$DIRECTORY_WITH_ACCESS/fileWithAccessAscii"
+cat <<EOF >$TEST_DIRECTORY_ROOT/fileWithAccessAscii
+Hello world
+hello world on new line
+EOF
+
+#Create readable ebcdic file
+touch "$TEST_DIRECTORY_ROOT/$DIRECTORY_WITH_ACCESS/fileWithAccessEbcdic"
+chtag -t -c IBM-1047 "$TEST_DIRECTORY_ROOT/$DIRECTORY_WITH_ACCESS/fileWithAccessEbcdic"
+cat <<EOF >$TEST_DIRECTORY_ROOT/fileWithAccessEbcdic
+Hello world
+hello world on new line
+EOF
+
 #Create unreadable file
 cp "$TEST_DIRECTORY_ROOT/fileWithAccess" "$TEST_DIRECTORY_ROOT/fileWithoutAccess"
 chmod 600 "$TEST_DIRECTORY_ROOT/fileWithoutAccess"

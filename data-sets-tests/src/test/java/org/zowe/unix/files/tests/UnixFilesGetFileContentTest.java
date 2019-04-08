@@ -45,23 +45,43 @@ public class UnixFilesGetFileContentTest extends AbstractHttpIntegrationTest {
     }
     
     @Test
+    public void testGetUnixFileContentWithConvertTrue() throws Exception {
+        final String expectedContent =  "Hello world\nhello world on new line.\n";
+        
+        RestAssured.given().header("Convert", true).when().get(TEST_DIRECTORY + "/fileWithAccessAscii")
+            .then().statusCode(HttpStatus.SC_OK)
+            .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
+            .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(expectedContent + "\n"));
+    }
+    
+    @Test
+    public void testGetUnixFileContentWithConvertFalse() throws Exception {
+        final String expectedContent =  "Hello world\nhello world on new line.\n";
+        
+        RestAssured.given().header("Convert", false).when().get(TEST_DIRECTORY + "/fileWithAccessEbcdic")
+            .then().statusCode(HttpStatus.SC_OK)
+            .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
+            .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(expectedContent + "\n"));
+    }
+    
+    @Test
     public void testGetUnifFileContentNotAuthorised() throws Exception {
         final String unauthorisedFile = TEST_DIRECTORY + "/fileWithoutAccess";
         ApiError expectedError = new UnauthorisedFileException(unauthorisedFile).getApiError();
-        
-        RestAssured.given().when().get(unauthorisedFile)
-            .then().statusCode(HttpStatus.SC_FORBIDDEN)
-            .body("message", equalTo(expectedError.getMessage()));
+        testGetUnixFileContentWithError(unauthorisedFile, expectedError);
     }
     
     @Test
     public void testGetUnixFileFileNotFound() throws Exception {
         String invalidPath = "/u/zzzzzztxt";
         ApiError expectedError = new FileNotFoundException(invalidPath).getApiError();
-        
-        RestAssured.given().when().get(invalidPath)
-            .then().statusCode(HttpStatus.SC_NOT_FOUND).contentType(ContentType.JSON)
-            .body("message", equalTo(expectedError.getMessage()));
+        testGetUnixFileContentWithError(invalidPath, expectedError);
+    }
+    
+    private void testGetUnixFileContentWithError(String path, ApiError error) {
+        RestAssured.given().when().get(path)
+        .then().statusCode(error.getStatus().value()).contentType(ContentType.JSON)
+        .body("message", equalTo(error.getMessage()));
     }
     
 }

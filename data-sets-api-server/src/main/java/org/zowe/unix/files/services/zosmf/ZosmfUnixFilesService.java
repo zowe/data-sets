@@ -29,8 +29,8 @@ public class ZosmfUnixFilesService implements UnixFilesService {
     }
 
     @Override
-    public UnixFileContentWithETag getUnixFileContentWithETag(String path) {
-        GetUnixFileContentRunner runner = new GetUnixFileContentRunner(path);
+    public UnixFileContentWithETag getUnixFileContentWithETag(String path, boolean convert) {
+        GetUnixFileContentRunner runner = new GetUnixFileContentRunner(path, convert);
         return runner.run(zosmfConnector);
     }
 }

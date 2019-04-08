@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,10 +54,12 @@ public class UnixFilesController {
     notes = "This API gets a the contetns of a Unix file. Try it out function will not work due to the encoding of forward slashes, "
             + "it should be noted that requests to this endpoint should only contain unencoded slashes", tags = "Unix Files APIs")
     @ApiResponses({ @ApiResponse(code = 200, message = "Ok", response = UnixFileContent.class)})
-    public ResponseEntity<UnixFileContent> getUnixFileContent(@PathVariable String path, HttpServletRequest request) {
+    public ResponseEntity<UnixFileContent> getUnixFileContent(
+            @PathVariable String path, HttpServletRequest request,
+            @RequestHeader(value = "Convert", required = false) boolean convert) {
         String requestPath = request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
         String fullPath = requestPath.substring(requestPath.indexOf("/api/v1/unixfiles") + 17);
-        UnixFileContentWithETag content = unixFileService.getUnixFileContentWithETag(fullPath);
+        UnixFileContentWithETag content = unixFileService.getUnixFileContentWithETag(fullPath, convert);
         
         HttpHeaders headers = new HttpHeaders();
         headers.add("Access-Control-Expose-Headers", "ETag");

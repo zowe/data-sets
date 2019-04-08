@@ -15,5 +15,5 @@ import org.zowe.unix.files.model.UnixFileContentWithETag;
 public interface UnixFilesService {
     UnixDirectoryAttributesWithChildren listUnixDirectory(String path);
     
-    UnixFileContentWithETag getUnixFileContentWithETag(String path);
+    UnixFileContentWithETag getUnixFileContentWithETag(String path, boolean convert);
 }
