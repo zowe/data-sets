@@ -36,6 +36,7 @@ cat <<EOF >$TEST_DIRECTORY_ROOT/fileWithAccessAscii
 Hello world
 hello world on new line.
 EOF
+cat $TEST_DIRECTORY_ROOT/fileWithAccessAscii
 
 #Create readable ebcdic file
 touch "$TEST_DIRECTORY_ROOT/fileWithAccessEbcdic"
