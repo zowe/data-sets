@@ -35,6 +35,26 @@ public class UnixFilesGetFileContentIntegrationTest extends AbstractUnixFilesInt
     }
     
     @Test
+    public void testGetUnixFileContentWithConvertTrue() throws Exception {
+        final String expectedContent =  "Hello world\nhello world on new line.\n";
+
+         RestAssured.given().header("Convert", true).when().get(TEST_DIRECTORY + "/fileWithAccessAscii")
+            .then().statusCode(HttpStatus.SC_OK)
+            .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
+            .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(expectedContent + "\n"));
+    }
+
+     @Test
+    public void testGetUnixFileContentWithConvertFalse() throws Exception {
+        final String expectedContent =  "Hello world\nhello world on new line.\n";
+
+         RestAssured.given().header("Convert", false).when().get(TEST_DIRECTORY + "/fileWithAccessEbcdic")
+            .then().statusCode(HttpStatus.SC_OK)
+            .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
+            .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(expectedContent + "\n"));
+    }
+    
+    @Test
     public void testGetUnifFileContentUnauthorised() throws Exception {
         final String unauthorisedFile = TEST_DIRECTORY + "/fileWithoutAccess";
         ApiError expectedError = new UnauthorisedFileException(unauthorisedFile).getApiError();

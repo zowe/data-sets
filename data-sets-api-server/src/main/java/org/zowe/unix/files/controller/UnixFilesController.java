@@ -63,9 +63,11 @@ public class UnixFilesController {
             + "it should be noted that requests to this endpoint should only contain unencoded slashes and not include wild card characters",
             tags = "Unix Files APIs")
     @ApiResponses({ @ApiResponse(code = 200, message = "Ok", response = UnixFileContent.class)})
-    public ResponseEntity<UnixFileContent> getUnixFileContent(@PathVariable String path, HttpServletRequest request) {
+    public ResponseEntity<UnixFileContent> getUnixFileContent(
+            @PathVariable String path, HttpServletRequest request,
+            @RequestHeader(value = "Convert", required = false) Boolean convert) {
         String fullPath = getPathFromRequest(request);
-        UnixFileContentWithETag content = unixFileService.getUnixFileContentWithETag(fullPath);
+        UnixFileContentWithETag content = unixFileService.getUnixFileContentWithETag(fullPath, convert);
         
         HttpHeaders headers = new HttpHeaders();
         headers.add("Access-Control-Expose-Headers", "ETag");
@@ -89,7 +91,7 @@ public class UnixFilesController {
         String fullPath = getPathFromRequest(request);
         
         //Ensure file already exists
-        unixFileService.getUnixFileContentWithETag(fullPath);
+        unixFileService.getUnixFileContentWithETag(fullPath, false);
         
         if (convert == null) {
             String codepage = unixFileService.getUnixFileChtag(fullPath);
