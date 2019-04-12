@@ -66,7 +66,12 @@ public class UnixFilesController {
     public ResponseEntity<UnixFileContent> getUnixFileContent(
             @PathVariable String path, HttpServletRequest request,
             @RequestHeader(value = "Convert", required = false) Boolean convert) {
+
         String fullPath = getPathFromRequest(request);
+        
+        if (convert == null) {
+            convert = unixFileService.getShouldUnixFileTagConvert(fullPath);
+        }
         UnixFileContentWithETag content = unixFileService.getUnixFileContentWithETag(fullPath, convert);
         
         HttpHeaders headers = new HttpHeaders();
@@ -94,12 +99,7 @@ public class UnixFilesController {
         unixFileService.getUnixFileContentWithETag(fullPath, false);
         
         if (convert == null) {
-            String codepage = unixFileService.getUnixFileChtag(fullPath);
-            if (codepage.contains("ISO8859") || codepage.contains("IBM-850") || codepage.contains("UTF")) {
-                convert = true;
-            } else {
-                convert = false;
-            }
+            convert = unixFileService.getShouldUnixFileTagConvert(fullPath);
         }
         String putETag = unixFileService.putUnixFileContent(fullPath, contentWithETag, convert);
         

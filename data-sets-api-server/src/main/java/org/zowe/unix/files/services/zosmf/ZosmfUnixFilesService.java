@@ -41,6 +41,15 @@ public class ZosmfUnixFilesService implements UnixFilesService {
     }
     
     @Override
+    public boolean getShouldUnixFileTagConvert(String path) {
+        String codepage = getUnixFileChtag(path);
+        if (codepage.contains("ISO8859") || codepage.contains("IBM-850") || codepage.contains("UTF")) {
+           return true;
+        } 
+        return false;
+    }
+
+    @Override
     public String getUnixFileChtag(String path) {
         GetUnixFileChtagRunner runner = new GetUnixFileChtagRunner(path);
         return runner.run(zosmfConnector);

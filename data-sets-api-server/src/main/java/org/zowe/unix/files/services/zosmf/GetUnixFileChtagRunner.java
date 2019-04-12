@@ -9,6 +9,8 @@
  */
 package org.zowe.unix.files.services.zosmf;
 
+import com.google.gson.JsonObject;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +19,7 @@ import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
+import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.ResponseCache;
 
 import java.io.IOException;
@@ -48,5 +51,10 @@ public class GetUnixFileChtagRunner extends AbstractZosmfUnixFilesRequestRunner<
     protected String getResult(ResponseCache responseCache) throws IOException {
         String codepage = responseCache.getEntityAsJsonObject().get("stdout").getAsString();
         return codepage;
+    }
+    
+    @Override
+    protected ZoweApiRestException createException(JsonObject jsonResponse, int statusCode) throws IOException {
+        return createUnixFileException(jsonResponse, statusCode, path);
     }
 }
