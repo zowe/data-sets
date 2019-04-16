@@ -24,19 +24,51 @@ import static org.hamcrest.CoreMatchers.equalTo;
 
 public class UnixFilesGetFileContentIntegrationTest extends AbstractUnixFilesIntegrationTest {
     
+    private String multiLineTestString = "Hello world\nhello world on new line.\n";
+    
     @Test
-    public void testGetUnixFileContent() throws Exception {
-        final String expectedContent =  "Hello world\nhello world on new line.\n";
-        
+    public void testGetUnixFileContent() throws Exception {        
         RestAssured.given().when().get(TEST_DIRECTORY + "/fileWithAccess")
             .then().statusCode(HttpStatus.SC_OK)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
-            .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(expectedContent + "\n"));
+            .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(multiLineTestString + "\n"));
+    }
+    
+    @Test
+    public void testGetUnixFileContentWithConvertTrue() throws Exception {
+         RestAssured.given().header("Convert", true).when().get(TEST_DIRECTORY + "/fileWithAccessAscii")
+            .then().statusCode(HttpStatus.SC_OK)
+            .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
+            .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(multiLineTestString + "\n"));
+    }
+
+    @Test
+    public void testGetUnixFileContentWithConvertFalse() throws Exception {
+         RestAssured.given().header("Convert", false).when().get(TEST_DIRECTORY + "/fileWithAccessEbcdic")
+            .then().statusCode(HttpStatus.SC_OK)
+            .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
+            .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(multiLineTestString + "\n"));
+    }
+    
+    @Test
+    public void testGetUnixFileContentAsciiTaggedFileWithConvertNull() throws Exception {
+         RestAssured.given().when().get(TEST_DIRECTORY + "/fileWithAccessAscii")
+            .then().statusCode(HttpStatus.SC_OK)
+            .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
+            .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(multiLineTestString + "\n"));
+    }
+    
+    @Test
+    public void testGetUnixFileContentEbcdicTaggedFileWithConvertNull() throws Exception {
+         RestAssured.given().when().get(TEST_DIRECTORY + "/fileWithAccessEbcdic")
+            .then().statusCode(HttpStatus.SC_OK)
+            .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
+            .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(multiLineTestString + "\n"));
     }
     
     @Test
     public void testGetUnifFileContentUnauthorised() throws Exception {
-        final String unauthorisedFile = TEST_DIRECTORY + "/fileWithoutAccess";
+        String unauthorisedFile = TEST_DIRECTORY + "/fileWithoutAccess";
         ApiError expectedError = new UnauthorisedFileException(unauthorisedFile).getApiError();
         
         RestAssured.given().when().get(unauthorisedFile)

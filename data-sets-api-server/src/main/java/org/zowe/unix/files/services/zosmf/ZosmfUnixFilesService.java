@@ -29,8 +29,8 @@ public class ZosmfUnixFilesService implements UnixFilesService {
     }
 
     @Override
-    public UnixFileContentWithETag getUnixFileContentWithETag(String path) {
-        GetUnixFileContentRunner runner = new GetUnixFileContentRunner(path);
+    public UnixFileContentWithETag getUnixFileContentWithETag(String path, boolean convert) {
+        GetUnixFileContentRunner runner = new GetUnixFileContentRunner(path, convert);
         return runner.run(zosmfConnector);
     }
     
@@ -40,6 +40,15 @@ public class ZosmfUnixFilesService implements UnixFilesService {
         return runner.run(zosmfConnector);
     }
     
+    @Override
+    public boolean shouldUnixFileConvert(String path) {
+        String codepage = getUnixFileChtag(path);
+        if (codepage.contains("ISO8859") || codepage.contains("IBM-850") || codepage.contains("UTF")) {
+           return true;
+        } 
+        return false;
+    }
+
     @Override
     public String getUnixFileChtag(String path) {
         GetUnixFileChtagRunner runner = new GetUnixFileChtagRunner(path);

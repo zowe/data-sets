@@ -42,7 +42,7 @@ public class GetUnixFileContentRunnerTest extends AbstractZosmfRequestRunnerTest
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/fs%s", path));
         when(zosmfConnector.request(requestBuilder)).thenReturn(response);
         
-        assertEquals(expected, new GetUnixFileContentRunner(path).run(zosmfConnector));
+        assertEquals(expected, new GetUnixFileContentRunner(path, false).run(zosmfConnector));
         
         verifyInteractions(requestBuilder, false);
     }
@@ -57,7 +57,7 @@ public class GetUnixFileContentRunnerTest extends AbstractZosmfRequestRunnerTest
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/fs%s", path));
         when(zosmfConnector.request(requestBuilder)).thenReturn(response);
         
-        shouldThrow(expectedException, () -> new GetUnixFileContentRunner(path).run(zosmfConnector));
+        shouldThrow(expectedException, () -> new GetUnixFileContentRunner(path, false).run(zosmfConnector));
         verifyInteractions(requestBuilder, false);
     }
 }

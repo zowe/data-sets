@@ -33,9 +33,11 @@ public class GetUnixFileContentRunner extends AbstractZosmfUnixFilesRequestRunne
     ZosmfConnector zosmfConnector;
 
     private String path;
+    private boolean convert;
     
-    public GetUnixFileContentRunner(String path) {
+    public GetUnixFileContentRunner(String path, boolean convert) {
         this.path = path;
+        this.convert = convert;
     }
 
     @Override
@@ -47,6 +49,9 @@ public class GetUnixFileContentRunner extends AbstractZosmfUnixFilesRequestRunne
     protected RequestBuilder prepareQuery(ZosmfConnector zosmfConnector) throws URISyntaxException {
         URI requestUrl = zosmfConnector.getFullUrl("restfiles/fs" + path);
         RequestBuilder requestBuilder = RequestBuilder.get(requestUrl);
+        if (convert) {
+            requestBuilder.addHeader("X-IBM-Data-Type", "binary");
+        }
         return requestBuilder;
     }
 
