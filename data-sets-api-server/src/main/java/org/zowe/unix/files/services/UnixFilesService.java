@@ -19,7 +19,7 @@ public interface UnixFilesService {
     
     String putUnixFileContent(String path, UnixFileContentWithETag content, boolean convert);
     
-    boolean getShouldUnixFileTagConvert(String path);
+    boolean shouldUnixFileConvert(String path);
     
     String getUnixFileChtag(String path);
 }

@@ -41,7 +41,7 @@ public class ZosmfUnixFilesService implements UnixFilesService {
     }
     
     @Override
-    public boolean getShouldUnixFileTagConvert(String path) {
+    public boolean shouldUnixFileConvert(String path) {
         String codepage = getUnixFileChtag(path);
         if (codepage.contains("ISO8859") || codepage.contains("IBM-850") || codepage.contains("UTF")) {
            return true;

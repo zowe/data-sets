@@ -70,7 +70,7 @@ public class UnixFilesController {
         String fullPath = getPathFromRequest(request);
         
         if (convert == null) {
-            convert = unixFileService.getShouldUnixFileTagConvert(fullPath);
+            convert = unixFileService.shouldUnixFileConvert(fullPath);
         }
         UnixFileContentWithETag content = unixFileService.getUnixFileContentWithETag(fullPath, convert);
         
@@ -99,7 +99,7 @@ public class UnixFilesController {
         unixFileService.getUnixFileContentWithETag(fullPath, false);
         
         if (convert == null) {
-            convert = unixFileService.getShouldUnixFileTagConvert(fullPath);
+            convert = unixFileService.shouldUnixFileConvert(fullPath);
         }
         String putETag = unixFileService.putUnixFileContent(fullPath, contentWithETag, convert);
         

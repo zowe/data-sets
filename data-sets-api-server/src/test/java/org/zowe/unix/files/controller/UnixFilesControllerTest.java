@@ -208,7 +208,7 @@ public class UnixFilesControllerTest {
         String eTag = "\"E1B212479173E273A8ACFD682BCBEADE\"";
         
         when(unixFilesService.putUnixFileContent(path, fileContentWithETag, false)).thenReturn(eTag);
-        when(unixFilesService.getShouldUnixFileTagConvert(path)).thenReturn(false);
+        when(unixFilesService.shouldUnixFileConvert(path)).thenReturn(false);
         
         mockMvc.perform(put(ENDPOINT_ROOT + path)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -219,7 +219,7 @@ public class UnixFilesControllerTest {
         
         verify(unixFilesService, times(1)).putUnixFileContent(path, fileContentWithETag, false);
         verify(unixFilesService, times(1)).getUnixFileContentWithETag(path, false);
-        verify(unixFilesService, times(1)).getShouldUnixFileTagConvert(path);
+        verify(unixFilesService, times(1)).shouldUnixFileConvert(path);
         verifyNoMoreInteractions(unixFilesService);
     }
     
@@ -256,7 +256,7 @@ public class UnixFilesControllerTest {
         String errorMessage = String.format("Requested file %s is a directory", path);
         ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.BAD_REQUEST).build();
         
-        when(unixFilesService.getShouldUnixFileTagConvert(path)).thenThrow(new ZoweApiErrorException(expectedError));
+        when(unixFilesService.shouldUnixFileConvert(path)).thenThrow(new ZoweApiErrorException(expectedError));
         
         mockMvc.perform(put(ENDPOINT_ROOT + path)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -266,7 +266,7 @@ public class UnixFilesControllerTest {
             .andExpect(jsonPath("$.message").value(errorMessage));
         
         verify(unixFilesService, times(1)).getUnixFileContentWithETag(path, false);
-        verify(unixFilesService, times(1)).getShouldUnixFileTagConvert(path);
+        verify(unixFilesService, times(1)).shouldUnixFileConvert(path);
         verifyNoMoreInteractions(unixFilesService);
     }
     
