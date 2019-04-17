@@ -22,4 +22,6 @@ public interface UnixFilesService {
     boolean shouldUnixFileConvert(String path);
     
     String getUnixFileChtag(String path);
+    
+    void deleteUnixFileContent(String path);
 }

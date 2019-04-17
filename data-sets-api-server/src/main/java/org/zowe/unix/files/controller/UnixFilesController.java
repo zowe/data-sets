@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -104,5 +105,18 @@ public class UnixFilesController {
         String putETag = unixFileService.putUnixFileContent(fullPath, contentWithETag, convert);
         
         return ResponseEntity.noContent().eTag(putETag).build();
+    }
+    
+    @DeleteMapping(value = "{path}/**", produces = { "application/json" })
+    @ApiOperation(value = "Delete a Unix file", nickname = "deleteUnixFile", 
+    notes = "This API deltes a Unix file. Try it out function will not work due to the encoding of forward slashes, "
+            + "it should be noted that requests to this endpoint should only contain unencoded slashes", tags = "Unix Files APIs")
+    @ApiResponses({ @ApiResponse(code = 204, message = "Unix file successfully deleted") })
+    public ResponseEntity<?> deleteUnixFile(@PathVariable String path, HttpServletRequest request) {
+        String requestPath = request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
+        String fullPath = requestPath.substring(requestPath.indexOf("/api/v1/unixfiles") + 17);
+        
+        unixFileService.deleteUnixFileContent(fullPath);
+        return ResponseEntity.noContent().build();
     }
 }
