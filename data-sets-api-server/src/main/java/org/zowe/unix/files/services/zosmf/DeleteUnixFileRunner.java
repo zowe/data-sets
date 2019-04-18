@@ -35,7 +35,7 @@ public class DeleteUnixFileRunner extends AbstractZosmfUnixFilesRequestRunner<Vo
     private boolean isRecursive;
     
     public DeleteUnixFileRunner(String path) {
-    	this(path, false);
+        this(path, false);
     }
     
     public DeleteUnixFileRunner(String path, boolean isRecursive) {
@@ -53,8 +53,8 @@ public class DeleteUnixFileRunner extends AbstractZosmfUnixFilesRequestRunner<Vo
         URI requestUrl = zosmfConnector.getFullUrl("restfiles/fs" + path);
         RequestBuilder requestBuilder = RequestBuilder.delete(requestUrl);
         
-        if(this.isRecursive) {
-        	requestBuilder.addHeader("X-IBM-Option", "recursive");
+        if (this.isRecursive) {
+            requestBuilder.addHeader("X-IBM-Option", "recursive");
         }
         
         return requestBuilder;
@@ -75,12 +75,12 @@ public class DeleteUnixFileRunner extends AbstractZosmfUnixFilesRequestRunner<Vo
                 }
             }
             if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-            	if (details.toString().contains("EDC5111I Permission denied.")) {
+                if (details.toString().contains("EDC5111I Permission denied.")) {
                     throw new PermissionDeniedFileException(path);
                 } else if (details.toString().contains("EDC5136I Directory not empty.")) {
                     throw new NotAEmptyDirectoryException(path);
                 } else {
-                	
+                   
                 }
             }
         }

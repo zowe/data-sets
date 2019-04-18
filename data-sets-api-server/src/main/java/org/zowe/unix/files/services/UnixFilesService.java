@@ -13,15 +13,15 @@ import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.unix.files.model.UnixFileContentWithETag;
 
 public interface UnixFilesService {
-	UnixDirectoryAttributesWithChildren listUnixDirectory(String path);
-
-	UnixFileContentWithETag getUnixFileContentWithETag(String path, boolean convert);
-
-	String putUnixFileContent(String path, UnixFileContentWithETag content, boolean convert);
-
-	boolean shouldUnixFileConvert(String path);
-
-	String getUnixFileChtag(String path);
-
-	void deleteUnixFileContent(String path, boolean isRecursive);
+    UnixDirectoryAttributesWithChildren listUnixDirectory(String path);
+    
+    UnixFileContentWithETag getUnixFileContentWithETag(String path, boolean convert);
+    
+    String putUnixFileContent(String path, UnixFileContentWithETag content, boolean convert);
+    
+    boolean shouldUnixFileConvert(String path);
+    
+    String getUnixFileChtag(String path);
+    
+    void deleteUnixFileContent(String path, boolean isRecursive);
 }

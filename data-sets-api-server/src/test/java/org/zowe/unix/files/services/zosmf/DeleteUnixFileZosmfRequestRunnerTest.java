@@ -16,7 +16,6 @@ import org.zowe.data.sets.services.zosmf.AbstractZosmfRequestRunnerTest;
 import org.zowe.unix.files.exceptions.FileNotFoundException;
 import org.zowe.unix.files.exceptions.NotAEmptyDirectoryException;
 import org.zowe.unix.files.exceptions.PermissionDeniedFileException;
-import org.zowe.unix.files.services.zosmf.DeleteUnixFileRunner;
 
 import static org.mockito.Mockito.when;
 

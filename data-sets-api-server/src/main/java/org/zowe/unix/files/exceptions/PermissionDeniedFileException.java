@@ -17,11 +17,11 @@ public class PermissionDeniedFileException extends ZoweApiRestException {
     /**
      * 
      */
-	private static final long serialVersionUID = 8800178058552607094L;
+    private static final long serialVersionUID = 8800178058552607094L;
     
-
+    
     public PermissionDeniedFileException(String path) {
-    	 super(HttpStatus.FORBIDDEN, "You dont have enough permission(s) to perform requested operation on ''{0}'' file", path);
+        super(HttpStatus.FORBIDDEN, "You dont have enough permission(s) to perform requested operation on ''{0}'' file", path);
     }
 
 }

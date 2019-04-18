@@ -15,9 +15,9 @@ import org.zowe.api.common.exceptions.ZoweApiRestException;
 public class NotAEmptyDirectoryException extends ZoweApiRestException {
     
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = -3715300549658851989L;
+     * 
+     */
+    private static final long serialVersionUID = -3715300549658851989L;
 
     public NotAEmptyDirectoryException(String path) {
         super(HttpStatus.BAD_REQUEST, "Requested directory ''{0}'' is not empty", path);
