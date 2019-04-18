@@ -112,11 +112,12 @@ public class UnixFilesController {
     notes = "This API deltes a Unix file. Try it out function will not work due to the encoding of forward slashes, "
             + "it should be noted that requests to this endpoint should only contain unencoded slashes", tags = "Unix Files APIs")
     @ApiResponses({ @ApiResponse(code = 204, message = "Unix file successfully deleted") })
-    public ResponseEntity<?> deleteUnixFile(@PathVariable String path, HttpServletRequest request) {
+    public ResponseEntity<?> deleteUnixFile(@PathVariable String path, HttpServletRequest request
+    		, @RequestHeader(value = "X-IBM-Option", required = false) String recursiveOption) {
         String requestPath = request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
         String fullPath = requestPath.substring(requestPath.indexOf("/api/v1/unixfiles") + 17);
-        
-        unixFileService.deleteUnixFileContent(fullPath);
+        boolean isRecursive = "recursive".equals(recursiveOption);
+        unixFileService.deleteUnixFileContent(fullPath, isRecursive);
         return ResponseEntity.noContent().build();
     }
 }

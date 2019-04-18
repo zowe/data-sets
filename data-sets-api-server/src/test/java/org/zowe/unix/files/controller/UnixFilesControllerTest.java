@@ -301,7 +301,7 @@ public class UnixFilesControllerTest {
         mockMvc.perform(delete(ENDPOINT_ROOT + "{dsn}", dummy)).andExpect(status().isNoContent())
                 .andExpect(jsonPath("$").doesNotExist());
 
-        verify(unixFilesService, times(1)).deleteUnixFileContent(dummy);
+        verify(unixFilesService, times(1)).deleteUnixFileContent(dummy,false);
         verifyNoMoreInteractions(unixFilesService);
     }
 
@@ -313,13 +313,13 @@ public class UnixFilesControllerTest {
         ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.NOT_FOUND)
                 .build();
 
-        doThrow(new ZoweApiErrorException(expectedError)).when(unixFilesService).deleteUnixFileContent(path);
+        doThrow(new ZoweApiErrorException(expectedError)).when(unixFilesService).deleteUnixFileContent(path,false);
 
         mockMvc.perform(delete(ENDPOINT_ROOT + "{dsn}", path)).andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
                 .andExpect(jsonPath("$.message").value(expectedError.getMessage()));
 
-        verify(unixFilesService, times(1)).deleteUnixFileContent(path);
+        verify(unixFilesService, times(1)).deleteUnixFileContent(path,false);
         verifyNoMoreInteractions(unixFilesService);
     }
     

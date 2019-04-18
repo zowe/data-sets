@@ -11,13 +11,13 @@ package org.zowe.unix.files.tests;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-
 import org.apache.http.HttpStatus;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.zowe.api.common.errors.ApiError;
 import org.zowe.tests.AbstractHttpIntegrationTest;
 import org.zowe.unix.files.exceptions.FileNotFoundException;
+import org.zowe.unix.files.exceptions.NotAEmptyDirectoryException;
 import org.zowe.unix.files.exceptions.PermissionDeniedFileException;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -58,6 +58,25 @@ public class UnixFilesDeleteFileTest extends AbstractHttpIntegrationTest {
         RestAssured.given().when().delete(invalidPath)
             .then().statusCode(HttpStatus.SC_NOT_FOUND).contentType(ContentType.JSON)
             .body("message", equalTo(expectedError.getMessage()));
+    }
+    
+    @Test
+    public void testDeleteUnixNonEmptyDirectoryWithoutHeader() throws Exception {
+    	final String deleteNonEmptyDirectoryWithoutHeader = TEST_DIRECTORY + "/deleteTestDirectoryAccess/nestedDir";
+        ApiError expectedError = new NotAEmptyDirectoryException(deleteNonEmptyDirectoryWithoutHeader).getApiError();
+        
+        RestAssured.given().when().delete(deleteNonEmptyDirectoryWithoutHeader)
+            .then().statusCode(HttpStatus.SC_BAD_REQUEST).contentType(ContentType.JSON)
+            .body("message", equalTo(expectedError.getMessage()));
+    }
+    
+    @Test
+    public void testDeleteUnixNonEmptyDirectoryWithHeader() throws Exception {
+    	final String deleteNonEmptyDirectoryWithHeader = TEST_DIRECTORY + "/deleteTestDirectoryAccess/nestedDir";
+    	
+        RestAssured.given().header("X-IBM-Option", "recursive")
+        		.when().delete(deleteNonEmptyDirectoryWithHeader)
+        		.then().statusCode(HttpStatus.SC_NO_CONTENT);
     }
     
     
