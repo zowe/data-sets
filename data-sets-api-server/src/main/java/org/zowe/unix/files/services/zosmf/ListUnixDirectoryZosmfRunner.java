@@ -86,9 +86,12 @@ public class ListUnixDirectoryZosmfRunner extends AbstractZosmfRequestRunner<Uni
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             // Skip self and parent
             if (!getStringOrNull(jsonObject, "name").equals(".") && !getStringOrNull(jsonObject, "name").equals("..")) {
-                UnixDirectoryChild unixDirectoryChild = UnixDirectoryChild.builder().name(getStringOrNull(jsonObject, "name"))
-                        .type(getEntityTypeFromSymbolicPermissions(getStringOrNull(jsonObject, "mode")))
-                        .link(constructLinkString(getStringOrNull(jsonObject, "name"))).build();
+                UnixDirectoryChild unixDirectoryChild = UnixDirectoryChild.builder()
+                    .name(getStringOrNull(jsonObject, "name"))
+                    .type(getEntityTypeFromSymbolicPermissions(getStringOrNull(jsonObject, "mode")))
+                    // .size(getIntegerOrNull(jsonObject, "size"))
+                    // .lastModified(getStringOrNull(jsonObject, "mtime"))
+                    .link(constructLinkString(getStringOrNull(jsonObject, "name"))).build();
                 directoryChildren.add(unixDirectoryChild);
             }
         }
