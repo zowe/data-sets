@@ -73,8 +73,8 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
     public void unixAssetCreateTest(String path, UnixEntityType entityType, String permissions) {
         String requestBody = constructRequestBody(entityType, permissions);
         
-        RestAssured.given().contentType(MediaType.APPLICATION_JSON_VALUE).body(requestBody).when().post(path)
-            .then().statusCode(HttpStatus.SC_CREATED)
+        RestAssured.given().contentType(MediaType.APPLICATION_JSON_VALUE).body(requestBody).log().all().when().post(path)
+            .then().log().all().statusCode(HttpStatus.SC_CREATED)
             .header("Location", BASE_URL + UNIX_FILES_ENDPOINT + path);
     }
     
