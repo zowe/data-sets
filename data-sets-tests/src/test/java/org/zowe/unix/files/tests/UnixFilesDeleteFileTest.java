@@ -11,6 +11,7 @@ package org.zowe.unix.files.tests;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+
 import org.apache.http.HttpStatus;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,7 +26,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 public class UnixFilesDeleteFileTest extends AbstractHttpIntegrationTest {
 
     static final String UNIX_FILES_ENDPOINT = "unixfiles";
-	static final String TEST_DIRECTORY = System.getProperty("server.test.directory");
+    static final String TEST_DIRECTORY = System.getProperty("server.test.directory");
     
     @BeforeClass
     public static void setUpEndpoint() throws Exception {
@@ -34,7 +35,7 @@ public class UnixFilesDeleteFileTest extends AbstractHttpIntegrationTest {
     
     @Test
     public void testDeleteUnixFileContent() throws Exception {
-    	final String fvtDeleteFile = TEST_DIRECTORY + "/deleteTestDirectoryAccess/deleteFileWithWritePermission";
+        final String fvtDeleteFile = TEST_DIRECTORY + "/deleteTestDirectoryAccess/deleteFileWithWritePermission";
         
         RestAssured.given().when().delete(fvtDeleteFile)
             .then().statusCode(HttpStatus.SC_NO_CONTENT);
@@ -62,7 +63,7 @@ public class UnixFilesDeleteFileTest extends AbstractHttpIntegrationTest {
     
     @Test
     public void testDeleteUnixNonEmptyDirectoryWithoutHeader() throws Exception {
-    	final String deleteNonEmptyDirectoryWithoutHeader = TEST_DIRECTORY + "/deleteTestDirectoryAccess/nestedDir";
+        final String deleteNonEmptyDirectoryWithoutHeader = TEST_DIRECTORY + "/deleteTestDirectoryAccess/nestedDir";
         ApiError expectedError = new NotAEmptyDirectoryException(deleteNonEmptyDirectoryWithoutHeader).getApiError();
         
         RestAssured.given().when().delete(deleteNonEmptyDirectoryWithoutHeader)
@@ -72,11 +73,11 @@ public class UnixFilesDeleteFileTest extends AbstractHttpIntegrationTest {
     
     @Test
     public void testDeleteUnixNonEmptyDirectoryWithHeader() throws Exception {
-    	final String deleteNonEmptyDirectoryWithHeader = TEST_DIRECTORY + "/deleteTestDirectoryAccess/nestedDir";
-    	
+        final String deleteNonEmptyDirectoryWithHeader = TEST_DIRECTORY + "/deleteTestDirectoryAccess/nestedDir";
+
         RestAssured.given().header("X-IBM-Option", "recursive")
-        		.when().delete(deleteNonEmptyDirectoryWithHeader)
-        		.then().statusCode(HttpStatus.SC_NO_CONTENT);
+                .when().delete(deleteNonEmptyDirectoryWithHeader)
+                .then().statusCode(HttpStatus.SC_NO_CONTENT);
     }
     
     
