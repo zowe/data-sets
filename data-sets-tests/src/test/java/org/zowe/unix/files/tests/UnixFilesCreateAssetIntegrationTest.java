@@ -58,7 +58,7 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
         unixAssetCheckCreatedTest(path, "rwxr--r--");
     }
 
-    public String constructRequestBody(UnixEntityType entityType, String permissions) {
+    private String constructRequestBody(UnixEntityType entityType, String permissions) {
         String requestBody = "{\"type\":\"" + entityType.toString() + "\"";
         if ( permissions != null) {
             requestBody += ", \"permissions\":\"" + permissions + "\"";
@@ -67,21 +67,21 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
         return requestBody;
     }
     
-    public void unixAssetCreateTest(String path, UnixEntityType entityType) {
+    private void unixAssetCreateTest(String path, UnixEntityType entityType) {
         unixAssetCreateTest(path, entityType, null);
     } 
-    public void unixAssetCreateTest(String path, UnixEntityType entityType, String permissions) {
+    private void unixAssetCreateTest(String path, UnixEntityType entityType, String permissions) {
         String requestBody = constructRequestBody(entityType, permissions);
         
-        RestAssured.given().contentType(MediaType.APPLICATION_JSON_VALUE).body(requestBody).log().all().when().post(path)
-            .then().log().all().statusCode(HttpStatus.SC_CREATED)
+        RestAssured.given().contentType(MediaType.APPLICATION_JSON_VALUE).body(requestBody).when().post(path)
+            .then().statusCode(HttpStatus.SC_CREATED)
             .header("Location", BASE_URL + UNIX_FILES_ENDPOINT + path);
     }
     
-    public void unixAssetCheckCreatedTest(String path) {
+    private void unixAssetCheckCreatedTest(String path) {
         unixAssetCheckCreatedTest(path, null);
     }
-    public void unixAssetCheckCreatedTest(String path, String permissions) {
+    private void unixAssetCheckCreatedTest(String path, String permissions) {
         Response response = RestAssured.given().when().get(BASE_URL + UNIX_FILES_ENDPOINT + "?path=" + path);
         response.then().statusCode(HttpStatus.SC_OK);
         if ( permissions != null) {
@@ -92,10 +92,10 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
     
     @Test
     public void testCreateUnixFileAlreadyExistsError() throws Exception {
-        String path = TEST_DIRECTORY + "/fileAlreadysExists";
+        String path = TEST_DIRECTORY + "/fileAlreadyExists";
         ApiError expectedError = new AlreadyExistsException(path).getApiError();
         
-        testCreateUnixAssetWithError(path, UnixEntityType.FILE, expectedError);
+        createUnixAssetWithErrorTest(path, UnixEntityType.FILE, expectedError);
     }
     
     @Test
@@ -103,7 +103,7 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
         String path = TEST_DIRECTORY + "/dummyFile";
         ApiError expectedError = new InvalidPermissionsException("123---123").getApiError();
         
-        testCreateUnixAssetWithError(path, UnixEntityType.FILE, expectedError, "123---123");
+        createUnixAssetWithErrorTest(path, UnixEntityType.FILE, expectedError, "123---123");
     }
     
     @Test
@@ -111,7 +111,7 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
         String path = TEST_DIRECTORY + "/dummyFile";
         ApiError expectedError = new InvalidPermissionsException("rwxrwxrwxrwx").getApiError();
         
-        testCreateUnixAssetWithError(path, UnixEntityType.FILE, expectedError, "rwxrwxrwxrwx");
+        createUnixAssetWithErrorTest(path, UnixEntityType.FILE, expectedError, "rwxrwxrwxrwx");
     }
     
     @Test
@@ -119,13 +119,13 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
         String path = TEST_DIRECTORY + "/dummyDir";
         ApiError expectedError = new InvalidPermissionsException("123---123").getApiError();
         
-        testCreateUnixAssetWithError(path, UnixEntityType.DIRECTORY, expectedError, "123---123");
+        createUnixAssetWithErrorTest(path, UnixEntityType.DIRECTORY, expectedError, "123---123");
     }
     
-    public void testCreateUnixAssetWithError(String path, UnixEntityType entityType, ApiError expectedError) {
-        testCreateUnixAssetWithError(path, entityType, expectedError, null);
+    private void createUnixAssetWithErrorTest(String path, UnixEntityType entityType, ApiError expectedError) {
+        createUnixAssetWithErrorTest(path, entityType, expectedError, null);
     }
-    public void testCreateUnixAssetWithError(String path, UnixEntityType entityType, ApiError expectedError, String permissions) {
+    private void createUnixAssetWithErrorTest(String path, UnixEntityType entityType, ApiError expectedError, String permissions) {
         String requestBody = constructRequestBody(entityType, permissions);
         
         RestAssured.given().contentType(MediaType.APPLICATION_JSON_VALUE).body(requestBody)
