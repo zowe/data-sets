@@ -35,6 +35,12 @@ public class UnixDirectoryChild {
     @ApiModelProperty(value = "type", required = true)
     private UnixEntityType type; 
     
+    @ApiModelProperty(value = "size", required = true)
+    private int size; 
+    
+    @ApiModelProperty(value = "lastModified", required = true)
+    private String lastModified; 
+    
     @ApiModelProperty(value = "Link", required = true)
     private String link;
 }

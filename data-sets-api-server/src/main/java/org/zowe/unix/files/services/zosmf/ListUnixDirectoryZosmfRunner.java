@@ -89,9 +89,10 @@ public class ListUnixDirectoryZosmfRunner extends AbstractZosmfRequestRunner<Uni
                 UnixDirectoryChild unixDirectoryChild = UnixDirectoryChild.builder()
                     .name(getStringOrNull(jsonObject, "name"))
                     .type(getEntityTypeFromSymbolicPermissions(getStringOrNull(jsonObject, "mode")))
-                    // .size(getIntegerOrNull(jsonObject, "size"))
-                    // .lastModified(getStringOrNull(jsonObject, "mtime"))
-                    .link(constructLinkString(getStringOrNull(jsonObject, "name"))).build();
+                    .size(getIntegerOrNull(jsonObject, "size"))
+                    .lastModified(getStringOrNull(jsonObject, "mtime"))
+                    .link(constructLinkString(getStringOrNull(jsonObject, "link")))
+                    .build();
                 directoryChildren.add(unixDirectoryChild);
             }
         }
