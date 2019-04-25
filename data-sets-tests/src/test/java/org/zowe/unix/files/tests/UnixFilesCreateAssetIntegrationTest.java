@@ -21,9 +21,6 @@ import org.zowe.unix.files.exceptions.AlreadyExistsException;
 import org.zowe.unix.files.exceptions.InvalidPermissionsException;
 import org.zowe.unix.files.model.UnixEntityType;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 
@@ -31,7 +28,7 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
     
     @Test
     public void testCreateUnixFileUnspecifiedPermissions() throws Exception {
-        String path = TEST_DIRECTORY + "/createdFileUnspecifiedPerms" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+        String path = TEST_DIRECTORY + "/createdFileUnspecifiedPerms";
         unixAssetCreateTest(path, UnixEntityType.FILE);
         
         unixAssetCheckCreatedTest(path);
@@ -39,7 +36,7 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
     
     @Test
     public void testCreateUnixDirectoryUnspecifiedPermissions() throws Exception {
-        String path = TEST_DIRECTORY + "/createdDirectoryUnspecifiedPerms" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+        String path = TEST_DIRECTORY + "/createdDirectoryUnspecifiedPerms";
         unixAssetCreateTest(path, UnixEntityType.DIRECTORY);
         
         unixAssetCheckCreatedTest(path);
@@ -47,7 +44,7 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
     
     @Test
     public void testCreateUnixFileSpecificPermissions() throws Exception {
-        String path = TEST_DIRECTORY + "/createdFileSpecifiedPerms" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+        String path = TEST_DIRECTORY + "/createdFileSpecifiedPerms";
         unixAssetCreateTest(path, UnixEntityType.FILE, "rwxr--r--");
         
         unixAssetCheckCreatedTest(path, "rwxr--r--");
@@ -55,7 +52,7 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
     
     @Test
     public void testCreateUnixDirectorySpecificPermissions() throws Exception {
-        String path = TEST_DIRECTORY + "/createdDirectorySpecifiedPerms" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+        String path = TEST_DIRECTORY + "/createdDirectorySpecifiedPerms";
         unixAssetCreateTest(path, UnixEntityType.DIRECTORY, "rwxr--r--");
 
         unixAssetCheckCreatedTest(path, "rwxr--r--");
