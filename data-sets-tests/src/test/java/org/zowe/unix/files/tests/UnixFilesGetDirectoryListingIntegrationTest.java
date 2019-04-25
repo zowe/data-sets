@@ -22,12 +22,8 @@ import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.unix.files.model.UnixDirectoryChild;
 import org.zowe.unix.files.model.UnixEntityType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -54,10 +50,7 @@ public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractUnixFil
             .type(UnixEntityType.DIRECTORY)
             .size(0)
             .link(BASE_URL + UNIX_FILES_ENDPOINT + testDirectoryPath + '/' + directoryWithAccess)
-            .build();        
-        
-        List<UnixDirectoryChild> children = new ArrayList<UnixDirectoryChild>();
-        children.addAll(Arrays.asList(file, directory));
+            .build();
         
         UnixDirectoryAttributesWithChildren response = RestAssured.given().when().get("?path=" + testDirectoryPath)
                 .then().statusCode(HttpStatus.SC_OK).extract()
@@ -74,8 +67,8 @@ public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractUnixFil
         for (UnixDirectoryChild child : response.getChildren()) {
             assertTrue(child.getLastModified().matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}"));
             child.setLastModified(null);
-            assertThat(children, hasItem(child));
         }
+        assertThat(response.getChildren(), hasItems(file, directory));
     }
     
     @Test
