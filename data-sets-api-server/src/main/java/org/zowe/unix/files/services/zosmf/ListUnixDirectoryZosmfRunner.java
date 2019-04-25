@@ -91,7 +91,7 @@ public class ListUnixDirectoryZosmfRunner extends AbstractZosmfRequestRunner<Uni
                     .type(getEntityTypeFromSymbolicPermissions(getStringOrNull(jsonObject, "mode")))
                     .size(getIntegerOrNull(jsonObject, "size"))
                     .lastModified(getStringOrNull(jsonObject, "mtime"))
-                    .link(constructLinkString(getStringOrNull(jsonObject, "link")))
+                    .link(constructLinkString(getStringOrNull(jsonObject, "name")))
                     .build();
                 directoryChildren.add(unixDirectoryChild);
             }
