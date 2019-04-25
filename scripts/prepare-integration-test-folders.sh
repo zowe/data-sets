@@ -13,8 +13,8 @@ DIRECTORY_WITHOUT_ACCESS="directoryWithoutAccess"
 
 #Create readable directory and populate with children
 mkdir $TEST_DIRECTORY_ROOT
+chmod 777 $TEST_DIRECTORY_ROOT
 mkdir "$TEST_DIRECTORY_ROOT/$DIRECTORY_WITH_ACCESS"
-chmod 777 "$TEST_DIRECTORY_ROOT/$DIRECTORY_WITH_ACCESS"
 mkdir "$TEST_DIRECTORY_ROOT/$DIRECTORY_WITH_ACCESS/directoryInDirectoryWithAccess"
 touch "$TEST_DIRECTORY_ROOT/$DIRECTORY_WITH_ACCESS/fileInDirectoryWithAccess"
 

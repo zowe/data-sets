@@ -28,7 +28,7 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
     
     @Test
     public void testCreateUnixFileUnspecifiedPermissions() throws Exception {
-        String path = TEST_DIRECTORY + "directoryWithAccess/createdFileUnspecifiedPerms";
+        String path = TEST_DIRECTORY + "/createdFileUnspecifiedPerms";
         unixAssetCreateTest(path, UnixEntityType.FILE);
         
         unixAssetCheckCreatedTest(path);
@@ -36,7 +36,7 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
     
     @Test
     public void testCreateUnixDirectoryUnspecifiedPermissions() throws Exception {
-        String path = TEST_DIRECTORY + "directoryWithAccess/createdDirectoryUnspecifiedPerms";
+        String path = TEST_DIRECTORY + "/createdDirectoryUnspecifiedPerms";
         unixAssetCreateTest(path, UnixEntityType.DIRECTORY);
         
         unixAssetCheckCreatedTest(path);
@@ -44,7 +44,7 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
     
     @Test
     public void testCreateUnixFileSpecificPermissions() throws Exception {
-        String path = TEST_DIRECTORY + "directoryWithAccess/createdFileSpecifiedPerms";
+        String path = TEST_DIRECTORY + "/createdFileSpecifiedPerms";
         unixAssetCreateTest(path, UnixEntityType.FILE, "rwxr--r--");
         
         unixAssetCheckCreatedTest(path, "rwxr--r--");
@@ -52,7 +52,7 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
     
     @Test
     public void testCreateUnixDirectorySpecificPermissions() throws Exception {
-        String path = TEST_DIRECTORY + "directoryWithAccess/createdDirectorySpecifiedPerms";
+        String path = TEST_DIRECTORY + "/createdDirectorySpecifiedPerms";
         unixAssetCreateTest(path, UnixEntityType.DIRECTORY, "rwxr--r--");
 
         unixAssetCheckCreatedTest(path, "rwxr--r--");
@@ -92,7 +92,7 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
     
     @Test
     public void testCreateUnixFileAlreadyExistsError() throws Exception {
-        String path = TEST_DIRECTORY + "directoryWithAccess/fileAlreadysExists";
+        String path = TEST_DIRECTORY + "/fileAlreadysExists";
         ApiError expectedError = new AlreadyExistsException(path).getApiError();
         
         testCreateUnixAssetWithError(path, UnixEntityType.FILE, expectedError);
