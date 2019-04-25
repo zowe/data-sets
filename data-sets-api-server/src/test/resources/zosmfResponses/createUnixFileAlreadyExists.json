@@ -1,0 +1,7 @@
+{
+    "category":1,
+    "rc":4,
+    "reason":19,
+    "message":"The specified directory already exists",
+    "stack":"  1 152F76F8+0000014C CreatFileServlet::createDir()\n  2 152F6D48+000000FE CreatFileServlet::doPost()\n  3 152F6D00+00000026 CreatFileServlet::service()\n  4 15323CE8+0000017E TsoServlet::run()\n  5 153236C0+00000386 main\n  6 067BC050+0000127E CEEVROND\n  7 14B06450+000000B4 EDCZHINV\n  8 06655650+000001C6 CEEBBEXT\n"
+}

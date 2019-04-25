@@ -37,7 +37,7 @@ Hello world
 hello world on new line.
 EOF
 
- #Create readable ascii file
+#Create readable ascii file
 iconv -f IBM-1047 -t ISO8859-1 "$TEST_DIRECTORY_ROOT/fileWithAccessEbcdic" > "$TEST_DIRECTORY_ROOT/fileWithAccessAscii"
 chtag -t -c ISO8859-1 "$TEST_DIRECTORY_ROOT/fileWithAccessAscii"
 
@@ -61,5 +61,9 @@ chmod a+w "$TEST_DIRECTORY_ROOT/editableEbcdicTaggedFile"
 touch "$TEST_DIRECTORY_ROOT/editableEbcdicFileUntaggedFile"
 chtag -r "$TEST_DIRECTORY_ROOT/editableEbcdicFileUntaggedFile"
 chmod a+w "$TEST_DIRECTORY_ROOT/editableEbcdicFileUntaggedFile"
+
+#Create file and directory for post/create already exists error
+touch "$TEST_DIRECTORY_ROOT/fileAlreadyExists"
+mkdir "$TEST_DIRECTORY_ROOT/directoryAlreadyExists"
 
 ls -alT $TEST_DIRECTORY_ROOT
