@@ -68,13 +68,14 @@ public class ListUnixDirectoryZosmfRunner extends AbstractZosmfRequestRunner<Uni
         
         JsonObject directoryObject = directoryListArray.getAsJsonArray().get(0).getAsJsonObject();
         UnixDirectoryAttributesWithChildren unixDirectoryAttributesWithChildren = UnixDirectoryAttributesWithChildren.builder()
-                .owner(getStringOrNull(directoryObject, "user"))
-                .group(getStringOrNull(directoryObject, "group"))
-                .type(getEntityTypeFromSymbolicPermissions(getStringOrNull(directoryObject, "mode")))
-                .permissionsSymbolic(getStringOrNull(directoryObject, "mode"))
-                .size(getIntegerOrNull(directoryObject, "size"))
-                .lastModified(getStringOrNull(directoryObject, "mtime"))
-                .children(directoryChildren).build();
+            .owner(getStringOrNull(directoryObject, "user"))
+            .group(getStringOrNull(directoryObject, "group"))
+            .type(getEntityTypeFromSymbolicPermissions(getStringOrNull(directoryObject, "mode")))
+            .permissionsSymbolic(getStringOrNull(directoryObject, "mode"))
+            .size(getIntegerOrNull(directoryObject, "size"))
+            .lastModified(getStringOrNull(directoryObject, "mtime"))
+            .children(directoryChildren)
+            .build();
         
         return unixDirectoryAttributesWithChildren;
     }

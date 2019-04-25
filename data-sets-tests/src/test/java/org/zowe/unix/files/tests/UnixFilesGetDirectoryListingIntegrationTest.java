@@ -27,12 +27,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-
 
 public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractUnixFilesIntegrationTest {
 
@@ -42,20 +41,23 @@ public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractUnixFil
         final String fileWithAccess = "fileInDirectoryWithAccess";
         final String directoryWithAccess = "directoryInDirectoryWithAccess";
         
-        UnixDirectoryChild file = UnixDirectoryChild.builder()
-        		.name(fileWithAccess)
-                .type(UnixEntityType.FILE)
-                .size(0)
-                .lastModified("2019-04-24T10:24:52")
-                .link(BASE_URL + UNIX_FILES_ENDPOINT + testDirectoryPath + '/' + fileWithAccess)
-                .build();
-        UnixDirectoryChild directory = UnixDirectoryChild.builder()
-        		.name(directoryWithAccess)
-                .type(UnixEntityType.DIRECTORY)
-                .size(0)
-                .lastModified("2019-04-24T10:24:52")
-                .link(BASE_URL + UNIX_FILES_ENDPOINT + testDirectoryPath + '/' + directoryWithAccess)
-                .build();        
+        UnixDirectoryChild file = UnixDirectoryChild
+            .builder()
+            .name(fileWithAccess)
+            .type(UnixEntityType.FILE)
+            .size(0)
+            .link(BASE_URL + UNIX_FILES_ENDPOINT + testDirectoryPath + '/' + fileWithAccess)
+            .build();
+        UnixDirectoryChild directory = UnixDirectoryChild
+            .builder()
+            .name(directoryWithAccess)
+            .type(UnixEntityType.DIRECTORY)
+            .size(0)
+            .link(BASE_URL + UNIX_FILES_ENDPOINT + testDirectoryPath + '/' + directoryWithAccess)
+            .build();        
+        
+        List<UnixDirectoryChild> children = new ArrayList<UnixDirectoryChild>();
+        children.addAll(Arrays.asList(file, directory));
         
         UnixDirectoryAttributesWithChildren response = RestAssured.given().when().get("?path=" + testDirectoryPath)
                 .then().statusCode(HttpStatus.SC_OK).extract()
@@ -68,7 +70,12 @@ public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractUnixFil
         assertTrue(response.getSize() == 8192);
         assertTrue(response.getLastModified().matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}"));
         assertEquals(response.getType(), UnixEntityType.DIRECTORY);
-        assertThat(response.getChildren(), hasItems(file, directory));
+        
+        for (UnixDirectoryChild child : response.getChildren()) {
+            assertTrue(child.getLastModified().matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}"));
+            child.setLastModified(null);
+            assertThat(children, hasItem(child));
+        }
     }
     
     @Test
