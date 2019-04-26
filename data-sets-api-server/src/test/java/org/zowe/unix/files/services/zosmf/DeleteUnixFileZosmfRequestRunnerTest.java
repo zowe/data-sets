@@ -31,7 +31,7 @@ public class DeleteUnixFileZosmfRequestRunnerTest extends AbstractZosmfRequestRu
 
         when(zosmfConnector.request(builder)).thenReturn(response);
 
-        new DeleteUnixFileRunner(filename).run(zosmfConnector);
+        new DeleteUnixFileZosmfRunner(filename).run(zosmfConnector);
 
         verifyInteractions(builder);
     }
@@ -46,7 +46,7 @@ public class DeleteUnixFileZosmfRequestRunnerTest extends AbstractZosmfRequestRu
 
         when(zosmfConnector.request(builder)).thenReturn(response);
 
-        new DeleteUnixFileRunner(filename, true).run(zosmfConnector);
+        new DeleteUnixFileZosmfRunner(filename, true).run(zosmfConnector);
 
         verifyInteractions(builder);
     }
@@ -62,7 +62,7 @@ public class DeleteUnixFileZosmfRequestRunnerTest extends AbstractZosmfRequestRu
 
         when(zosmfConnector.request(requestBuilder)).thenReturn(response);
 
-        shouldThrow(expectedException, () -> new DeleteUnixFileRunner(filename).run(zosmfConnector));
+        shouldThrow(expectedException, () -> new DeleteUnixFileZosmfRunner(filename).run(zosmfConnector));
         verifyInteractions(requestBuilder);
     }
 
@@ -77,7 +77,7 @@ public class DeleteUnixFileZosmfRequestRunnerTest extends AbstractZosmfRequestRu
 
         when(zosmfConnector.request(requestBuilder)).thenReturn(response);
 
-        shouldThrow(expectedException, () -> new DeleteUnixFileRunner(filename).run(zosmfConnector));
+        shouldThrow(expectedException, () -> new DeleteUnixFileZosmfRunner(filename).run(zosmfConnector));
         verifyInteractions(requestBuilder);
     }
     
@@ -92,7 +92,7 @@ public class DeleteUnixFileZosmfRequestRunnerTest extends AbstractZosmfRequestRu
 
         when(zosmfConnector.request(requestBuilder)).thenReturn(response);
 
-        shouldThrow(expectedException, () -> new DeleteUnixFileRunner(filename).run(zosmfConnector));
+        shouldThrow(expectedException, () -> new DeleteUnixFileZosmfRunner(filename).run(zosmfConnector));
         verifyInteractions(requestBuilder);
     }
 }

@@ -27,12 +27,12 @@ import java.net.URISyntaxException;
 
 
 @AllArgsConstructor
-public class DeleteUnixFileRunner extends AbstractZosmfUnixFilesRequestRunner<Void> {
+public class DeleteUnixFileZosmfRunner extends AbstractZosmfUnixFilesRequestRunner<Void> {
 
     private String path;
     private boolean isRecursive;
 
-    public DeleteUnixFileRunner(String path) {
+    public DeleteUnixFileZosmfRunner(String path) {
         this(path, false);
     }
 

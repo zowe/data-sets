@@ -13,10 +13,8 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import org.apache.http.HttpStatus;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.zowe.api.common.errors.ApiError;
-import org.zowe.tests.AbstractHttpIntegrationTest;
 import org.zowe.unix.files.exceptions.FileNotFoundException;
 import org.zowe.unix.files.exceptions.NotAnEmptyDirectoryException;
 import org.zowe.unix.files.exceptions.UnauthorisedFileException;
@@ -37,15 +35,7 @@ import static org.junit.Assert.assertTrue;
 
 
 
-public class UnixFilesDeleteFileTest extends AbstractHttpIntegrationTest {
-
-    static final String UNIX_FILES_ENDPOINT = "unixfiles";
-    static final String TEST_DIRECTORY = System.getProperty("server.test.directory");
-
-    @BeforeClass
-    public static void setUpEndpoint() throws Exception {
-        RestAssured.basePath = UNIX_FILES_ENDPOINT;
-    }
+public class UnixFilesDeleteFileIntegrationTest extends AbstractUnixFilesIntegrationTest {
 
     @Test
     public void testDeleteUnixFileContent() throws Exception {
@@ -79,8 +69,9 @@ public class UnixFilesDeleteFileTest extends AbstractHttpIntegrationTest {
         String invalidPath = "/u/zzzzzztxt";
         ApiError expectedError = new FileNotFoundException(invalidPath).getApiError();
 
-        RestAssured.given().when().delete(invalidPath).then().statusCode(HttpStatus.SC_NOT_FOUND)
-                .contentType(ContentType.JSON).body("message", equalTo(expectedError.getMessage()));
+        RestAssured.given().when().delete(invalidPath)
+        .then().statusCode(HttpStatus.SC_NOT_FOUND).contentType(ContentType.JSON)
+        .body("message", equalTo(expectedError.getMessage()));
     }
 
     @Test

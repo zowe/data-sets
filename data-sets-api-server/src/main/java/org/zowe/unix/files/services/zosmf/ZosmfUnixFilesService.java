@@ -58,7 +58,7 @@ public class ZosmfUnixFilesService implements UnixFilesService {
     
     @Override
     public void deleteUnixFileContent(String path, boolean isRecursive) {
-        DeleteUnixFileRunner runner = new DeleteUnixFileRunner(path, isRecursive);
+        DeleteUnixFileZosmfRunner runner = new DeleteUnixFileZosmfRunner(path, isRecursive);
         runner.run(zosmfConnector);
     }
 
