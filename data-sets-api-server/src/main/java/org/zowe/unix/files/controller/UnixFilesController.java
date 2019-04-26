@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -28,12 +29,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.HandlerMapping;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.zowe.unix.files.model.UnixCreateAssetRequest;
 import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.unix.files.model.UnixFileContent;
 import org.zowe.unix.files.model.UnixFileContentWithETag;
 import org.zowe.unix.files.services.UnixFilesService;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/v1/unixfiles")
@@ -104,5 +109,19 @@ public class UnixFilesController {
         String putETag = unixFileService.putUnixFileContent(fullPath, contentWithETag, convert);
         
         return ResponseEntity.noContent().eTag(putETag).build();
+    }
+    
+    @PostMapping(value = "{path}/**", produces = { "application/json" })
+    @ApiOperation(value = "Create a new Unix File or Diretory", nickname = "postUnixFileOrDirectory",
+        notes = "This API will create a new UnixFile or Directory. Try it out function not functional due to encoding of slashes and auto insertion of wildcard characters, "   
+            + "an example request path would be /api/v1/unixFiles/u/ibmuser/newDirectory", tags = "Unix Files APIs")
+    @ApiResponses(value = {@ApiResponse(code = 201, message = "Created")})
+    public ResponseEntity<?> createUnifFileOrDirectory(
+            @PathVariable String path, HttpServletRequest request,
+            @RequestBody UnixCreateAssetRequest input) {
+        
+        unixFileService.createUnixAsset(getPathFromRequest(request), input);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri();
+        return ResponseEntity.created(location).build();
     }
 }
