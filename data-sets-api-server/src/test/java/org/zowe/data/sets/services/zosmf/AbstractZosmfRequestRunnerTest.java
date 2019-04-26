@@ -138,7 +138,7 @@ public abstract class AbstractZosmfRequestRunnerTest extends ZoweApiTest {
         return mockPostBuilder(relativeUri, stringEntity);
     }
 
-    RequestBuilder mockPostBuilder(String relativeUri, JsonObject json) throws Exception {
+    protected RequestBuilder mockPostBuilder(String relativeUri, JsonObject json) throws Exception {
         StringEntity stringEntity = mock(StringEntity.class);
         PowerMockito.whenNew(StringEntity.class).withArguments(json.toString(), ContentType.APPLICATION_JSON)
             .thenReturn(stringEntity);

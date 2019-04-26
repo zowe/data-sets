@@ -17,7 +17,7 @@ import org.zowe.data.sets.services.zosmf.AbstractZosmfRequestRunnerTest;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-public class GetUnixFileChtagRunnerTest extends AbstractZosmfRequestRunnerTest {
+public class GetUnixFileChtagZosmfRunnerTest extends AbstractZosmfRequestRunnerTest {
     
     @Test
     public void get_unix_file_chtag_should_call_zosmf_and_parse_response_correctly() throws Exception {
@@ -30,7 +30,7 @@ public class GetUnixFileChtagRunnerTest extends AbstractZosmfRequestRunnerTest {
         RequestBuilder requestBuilder = mockPutBuilder("restfiles/fs" + path, "{ \"request\": \"chtag\", \"action\": \"list\" }");
         when(zosmfConnector.request(requestBuilder)).thenReturn(response);
         
-        assertEquals(codepage, new GetUnixFileChtagRunner(path).run(zosmfConnector));
+        assertEquals(codepage, new GetUnixFileChtagZosmfRunner(path).run(zosmfConnector));
         
         verifyInteractions(requestBuilder, false);
     }
