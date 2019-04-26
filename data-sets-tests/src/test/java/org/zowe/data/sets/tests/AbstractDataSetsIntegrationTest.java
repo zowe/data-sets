@@ -18,9 +18,9 @@ import org.zowe.data.sets.model.AllocationUnitType;
 import org.zowe.data.sets.model.DataSetContent;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.model.DataSetOrganisationType;
-import org.zowe.tests.AbstractHttpIntegrationTest;
+import org.zowe.tests.AbstractFilesIntegrationTest;
 
-public abstract class AbstractDataSetsIntegrationTest extends AbstractHttpIntegrationTest {
+public abstract class AbstractDataSetsIntegrationTest extends AbstractFilesIntegrationTest {
 
     static final String DATASETS_ROOT_ENDPOINT = "datasets";
 

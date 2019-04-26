@@ -12,9 +12,9 @@ package org.zowe.unix.files.tests;
 import io.restassured.RestAssured;
 
 import org.junit.BeforeClass;
-import org.zowe.tests.AbstractHttpIntegrationTest;
+import org.zowe.tests.AbstractFilesIntegrationTest;
 
-public class AbstractUnixFilesIntegrationTest extends AbstractHttpIntegrationTest {
+public class AbstractUnixFilesIntegrationTest extends AbstractFilesIntegrationTest {
     static final String UNIX_FILES_ENDPOINT = "unixfiles";
     static final String TEST_DIRECTORY = System.getProperty("server.test.directory");
     
