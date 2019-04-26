@@ -14,8 +14,8 @@ import org.apache.http.client.methods.RequestBuilder;
 import org.junit.Test;
 import org.zowe.data.sets.services.zosmf.AbstractZosmfRequestRunnerTest;
 import org.zowe.unix.files.exceptions.FileNotFoundException;
-import org.zowe.unix.files.exceptions.NotAEmptyDirectoryException;
-import org.zowe.unix.files.exceptions.PermissionDeniedFileException;
+import org.zowe.unix.files.exceptions.NotAnEmptyDirectoryException;
+import org.zowe.unix.files.exceptions.UnauthorisedFileException;
 
 import static org.mockito.Mockito.when;
 
@@ -55,7 +55,7 @@ public class DeleteUnixFileZosmfRequestRunnerTest extends AbstractZosmfRequestRu
     public void delete_unix_file_non_empty_driectory_without_option() throws Exception {
         String filename = "/u/nakul/testNonEmptyDirectory";
         
-        Exception expectedException = new NotAEmptyDirectoryException(filename);
+        Exception expectedException = new NotAnEmptyDirectoryException(filename);
         mockJsonResponse(HttpStatus.SC_INTERNAL_SERVER_ERROR, loadTestFile("deleteUnixFile_nonEmptyDirectory.json"));
 
         RequestBuilder requestBuilder = mockDeleteBuilder(String.format("restfiles/fs%s", filename));
@@ -85,7 +85,7 @@ public class DeleteUnixFileZosmfRequestRunnerTest extends AbstractZosmfRequestRu
     public void delete_unix_file_for_no_write_permission_unix_file_should_throw_exception() throws Exception {
         String filename = "/u/nakul/testNotAccessibleFile";
         
-        Exception expectedException = new PermissionDeniedFileException(filename);
+        Exception expectedException = new UnauthorisedFileException(filename);
         mockJsonResponse(HttpStatus.SC_INTERNAL_SERVER_ERROR, loadTestFile("deleteUnixFile_permissionDenied.json"));
 
         RequestBuilder requestBuilder = mockDeleteBuilder(String.format("restfiles/fs%s", filename));

@@ -12,14 +12,14 @@ package org.zowe.unix.files.exceptions;
 import org.springframework.http.HttpStatus;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 
-public class NotAEmptyDirectoryException extends ZoweApiRestException {
+public class NotAnEmptyDirectoryException extends ZoweApiRestException {
     
     /**
      * 
      */
     private static final long serialVersionUID = -3715300549658851989L;
 
-    public NotAEmptyDirectoryException(String path) {
+    public NotAnEmptyDirectoryException(String path) {
         super(HttpStatus.BAD_REQUEST, "Requested directory ''{0}'' is not empty", path);
     }
 }
