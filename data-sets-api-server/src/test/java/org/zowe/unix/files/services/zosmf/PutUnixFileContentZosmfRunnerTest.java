@@ -32,8 +32,13 @@ import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ PutUnixFileContentZosmfRunner.class })
+<<<<<<< HEAD:data-sets-api-server/src/test/java/org/zowe/unix/files/services/zosmf/PutUnixFileContentRunnerTest.java
 public class PutUnixFileContentRunnerTest extends AbstractZosmfRequestRunnerTest {
 
+=======
+public class PutUnixFileContentZosmfRunnerTest extends AbstractZosmfRequestRunnerTest {
+    
+>>>>>>> origin/master:data-sets-api-server/src/test/java/org/zowe/unix/files/services/zosmf/PutUnixFileContentZosmfRunnerTest.java
     @Test
     public void put_unix_file_content_should_call_zosmf_and_parse_response_correctly() throws Exception {
         putContentTest(null, false);

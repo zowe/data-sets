@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public class GetUnixFileContentRunner extends AbstractZosmfUnixFilesRequestRunner<UnixFileContentWithETag> {
+public class GetUnixFileContentZosmfRunner extends AbstractZosmfUnixFilesRequestRunner<UnixFileContentWithETag> {
     
     @Autowired
     ZosmfConnector zosmfConnector;
@@ -35,7 +35,7 @@ public class GetUnixFileContentRunner extends AbstractZosmfUnixFilesRequestRunne
     private String path;
     private boolean convert;
     
-    public GetUnixFileContentRunner(String path, boolean convert) {
+    public GetUnixFileContentZosmfRunner(String path, boolean convert) {
         this.path = path;
         this.convert = convert;
     }

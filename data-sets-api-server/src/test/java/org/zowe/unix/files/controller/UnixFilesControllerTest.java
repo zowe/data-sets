@@ -23,6 +23,7 @@ import org.zowe.api.common.exceptions.ZoweApiErrorException;
 import org.zowe.api.common.test.controller.ApiControllerTest;
 import org.zowe.api.common.utils.JsonUtils;
 import org.zowe.api.common.utils.ZosUtils;
+import org.zowe.unix.files.model.UnixCreateAssetRequest;
 import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.unix.files.model.UnixDirectoryChild;
 import org.zowe.unix.files.model.UnixEntityType;
@@ -34,11 +35,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -263,6 +266,45 @@ public class UnixFilesControllerTest extends ApiControllerTest {
             .andExpect(jsonPath("$.message").value(errorMessage));
 
         verify(unixFilesService, times(1)).getUnixFileContentWithETag(path, false);
+        verifyNoMoreInteractions(unixFilesService);
+    }
+    
+    @Test
+    public void post_unix_file_succss() throws Exception {
+        String path = "/u/newFile";
+        String permissions = "rwxrwxrwx";
+        UnixCreateAssetRequest createRequest = new UnixCreateAssetRequest(UnixEntityType.FILE, permissions);
+        
+        mockMvc.perform(post(ENDPOINT_ROOT + path)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtils.convertToJsonString(createRequest)))
+            .andExpect(status().isCreated())
+            .andExpect(header().string("Location", "http://localhost" + ENDPOINT_ROOT + path));
+        
+        verify(unixFilesService, times(1)).createUnixAsset(path, createRequest);
+        verifyNoMoreInteractions(unixFilesService);
+    }
+    
+    @Test
+    public void post_unix_file_with_conflict_exception_should_be_converted_to_error_message() throws Exception {
+        String path = "/u/newFile";
+        String permissions = "rwxrwxrwx";
+        UnixCreateAssetRequest createRequest = new UnixCreateAssetRequest(UnixEntityType.FILE, permissions);
+        
+        String errorMessage = String.format("%s already exists", path);
+        ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.CONFLICT).build();
+        
+        
+        doThrow(new ZoweApiErrorException(expectedError)).when(unixFilesService).createUnixAsset(path, createRequest);
+        
+        mockMvc.perform(post(ENDPOINT_ROOT + path)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtils.convertToJsonString(createRequest)))
+            .andExpect(status().isConflict())
+            .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
+            .andExpect(jsonPath("$.message").value(errorMessage));
+        
+        verify(unixFilesService, times(1)).createUnixAsset(path, createRequest);
         verifyNoMoreInteractions(unixFilesService);
     }
 }
