@@ -17,13 +17,8 @@ import org.zowe.api.common.test.services.zosmf.AbstractZosmfRequestRunnerTest;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-<<<<<<< HEAD:data-sets-api-server/src/test/java/org/zowe/unix/files/services/zosmf/GetUnixFileChtagRunnerTest.java
-public class GetUnixFileChtagRunnerTest extends AbstractZosmfRequestRunnerTest {
-
-=======
 public class GetUnixFileChtagZosmfRunnerTest extends AbstractZosmfRequestRunnerTest {
     
->>>>>>> origin/master:data-sets-api-server/src/test/java/org/zowe/unix/files/services/zosmf/GetUnixFileChtagZosmfRunnerTest.java
     @Test
     public void get_unix_file_chtag_should_call_zosmf_and_parse_response_correctly() throws Exception {
         String path = "/u/file";
@@ -35,15 +30,9 @@ public class GetUnixFileChtagZosmfRunnerTest extends AbstractZosmfRequestRunnerT
         RequestBuilder requestBuilder = mockPutBuilder("restfiles/fs" + path,
                 "{ \"request\": \"chtag\", \"action\": \"list\" }");
         when(zosmfConnector.request(requestBuilder)).thenReturn(response);
-<<<<<<< HEAD:data-sets-api-server/src/test/java/org/zowe/unix/files/services/zosmf/GetUnixFileChtagRunnerTest.java
-
-        assertEquals(codepage, new GetUnixFileChtagRunner(path).run(zosmfConnector));
-
-=======
         
         assertEquals(codepage, new GetUnixFileChtagZosmfRunner(path).run(zosmfConnector));
         
->>>>>>> origin/master:data-sets-api-server/src/test/java/org/zowe/unix/files/services/zosmf/GetUnixFileChtagZosmfRunnerTest.java
         verifyInteractions(requestBuilder, false);
     }
 }

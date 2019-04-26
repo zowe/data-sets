@@ -23,13 +23,8 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-<<<<<<< HEAD:data-sets-api-server/src/test/java/org/zowe/unix/files/services/zosmf/GetUnixFileContentRunnerTest.java
-public class GetUnixFileContentRunnerTest extends AbstractZosmfRequestRunnerTest {
-
-=======
 public class GetUnixFileContentZosmfRunnerTest extends AbstractZosmfRequestRunnerTest {
     
->>>>>>> origin/master:data-sets-api-server/src/test/java/org/zowe/unix/files/services/zosmf/GetUnixFileContentZosmfRunnerTest.java
     @Test
     public void get_unix_file_content_should_call_zosmf_and_parse_response_correctly() throws Exception {
         String path = "/u/directory/file.txt";
@@ -46,15 +41,9 @@ public class GetUnixFileContentZosmfRunnerTest extends AbstractZosmfRequestRunne
 
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/fs%s", path));
         when(zosmfConnector.request(requestBuilder)).thenReturn(response);
-<<<<<<< HEAD:data-sets-api-server/src/test/java/org/zowe/unix/files/services/zosmf/GetUnixFileContentRunnerTest.java
-
-        assertEquals(expected, new GetUnixFileContentRunner(path, false).run(zosmfConnector));
-
-=======
         
         assertEquals(expected, new GetUnixFileContentZosmfRunner(path, false).run(zosmfConnector));
         
->>>>>>> origin/master:data-sets-api-server/src/test/java/org/zowe/unix/files/services/zosmf/GetUnixFileContentZosmfRunnerTest.java
         verifyInteractions(requestBuilder, false);
     }
 
@@ -67,13 +56,8 @@ public class GetUnixFileContentZosmfRunnerTest extends AbstractZosmfRequestRunne
         mockJsonResponse(HttpStatus.SC_INTERNAL_SERVER_ERROR, loadTestFile("getUnixFileContentUnauthorised.json"));
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/fs%s", path));
         when(zosmfConnector.request(requestBuilder)).thenReturn(response);
-<<<<<<< HEAD:data-sets-api-server/src/test/java/org/zowe/unix/files/services/zosmf/GetUnixFileContentRunnerTest.java
-
-        shouldThrow(expectedException, () -> new GetUnixFileContentRunner(path, false).run(zosmfConnector));
-=======
         
         shouldThrow(expectedException, () -> new GetUnixFileContentZosmfRunner(path, false).run(zosmfConnector));
->>>>>>> origin/master:data-sets-api-server/src/test/java/org/zowe/unix/files/services/zosmf/GetUnixFileContentZosmfRunnerTest.java
         verifyInteractions(requestBuilder, false);
     }
 }
