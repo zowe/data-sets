@@ -1,0 +1,8 @@
+{
+	"category":8,
+	"rc":-1,
+	"reason":-277913579,
+	"message":"remove() error",
+	"stack":"  1 100E6F78+00000228 DeleteFileServlet::deleteFile2Dir()\n  2 100E67C8+000000A8 DeleteFileServlet::doDelete()\n  3 100E6780+00000026 DeleteFileServlet::service()\n  4 10112DC0+0000017E TsoServlet::run()\n  5 10112798+00000386 main\n  6 07D1D430+0000127E CEEVROND\n  7 0F8F4358+000000B4 EDCZHINV\n  8 07BD4410+000001C6 CEEBBEXT\n",
+	"details":["EDC5111I Permission denied. (errno2=0xEF086015)"]
+}

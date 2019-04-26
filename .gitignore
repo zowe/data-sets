@@ -15,6 +15,10 @@ gradle/wrapper/gradle-wrapper.jar
 .springBeans
 .sts4-cache
 
+### VSCODE ###
+.metadata
+.vscode
+
 ### IntelliJ IDEA ###
 .idea
 *.iws

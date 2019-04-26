@@ -99,7 +99,7 @@ public abstract class AbstractZosmfRequestRunnerTest extends ZoweApiTest {
         return builder;
     }
 
-    RequestBuilder mockDeleteBuilder(String relativeUri) throws URISyntaxException {
+    protected RequestBuilder mockDeleteBuilder(String relativeUri) throws URISyntaxException {
         RequestBuilder builder = mock(RequestBuilder.class);
         mockStatic(RequestBuilder.class);
         URI uri = new URI(BASE_URL + relativeUri);

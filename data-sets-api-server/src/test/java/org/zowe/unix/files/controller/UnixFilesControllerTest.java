@@ -45,6 +45,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -293,6 +294,37 @@ public class UnixFilesControllerTest {
         verify(unixFilesService, times(1)).getUnixFileContentWithETag(path, false);
         verifyNoMoreInteractions(unixFilesService);
     }
+    
+    
+    @Test
+    public void test_delete_calls_service_properly() throws Exception {
+        String dummy = "/junk";
+
+        mockMvc.perform(delete(ENDPOINT_ROOT + "{dsn}", dummy)).andExpect(status().isNoContent())
+                .andExpect(jsonPath("$").doesNotExist());
+
+        verify(unixFilesService, times(1)).deleteUnixFileContent(dummy,false);
+        verifyNoMoreInteractions(unixFilesService);
+    }
+
+    @Test
+    public void delete_unix_file_with_exception_should_be_converted_to_error_message() throws Exception {
+        String path = "/junk";
+
+        String errorMessage = String.format("Requested file ''{0}'' not found", path);
+        ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.NOT_FOUND)
+                .build();
+
+        doThrow(new ZoweApiErrorException(expectedError)).when(unixFilesService).deleteUnixFileContent(path,false);
+
+        mockMvc.perform(delete(ENDPOINT_ROOT + "{dsn}", path)).andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
+                .andExpect(jsonPath("$.message").value(expectedError.getMessage()));
+
+        verify(unixFilesService, times(1)).deleteUnixFileContent(path,false);
+        verifyNoMoreInteractions(unixFilesService);
+    }
+    
     
     @Test
     public void post_unix_file_succss() throws Exception {
