@@ -28,7 +28,7 @@ import java.net.URISyntaxException;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetUnixFileChtagRunner extends AbstractZosmfUnixFilesRequestRunner<String> {
+public class GetUnixFileChtagZosmfRunner extends AbstractZosmfUnixFilesRequestRunner<String> {
     
     private String path;
 

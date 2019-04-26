@@ -9,6 +9,7 @@
  */
 package org.zowe.unix.files.services;
 
+import org.zowe.unix.files.model.UnixCreateAssetRequest;
 import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.unix.files.model.UnixFileContentWithETag;
 
@@ -24,4 +25,5 @@ public interface UnixFilesService {
     String getUnixFileChtag(String path);
     
     void deleteUnixFileContent(String path, boolean isRecursive);
+    void createUnixAsset(String path, UnixCreateAssetRequest request);
 }

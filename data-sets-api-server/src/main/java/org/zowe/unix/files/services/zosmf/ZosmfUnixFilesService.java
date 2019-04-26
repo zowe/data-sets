@@ -12,6 +12,7 @@ package org.zowe.unix.files.services.zosmf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
+import org.zowe.unix.files.model.UnixCreateAssetRequest;
 import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.unix.files.model.UnixFileContentWithETag;
 import org.zowe.unix.files.services.UnixFilesService;
@@ -30,7 +31,7 @@ public class ZosmfUnixFilesService implements UnixFilesService {
 
     @Override
     public UnixFileContentWithETag getUnixFileContentWithETag(String path, boolean convert) {
-        GetUnixFileContentRunner runner = new GetUnixFileContentRunner(path, convert);
+        GetUnixFileContentZosmfRunner runner = new GetUnixFileContentZosmfRunner(path, convert);
         return runner.run(zosmfConnector);
     }
     
@@ -51,13 +52,19 @@ public class ZosmfUnixFilesService implements UnixFilesService {
 
     @Override
     public String getUnixFileChtag(String path) {
-        GetUnixFileChtagRunner runner = new GetUnixFileChtagRunner(path);
+        GetUnixFileChtagZosmfRunner runner = new GetUnixFileChtagZosmfRunner(path);
         return runner.run(zosmfConnector);
     }
     
     @Override
     public void deleteUnixFileContent(String path, boolean isRecursive) {
         DeleteUnixFileRunner runner = new DeleteUnixFileRunner(path, isRecursive);
+        runner.run(zosmfConnector);
+    }
+
+    @Override
+    public void createUnixAsset(String path, UnixCreateAssetRequest request) {
+        CreateUnixAssetZosmfRunner runner = new CreateUnixAssetZosmfRunner(path, request);
         runner.run(zosmfConnector);
     }
 }
