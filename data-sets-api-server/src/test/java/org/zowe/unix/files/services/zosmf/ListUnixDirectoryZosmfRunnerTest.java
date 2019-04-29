@@ -31,10 +31,22 @@ public class ListUnixDirectoryZosmfRunnerTest extends AbstractZosmfRequestRunner
     
     @Test
     public void get_unix_directory_list_should_call_zosmf_and_parse_response_correctly() throws Exception {
-        UnixDirectoryChild file = UnixDirectoryChild.builder().name("FileA").type(UnixEntityType.FILE)
-                .link("http://localhost/a/directory/FileA").build();
-        UnixDirectoryChild directory = UnixDirectoryChild.builder().name("DirectoryA").type(UnixEntityType.DIRECTORY)
-                .link("http://localhost/a/directory/DirectoryA").build();
+        UnixDirectoryChild file = UnixDirectoryChild
+            .builder()
+            .name("FileA")
+            .type(UnixEntityType.FILE)
+            .size(12345)
+            .lastModified("2019-02-13T16:04:19")
+            .link("http://localhost/a/directory/FileA")
+            .build();
+        UnixDirectoryChild directory = UnixDirectoryChild
+            .builder()
+            .name("DirectoryA")
+            .type(UnixEntityType.DIRECTORY)
+            .size(54321)
+            .lastModified("2019-02-13T16:04:20")
+            .link("http://localhost/a/directory/DirectoryA")
+            .build();
         
         List<UnixDirectoryChild> children = Arrays.asList(file, directory);
         

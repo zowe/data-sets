@@ -13,7 +13,7 @@ ext {
     jsonPathVersion = "2.4.0"
     junitVersion = "4.12"
     mapStructVersion = "1.2.0.Final"
-    explorerApiCommonVersion = "0.2.0-SNAPSHOT"
+    explorerApiCommonVersion = "0.3.1-SNAPSHOT"
 
     libraries = [
         lombok                             : "org.projectlombok:lombok:${lombokVersion}",
