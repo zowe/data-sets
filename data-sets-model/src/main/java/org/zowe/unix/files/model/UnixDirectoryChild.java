@@ -36,7 +36,7 @@ public class UnixDirectoryChild {
     private UnixEntityType type; 
     
     @ApiModelProperty(value = "size", required = true)
-    private int size; 
+    private Integer size; 
     
     @ApiModelProperty(value = "lastModified", required = true)
     private String lastModified; 
