@@ -68,13 +68,14 @@ public class ListUnixDirectoryZosmfRunner extends AbstractZosmfRequestRunner<Uni
         
         JsonObject directoryObject = directoryListArray.getAsJsonArray().get(0).getAsJsonObject();
         UnixDirectoryAttributesWithChildren unixDirectoryAttributesWithChildren = UnixDirectoryAttributesWithChildren.builder()
-                .owner(getStringOrNull(directoryObject, "user"))
-                .group(getStringOrNull(directoryObject, "group"))
-                .type(getEntityTypeFromSymbolicPermissions(getStringOrNull(directoryObject, "mode")))
-                .permissionsSymbolic(getStringOrNull(directoryObject, "mode"))
-                .size(getIntegerOrNull(directoryObject, "size"))
-                .lastModified(getStringOrNull(directoryObject, "mtime"))
-                .children(directoryChildren).build();
+            .owner(getStringOrNull(directoryObject, "user"))
+            .group(getStringOrNull(directoryObject, "group"))
+            .type(getEntityTypeFromSymbolicPermissions(getStringOrNull(directoryObject, "mode")))
+            .permissionsSymbolic(getStringOrNull(directoryObject, "mode"))
+            .size(getIntegerOrNull(directoryObject, "size"))
+            .lastModified(getStringOrNull(directoryObject, "mtime"))
+            .children(directoryChildren)
+            .build();
         
         return unixDirectoryAttributesWithChildren;
     }
@@ -86,9 +87,13 @@ public class ListUnixDirectoryZosmfRunner extends AbstractZosmfRequestRunner<Uni
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             // Skip self and parent
             if (!getStringOrNull(jsonObject, "name").equals(".") && !getStringOrNull(jsonObject, "name").equals("..")) {
-                UnixDirectoryChild unixDirectoryChild = UnixDirectoryChild.builder().name(getStringOrNull(jsonObject, "name"))
-                        .type(getEntityTypeFromSymbolicPermissions(getStringOrNull(jsonObject, "mode")))
-                        .link(constructLinkString(getStringOrNull(jsonObject, "name"))).build();
+                UnixDirectoryChild unixDirectoryChild = UnixDirectoryChild.builder()
+                    .name(getStringOrNull(jsonObject, "name"))
+                    .type(getEntityTypeFromSymbolicPermissions(getStringOrNull(jsonObject, "mode")))
+                    .size(getIntegerOrNull(jsonObject, "size"))
+                    .lastModified(getStringOrNull(jsonObject, "mtime"))
+                    .link(constructLinkString(getStringOrNull(jsonObject, "name")))
+                    .build();
                 directoryChildren.add(unixDirectoryChild);
             }
         }
