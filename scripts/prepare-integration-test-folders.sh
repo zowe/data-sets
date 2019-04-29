@@ -15,8 +15,9 @@ DIRECTORY_WITHOUT_ACCESS="directoryWithoutAccess"
 mkdir $TEST_DIRECTORY_ROOT
 mkdir "$TEST_DIRECTORY_ROOT/$DIRECTORY_WITH_ACCESS"
 mkdir "$TEST_DIRECTORY_ROOT/$DIRECTORY_WITH_ACCESS/directoryInDirectoryWithAccess"
-touch "$TEST_DIRECTORY_ROOT/$DIRECTORY_WITH_ACCESS/fileInDirectoryWithAccess"
-
+cat <<EOF >$TEST_DIRECTORY_ROOT/$DIRECTORY_WITH_ACCESS/fileInDirectoryWithAccess
+Hello world
+EOF
 #Create unreadable directory 
 mkdir "$TEST_DIRECTORY_ROOT/$DIRECTORY_WITHOUT_ACCESS"
 mkdir "$TEST_DIRECTORY_ROOT/$DIRECTORY_WITHOUT_ACCESS/directoryInDirectoryWithAccess"

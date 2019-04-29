@@ -41,7 +41,7 @@ public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractUnixFil
             .builder()
             .name(fileWithAccess)
             .type(UnixEntityType.FILE)
-            .size(0)
+            .size(12)
             .link(BASE_URL + UNIX_FILES_ENDPOINT + testDirectoryPath + '/' + fileWithAccess)
             .build();
         UnixDirectoryChild directory = UnixDirectoryChild
