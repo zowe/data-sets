@@ -55,6 +55,12 @@ public class ZosmfUnixFilesService implements UnixFilesService {
         GetUnixFileChtagZosmfRunner runner = new GetUnixFileChtagZosmfRunner(path);
         return runner.run(zosmfConnector);
     }
+    
+    @Override
+    public void deleteUnixFileContent(String path, boolean isRecursive) {
+        DeleteUnixFileZosmfRunner runner = new DeleteUnixFileZosmfRunner(path, isRecursive);
+        runner.run(zosmfConnector);
+    }
 
     @Override
     public void createUnixAsset(String path, UnixCreateAssetRequest request) {

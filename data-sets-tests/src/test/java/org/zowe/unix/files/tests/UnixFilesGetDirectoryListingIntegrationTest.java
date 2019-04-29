@@ -31,12 +31,7 @@ import static org.junit.Assert.assertTrue;
 
 public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractUnixFilesIntegrationTest {
 
-    @Test
-    public void testGetDirectoryList() throws Exception {
-        final String testDirectoryPath = TEST_DIRECTORY + "/directoryWithAccess";
-        final String fileWithAccess = "fileInDirectoryWithAccess";
-        final String directoryWithAccess = "directoryInDirectoryWithAccess";
-        
+    private void testGetDirectoryList(String testDirectoryPath, String fileWithAccess, String directoryWithAccess) throws Exception {        
         UnixDirectoryChild file = UnixDirectoryChild
             .builder()
             .name(fileWithAccess)
@@ -70,6 +65,15 @@ public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractUnixFil
         }
         assertThat(response.getChildren(), hasItems(file, directory));
     }
+    
+    @Test
+    public void testGetDirectoryList() throws Exception {
+        final String testDirectoryPath = TEST_DIRECTORY + "/directoryWithAccess";
+        final String fileWithAccess = "fileInDirectoryWithAccess";
+        final String directoryWithAccess = "directoryInDirectoryWithAccess";
+        testGetDirectoryList(testDirectoryPath,fileWithAccess,directoryWithAccess);
+    }
+    
     
     @Test
     public void testGetDirectoryListingWithNoDirectoryChildren() {

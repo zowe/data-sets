@@ -1,0 +1,8 @@
+{
+"category":8,
+"rc":-1,
+"reason":-276275149,
+"message":"rmdir() error",
+"stack":"  1 100F0F78+000003F2 DeleteFileServlet::deleteFile2Dir()\n  2 100F07C8+000000A8 DeleteFileServlet::doDelete()\n  3 100F0780+00000026 DeleteFileServlet::service()\n  4 1011CDC0+0000017E TsoServlet::run()\n  5 1011C798+00000386 main\n  6 07D1D430+0000127E CEEVROND\n  7 0F8F4358+000000B4 EDCZHINV\n  8 07BD4410+000001C6 CEEBBEXT\n",
+"details":["EDC5136I Directory not empty. (errno2=0xEF086033)"]
+}

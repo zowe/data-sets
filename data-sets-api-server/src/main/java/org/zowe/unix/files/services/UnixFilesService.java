@@ -24,5 +24,6 @@ public interface UnixFilesService {
     
     String getUnixFileChtag(String path);
     
+    void deleteUnixFileContent(String path, boolean isRecursive);
     void createUnixAsset(String path, UnixCreateAssetRequest request);
 }
