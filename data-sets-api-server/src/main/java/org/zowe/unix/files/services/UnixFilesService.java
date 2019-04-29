@@ -9,6 +9,7 @@
  */
 package org.zowe.unix.files.services;
 
+import org.zowe.unix.files.model.UnixCreateAssetRequest;
 import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.unix.files.model.UnixFileContentWithETag;
 
@@ -22,4 +23,6 @@ public interface UnixFilesService {
     boolean shouldUnixFileConvert(String path);
     
     String getUnixFileChtag(String path);
+    
+    void createUnixAsset(String path, UnixCreateAssetRequest request);
 }

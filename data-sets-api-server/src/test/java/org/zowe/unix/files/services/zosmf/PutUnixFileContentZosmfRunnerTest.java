@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ PutUnixFileContentZosmfRunner.class })
-public class PutUnixFileContentRunnerTest extends AbstractZosmfRequestRunnerTest {
+public class PutUnixFileContentZosmfRunnerTest extends AbstractZosmfRequestRunnerTest {
     
     @Test
     public void put_unix_file_content_should_call_zosmf_and_parse_response_correctly() throws Exception {
