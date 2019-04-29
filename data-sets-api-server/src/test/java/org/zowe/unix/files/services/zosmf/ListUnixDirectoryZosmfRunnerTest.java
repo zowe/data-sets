@@ -43,8 +43,8 @@ public class ListUnixDirectoryZosmfRunnerTest extends AbstractZosmfRequestRunner
             .builder()
             .name("DirectoryA")
             .type(UnixEntityType.DIRECTORY)
-            .size(12345)
-            .lastModified("2019-02-13T16:04:19")
+            .size(54321)
+            .lastModified("2019-02-13T16:04:20")
             .link("http://localhost/a/directory/DirectoryA")
             .build();
         

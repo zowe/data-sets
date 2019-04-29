@@ -2,7 +2,7 @@
 	"items":[
 		{"name":".", "mode":"dr-x---rwx", "size":8192, "uid":317, "user":"IBMUSER", "gid":234, "group":"GROUP1", "mtime":"2019-02-03T16:04:19"},
 		{"name":"FileA", "mode":"-r--r--r--", "size":12345, "uid":317, "user":"Rob", "gid":234, "group":"IZUUSR", "mtime":"2019-02-13T16:04:19"},
-		{"name":"DirectoryA", "mode":"drwxrwxrwx", "size":12345, "uid":317, "user":"Rick", "gid":234, "group":"IZUADMIN", "mtime":"2019-02-13T16:04:19"}
+		{"name":"DirectoryA", "mode":"drwxrwxrwx", "size":54321, "uid":317, "user":"Rick", "gid":234, "group":"IZUADMIN", "mtime":"2019-02-13T16:04:20"}
 	],
 	"returnedRows":18,
 	"totalRows":18,
