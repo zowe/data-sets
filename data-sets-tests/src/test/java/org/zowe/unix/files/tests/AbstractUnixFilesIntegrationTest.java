@@ -34,8 +34,8 @@ public class AbstractUnixFilesIntegrationTest extends AbstractHttpIntegrationTes
         RestAssured.basePath = UNIX_FILES_ENDPOINT;
     }
     
-    public static void testGetDirectory(String testDirectoryPath, UnixDirectoryChild[] expectedChildren) throws Exception { 
-        UnixDirectoryAttributesWithChildren response = RestAssured.given().when().get("?path=" + testDirectoryPath)
+    public static void testGetDirectory(String directoryPath, UnixDirectoryChild[] expectedChildren) throws Exception { 
+        UnixDirectoryAttributesWithChildren response = RestAssured.given().when().get("?path=" + directoryPath)
             .then().statusCode(HttpStatus.SC_OK).extract()
             .body().as(UnixDirectoryAttributesWithChildren.class);
         
@@ -62,6 +62,7 @@ public class AbstractUnixFilesIntegrationTest extends AbstractHttpIntegrationTes
         for (UnixDirectoryChild expectedChild : actualChildren) {
             expectedChild.setLastModified(null);
         }
+        assertEquals(actualChildren.size(), expectedChildren.length);
         assertThat(actualChildren, containsInAnyOrder(expectedChildren));
     }
 }
