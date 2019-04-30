@@ -18,73 +18,45 @@ import org.zowe.api.common.errors.ApiError;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.unix.files.exceptions.PathNameNotValidException;
 import org.zowe.unix.files.exceptions.UnauthorisedDirectoryException;
-import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.unix.files.model.UnixDirectoryChild;
 import org.zowe.unix.files.model.UnixEntityType;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractUnixFilesIntegrationTest {
-
-    private void testGetDirectoryList(String testDirectoryPath, String fileWithAccess, String directoryWithAccess) throws Exception {        
-        UnixDirectoryChild file = UnixDirectoryChild
+ 
+    @Test
+    public void testGetDirectoryListingWithDirectoryChildren() throws Exception {
+        final String directoryPath = TEST_DIRECTORY + "/directoryWithAccess";
+        final String childFileName = "fileInDirectoryWithAccess";
+        final String childDirectoryName = "directoryInDirectoryWithAccess";
+        
+        UnixDirectoryChild childFile = UnixDirectoryChild
             .builder()
-            .name(fileWithAccess)
+            .name(childFileName)
             .type(UnixEntityType.FILE)
             .size(12)
-            .link(BASE_URL + UNIX_FILES_ENDPOINT + testDirectoryPath + '/' + fileWithAccess)
+            .link(BASE_URL + UNIX_FILES_ENDPOINT + directoryPath + '/' + childFileName)
             .build();
-        UnixDirectoryChild directory = UnixDirectoryChild
+        
+        UnixDirectoryChild childDirectory = UnixDirectoryChild
             .builder()
-            .name(directoryWithAccess)
+            .name(childDirectoryName)
             .type(UnixEntityType.DIRECTORY)
             .size(0)
-            .link(BASE_URL + UNIX_FILES_ENDPOINT + testDirectoryPath + '/' + directoryWithAccess)
+            .link(BASE_URL + UNIX_FILES_ENDPOINT + directoryPath + '/' + childDirectoryName)
             .build();
         
-        UnixDirectoryAttributesWithChildren response = RestAssured.given().when().get("?path=" + testDirectoryPath)
-                .then().statusCode(HttpStatus.SC_OK).extract()
-                .body().as(UnixDirectoryAttributesWithChildren.class);
-        
-        assertFalse(response.getOwner().isEmpty());
-        assertFalse(response.getGroup().isEmpty());
-        assertFalse(response.getPermissionsSymbolic().isEmpty());
-        assertTrue(response.getPermissionsSymbolic().startsWith("d"));
-        assertTrue(response.getSize() == 8192);
-        assertTrue(response.getLastModified().matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}"));
-        assertEquals(response.getType(), UnixEntityType.DIRECTORY);
-        
-        for (UnixDirectoryChild child : response.getChildren()) {
-            assertTrue(child.getLastModified().matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}"));
-            child.setLastModified(null);
-        }
-        assertThat(response.getChildren(), hasItems(file, directory));
+        UnixDirectoryChild[] children = {childFile, childDirectory};
+            
+        testGetDirectory(directoryPath, children);
     }
     
     @Test
-    public void testGetDirectoryList() throws Exception {
-        final String testDirectoryPath = TEST_DIRECTORY + "/directoryWithAccess";
-        final String fileWithAccess = "fileInDirectoryWithAccess";
-        final String directoryWithAccess = "directoryInDirectoryWithAccess";
-        testGetDirectoryList(testDirectoryPath,fileWithAccess,directoryWithAccess);
-    }
-    
-    
-    @Test
-    public void testGetDirectoryListingWithNoDirectoryChildren() {
-        final String testDirectoryPath = TEST_DIRECTORY + "/directoryWithAccess/directoryInDirectoryWithAccess"; 
+    public void testGetDirectoryListingWithNoDirectoryChildren() throws Exception {
+        final String directoryPath = TEST_DIRECTORY + "/directoryWithAccess/directoryInDirectoryWithAccess"; 
         
-        UnixDirectoryAttributesWithChildren response = RestAssured.given().when().get("?path=" + testDirectoryPath)
-                .then().statusCode(HttpStatus.SC_OK).extract()
-                .body().as(UnixDirectoryAttributesWithChildren.class);
-        
-        assertEquals(response.getType(), UnixEntityType.DIRECTORY);
-        assertTrue(response.getChildren().size() == 0);
+        testGetDirectory(directoryPath, new UnixDirectoryChild[0]);
     }
 
     @Test
