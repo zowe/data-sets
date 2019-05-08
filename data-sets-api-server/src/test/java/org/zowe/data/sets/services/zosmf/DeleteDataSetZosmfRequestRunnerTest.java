@@ -13,6 +13,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.junit.Test;
 import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
+import org.zowe.api.common.test.services.zosmf.AbstractZosmfRequestRunnerTest;
 
 import static org.mockito.Mockito.when;
 

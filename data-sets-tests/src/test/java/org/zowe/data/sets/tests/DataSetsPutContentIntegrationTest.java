@@ -25,6 +25,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 
 public class DataSetsPutContentIntegrationTest extends AbstractDataSetsIntegrationTest {
 
+    protected static final String JOB_IEFBR14 = "IEFBR14";
     private static final String TEMP_SDS = HLQ + ".TEMP.SDS";
     private static final String TEMP_PDS = HLQ + ".TEMP.PDS";
     private static String jcl;

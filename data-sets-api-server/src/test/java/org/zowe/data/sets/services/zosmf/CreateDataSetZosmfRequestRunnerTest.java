@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
+import org.zowe.api.common.test.services.zosmf.AbstractZosmfRequestRunnerTest;
 import org.zowe.api.common.utils.JsonUtils;
 import org.zowe.data.sets.exceptions.DataSetAlreadyExists;
 import org.zowe.data.sets.exceptions.InvalidDirectoryBlockException;

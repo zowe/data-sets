@@ -26,6 +26,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 public class AbstractUnixFilesIntegrationTest extends AbstractHttpIntegrationTest {
+
     static final String UNIX_FILES_ENDPOINT = "unixfiles";
     static final String TEST_DIRECTORY = System.getProperty("server.test.directory");
     
