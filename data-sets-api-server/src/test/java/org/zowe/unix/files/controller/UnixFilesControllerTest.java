@@ -9,23 +9,18 @@
  */
 package org.zowe.unix.files.controller;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.zowe.api.common.errors.ApiError;
 import org.zowe.api.common.exceptions.ZoweApiErrorException;
-import org.zowe.api.common.exceptions.ZoweRestExceptionHandler;
+import org.zowe.api.common.test.controller.ApiControllerTest;
 import org.zowe.api.common.utils.JsonUtils;
 import org.zowe.api.common.utils.ZosUtils;
 import org.zowe.unix.files.model.UnixCreateAssetRequest;
@@ -56,241 +51,221 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ZosUtils.class, ServletUriComponentsBuilder.class })
-public class UnixFilesControllerTest {
-    
+public class UnixFilesControllerTest extends ApiControllerTest {
+
     private static final String ENDPOINT_ROOT = "/api/v1/unixfiles";
-
-    // TODO LATER - move up into ApiControllerTest - https://github.com/zowe/explorer-api-common/issues/11
-    // Same Comment in DataSetsControllerTest
-    private static final String DUMMY_USER = "A_USER";
-
-    private MockMvc mockMvc;
 
     @Mock
     private UnixFilesService unixFilesService;
 
     @InjectMocks
     private UnixFilesController unixFilesController;
-    
-    @Before
-    public void init() {
-        MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(unixFilesController)
-            .setControllerAdvice(new ZoweRestExceptionHandler()).build();
-        PowerMockito.mockStatic(ZosUtils.class);
-        when(ZosUtils.getUsername()).thenReturn(DUMMY_USER);
+
+    @Override
+    public Object getController() {
+        return unixFilesController;
     }
-    
+
     @Test
     public void get_directory_listing_success() throws Exception {
-        UnixDirectoryChild file = UnixDirectoryChild.builder().name("FileA").type(UnixEntityType.FILE)
-                .link("somelink").build();
+        UnixDirectoryChild file = UnixDirectoryChild.builder().name("FileA").type(UnixEntityType.FILE).link("somelink")
+            .build();
         UnixDirectoryChild directory = UnixDirectoryChild.builder().name("DirectoryA").type(UnixEntityType.DIRECTORY)
-                .link("somelink").build();
-        
+            .link("somelink").build();
+
         List<UnixDirectoryChild> children = Arrays.asList(file, directory);
-        
+
         UnixDirectoryAttributesWithChildren listedDirectory = UnixDirectoryAttributesWithChildren.builder()
-                .owner("IBMUSER").group("GROUP1").type(UnixEntityType.DIRECTORY).permissionsSymbolic("dr-x---rwx")
-                .size(8192).lastModified("2019-02-03T16:04:19").children(children).build();
+            .owner("IBMUSER").group("GROUP1").type(UnixEntityType.DIRECTORY).permissionsSymbolic("dr-x---rwx")
+            .size(8192).lastModified("2019-02-03T16:04:19").children(children).build();
         String path = "/u/ibmuser";
-        
+
         when(unixFilesService.listUnixDirectory(path)).thenReturn(listedDirectory);
-        
+
         mockMvc.perform(get(ENDPOINT_ROOT + "?path={path}", path)).andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(content().string(JsonUtils.convertToJsonString(listedDirectory)));
-        
+
         verify(unixFilesService, times(1)).listUnixDirectory(path);
         verifyNoMoreInteractions(unixFilesService);
     }
-    
+
     @Test
     public void get_directory_listing_with_exception_should_be_converted_to_error_message() throws Exception {
         String invalidPath = "/not/authorised";
-        
+
         String errorMessage = String.format("You are not authorised to access directory ''{0}''", invalidPath);
         ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.FORBIDDEN).build();
-        
+
         when(unixFilesService.listUnixDirectory(invalidPath)).thenThrow(new ZoweApiErrorException(expectedError));
-        
+
         mockMvc.perform(get(ENDPOINT_ROOT + "?path={path}", invalidPath))
             .andExpect(status().is(expectedError.getStatus().value()))
             .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
             .andExpect(jsonPath("$.message").value(errorMessage));
-        
+
         verify(unixFilesService, times(1)).listUnixDirectory(invalidPath);
         verifyNoMoreInteractions(unixFilesService);
     }
-    
+
     @Test
     public void get_unix_file_content_success() throws Exception {
         String path = "/file";
         String eTag = "\"E1B212479173E273A8ACFD682BCBEADE\"";
         UnixFileContent fileContent = new UnixFileContent("Some file content");
-        
+
         UnixFileContentWithETag fileContentWithETag = new UnixFileContentWithETag(fileContent, eTag);
-        
+
         when(unixFilesService.getUnixFileContentWithETag(path, false)).thenReturn(fileContentWithETag);
-        
+
         mockMvc.perform(get(ENDPOINT_ROOT + path).header("Convert", false)).andExpect(status().isOk())
             .andExpect(content().string(JsonUtils.convertToJsonString(fileContent)))
             .andExpect(header().string("ETag", equalTo(eTag)));
-        
+
         verify(unixFilesService, times(1)).getUnixFileContentWithETag(path, false);
         verifyNoMoreInteractions(unixFilesService);
     }
-    
+
     @Test
     public void get_unix_file_content_with_exception_should_be_converted_to_error_message() throws Exception {
         String path = "/notAuth";
-        
+
         String errorMessage = String.format("You are not authorised to access file %s", path);
         ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.FORBIDDEN).build();
-        
-        when(unixFilesService.getUnixFileContentWithETag(path, false)).thenThrow(new ZoweApiErrorException(expectedError));
-        
+
+        when(unixFilesService.getUnixFileContentWithETag(path, false))
+            .thenThrow(new ZoweApiErrorException(expectedError));
+
         mockMvc.perform(get(ENDPOINT_ROOT + path).header("Convert", false)).andExpect(status().isForbidden())
             .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
             .andExpect(jsonPath("$.message").value(errorMessage));
-        
+
         verify(unixFilesService, times(1)).getUnixFileContentWithETag(path, false);
         verifyNoMoreInteractions(unixFilesService);
     }
-    
+
     @Test
     public void put_unix_file_content_success() throws Exception {
         String path = "/file";
         UnixFileContent fileContent = new UnixFileContent("Some file content");
         UnixFileContentWithETag fileContentWithETag = new UnixFileContentWithETag(fileContent, null);
         String eTag = "\"E1B212479173E273A8ACFD682BCBEADE\"";
-        
+
         when(unixFilesService.putUnixFileContent(path, fileContentWithETag, false)).thenReturn(eTag);
-        
-        mockMvc.perform(put(ENDPOINT_ROOT + path)
-                .header("Convert", false)
-                .contentType(MediaType.APPLICATION_JSON)
+
+        mockMvc
+            .perform(put(ENDPOINT_ROOT + path).header("Convert", false).contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.convertToJsonString(fileContent.getContent())))
-            .andExpect(status().isNoContent())
-            .andExpect(content().string(""))
-            .andExpect(header().string("ETag", eTag));
-        
+            .andExpect(status().isNoContent()).andExpect(content().string("")).andExpect(header().string("ETag", eTag));
+
         verify(unixFilesService, times(1)).putUnixFileContent(path, fileContentWithETag, false);
-        verify(unixFilesService, times(1)).getUnixFileContentWithETag(path,false);
+        verify(unixFilesService, times(1)).getUnixFileContentWithETag(path, false);
         verifyNoMoreInteractions(unixFilesService);
     }
-    
+
     @Test
-    public void put_unix_file_content_success_with_if_match() throws Exception { 
+    public void put_unix_file_content_success_with_if_match() throws Exception {
         String path = "/file";
         String ifMatch = "\"29387FH925H72H4527459G2974GH849F\"";
         String eTag = "\"E1B212479173E273A8ACFD682BCBEADE\"";
         UnixFileContent fileContent = new UnixFileContent("Some file content");
         UnixFileContentWithETag fileContentWithETag = new UnixFileContentWithETag(fileContent, ifMatch);
-        
+
         when(unixFilesService.putUnixFileContent(path, fileContentWithETag, false)).thenReturn(eTag);
-        
-        mockMvc.perform(put(ENDPOINT_ROOT + path)
-                .header("Convert", false)
-                .header("If-Match", ifMatch)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtils.convertToJsonString(fileContent.getContent())))
-            .andExpect(status().isNoContent())
-            .andExpect(content().string(""))
-            .andExpect(header().string("ETag", eTag));
-        
+
+        mockMvc.perform(put(ENDPOINT_ROOT + path).header("Convert", false).header("If-Match", ifMatch)
+            .contentType(MediaType.APPLICATION_JSON).content(JsonUtils.convertToJsonString(fileContent.getContent())))
+            .andExpect(status().isNoContent()).andExpect(content().string("")).andExpect(header().string("ETag", eTag));
+
         verify(unixFilesService, times(1)).putUnixFileContent(path, fileContentWithETag, false);
-        verify(unixFilesService, times(1)).getUnixFileContentWithETag(path,false);
+        verify(unixFilesService, times(1)).getUnixFileContentWithETag(path, false);
         verifyNoMoreInteractions(unixFilesService);
     }
-    
+
     @Test
     public void put_unix_file_content_success_without_convert_set() throws Exception {
         String path = "/file";
         UnixFileContent fileContent = new UnixFileContent("Some file content");
         UnixFileContentWithETag fileContentWithETag = new UnixFileContentWithETag(fileContent, null);
         String eTag = "\"E1B212479173E273A8ACFD682BCBEADE\"";
-        
+
         when(unixFilesService.putUnixFileContent(path, fileContentWithETag, false)).thenReturn(eTag);
         when(unixFilesService.shouldUnixFileConvert(path)).thenReturn(false);
-        
-        mockMvc.perform(put(ENDPOINT_ROOT + path)
-                .contentType(MediaType.APPLICATION_JSON)
+
+        mockMvc
+            .perform(put(ENDPOINT_ROOT + path).contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.convertToJsonString(fileContent.getContent())))
-            .andExpect(status().isNoContent())
-            .andExpect(content().string(""))
-            .andExpect(header().string("ETag", eTag));
-        
+            .andExpect(status().isNoContent()).andExpect(content().string("")).andExpect(header().string("ETag", eTag));
+
         verify(unixFilesService, times(1)).putUnixFileContent(path, fileContentWithETag, false);
         verify(unixFilesService, times(1)).getUnixFileContentWithETag(path, false);
         verify(unixFilesService, times(1)).shouldUnixFileConvert(path);
         verifyNoMoreInteractions(unixFilesService);
     }
-    
+
     @Test
     public void put_unix_file_content_with_exception_should_be_converted_to_error_message() throws Exception {
         String path = "/directory";
         UnixFileContent fileContent = new UnixFileContent("Some file content");
         UnixFileContentWithETag fileContentWithETag = new UnixFileContentWithETag(fileContent, null);
-        
+
         String errorMessage = String.format("Precondition (eg. ETag) failed trying to edit %s", path);
-        ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.PRECONDITION_FAILED).build();
-        
+        ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.PRECONDITION_FAILED)
+            .build();
+
         when(unixFilesService.putUnixFileContent(path, fileContentWithETag, false))
             .thenThrow(new ZoweApiErrorException(expectedError));
-        
-        mockMvc.perform(put(ENDPOINT_ROOT + path)
-                .header("Convert", false)
-                .contentType(MediaType.APPLICATION_JSON)
+
+        mockMvc
+            .perform(put(ENDPOINT_ROOT + path).header("Convert", false).contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.convertToJsonString(fileContent.getContent())))
             .andExpect(status().isPreconditionFailed())
             .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
             .andExpect(jsonPath("$.message").value(errorMessage));
-        
-        verify(unixFilesService, times(1)).putUnixFileContent(path,fileContentWithETag, false);
+
+        verify(unixFilesService, times(1)).putUnixFileContent(path, fileContentWithETag, false);
         verify(unixFilesService, times(1)).getUnixFileContentWithETag(path, false);
         verifyNoMoreInteractions(unixFilesService);
     }
-    
+
     @Test
     public void put_unix_file_content_with_chtag_exception_should_be_converted_to_error_message() throws Exception {
         String path = "/directory";
         UnixFileContent fileContent = new UnixFileContent("Some file content");
-        
+
         String errorMessage = String.format("Requested file %s is a directory", path);
         ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.BAD_REQUEST).build();
-        
+
         when(unixFilesService.shouldUnixFileConvert(path)).thenThrow(new ZoweApiErrorException(expectedError));
-        
-        mockMvc.perform(put(ENDPOINT_ROOT + path)
-                .contentType(MediaType.APPLICATION_JSON)
+
+        mockMvc
+            .perform(put(ENDPOINT_ROOT + path).contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.convertToJsonString(fileContent.getContent())))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
+            .andExpect(status().isBadRequest()).andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
             .andExpect(jsonPath("$.message").value(errorMessage));
-        
+
         verify(unixFilesService, times(1)).getUnixFileContentWithETag(path, false);
         verify(unixFilesService, times(1)).shouldUnixFileConvert(path);
         verifyNoMoreInteractions(unixFilesService);
     }
-    
+
     @Test
     public void put_unix_file_content_when_not_found_should_be_converted_to_error_message() throws Exception {
         String path = "/directory";
         UnixFileContent fileContent = new UnixFileContent("Some file content");
-        
+
         String errorMessage = String.format("Requested file %s not found", path);
         ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.NOT_FOUND).build();
-        
-        when(unixFilesService.getUnixFileContentWithETag(path, false)).thenThrow(new ZoweApiErrorException(expectedError));
-        
-        mockMvc.perform(put(ENDPOINT_ROOT + path)
-                .contentType(MediaType.APPLICATION_JSON)
+
+        when(unixFilesService.getUnixFileContentWithETag(path, false))
+            .thenThrow(new ZoweApiErrorException(expectedError));
+
+        mockMvc
+            .perform(put(ENDPOINT_ROOT + path).contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.convertToJsonString(fileContent.getContent())))
-            .andExpect(status().isNotFound())
-            .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
+            .andExpect(status().isNotFound()).andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
             .andExpect(jsonPath("$.message").value(errorMessage));
-        
+
         verify(unixFilesService, times(1)).getUnixFileContentWithETag(path, false);
         verifyNoMoreInteractions(unixFilesService);
     }

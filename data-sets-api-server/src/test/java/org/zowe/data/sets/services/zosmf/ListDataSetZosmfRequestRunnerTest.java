@@ -13,6 +13,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.junit.Test;
 import org.zowe.api.common.model.ItemsWrapper;
+import org.zowe.api.common.test.services.zosmf.AbstractZosmfRequestRunnerTest;
 import org.zowe.data.sets.model.DataSet;
 
 import java.util.Arrays;
@@ -51,7 +52,6 @@ public class ListDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRunne
         mockJsonResponse(HttpStatus.SC_OK, loadTestFile("getDataSets.json"));
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds?dslevel=%s", filter));
         when(zosmfConnector.request(requestBuilder)).thenReturn(response);
-
 
         assertEquals(expected, new ListDataSetsZosmfRequestRunner(filter).run(zosmfConnector));
 

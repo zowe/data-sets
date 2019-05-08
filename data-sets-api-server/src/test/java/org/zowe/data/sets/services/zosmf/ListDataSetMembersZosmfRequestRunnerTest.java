@@ -14,6 +14,7 @@ import org.apache.http.client.methods.RequestBuilder;
 import org.junit.Test;
 import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
 import org.zowe.api.common.model.ItemsWrapper;
+import org.zowe.api.common.test.services.zosmf.AbstractZosmfRequestRunnerTest;
 import org.zowe.data.sets.exceptions.UnauthorisedDataSetException;
 
 import java.io.IOException;
