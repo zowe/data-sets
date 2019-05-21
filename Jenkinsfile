@@ -99,7 +99,7 @@ node('ibm-jenkins-slave-nvm') {
 -dname \"CN=Zowe Data Sets Explorer API Default Certificate, OU=Zowe API Squad, O=Zowe, L=Hursley, ST=Hampshire, C=UK\" \
 -ext san=dns:localhost,ip:127.0.0.1"""
 
-      def buildIdentifier = lib.Utils.getBuildIdentifier()
+      def buildIdentifier = lib.Utils.getBuildIdentifier(env)
       def uniqueBuildId = "datasets-integration-test-${buildIdentifier}"
       if (!uniqueBuildId) {
           error "Cannot determine unique build ID."
