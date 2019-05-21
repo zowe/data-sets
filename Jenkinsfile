@@ -65,7 +65,7 @@ node('ibm-jenkins-slave-nvm') {
     junit         : '**/test-results/test/*.xml',
     htmlReports   : [
       [dir: "build/reports/jacoco/jacocoFullReport/html", files: "index.html", name: "Report: Code Coverage"],
-      [dir: "jobs-api-server/build/reports/tests/test", files: "index.html", name: "Report: Unit Test"],
+      [dir: "data-sets-api-server/build/reports/tests/test", files: "index.html", name: "Report: Unit Test"],
     ],
   )
 
@@ -75,7 +75,7 @@ node('ibm-jenkins-slave-nvm') {
       echo "Preparing certificates ..."
       sh """keytool -genkeypair -keystore localhost.keystore.p12 -storetype PKCS12 \
 -storepass password -alias localhost -keyalg RSA -keysize 2048 -validity 99999 \
--dname \"CN=Zowe Jobs Explorer API Default Certificate, OU=Zowe API Squad, O=Zowe, L=Hursley, ST=Hampshire, C=UK\" \
+-dname \"CN=Zowe Data Sets Explorer API Default Certificate, OU=Zowe API Squad, O=Zowe, L=Hursley, ST=Hampshire, C=UK\" \
 -ext san=dns:localhost,ip:127.0.0.1"""
 
       echo "Starting test server ..."
@@ -88,7 +88,7 @@ node('ibm-jenkins-slave-nvm') {
 -Dserver.ssl.keyStoreType=PKCS12 \
 -Dzosmf.httpsPort=${params.INTEGRATION_TEST_ZOSMF_PORT} \
 -Dzosmf.ipAddress=${params.INTEGRATION_TEST_ZOSMF_HOST} \
--jar \$(ls -1 jobs-api-server/build/libs/jobs-api-server-*-boot.jar) &"""
+-jar \$(ls -1 data-sets-api-server/build/libs/data-sets-api-server-*-boot.jar) &"""
 
       // give it a little time to start the server
       sleep time: 1, unit: 'MINUTES'
@@ -110,7 +110,7 @@ node('ibm-jenkins-slave-nvm') {
     },
     junit         : '**/test-results/test/*.xml',
     htmlReports   : [
-      [dir: "jobs-tests/build/reports/tests/test", files: "index.html", name: "Report: Integration Test"],
+      [dir: "data-sets-tests/build/reports/tests/test", files: "index.html", name: "Report: Integration Test"],
     ],
   )
 
@@ -120,9 +120,9 @@ node('ibm-jenkins-slave-nvm') {
 
   // how we packaging jars/zips
   pipeline.packaging(
-      name: 'explorer-jobs',
+      name: 'explorer-data-sets',
       operation: {
-          sh './gradlew packageJobsApiServer'
+          sh './gradlew packageDataSetsApiServer'
       }
   )
 
@@ -130,7 +130,7 @@ node('ibm-jenkins-slave-nvm') {
   pipeline.publish(
     // NOTE: task publishArtifacts will publish to lib-release-local because we don't have SNAPSHOT in version
     artifacts: [
-      'jobs-zowe-server-package/build/distributions/jobs-server-zowe-package.zip'
+      'data-sets-zowe-server-package/build/distributions/data-sets-server-zowe-package.zip'
     ]
   )
 
