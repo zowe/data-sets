@@ -15,6 +15,7 @@ node('ibm-jenkins-slave-nvm') {
   def lib = library("jenkins-library").org.zowe.jenkins_shared_library
 
   def pipeline = lib.pipelines.gradle.GradlePipeline.new(this)
+  def uniqueBuildId
 
   pipeline.admins.add("jackjia")
 
@@ -100,7 +101,7 @@ node('ibm-jenkins-slave-nvm') {
 -ext san=dns:localhost,ip:127.0.0.1"""
 
       def buildIdentifier = lib.Utils.getBuildIdentifier(env)
-      def uniqueBuildId = "datasets-integration-test-${buildIdentifier}"
+      uniqueBuildId = "datasets-integration-test-${buildIdentifier}"
       if (!uniqueBuildId) {
           error "Cannot determine unique build ID."
       }
@@ -186,5 +187,26 @@ EOF"""
   // define we need release stage
   pipeline.release()
 
-  pipeline.end()
+  pipeline.end(
+    always: {
+      // clean up integration test folder
+      if (uniqueBuildId) {
+        withCredentials([
+          usernamePassword(
+            credentialsId: params.INTEGRATION_TEST_DIRECTORY_INIT_USER, 
+            usernameVariable: 'USERNAME',
+            passwordVariable: 'PASSWORD'
+          )
+        ]) {
+          // delete TEST_DIRECTORY_ROOT/uniqueBuildId
+          sh """SSHPASS=${PASSWORD} sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
+cd ~ && \
+  [ -d "${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}" ] && \
+  rm -fr "${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}"
+echo "[cleanup-integration-test-folders] done" && exit 0
+EOF"""
+        }
+      }
+    }
+  )
 }
