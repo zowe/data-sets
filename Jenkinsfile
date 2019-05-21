@@ -40,6 +40,27 @@ node('ibm-jenkins-slave-nvm') {
       credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
       defaultValue: 'ssh-zdt-test-image-guest',
       required: true
+    ),
+    string(
+      name: 'INTEGRATION_TEST_SSH_PORT',
+      description: 'SSH port for integration test server',
+      defaultValue: '2022',
+      trim: true,
+      required: true
+    ),
+    string(
+      name: 'INTEGRATION_TEST_DIRECTORY_ROOT',
+      description: 'Root directory for integration test',
+      defaultValue: '/zaas1',
+      trim: true,
+      required: true
+    ),
+    credentials(
+      name: 'INTEGRATION_TEST_DIRECTORY_INIT_USER',
+      description: 'z/OSMF credential to initialize integration test folders / files',
+      credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl',
+      defaultValue: 'ssh-zdt-test-image-guest',
+      required: true
     )
   )
 
@@ -78,6 +99,33 @@ node('ibm-jenkins-slave-nvm') {
 -dname \"CN=Zowe Data Sets Explorer API Default Certificate, OU=Zowe API Squad, O=Zowe, L=Hursley, ST=Hampshire, C=UK\" \
 -ext san=dns:localhost,ip:127.0.0.1"""
 
+      def buildIdentifier = lib.Utils.getBuildIdentifier()
+      def uniqueBuildId = "datasets-integration-test-${buildIdentifier}"
+      if (!uniqueBuildId) {
+          error "Cannot determine unique build ID."
+      }
+
+      echo "Preparing test folder ..."
+      withCredentials([
+        usernamePassword(
+          credentialsId: params.INTEGRATION_TEST_DIRECTORY_INIT_USER,
+          usernameVariable: 'USERNAME',
+          passwordVariable: 'PASSWORD'
+        )
+      ]) {
+        // send file to test image host
+        sh """SSHPASS=${PASSWORD} sshpass -e sftp -o BatchMode=no -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -b - -P ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
+put scripts/prepare-integration-test-folders.sh
+EOF"""
+        // create TEST_DIRECTORY_ROOT/uniqueBuildId
+        sh """SSHPASS=${PASSWORD} sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
+cd ~ && \
+  (iconv -f ISO8859-1 -t IBM-1047 prepare-integration-test-folders.sh > prepare-integration-test-folders.sh.new) && mv prepare-integration-test-folders.sh.new prepare-integration-test-folders.sh && chmod +x prepare-integration-test-folders.sh
+./prepare-integration-test-folders.sh ${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId} || { echo "[prepare-integration-test-folders] failed"; exit 1; }
+echo "[prepare-integration-test-folders] succeeds" && exit 0
+EOF"""
+      }
+
       echo "Starting test server ..."
       sh """java -Xms16m -Xmx512m -Dibm.serversocket.recover=true -Dfile.encoding=UTF-8 \
 -Djava.io.tmpdir=/tmp \
@@ -105,7 +153,8 @@ node('ibm-jenkins-slave-nvm') {
 -Pserver.host=localhost \
 -Pserver.port=8443 \
 -Pserver.username=${USERNAME} \
--Pserver.password=${PASSWORD}"""
+-Pserver.password=${PASSWORD} \
+-Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}"""
       }
     },
     junit         : '**/test-results/test/*.xml',
