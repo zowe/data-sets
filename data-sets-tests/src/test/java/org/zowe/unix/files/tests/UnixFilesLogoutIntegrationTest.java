@@ -25,6 +25,15 @@ public class UnixFilesLogoutIntegrationTest extends AbstractUnixFilesIntegration
 
     @Test
     public void testLogoutWithGetDirectoryListing() throws Exception {
-        testLogout(path);
+        String cookie = RestAssured.given().when().get(path).getCookie("JSESSIONID");
+
+        RestAssured.given().when().auth().none().cookie("JSESSIONID", cookie).get(path)
+            .then().statusCode(HttpStatus.SC_OK);
+
+        RestAssured.given().when().auth().none().cookie("JSESSIONID", cookie).get("/logout")
+            .then().statusCode(HttpStatus.SC_NO_CONTENT);
+
+        RestAssured.given().when().auth().none().cookie("JSESSIONID", cookie).get(path)
+        .then().statusCode(HttpStatus.SC_UNAUTHORIZED);
     }
 }
