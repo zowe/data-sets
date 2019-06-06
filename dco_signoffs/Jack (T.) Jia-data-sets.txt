@@ -1,0 +1,5 @@
+I, Jack (T.) Jia hereby sign-off-by all of my past commits to this repo subject to the Developer Certificate of Origin (DCO), Version 1.1. In the past I have used emails: jack-tiefeng.jia@ibm.com
+
+23c61898f6c84ed72747255adb5ad161eb31f5d3 comment out submit jacoco report
+bdc319aeef3b002d8c334d3dee6da6d8c35d37bf create folders required by sonarqube
+31184755eb60139a33eb0b2f789ba8f535002d4b update sonar config
