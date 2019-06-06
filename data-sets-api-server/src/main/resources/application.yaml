@@ -21,6 +21,11 @@ logging:
         org.springframework: INFO
         org.zowe: DEBUG
 
+apiml:
+    security:
+        ssl:
+            ciphers: TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384
+
 server:
   port: ${server.port}
   ssl:
@@ -29,6 +34,7 @@ server:
     keyStoreType: ${server.ssl.keyStoreType}
     keyAlias: ${server.ssl.keyAlias}
     enabled-protocols: TLSv1.2
+    ciphers: ${apiml.security.ssl.ciphers}
     
 zosmf:
   ipAddress: ${zosmf.ipAddress}
