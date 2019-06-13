@@ -17,7 +17,7 @@ node('ibm-jenkins-slave-nvm') {
   def pipeline = lib.pipelines.gradle.GradlePipeline.new(this)
   def uniqueBuildId
 
-  pipeline.admins.add("jackjia")
+  pipeline.admins.add("jackjia", "jcain", "stevenh")
 
   // we have extra parameters for integration test
   pipeline.addBuildParameters(
