@@ -27,4 +27,4 @@ java -Xms16m -Xmx512m -Dibm.serversocket.recover=true -Dfile.encoding=UTF-8 \
     -Dserver.ssl.keyStoreType=PKCS12 \
     -Dzosmf.httpsPort=${ZOSMF_PORT} \
     -Dzosmf.ipAddress=${ZOSMF_IP_ADDRESS} \
-    -jar $DIR/../{{jar_name}} &
+    -jar {{jar_path}} &
