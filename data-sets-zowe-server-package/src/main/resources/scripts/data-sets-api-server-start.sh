@@ -7,6 +7,7 @@
 # - ZOSMF_PORT - The SSL port z/OSMF is listening on.
 # - ZOSMF_IP_ADDRESS - The IP Address z/OSMF can be reached
 
+##TODO - better way to do this? move to validation script?
 export JAVA_HOME=$ZOWE_JAVA_HOME
 if [[ ":$PATH:" == *":$JAVA_HOME/bin:"* ]]; then
   echo "ZOWE_JAVA_HOME already exists on the PATH"
@@ -15,8 +16,6 @@ else
   export PATH=$PATH:$JAVA_HOME/bin
   echo "Done."
 fi
-
-DIR=`dirname $0`
 
 java -Xms16m -Xmx512m -Dibm.serversocket.recover=true -Dfile.encoding=UTF-8 \
     -Djava.io.tmpdir=/tmp -Xquickstart \
