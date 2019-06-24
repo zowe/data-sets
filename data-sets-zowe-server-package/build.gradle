@@ -26,7 +26,8 @@ task packageDataSetsApiServer(type: Zip) {
 
 packageDataSetsApiServer.doFirst {
     List<File> scriptFiles =  new ArrayList<File>() {{
-        add(file('src/main/resources/scripts/data-sets-api-server-start.sh'));
+        add(file('src/main/resources/scripts/files-api-start.sh'));
+        add(file('src/main/resources/scripts/files-api-configure.sh'));
     }};
     for (File scriptFile : scriptFiles){
         def inputStream = new InputStreamReader(new FileInputStream(scriptFile), "ISO-8859-1");
