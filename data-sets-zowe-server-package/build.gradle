@@ -20,8 +20,7 @@ task packageDataSetsApiServer(type: Zip) {
     }
 
     into('scripts/') {
-        from "$buildDir/convert/"
-        include "*.sh"
+        from "$buildDir/convert/files-api-start.sh", "$buildDir/convert/files-api-configure.sh"
     }
 }
 
