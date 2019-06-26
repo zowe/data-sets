@@ -1,6 +1,6 @@
 ext {
 //TODO MARK - shouldn't this inherit from parent?
-    springBootVersion = '2.0.4.RELEASE'
+    springBootVersion = '2.1.6.RELEASE'
     springFoxVersion = '2.8.0'
     lombokVersion = '1.16.20'
     mockitoCoreVersion = '2.23.4'
