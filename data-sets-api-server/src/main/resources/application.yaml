@@ -13,7 +13,7 @@ spring:
         name: data-sets
     output:
         ansi:
-            enabled: always
+            enabled: detect
 
 logging:
     level:
@@ -39,3 +39,5 @@ server:
 zosmf:
   ipAddress: ${zosmf.ipAddress}
   httpsPort: ${zosmf.httpsPort}
+
+logbackServiceName: ZWEEAJ1
