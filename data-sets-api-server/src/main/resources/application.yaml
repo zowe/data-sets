@@ -40,4 +40,4 @@ zosmf:
   ipAddress: ${zosmf.ipAddress}
   httpsPort: ${zosmf.httpsPort}
 
-logbackServiceName: ZWEEAJ1
+logbackServiceName: ZWEEAD1
