@@ -85,6 +85,19 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
     }
 
     @Test
+    public void testCreatePdse() throws Exception {
+        DataSetCreateRequest sdsRequest = createPdseRequest(TEST_DATA_SET);
+        cleanUp = TEST_DATA_SET;
+        createDataSet(sdsRequest).then().statusCode(HttpStatus.SC_CREATED)
+                .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + TEST_DATA_SET)).body(equalTo(""));
+
+        List<DataSetAttributes> actual = getDataSetsDetails(TEST_DATA_SET).then().statusCode(HttpStatus.SC_OK).extract().body()
+                .jsonPath().getList("items", DataSetAttributes.class);
+        assertEquals("Should have created the correct type", DataSetOrganisationType.PO_E,
+                actual.get(0).getDataSetOrganization());
+    }
+
+    @Test
     public void testPostDatasetWithInvalidRequestFails() throws Exception {
         ZoweApiRestException expected = new InvalidDirectoryBlockException(TEST_DATA_SET);
         ApiError expectedError = expected.getApiError();

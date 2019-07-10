@@ -48,6 +48,12 @@ public class DataSetsDeleteIntegrationTests extends AbstractDataSetsIntegrationT
         createAndDelete(createPdsRequest(tempPath));
     }
 
+    @Test
+    public void testDeletePdseWorks() throws Exception {
+        String tempPath = HLQ + ".TEMP";
+        createAndDelete(createPdseRequest(tempPath));
+    }
+
     private void createAndDelete(DataSetCreateRequest request) {
         createDataSet(request).then().statusCode(HttpStatus.SC_CREATED);
         deleteDataSet(request.getName()).then().statusCode(HttpStatus.SC_NO_CONTENT).body(equalTo(""));
