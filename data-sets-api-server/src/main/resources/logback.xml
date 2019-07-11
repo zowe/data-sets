@@ -2,7 +2,7 @@
 <configuration>
     <property resource="application.yaml" />
 
-    <turboFilter class="org.zowe.logging.UseridFilter"/>
+    <turboFilter class="org.zowe.api.common.logging.UseridFilter"/>
     <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
