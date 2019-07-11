@@ -74,18 +74,25 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractFilesInteg
     }
 
     static DataSetCreateRequest createPdsRequest(String dataSetName) {
-        DataSetCreateRequest defaultJclPdsRequest = DataSetCreateRequest.builder().name(dataSetName).blockSize(400)
-                .primary(10).recordLength(80).secondary(5).directoryBlocks(20)
-                .dataSetOrganization(DataSetOrganisationType.PO).recordFormat("FB").allocationUnit(AllocationUnitType.TRACK)
-                .build();
-        return defaultJclPdsRequest;
+        return createRequestWithDataSetOrganisation(dataSetName, DataSetOrganisationType.PO);
+    }
+
+    static DataSetCreateRequest createPdseRequest(String dataSetName) {
+        return createRequestWithDataSetOrganisation(dataSetName, DataSetOrganisationType.PO_E);
     }
 
     static DataSetCreateRequest createSdsRequest(String dataSetName) {
-        DataSetCreateRequest sdsRequest = createPdsRequest(dataSetName);
+        DataSetCreateRequest sdsRequest = createRequestWithDataSetOrganisation(dataSetName, DataSetOrganisationType.PS);
         sdsRequest.setDirectoryBlocks(0); // SJH: if directory block != 0 zosmf interprets as PDS
-        sdsRequest.setDataSetOrganization(DataSetOrganisationType.PS);
         return sdsRequest;
+    }
+
+    static DataSetCreateRequest createRequestWithDataSetOrganisation(String dataSetName, DataSetOrganisationType dsorg) {
+        DataSetCreateRequest defaultJclPdsRequest = DataSetCreateRequest.builder().name(dataSetName).blockSize(400)
+                .primary(10).recordLength(80).secondary(5).directoryBlocks(20)
+                .dataSetOrganization(dsorg).recordFormat("FB").allocationUnit(AllocationUnitType.TRACK)
+                .build();
+        return defaultJclPdsRequest;
     }
 
     static Response deleteDataSet(String dataSetName) {

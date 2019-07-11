@@ -61,6 +61,16 @@ public class CreateDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRun
     }
 
     @Test
+    public void create_example_pdse_dataset_should_transform_request_to_zosmf_and_add_dsntype() throws Exception {
+        String json = "{\"volser\":\"zmf046\",\"unit\":\"3390\",\"dsorg\":\"PO\",\"dsntype\":\"LIBRARY\",\"alcunit\":\"TRK\",\"primary\":10,\"secondary\":5,\""
+                + "dirblk\":10,\"avgblk\":500,\"recfm\":\"FB\",\"blksize\":400,\"lrecl\":80}";
+        JsonObject zosmfRequest = JsonUtils.readAsJsonElement(json).getAsJsonObject();
+
+        create_dataset_and_verify("STEVENH.TEST.PDSE",
+                createBaseRequest().dataSetOrganization(DataSetOrganisationType.PO_E).directoryBlocks(10), zosmfRequest);
+    }
+
+    @Test
     public void create_example_pds_dataset_with_cylinders_should_transform_request_to_zosmf() throws Exception {
         int primary = 300;
         int secondary = 150;
