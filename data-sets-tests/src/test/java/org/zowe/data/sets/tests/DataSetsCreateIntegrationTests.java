@@ -13,6 +13,7 @@ package org.zowe.data.sets.tests;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpStatus;
 import org.junit.After;
 import org.junit.Test;
@@ -31,8 +32,6 @@ import static org.junit.Assert.assertEquals;
 
 public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationTest {
 
-    private static final String TEST_DATA_SET = HLQ + ".TEST.DELETE";
-
     // TODO - use junit 5 and nest the cleanup?
     private String cleanUp = null;
 
@@ -43,14 +42,19 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
         }
     }
 
+    private String createDatasetName() {
+        return HLQ + ".A" + RandomStringUtils.randomAlphanumeric(7);
+    }
+
     @Test
     public void testCreatePds() throws Exception {
-        DataSetCreateRequest pdsRequest = createPdsRequest(TEST_DATA_SET);
-        cleanUp = TEST_DATA_SET;
+        String testDataSet = createDatasetName();
+        DataSetCreateRequest pdsRequest = createPdsRequest(testDataSet);
+        cleanUp = testDataSet;
         createDataSet(pdsRequest).then().statusCode(HttpStatus.SC_CREATED)
-            .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + TEST_DATA_SET)).body(equalTo(""));
+            .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + testDataSet)).body(equalTo(""));
 
-        List<DataSetAttributes> actual = getDataSetsDetails(TEST_DATA_SET).then().statusCode(HttpStatus.SC_OK).extract()
+        List<DataSetAttributes> actual = getDataSetsDetails(testDataSet).then().statusCode(HttpStatus.SC_OK).extract()
             .body().jsonPath().getList("items", DataSetAttributes.class);
         assertEquals("Should have created the correct type", DataSetOrganisationType.PO,
                 actual.get(0).getDataSetOrganization());
@@ -58,8 +62,9 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
 
     @Test
     public void testTryingToCreateExistingPdsThrowsError() throws Exception {
-        DataSetCreateRequest pdsRequest = createPdsRequest(TEST_DATA_SET);
-        cleanUp = TEST_DATA_SET;
+        String testDataSet = createDatasetName();
+        DataSetCreateRequest pdsRequest = createPdsRequest(testDataSet);
+        cleanUp = testDataSet;
         createDataSet(pdsRequest);
 
         // TODO - work out how to decipher the dynamic allocation error codes
@@ -73,15 +78,16 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
 
     @Test
     public void testCreateSds() throws Exception {
-        DataSetCreateRequest sdsRequest = createSdsRequest(TEST_DATA_SET);
-        cleanUp = TEST_DATA_SET;
+        String testDataSet = createDatasetName();
+        DataSetCreateRequest sdsRequest = createSdsRequest(testDataSet);
+        cleanUp = testDataSet;
         // Add debug
         Response response = createDataSet(sdsRequest);
         System.out.println(response.asString());
         response.then().statusCode(HttpStatus.SC_CREATED)
-            .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + TEST_DATA_SET)).body(equalTo(""));
+            .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + testDataSet)).body(equalTo(""));
 
-        List<DataSetAttributes> actual = getDataSetsDetails(TEST_DATA_SET).then().statusCode(HttpStatus.SC_OK).extract()
+        List<DataSetAttributes> actual = getDataSetsDetails(testDataSet).then().statusCode(HttpStatus.SC_OK).extract()
             .body().jsonPath().getList("items", DataSetAttributes.class);
         assertEquals("Should have created the correct type", DataSetOrganisationType.PS,
                 actual.get(0).getDataSetOrganization());
@@ -90,13 +96,14 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
 
     @Test
     public void testCreatePdse() throws Exception {
-        DataSetCreateRequest pdseRequest = createPdseRequest(TEST_DATA_SET);
-        cleanUp = TEST_DATA_SET;
+        String testDataSet = createDatasetName();
+        DataSetCreateRequest pdseRequest = createPdseRequest(testDataSet);
+        cleanUp = testDataSet;
         Response createDataSet = createDataSet(pdseRequest);
         createDataSet.then().statusCode(HttpStatus.SC_CREATED)
-            .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + TEST_DATA_SET)).body(equalTo(""));
+            .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + testDataSet)).body(equalTo(""));
 
-        List<DataSetAttributes> actual = getDataSetsDetails(TEST_DATA_SET).then().statusCode(HttpStatus.SC_OK).extract()
+        List<DataSetAttributes> actual = getDataSetsDetails(testDataSet).then().statusCode(HttpStatus.SC_OK).extract()
             .body().jsonPath().getList("items", DataSetAttributes.class);
         assertEquals("Should have created the correct type", DataSetOrganisationType.PO_E,
                 actual.get(0).getDataSetOrganization());
@@ -104,11 +111,12 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
 
     @Test
     public void testPostDatasetWithInvalidRequestFails() throws Exception {
-        ZoweApiRestException expected = new InvalidDirectoryBlockException(TEST_DATA_SET);
+        String testDataSet = createDatasetName();
+        ZoweApiRestException expected = new InvalidDirectoryBlockException(testDataSet);
         ApiError expectedError = expected.getApiError();
 
-        DataSetCreateRequest sdsRequestWithDirBlk = createSdsRequest(TEST_DATA_SET);
-        cleanUp = TEST_DATA_SET;
+        DataSetCreateRequest sdsRequestWithDirBlk = createSdsRequest(testDataSet);
+        cleanUp = testDataSet;
         sdsRequestWithDirBlk.setDirectoryBlocks(10);
         createDataSet(sdsRequestWithDirBlk).then().statusCode(expectedError.getStatus().value())
             .contentType(ContentType.JSON).body("status", equalTo(expectedError.getStatus().name()))
