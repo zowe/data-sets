@@ -11,6 +11,7 @@
 package org.zowe.data.sets.tests;
 
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 
 import org.apache.http.HttpStatus;
 import org.junit.After;
@@ -47,10 +48,10 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
         DataSetCreateRequest pdsRequest = createPdsRequest(TEST_DATA_SET);
         cleanUp = TEST_DATA_SET;
         createDataSet(pdsRequest).then().statusCode(HttpStatus.SC_CREATED)
-                .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + TEST_DATA_SET)).body(equalTo(""));
+            .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + TEST_DATA_SET)).body(equalTo(""));
 
-        List<DataSetAttributes> actual = getDataSetsDetails(TEST_DATA_SET).then().statusCode(HttpStatus.SC_OK).extract().body()
-                .jsonPath().getList("items", DataSetAttributes.class);
+        List<DataSetAttributes> actual = getDataSetsDetails(TEST_DATA_SET).then().statusCode(HttpStatus.SC_OK).extract()
+            .body().jsonPath().getList("items", DataSetAttributes.class);
         assertEquals("Should have created the correct type", DataSetOrganisationType.PO,
                 actual.get(0).getDataSetOrganization());
     }
@@ -74,11 +75,14 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
     public void testCreateSds() throws Exception {
         DataSetCreateRequest sdsRequest = createSdsRequest(TEST_DATA_SET);
         cleanUp = TEST_DATA_SET;
-        createDataSet(sdsRequest).then().statusCode(HttpStatus.SC_CREATED)
-                .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + TEST_DATA_SET)).body(equalTo(""));
+        // Add debug
+        Response response = createDataSet(sdsRequest);
+        System.out.println(response.asString());
+        response.then().statusCode(HttpStatus.SC_CREATED)
+            .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + TEST_DATA_SET)).body(equalTo(""));
 
-        List<DataSetAttributes> actual = getDataSetsDetails(TEST_DATA_SET).then().statusCode(HttpStatus.SC_OK).extract().body()
-                .jsonPath().getList("items", DataSetAttributes.class);
+        List<DataSetAttributes> actual = getDataSetsDetails(TEST_DATA_SET).then().statusCode(HttpStatus.SC_OK).extract()
+            .body().jsonPath().getList("items", DataSetAttributes.class);
         assertEquals("Should have created the correct type", DataSetOrganisationType.PS,
                 actual.get(0).getDataSetOrganization());
 
@@ -86,13 +90,14 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
 
     @Test
     public void testCreatePdse() throws Exception {
-        DataSetCreateRequest sdsRequest = createPdseRequest(TEST_DATA_SET);
+        DataSetCreateRequest pdseRequest = createPdseRequest(TEST_DATA_SET);
         cleanUp = TEST_DATA_SET;
-        createDataSet(sdsRequest).then().statusCode(HttpStatus.SC_CREATED)
-                .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + TEST_DATA_SET)).body(equalTo(""));
+        Response createDataSet = createDataSet(pdseRequest);
+        createDataSet.then().statusCode(HttpStatus.SC_CREATED)
+            .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + TEST_DATA_SET)).body(equalTo(""));
 
-        List<DataSetAttributes> actual = getDataSetsDetails(TEST_DATA_SET).then().statusCode(HttpStatus.SC_OK).extract().body()
-                .jsonPath().getList("items", DataSetAttributes.class);
+        List<DataSetAttributes> actual = getDataSetsDetails(TEST_DATA_SET).then().statusCode(HttpStatus.SC_OK).extract()
+            .body().jsonPath().getList("items", DataSetAttributes.class);
         assertEquals("Should have created the correct type", DataSetOrganisationType.PO_E,
                 actual.get(0).getDataSetOrganization());
     }
@@ -106,7 +111,7 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
         cleanUp = TEST_DATA_SET;
         sdsRequestWithDirBlk.setDirectoryBlocks(10);
         createDataSet(sdsRequestWithDirBlk).then().statusCode(expectedError.getStatus().value())
-                .contentType(ContentType.JSON).body("status", equalTo(expectedError.getStatus().name()))
-                .body("message", equalTo(expectedError.getMessage()));
+            .contentType(ContentType.JSON).body("status", equalTo(expectedError.getStatus().name()))
+            .body("message", equalTo(expectedError.getMessage()));
     }
 }
