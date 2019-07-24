@@ -25,4 +25,5 @@ java -Xms16m -Xmx512m -Dibm.serversocket.recover=true -Dfile.encoding=UTF-8 \
     -Dserver.ssl.keyStoreType=PKCS12 \
     -Dzosmf.httpsPort=**ZOSMF_HTTPS_PORT** \
     -Dzosmf.ipAddress=**ZOSMF_IP** \
+    -Dspring.main.banner-mode=off \
     -jar $DIR/../**DATASETS_JAR** &
