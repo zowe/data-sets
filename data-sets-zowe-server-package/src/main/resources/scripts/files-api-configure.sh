@@ -40,3 +40,13 @@ EOF
 iconv -f IBM-1047 -t IBM-850 ${STATIC_DEF_CONFIG_DIR}/files-api.ebcidic.yml > $STATIC_DEF_CONFIG_DIR/files-api.yml
 rm ${STATIC_DEF_CONFIG_DIR}/files-api.ebcidic.yml
 chmod 755 $STATIC_DEF_CONFIG_DIR/files-api.yml
+
+#Make sure Java is available on the path - TODO needed at all, move to a all zowe setup/validate?
+export JAVA_HOME=$ZOWE_JAVA_HOME
+if [[ ":$PATH:" == *":$JAVA_HOME/bin:"* ]]; then
+  echo "ZOWE_JAVA_HOME already exists on the PATH"
+else
+  echo "Appending ZOWE_JAVA_HOME/bin to the PATH..."
+  export PATH=$PATH:$JAVA_HOME/bin
+  echo "Done."
+fi
