@@ -39,7 +39,7 @@ catalogUiTiles:
 EOF
 iconv -f IBM-1047 -t IBM-850 ${STATIC_DEF_CONFIG_DIR}/files-api.ebcidic.yml > $STATIC_DEF_CONFIG_DIR/files-api.yml
 rm ${STATIC_DEF_CONFIG_DIR}/files-api.ebcidic.yml
-chmod 755 $STATIC_DEF_CONFIG_DIR/files-api.yml
+chmod 770 $STATIC_DEF_CONFIG_DIR/files-api.yml
 
 #Make sure Java is available on the path - TODO needed at all, move to a all zowe setup/validate?
 export JAVA_HOME=$ZOWE_JAVA_HOME
