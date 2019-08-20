@@ -1,6 +1,17 @@
-# Variables to be replaced:
-# - ZOWE_JAVA_HOME - JAVA_HOME that zowe is using
+################################################################################
+# This program and the accompanying materials are made available under the terms of the
+# Eclipse Public License v2.0 which accompanies this distribution, and is available at
+# https://www.eclipse.org/legal/epl-v20.html
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Copyright IBM Corporation 2018, 2019
+################################################################################
+
+# Variables required on shell:
+# - ZOWE_PREFIX
 # - FILES_API_PORT - The port the data sets server will use
+# - KEY_ALIAS
 # - KEYSTORE - The keystore to use for SSL certificates
 # - KEYSTORE_PASSWORD - The password to access the keystore supplied by KEYSTORE
 # - KEY_ALIAS - The alias of the key within the keystore
