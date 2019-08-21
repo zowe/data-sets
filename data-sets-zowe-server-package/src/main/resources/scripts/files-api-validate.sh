@@ -124,3 +124,5 @@ if [[ "$JAVA_VERSION" < "java version \"1.8" ]]
 then 
   echo Error: $JAVA_VERSION is less than minimum level required of 1.8
 fi
+
+#TODO - non-zero exit code on error?
