@@ -47,7 +47,7 @@ fi
 # - ZOSMF_PORT - The SSL port z/OSMF is listening on.
 # - ZOSMF_IP_ADDRESS - The IP Address z/OSMF can be reached
 # TODO - improve by creating in zowe-install-packaging in some sort of shared utils?
-cat <<EOF >$httpRequest.js
+cat <<EOF >httpRequest.js
 const https = require('https');
 
 const args = process.argv.slice(2)
@@ -69,9 +69,14 @@ req.end();
 EOF
 
 RESPONSE_CODE=`node httpRequest.js ${ZOSMF_IP_ADDRESS} ${ZOSMF_PORT}`
-if [[ $RESPONSE_CODE != 200 ]]
+if [[ -z "${RESPONSE_CODE}" ]]
 then
-  echo "Error: Could not contact z/OS MF on 'https://${ZOSMF_IP_ADDRESS}:${ZOSMF_PORT}/zosmf/info"
+  echo "Warning: Could not validate if z/OS MF is available on 'https://${ZOSMF_IP_ADDRESS}:${ZOSMF_PORT}/zosmf/info'"
+else
+  if [[ $RESPONSE_CODE != 200 ]]
+  then
+    echo "Error: Could not contact z/OS MF on 'https://${ZOSMF_IP_ADDRESS}:${ZOSMF_PORT}/zosmf/info'"
+  fi
 fi
 
 # - STATIC_DEF_CONFIG_DIR - Should exist and be writable
@@ -105,7 +110,6 @@ fi
 # ZOWE_JAVA_HOME Should exist, be version 8+ and be on path
 if [[ -n "${ZOWE_JAVA_HOME}" ]]
 then 
-    echo OK: ZOWE_JAVA_HOME is not empty 
     ls ${ZOWE_JAVA_HOME}/bin | grep java$ > /dev/null    # pick a file to check
     if [[ $? -ne 0 ]]
     then
