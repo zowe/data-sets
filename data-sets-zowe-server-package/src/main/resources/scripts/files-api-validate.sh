@@ -11,7 +11,7 @@
 FILES_API_ERRORS_FOUND=0
 
 error() {
-  echo "Error: $1"
+  echo "Error $FILES_API_ERRORS_FOUND: $1"
   let "FILES_API_ERRORS_FOUND=$FILES_API_ERRORS_FOUND+1"
 }
 
@@ -81,15 +81,21 @@ if [[ -z "${ZOSMF_IP_ADDRESS}" || -z "${ZOSMF_PORT}" ]]
 then 
     error "ZOSMF_IP_ADDRESS and ZOSMF_PORT are not both set"
 else
-  RESPONSE_CODE=`node httpRequest.js ${ZOSMF_IP_ADDRESS} ${ZOSMF_PORT}`
-  if [[ -z "${RESPONSE_CODE}" ]]
+  if [ ! -z "$NODE_HOME" ];
   then
-    echo "Warning: Could not validate if z/OS MF is available on 'https://${ZOSMF_IP_ADDRESS}:${ZOSMF_PORT}/zosmf/info'"
-  else
-    if [[ $RESPONSE_CODE != 200 ]]
+    NODE_BIN=${NODE_HOME}/bin/node
+    RESPONSE_CODE=`$NODE_BIN httpRequest.js ${ZOSMF_IP_ADDRESS} ${ZOSMF_PORT}`
+    if [[ -z "${RESPONSE_CODE}" ]]
     then
-      error "Could not contact z/OS MF on 'https://${ZOSMF_IP_ADDRESS}:${ZOSMF_PORT}/zosmf/info' - $RESPONSE_CODE"
+      echo "Warning: Could not validate if z/OS MF is available on 'https://${ZOSMF_IP_ADDRESS}:${ZOSMF_PORT}/zosmf/info'"
+    else
+      if [[ $RESPONSE_CODE != 200 ]]
+      then
+        error "Could not contact z/OS MF on 'https://${ZOSMF_IP_ADDRESS}:${ZOSMF_PORT}/zosmf/info' - $RESPONSE_CODE"
+      fi
     fi
+  else
+    echo "Warning: Could not validate if z/OS MF is available on 'https://${ZOSMF_IP_ADDRESS}:${ZOSMF_PORT}/zosmf/info'"
   fi
 fi
 
