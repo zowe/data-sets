@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # Add static definition for files-api
 cat <<EOF >${STATIC_DEF_CONFIG_DIR}/files-api.ebcidic.yml
 #
