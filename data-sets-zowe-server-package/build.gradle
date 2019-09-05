@@ -20,13 +20,14 @@ task packageDataSetsApiServer(type: Zip) {
     }
 
     into('scripts/') {
-        from "$buildDir/convert/data-sets-api-server-start.sh"
+        from "$buildDir/convert/files-api-start.sh", "$buildDir/convert/files-api-configure.sh"
     }
 }
 
 packageDataSetsApiServer.doFirst {
     List<File> scriptFiles =  new ArrayList<File>() {{
-        add(file('src/main/resources/scripts/data-sets-api-server-start.sh'));
+        add(file('src/main/resources/scripts/files-api-start.sh'));
+        add(file('src/main/resources/scripts/files-api-configure.sh'));
     }};
     for (File scriptFile : scriptFiles){
         def inputStream = new InputStreamReader(new FileInputStream(scriptFile), "ISO-8859-1");
