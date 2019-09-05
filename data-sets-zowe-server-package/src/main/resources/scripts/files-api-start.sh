@@ -20,7 +20,7 @@
 # - ZOSMF_PORT - The SSL port z/OSMF is listening on.
 # - ZOSMF_IP_ADDRESS - The IP Address z/OSMF can be reached
 
-COMPONENT_CODE=EAF1
+COMPONENT_CODE=EF
 _BPX_JOBNAME=${ZOWE_PREFIX}${COMPONENT_CODE} java -Xms16m -Xmx512m -Dibm.serversocket.recover=true -Dfile.encoding=UTF-8 \
     -Djava.io.tmpdir=/tmp -Xquickstart \
     -Dserver.port=${FILES_API_PORT} \
