@@ -1,5 +1,15 @@
 #!/bin/sh
 
+################################################################################
+# This program and the accompanying materials are made available under the terms of the
+# Eclipse Public License v2.0 which accompanies this distribution, and is available at
+# https://www.eclipse.org/legal/epl-v20.html
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Copyright IBM Corporation 2019
+################################################################################
+
 # Add static definition for files-api
 cat <<EOF >${STATIC_DEF_CONFIG_DIR}/files-api.ebcidic.yml
 #
@@ -43,11 +53,11 @@ iconv -f IBM-1047 -t IBM-850 ${STATIC_DEF_CONFIG_DIR}/files-api.ebcidic.yml > $S
 rm ${STATIC_DEF_CONFIG_DIR}/files-api.ebcidic.yml
 chmod 770 $STATIC_DEF_CONFIG_DIR/files-api.yml
 
-#Make sure Java is available on the path - TODO needed at all, move to a all zowe setup/validate?
+#Make sure Java is available on the path - 
+#TODO needed at all, move to a all zowe setup/validate?
 export JAVA_HOME=$ZOWE_JAVA_HOME
-if [[ ":$PATH:" == *":$JAVA_HOME/bin:"* ]]; then
-  echo "ZOWE_JAVA_HOME already exists on the PATH"
-else
+if [[ ":$PATH:" != *":$JAVA_HOME/bin:"* ]];
+then
   echo "Appending ZOWE_JAVA_HOME/bin to the PATH..."
   export PATH=$PATH:$JAVA_HOME/bin
   echo "Done."
