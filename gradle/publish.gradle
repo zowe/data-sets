@@ -48,6 +48,10 @@ configure(subprojects.findAll { it.name in projectsToPublish }) {
     }
 
     tasks.withType(Jar) {
+        metaInf {
+            from rootProject.file("LICENSE")
+        }
+
         manifest {
             attributes "Specification-Title": project.name
             attributes "Specification-Version": rootProject.version
@@ -57,6 +61,8 @@ configure(subprojects.findAll { it.name in projectsToPublish }) {
             attributes "Implementation-Version": rootProject.version
             attributes "Implementation-Vendor": "Zowe Open Source Project"
             attributes "Implementation-Vendor-Id": "org.zowe"
+
+            attributes "Bundle-License": "https://www.eclipse.org/legal/epl-v20.html"
         }
     }
 
