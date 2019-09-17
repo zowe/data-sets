@@ -21,7 +21,7 @@
 # - ZOSMF_IP_ADDRESS - The IP Address z/OSMF can be reached
 
 PREV_DIR=`pwd`
-cd $(dirname $0)
+cd $(dirname $0)/../
 
 COMPONENT_CODE=EF
 _BPX_JOBNAME=${ZOWE_PREFIX}${COMPONENT_CODE} java -Xms16m -Xmx512m -Dibm.serversocket.recover=true -Dfile.encoding=UTF-8 \
