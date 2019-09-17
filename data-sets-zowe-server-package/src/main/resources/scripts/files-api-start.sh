@@ -20,6 +20,9 @@
 # - ZOSMF_PORT - The SSL port z/OSMF is listening on.
 # - ZOSMF_IP_ADDRESS - The IP Address z/OSMF can be reached
 
+PREV_DIR=`pwd`
+cd $(dirname $0)
+
 COMPONENT_CODE=EF
 _BPX_JOBNAME=${ZOWE_PREFIX}${COMPONENT_CODE} java -Xms16m -Xmx512m -Dibm.serversocket.recover=true -Dfile.encoding=UTF-8 \
     -Djava.io.tmpdir=/tmp -Xquickstart \
@@ -30,4 +33,6 @@ _BPX_JOBNAME=${ZOWE_PREFIX}${COMPONENT_CODE} java -Xms16m -Xmx512m -Dibm.servers
     -Dserver.ssl.keyStoreType=PKCS12 \
     -Dzosmf.httpsPort=${ZOSMF_PORT} \
     -Dzosmf.ipAddress=${ZOSMF_IP_ADDRESS} \
-    -jar {{jar_path}} &
+    -jar {{jar_name}} &
+
+cd PREV_DIR
