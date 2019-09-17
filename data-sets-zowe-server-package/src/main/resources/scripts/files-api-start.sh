@@ -35,4 +35,4 @@ _BPX_JOBNAME=${ZOWE_PREFIX}${COMPONENT_CODE} java -Xms16m -Xmx512m -Dibm.servers
     -Dzosmf.ipAddress=${ZOSMF_IP_ADDRESS} \
     -jar {{jar_name}} &
 
-cd PREV_DIR
+cd $PREV_DIR
