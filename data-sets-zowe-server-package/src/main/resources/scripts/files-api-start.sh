@@ -30,4 +30,5 @@ _BPX_JOBNAME=${ZOWE_PREFIX}${COMPONENT_CODE} java -Xms16m -Xmx512m -Dibm.servers
     -Dserver.ssl.keyStoreType=PKCS12 \
     -Dzosmf.httpsPort=${ZOSMF_PORT} \
     -Dzosmf.ipAddress=${ZOSMF_IP_ADDRESS} \
+    -Dspring.main.banner-mode=off \    
     -jar {{jar_path}} &
