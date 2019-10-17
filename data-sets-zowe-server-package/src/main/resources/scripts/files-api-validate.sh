@@ -25,7 +25,7 @@ error() {
 . ${ROOT_DIR}/scripts/utils/validate-apiml-variables.sh 
 
 # - ZOSMF_PORT - The SSL port z/OSMF is listening on.
-# - ZOSMF_IP_ADDRESS - The IP Address z/OSMF can be reached
+# - ZOSMF_HOST - The hostname, or ip address z/OSMF can be reached on
 . ${ROOT_DIR}/scripts/utils/validate-zosmf-host-and-port.sh
 
 # Not sure how we validate - just exist ok? dig/oping?
