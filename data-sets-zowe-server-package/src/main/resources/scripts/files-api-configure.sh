@@ -28,6 +28,7 @@ services:
       - apiId: org.zowe.data.sets
         gatewayUrl: api/v1
         version: 1.0.0
+        swaggerUrl: https://${ZOWE_EXPLORER_HOST}:${FILES_API_PORT}/v2/api-docs
         documentationUrl: https://${ZOWE_EXPLORER_HOST}:${FILES_API_PORT}/swagger-ui.html
   - serviceId: unixfiles
     title: IBM z/OS Unix Files
@@ -43,6 +44,7 @@ services:
       - apiId: org.zowe.unix.files
         gatewayUrl: api/v1
         version: 1.0.0
+        swaggerUrl: https://${ZOWE_EXPLORER_HOST}:${FILES_API_PORT}/v2/api-docs
         documentationUrl: https://${ZOWE_EXPLORER_HOST}:${FILES_API_PORT}/swagger-ui.html
 catalogUiTiles:
   datasetsAndUnixFiles:
