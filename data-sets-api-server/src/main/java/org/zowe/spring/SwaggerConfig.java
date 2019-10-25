@@ -32,7 +32,7 @@ public class SwaggerConfig {
                 .paths(PathSelectors.regex("/api.*"))
                 .build()
                 .apiInfo(
-                    new ApiInfo("JES Jobs API", "REST API for the JES Jobs Service", "1.0", null, null, null, null, Collections.emptyList())
+                    new ApiInfo("Files API", "REST API for the Data sets and z/OS Unix Files Services", "1.0", null, null, null, null, Collections.emptyList())
                 );
     }
 }
