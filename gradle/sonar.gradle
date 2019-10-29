@@ -7,15 +7,18 @@ sonarqube {
         property "sonar.host.url", project.getProperty('sonar.host.url')
         property "sonar.login", project.hasProperty('sonar.login') ? project.getProperty('sonar.login') : null
         property "sonar.sourceEncoding", "UTF-8"
-        property "sonar.projectKey", "explorer:data-sets-api-server"
+        property "sonar.organization", "zowe"
+        property "sonar.projectKey", "zowe_data-sets"
         property "sonar.projectName", "Zowe Explorer Data Sets APIs"
         property "sonar.projectVersion", project.version
-        property "sonar.language", "java"
         property "sonar.links.scm", "https://github.com/zowe/data-sets"
-        property "sonar.links.scm_dev", "https://github.com/zowe/data-sets.git"
         property "sonar.links.ci", project.hasProperty('sonar.links.ci') ? project.getProperty('sonar.links.ci') : null
+        property "sonar.pullrequest.key", project.hasProperty('sonar.pullrequest.key') ? project.getProperty('sonar.pullrequest.key') : null
+        property "sonar.pullrequest.branch", project.hasProperty('sonar.pullrequest.branch') ? project.getProperty('sonar.pullrequest.branch') : null
+        property "sonar.pullrequest.base", project.hasProperty('sonar.pullrequest.base') ? project.getProperty('sonar.pullrequest.base') : null
+        property "sonar.branch.name", project.hasProperty('sonar.branch.name') ? project.getProperty('sonar.branch.name') : null
+        property "sonar.branch.target", project.hasProperty('sonar.branch.target') ? project.getProperty('sonar.branch.target') : null
         if (pullRequest != null) {
-            property "sonar.analysis.mode", "preview"
             property "sonar.github.pullRequest", pullRequest
             property "sonar.github.repository", "zowe/data-sets"
             property "sonar.github.oauth",  project.hasProperty('sonar.github.oauth') ? project.getProperty('sonar.github.oauth') : null
