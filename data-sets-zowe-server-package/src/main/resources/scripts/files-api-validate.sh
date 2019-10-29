@@ -16,17 +16,17 @@ error() {
   . ${ROOT_DIR}/scripts/utils/error.sh $1
 }
 
-. ${ROOT_DIR}/scripts/utils/validateZowePrefix.sh 
+. ${ROOT_DIR}/scripts/utils/validate-zowe-prefix.sh 
 
 # - FILES_API_PORT - should not be bound to a port currently
-. ${ROOT_DIR}/scripts/utils/validatePortAvailable.sh $FILES_API_PORT
+. ${ROOT_DIR}/scripts/utils/validate-port-available.sh $FILES_API_PORT
 
 # Mediation stuff, should validate in a separate script
-. ${ROOT_DIR}/scripts/utils/validateApiMLVariables.sh 
+. ${ROOT_DIR}/scripts/utils/validate-apiml-variables.sh 
 
 # - ZOSMF_PORT - The SSL port z/OSMF is listening on.
-# - ZOSMF_IP_ADDRESS - The IP Address z/OSMF can be reached
-. ${ROOT_DIR}/scripts/utils/validateZosmfHostAndPort.sh
+# - ZOSMF_HOST - The hostname, or ip address z/OSMF can be reached on
+. ${ROOT_DIR}/scripts/utils/validate-zosmf-host-and-port.sh
 
 # Not sure how we validate - just exist ok? dig/oping?
 #TODO - use oping, or the switcher in zowe-install-packaging utils?
@@ -42,6 +42,6 @@ else
     error "ZOWE_EXPLORER_HOST is empty"
 fi
 
-. ${ROOT_DIR}/scripts/utils/validateJava.sh
+. ${ROOT_DIR}/scripts/utils/validate-java.sh
 
 return $ERRORS_FOUND-$INITIAL_ERRORS_FOUND
