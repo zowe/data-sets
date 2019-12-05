@@ -52,7 +52,7 @@ node('ibm-jenkins-slave-nvm') {
     string(
       name: 'INTEGRATION_TEST_DIRECTORY_ROOT',
       description: 'Root directory for integration test',
-      defaultValue: '/ZOWE/.tmp',
+      defaultValue: '/ZOWE/tmp',
       trim: true,
       required: true
     ),
