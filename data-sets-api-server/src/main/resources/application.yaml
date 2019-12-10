@@ -36,7 +36,7 @@ server:
     enabled-protocols: TLSv1.2
     ciphers: ${apiml.security.ssl.ciphers}
   compression:
-    enabled: true
+    enabled: ${server.compression.enabled}
     mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css 
     min-response-size: 2048
     

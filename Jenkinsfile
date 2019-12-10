@@ -136,7 +136,7 @@ EOF"""
 -Dserver.ssl.keyAlias=localhost \
 -Dserver.ssl.keyStore=localhost.keystore.p12 \
 -Dserver.ssl.keyStorePassword=password \
--Dserver.compression.enabled=true \
+-Dserver.compression.enabled=false \
 -Dserver.ssl.keyStoreType=PKCS12 \
 -Dzosmf.httpsPort=${params.INTEGRATION_TEST_ZOSMF_PORT} \
 -Dzosmf.ipAddress=${params.INTEGRATION_TEST_ZOSMF_HOST} \
