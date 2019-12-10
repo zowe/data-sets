@@ -166,6 +166,7 @@ EOF"""
     htmlReports   : [
       [dir: "data-sets-tests/build/reports/tests/test", files: "index.html", name: "Report: Integration Test"],
     ],
+    timeout: [time: 30, unit: 'MINUTES']
   )
 
   pipeline.sonarScan(
