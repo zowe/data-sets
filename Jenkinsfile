@@ -94,6 +94,8 @@ node('ibm-jenkins-slave-nvm') {
   pipeline.test(
     name          : 'Integration',
     operation     : {
+      lock("data-sets-integration-test-at-${params.INTEGRATION_TEST_ZOSMF_HOST}-${params.INTEGRATION_TEST_ZOSMF_PORT}") {
+
       echo "Preparing certificates ..."
       sh """keytool -genkeypair -keystore localhost.keystore.p12 -storetype PKCS12 \
 -storepass password -alias localhost -keyalg RSA -keysize 2048 -validity 99999 \
@@ -157,6 +159,8 @@ EOF"""
 -Pserver.password=${PASSWORD} \
 -Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}"""
       }
+      
+      } // end of lock
     },
     junit         : '**/test-results/test/*.xml',
     htmlReports   : [
