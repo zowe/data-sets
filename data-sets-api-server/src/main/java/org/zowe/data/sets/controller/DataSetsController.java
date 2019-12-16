@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -44,6 +45,7 @@ import java.net.URI;
 @RestController
 @RequestMapping("/api/v1/datasets")
 @Api(value = "Data Sets APIs")
+@Slf4j
 public class DataSetsController extends AbstractApiController {
 
     @Autowired
@@ -77,9 +79,10 @@ public class DataSetsController extends AbstractApiController {
     @ApiOperation(value = "Get the content of a sequential data set, or PDS member", nickname = "getContent", notes = "This API reads content from a sequential data set or member of a partitioned data set.", tags = "Data Sets APIs")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok", response = DataSetContent.class) })
     public ResponseEntity<DataSetContent> getContent(
-            @ApiParam(value = "Data set name, e.g. HLQ.PS or HLQ.PO(MEMBER)", required = true) @PathVariable String dataSetName) {
+            @ApiParam(value = "Data set name, e.g. HLQ.PS or HLQ.PO(MEMBER)", required = true) @PathVariable String dataSetName, @RequestHeader(value = "accept-encoding") String acceptEncoding) {
+        
+        log.info("AcceptEncoding:" + acceptEncoding);
         DataSetContentWithEtag content = dataSetService.getContent(dataSetName);
-
         HttpHeaders headers = new HttpHeaders();
         headers.add("Access-Control-Expose-Headers", "ETag");
         headers.add("ETag", content.getEtag());
