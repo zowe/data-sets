@@ -35,9 +35,9 @@ server:
     keyAlias: ${server.ssl.keyAlias}
     enabled-protocols: TLSv1.2
     ciphers: ${apiml.security.ssl.ciphers}
-  compression:
+  customCompression:
     enabled: true
-    mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css 
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css  
     
 zosmf:
   ipAddress: ${zosmf.ipAddress}

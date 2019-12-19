@@ -1,6 +1,11 @@
 package org.zowe.filter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -11,11 +16,13 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.stereotype.Component;
+import lombok.AllArgsConstructor;
 
-@Component
+@AllArgsConstructor
 public class GZipServletFilter implements Filter {
-
+    
+    private List<String> mimeTypes;
+    
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
     }
@@ -32,7 +39,7 @@ public class GZipServletFilter implements Filter {
       HttpServletRequest  httpRequest  = (HttpServletRequest)  request;
       HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-      if ( acceptsGZipEncoding(httpRequest, httpResponse) ) {
+      if (acceptsGZipEncoding(httpRequest, httpResponse) ) {
         httpResponse.addHeader("Content-Encoding", "gzip");
         GZipServletResponseWrapper gzipResponse =
           new GZipServletResponseWrapper(httpResponse);
@@ -44,14 +51,14 @@ public class GZipServletFilter implements Filter {
     }
 
     private boolean acceptsGZipEncoding(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
-        String acceptEncoding = httpRequest.getHeader("Accept-Encoding");
-        String accept = httpRequest.getHeader("accept");
-        String contentEncoding = httpResponse.getHeader("Content-Encoding");
+        String reqAcceptEncoding = httpRequest.getHeader("Accept-Encoding");
+        String reqAccept = httpRequest.getHeader("Accept");
+        List<String> acceptList = Arrays.asList(reqAccept.split("\\s*,\\s*"));
+        Set<String> accepted = Stream.concat(acceptList.stream(), mimeTypes.stream())
+                .filter(acceptList::contains)
+                .filter(mimeTypes::contains)
+                .collect(Collectors.toSet());
         
-        return acceptEncoding != null && 
-               acceptEncoding.indexOf("gzip") != -1 && 
-               accept != null && 
-               accept.indexOf("application/json") != -1 &&
-                       (contentEncoding == null || contentEncoding.indexOf("gzip") != -1);
+        return (reqAcceptEncoding != null && reqAcceptEncoding.indexOf("gzip") != -1) && accepted.size()>0;
     }
   }

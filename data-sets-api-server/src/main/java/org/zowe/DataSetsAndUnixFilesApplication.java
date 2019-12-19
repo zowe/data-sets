@@ -14,12 +14,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-
 // @EnableApiDiscovery
 @ComponentScan({ "org.zowe" })
-public class DataSetsAndUnixFilesApplication {
-
+public class DataSetsAndUnixFilesApplication  {
+     
     public static void main(String[] args) {
         SpringApplication.run(DataSetsAndUnixFilesApplication.class, args);
     }
+    
 }
