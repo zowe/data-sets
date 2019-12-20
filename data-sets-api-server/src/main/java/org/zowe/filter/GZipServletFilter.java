@@ -1,11 +1,16 @@
+/*
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright IBM Corporation 2019
+ */
+
 package org.zowe.filter;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import lombok.AllArgsConstructor;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -16,7 +21,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.AllArgsConstructor;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @AllArgsConstructor
 public class GZipServletFilter implements Filter {
@@ -59,6 +69,6 @@ public class GZipServletFilter implements Filter {
                 .filter(mimeTypes::contains)
                 .collect(Collectors.toSet());
         
-        return (reqAcceptEncoding != null && reqAcceptEncoding.indexOf("gzip") != -1) && accepted.size()>0;
+        return (reqAcceptEncoding != null && reqAcceptEncoding.indexOf("gzip") != -1) && accepted.size() > 0;
     }
   }
