@@ -62,13 +62,14 @@ public class GZipServletFilter implements Filter {
 
     private boolean acceptsGZipEncoding(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         String reqAcceptEncoding = httpRequest.getHeader("Accept-Encoding");
-        String reqAccept = httpRequest.getHeader("Accept");
-        List<String> acceptList = Arrays.asList(reqAccept.split("\\s*,\\s*"));
-        Set<String> accepted = Stream.concat(acceptList.stream(), mimeTypes.stream())
-                .filter(acceptList::contains)
-                .filter(mimeTypes::contains)
-                .collect(Collectors.toSet());
+        // String reqAccept = httpRequest.getHeader("Accept");
+        // List<String> acceptList = Arrays.asList(reqAccept.split("\\s*,\\s*"));
+        // Set<String> accepted = Stream.concat(acceptList.stream(), mimeTypes.stream())
+        //         .filter(acceptList::contains)
+        //         .filter(mimeTypes::contains)
+        //         .collect(Collectors.toSet());
         
-        return (reqAcceptEncoding != null && reqAcceptEncoding.indexOf("gzip") != -1) && accepted.size() > 0;
+        return (reqAcceptEncoding != null && reqAcceptEncoding.indexOf("gzip") != -1); 
+        //&& accepted.size() > 0;
     }
   }
