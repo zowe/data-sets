@@ -34,6 +34,7 @@ import org.zowe.data.sets.model.DataSetContent;
 import org.zowe.data.sets.model.DataSetContentWithEtag;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.model.DataSetOrganisationType;
+import org.zowe.data.sets.model.DataSetRenameRequest;
 import org.zowe.data.sets.services.DataSetService;
 
 import java.net.URI;
@@ -182,7 +183,25 @@ public class DataSetsControllerTest extends ApiControllerTest {
         verify(dataSetService, times(1)).putContent(memberName, request);
         verifyNoMoreInteractions(dataSetService);
     }
+    
+    @Test
+    public void put_data_set_rename_success() throws Exception {
+        String oldName = "TEST.JCL";
+        String newName = "NEWTEST.JCL";
+        DataSetRenameRequest input = DataSetRenameRequest.builder().newName(newName).build();
+        
+        when(dataSetService.putRename(oldName, input)).thenReturn("");
 
+        mockMvc
+            .perform(put(ENDPOINT_ROOT + "/{dsn}/rename", oldName)
+            .content("{\"newName\":\"" + newName + "\"}")
+            .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(status().isNoContent()).andExpect(content().string(""));
+
+        verify(dataSetService).putRename(oldName, input);
+        verifyNoMoreInteractions(dataSetService);
+    }
+    
     // TODO LATER - validation of If-Match / ETag to check if surrounded by double quotes? https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag
     @Test
     public void put_data_set_with_if_match_content_success() throws Exception {

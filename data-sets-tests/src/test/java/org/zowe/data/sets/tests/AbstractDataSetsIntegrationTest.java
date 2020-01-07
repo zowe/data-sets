@@ -18,6 +18,7 @@ import org.zowe.data.sets.model.AllocationUnitType;
 import org.zowe.data.sets.model.DataSetContent;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.model.DataSetOrganisationType;
+import org.zowe.data.sets.model.DataSetRenameRequest;
 import org.zowe.tests.AbstractFilesIntegrationTest;
 
 public abstract class AbstractDataSetsIntegrationTest extends AbstractFilesIntegrationTest {
@@ -101,5 +102,9 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractFilesInteg
 
     static String getDataSetMemberPath(String pds, String member) {
         return pds + "(" + member + ")";
+    }
+    
+    static Response putDataSetRename(String oldDataSetName, DataSetRenameRequest body) {
+        return RestAssured.given().contentType("application/json").body(body).when().put(oldDataSetName + "/rename");
     }
 }
