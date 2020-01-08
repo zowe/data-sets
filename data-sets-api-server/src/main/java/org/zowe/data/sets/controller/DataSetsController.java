@@ -114,12 +114,12 @@ public class DataSetsController extends AbstractApiController {
     }
     
     @PutMapping(value = "{oldDataSetName}/rename", produces = { "application/json" })
-    @ApiOperation(value = "Sets the content of a sequential data set, or PDS member", nickname = "renameContent", notes = "This API renames data set or partitioned data set member.", tags = "Data Sets APIs")
+    @ApiOperation(value = "Rename of a sequential data set, or PDS member", nickname = "renameContent", notes = "This API renames data set or partitioned data set member.", tags = "Data Sets APIs")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok") })
-    public ResponseEntity<?> putRename(
+    public ResponseEntity<Void> putRename(
             @ApiParam(value = "Data set name, e.g. HLQ.PS or HLQ.PO(MEMBER)", required = true) @PathVariable String oldDataSetName,
             @RequestBody DataSetRenameRequest input) {
-        dataSetService.putRename(oldDataSetName, input);
+        dataSetService.renameDataSet(oldDataSetName, input);
         return ResponseEntity.noContent().build();
     }
 

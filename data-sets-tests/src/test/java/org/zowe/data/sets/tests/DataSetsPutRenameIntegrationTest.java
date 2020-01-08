@@ -16,6 +16,9 @@ import org.junit.Test;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.model.DataSetRenameRequest;
 
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
+
 public class DataSetsPutRenameIntegrationTest extends AbstractDataSetsIntegrationTest {
 
 
@@ -103,4 +106,7 @@ public class DataSetsPutRenameIntegrationTest extends AbstractDataSetsIntegratio
             .statusCode(HttpStatus.SC_BAD_REQUEST).content("message", org.hamcrest.Matchers.containsString("exists")); 
     }
     
+    private Response putDataSetRename(String oldDataSetName, DataSetRenameRequest body) {
+        return RestAssured.given().contentType("application/json").body(body).when().put(oldDataSetName + "/rename");
+    }
 }

@@ -63,10 +63,6 @@ public class PutDataSetRenameZosmfRequestRunner extends AbstractZosmfDataSetsReq
         return response;
     }
 
-    @Override
-    protected ZoweApiRestException createGeneralException(ResponseCache responseCache, URI uri) throws IOException {
-        return super.createGeneralException(responseCache, uri);
-    }
 
     @Override
     protected ZoweApiRestException createException(JsonObject jsonResponse, int statusCode) {

@@ -190,7 +190,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
         String newName = "NEWTEST.JCL";
         DataSetRenameRequest input = DataSetRenameRequest.builder().newName(newName).build();
         
-        when(dataSetService.putRename(oldName, input)).thenReturn("");
+        when(dataSetService.renameDataSet(oldName, input)).thenReturn("");
 
         mockMvc
             .perform(put(ENDPOINT_ROOT + "/{dsn}/rename", oldName)
@@ -198,7 +198,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
             .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(status().isNoContent()).andExpect(content().string(""));
 
-        verify(dataSetService).putRename(oldName, input);
+        verify(dataSetService).renameDataSet(oldName, input);
         verifyNoMoreInteractions(dataSetService);
     }
     

@@ -104,7 +104,4 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractFilesInteg
         return pds + "(" + member + ")";
     }
     
-    static Response putDataSetRename(String oldDataSetName, DataSetRenameRequest body) {
-        return RestAssured.given().contentType("application/json").body(body).when().put(oldDataSetName + "/rename");
-    }
 }

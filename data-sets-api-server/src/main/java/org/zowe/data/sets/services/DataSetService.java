@@ -32,5 +32,5 @@ public interface DataSetService {
 
     void deleteDataSet(String dataSetName);
 
-    String putRename(String oldDataSetName, DataSetRenameRequest input);
+    String renameDataSet(String oldDataSetName, DataSetRenameRequest input);
 }
