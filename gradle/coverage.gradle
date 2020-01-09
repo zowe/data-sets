@@ -16,8 +16,8 @@ configure(subprojects.findAll { it.name in javaProjectsWithUnitTests }) {
     jacocoTestReport {
         dependsOn test
         reports {
-            xml.enabled true
-            html.enabled true
+            xml.enabled false
+            html.enabled false
         }
     }
 }
