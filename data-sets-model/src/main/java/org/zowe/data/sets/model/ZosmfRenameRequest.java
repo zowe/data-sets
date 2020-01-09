@@ -9,26 +9,18 @@
  */
 package org.zowe.data.sets.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.google.gson.JsonObject;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-
-@JsonInclude(Include.NON_NULL)
 public class ZosmfRenameRequest {
     private static final String REQUEST_TYPE = "rename";
     private String dsn;
     private String member;
-   
+    
+    private ZosmfRenameRequest(String dsn, String member) {
+        this.dsn = dsn;
+        this.member = member;
+    }
+    
     public static ZosmfRenameRequest createFromDataSetRenameRequest(String name) {
         
        String dsn;
@@ -42,15 +34,20 @@ public class ZosmfRenameRequest {
            member="";
        }
         
-        ZosmfRenameRequestBuilder builder = builder()
-                .dsn(dsn)
-                .member(member);
-
-        return builder.build();
+        return new ZosmfRenameRequest(dsn, member);
     }
     
     
-    
+    public String getDsn() {
+        return dsn;
+    }
+
+
+    public String getMember() {
+        return member;
+    }
+
+
     public static String parseDsn(String name) {
         return name.substring(0,name.indexOf('('));
     }
