@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2018, 2019
+ * Copyright IBM Corporation 2018, 2020
  */
 package org.zowe.data.sets.controller;
 
@@ -199,6 +199,30 @@ public class DataSetsControllerTest extends ApiControllerTest {
             .andExpect(status().isNoContent()).andExpect(content().string(""));
 
         verify(dataSetService).renameDataSet(oldName, input);
+        verifyNoMoreInteractions(dataSetService);
+    }
+    
+    @Test
+    public void put_data_set_rename_with_exception_should_be_converted_to_error_message() throws Exception {
+
+        String oldName = "EXIST.TEST(NOEXIST)";
+        String newName = "EXIST.TEST(NEWNAME)";
+        DataSetRenameRequest request = DataSetRenameRequest.builder().newName(newName).build();
+
+        String errorMessage = MessageFormat.format("ISRZ002 Member not found - The specified member name '{0}' not found in the directory.", "NOEXIST");
+        ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.BAD_REQUEST).build();
+
+        doThrow(new ZoweApiErrorException(expectedError)).when(dataSetService).renameDataSet(oldName, request);
+
+        mockMvc
+            .perform(put(ENDPOINT_ROOT + "/{oldName}/rename", oldName)
+                .content(String.format("{\"newName\":\"%s\"}",newName))    
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(status().is(expectedError.getStatus().value()))
+            .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
+            .andExpect(jsonPath("$.message").value(errorMessage));
+        
+        verify(dataSetService, times(1)).renameDataSet(oldName, request);
         verifyNoMoreInteractions(dataSetService);
     }
     

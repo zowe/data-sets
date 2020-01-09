@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2019
+ * Copyright IBM Corporation 2020
  */
 package org.zowe.data.sets.services.zosmf;
 
@@ -114,7 +114,7 @@ public class PutDataSetRenameZosmfRequestRunnerTest extends AbstractZosmfRequest
     }
 
     @Test
-    public void rename_name_breakdown() throws Exception {
+    public void test_ZosmfRenameRequest_model() throws Exception {
         String dsn = "TEST.JCL"; 
         String withoutMember = dsn;
         
@@ -123,16 +123,21 @@ public class PutDataSetRenameZosmfRequestRunnerTest extends AbstractZosmfRequest
         ZosmfRenameRequest zosmfRenameReq = ZosmfRenameRequest.createFromDataSetRenameRequest(withoutMember);
         assertEquals(dsn, zosmfRenameReq.getDsn());
         assertEquals("", zosmfRenameReq.getMember());
+        assertEquals(withoutMemberReqString, zosmfRenameReq.buildJson().toString());
         assertEquals(withoutMemberReqString, zosmfRenameReq.toString());
         
         String member = "OLD";
         String withMember = String.format("%s(%s)", dsn, member);
         String withtMemberReqString = String.format("{\"request\":\"rename\",\"from-dataset\":{\"dsn\":\"%s\",\"member\":\"%s\"}}", dsn, member);
+        
         zosmfRenameReq = ZosmfRenameRequest.createFromDataSetRenameRequest(withMember);
         assertEquals(dsn, zosmfRenameReq.getDsn());
         assertEquals(member, zosmfRenameReq.getMember());
+        assertEquals(withtMemberReqString, zosmfRenameReq.buildJson().toString());
         assertEquals(withtMemberReqString, zosmfRenameReq.toString());
     }
+    
+    
     
     
     private JsonObject loadTestJson(String relativePath) throws IOException {

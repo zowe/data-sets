@@ -15,7 +15,7 @@
 "expected":{
    "oldName":"EXIST.TEST(NOEXIST)",
    "newName":"EXIST.TEST(NEWNAME)",
-   "statusCode": 400,
+   "statusCode": 404,
    "response":{
   "status": "NOT_FOUND",
   "message": "ISRZ002 Member not found - The specified member name 'NOEXIST' not found in the directory."

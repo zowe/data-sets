@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2018, 2019
+ * Copyright IBM Corporation 2020
  */
 package org.zowe.data.sets.model;
 
@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 
 @JsonInclude(Include.NON_NULL)
 public class ZosmfRenameRequest {
-    private final static String request = "rename";
+    private static final String REQUEST_TYPE = "rename";
     private String dsn;
     private String member;
    
@@ -72,7 +72,7 @@ public class ZosmfRenameRequest {
           fromJObj.addProperty("member", member);  
         }
         
-        renameJObj.addProperty("request", request);
+        renameJObj.addProperty("request", REQUEST_TYPE);
         renameJObj.add("from-dataset",fromJObj) ;
         
         return renameJObj;
