@@ -48,15 +48,15 @@ public class ZosmfRenameRequest {
     }
 
 
-    public static String parseDsn(String name) {
+    private static String parseDsn(String name) {
         return name.substring(0,name.indexOf('('));
     }
     
-    public static String parseMember(String name) {
+    private static String parseMember(String name) {
         return name.substring(name.indexOf('(')+1,name.indexOf(')'));
     }
     
-    public static boolean hasMember(String name) {
+    private static boolean hasMember(String name) {
         return name.contains("(") && name.contains(")");
     }
     
