@@ -1,0 +1,25 @@
+{"zosmf":{
+"resource":"restfiles/ds/EXIST.TEST(NEWNAME)",
+"body":{"request":"rename", "from-dataset":{"dsn":"EXIST.TEST", "member":"NOEXIST"} },
+"statusCode":500,
+"response": {
+  "category": 4,
+  "rc": 8,
+  "reason": 0,
+  "message": "Rename member failed",
+  "stack": "  1 1023E6C8+000000EE IspfInterface::throwIspfException(int,const char*,int)\n  2 101F9060+000007AE RenameMember::execute()\n  3 101F2500+000002D2 DatasetUtilServlet::doPut()\n  4 1020A060+000000DC TsoServlet::service()\n  5 10238D58+0000017E TsoServlet::run()\n  6 10238730+00000386 main\n  7 07DF4EE0+0000127E CEEVROND\n  8 0F9F1CE8+000000B4 EDCZHINV\n  9 07C8EC40+000001C6 CEEBBEXT\n",
+  "details": [
+    "ISRZ002 Member not found - The specified member name 'NOEXIST' not found in the directory."
+  ]
+}},
+"expected":{
+   "oldName":"EXIST.TEST(NOEXIST)",
+   "newName":"EXIST.TEST(NEWNAME)",
+   "statusCode": 400,
+   "response":{
+  "status": "NOT_FOUND",
+  "message": "ISRZ002 Member not found - The specified member name 'NOEXIST' not found in the directory."
+}
+}
+}
+

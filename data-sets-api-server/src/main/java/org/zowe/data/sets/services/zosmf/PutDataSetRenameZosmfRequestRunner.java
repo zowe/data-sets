@@ -11,7 +11,6 @@ package org.zowe.data.sets.services.zosmf;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
@@ -43,13 +42,10 @@ public class PutDataSetRenameZosmfRequestRunner extends AbstractZosmfDataSetsReq
         String urlPath = String.format("restfiles/ds/%s", request.getNewName());
         URI requestUrl = zosmfConnector.getFullUrl(urlPath); // $NON-NLS-1$
         
-        JsonParser parser = new JsonParser();
-        JsonObject requestBody = (JsonObject)parser. parse(convertIntoZosmfRequestJson(oldDataSetName));
-        
+        JsonObject requestBody = convertIntoZosmfRequestJson(oldDataSetName);      
         StringEntity requestEntity = new StringEntity(requestBody.toString(), ContentType.APPLICATION_JSON);
-        RequestBuilder requestBuilder = RequestBuilder.put(requestUrl).setEntity(requestEntity);
-        
-        return requestBuilder;
+
+        return RequestBuilder.put(requestUrl).setEntity(requestEntity);
     }
 
     @Override
@@ -59,10 +55,9 @@ public class PutDataSetRenameZosmfRequestRunner extends AbstractZosmfDataSetsReq
 
     @Override
     protected String getResult(ResponseCache responseCache) throws IOException {
-        String response = responseCache.getEntity();
-        return response;
+        return responseCache.getEntity();
     }
-
+ 
 
     @Override
     protected ZoweApiRestException createException(JsonObject jsonResponse, int statusCode) {
@@ -89,9 +84,9 @@ public class PutDataSetRenameZosmfRequestRunner extends AbstractZosmfDataSetsReq
         return createDataSetException(jsonResponse, statusCode, oldDataSetName);
     }
     
-    private String convertIntoZosmfRequestJson(String name) throws IOException {
-        ZosmfRenameRequest request = ZosmfRenameRequest.createFromDataSetRenameRequest(name);    
-        return request.toString();
+    private JsonObject convertIntoZosmfRequestJson(String name) {
+        ZosmfRenameRequest renameRequest = ZosmfRenameRequest.createFromDataSetRenameRequest(name);
+        return renameRequest.buildJson();
     }
     
 }

@@ -11,6 +11,7 @@ package org.zowe.data.sets.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.google.gson.JsonObject;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +25,7 @@ import lombok.NoArgsConstructor;
 
 @JsonInclude(Include.NON_NULL)
 public class ZosmfRenameRequest {
-    private final String request = "rename";
+    private final static String request = "rename";
     private String dsn;
     private String member;
    
@@ -33,7 +34,7 @@ public class ZosmfRenameRequest {
        String dsn;
        String member;
        
-       if(hasMember(name)) {
+       if (hasMember(name)) {
            dsn=parseDsn(name);
            member=parseMember(name);
        } else {
@@ -58,16 +59,28 @@ public class ZosmfRenameRequest {
         return name.substring(name.indexOf('(')+1,name.indexOf(')'));
     }
     
-    public static Boolean hasMember(String name) {
+    public static boolean hasMember(String name) {
         return name.contains("(") && name.contains(")");
+    }
+    
+    public JsonObject buildJson() {
+        JsonObject renameJObj = new JsonObject();
+        
+        JsonObject fromJObj = new JsonObject();
+        fromJObj.addProperty("dsn", dsn);
+        if(!member.isEmpty()) {
+          fromJObj.addProperty("member", member);  
+        }
+        
+        renameJObj.addProperty("request", request);
+        renameJObj.add("from-dataset",fromJObj) ;
+        
+        return renameJObj;
     }
     
     @Override
     public String toString() {
-        if(member.isEmpty()) {
-            return "{\"request\":\"rename\", \"from-dataset\":{\"dsn\":\""+dsn+"\"} }";
-        }
-        return "{\"request\":\"rename\", \"from-dataset\":{\"dsn\":\""+dsn+"\", \"member\":\""+member+"\"} }"; 
+        return buildJson().toString();
     } 
     
 }

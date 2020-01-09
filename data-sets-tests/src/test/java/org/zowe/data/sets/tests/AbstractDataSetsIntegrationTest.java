@@ -18,7 +18,6 @@ import org.zowe.data.sets.model.AllocationUnitType;
 import org.zowe.data.sets.model.DataSetContent;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.model.DataSetOrganisationType;
-import org.zowe.data.sets.model.DataSetRenameRequest;
 import org.zowe.tests.AbstractFilesIntegrationTest;
 
 public abstract class AbstractDataSetsIntegrationTest extends AbstractFilesIntegrationTest {
