@@ -11,6 +11,13 @@ public class DataSetRenameRequestTest {
         
         DataSetRenameRequest req = DataSetRenameRequest.builder().newName(dsn).build();
         assertEquals(dsn, req.getNewName());
+        
+        req = new DataSetRenameRequest();
+        req.setNewName(dsn);
+        assertEquals(dsn, req.getNewName());
+        
+        req = new DataSetRenameRequest(dsn);
+        assertEquals(dsn, req.getNewName());
     }
 
 }
