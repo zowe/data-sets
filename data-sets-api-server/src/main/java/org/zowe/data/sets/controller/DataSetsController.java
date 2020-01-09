@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2016, 2019
+ * Copyright IBM Corporation 2016, 2020
  */
 package org.zowe.data.sets.controller;
 
@@ -37,6 +37,7 @@ import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetContent;
 import org.zowe.data.sets.model.DataSetContentWithEtag;
 import org.zowe.data.sets.model.DataSetCreateRequest;
+import org.zowe.data.sets.model.DataSetRenameRequest;
 import org.zowe.data.sets.services.DataSetService;
 
 import java.net.URI;
@@ -110,6 +111,16 @@ public class DataSetsController extends AbstractApiController {
         String putEtag = dataSetService.putContent(dataSetName, request);
 
         return ResponseEntity.noContent().eTag(putEtag).build();
+    }
+    
+    @PutMapping(value = "{oldDataSetName}/rename", produces = { "application/json" })
+    @ApiOperation(value = "Rename of a sequential data set, or PDS member", nickname = "renameContent", notes = "This API renames data set or partitioned data set member.", tags = "Data Sets APIs")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok") })
+    public ResponseEntity<Void> putRename(
+            @ApiParam(value = "Data set name, e.g. HLQ.PS or HLQ.PO(MEMBER)", required = true) @PathVariable String oldDataSetName,
+            @RequestBody DataSetRenameRequest input) {
+        dataSetService.renameDataSet(oldDataSetName, input);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping(value = "{dataSetName:.+}")
