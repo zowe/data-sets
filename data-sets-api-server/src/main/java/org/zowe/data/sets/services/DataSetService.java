@@ -14,6 +14,7 @@ import org.zowe.data.sets.model.DataSet;
 import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetContentWithEtag;
 import org.zowe.data.sets.model.DataSetCreateRequest;
+import org.zowe.data.sets.model.DataSetRenameRequest;
 
 public interface DataSetService {
 
@@ -30,4 +31,6 @@ public interface DataSetService {
     String createDataSet(DataSetCreateRequest input);
 
     void deleteDataSet(String dataSetName);
+
+    String renameDataSet(String oldDataSetName, DataSetRenameRequest input);
 }

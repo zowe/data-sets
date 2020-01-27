@@ -94,6 +94,8 @@ node('ibm-jenkins-slave-nvm') {
   pipeline.test(
     name          : 'Integration',
     operation     : {
+      lock("data-sets-integration-test-at-${params.INTEGRATION_TEST_ZOSMF_HOST}-${params.INTEGRATION_TEST_ZOSMF_PORT}") {
+
       echo "Preparing certificates ..."
       sh """keytool -genkeypair -keystore localhost.keystore.p12 -storetype PKCS12 \
 -storepass password -alias localhost -keyalg RSA -keysize 2048 -validity 99999 \
@@ -135,6 +137,7 @@ EOF"""
 -Dserver.ssl.keyStore=localhost.keystore.p12 \
 -Dserver.ssl.keyStorePassword=password \
 -Dserver.ssl.keyStoreType=PKCS12 \
+-Dserver.compression.enabled=true \
 -Dzosmf.httpsPort=${params.INTEGRATION_TEST_ZOSMF_PORT} \
 -Dzosmf.ipAddress=${params.INTEGRATION_TEST_ZOSMF_HOST} \
 -jar \$(ls -1 data-sets-api-server/build/libs/data-sets-api-server-*-boot.jar) &"""
@@ -157,11 +160,14 @@ EOF"""
 -Pserver.password=${PASSWORD} \
 -Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}"""
       }
+      
+      } // end of lock
     },
     junit         : '**/test-results/test/*.xml',
     htmlReports   : [
       [dir: "data-sets-tests/build/reports/tests/test", files: "index.html", name: "Report: Integration Test"],
     ],
+    timeout: [time: 30, unit: 'MINUTES']
   )
 
   pipeline.sonarScan(

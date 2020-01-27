@@ -1,0 +1,22 @@
+{"zosmf":{
+"resource":"restfiles/ds/EXIST.TEST(NEWNAME12345678)",
+"body":{"request":"rename", "from-dataset":{"dsn":"EXIST.TEST", "member":"EXIST"} },
+"statusCode":500,
+"response": {
+  "category": 1,
+  "rc": 4,
+  "reason": 3,
+  "message": "NEWNAME123456",
+  "stack": "  1 101F61B8+00000526 BaseRequest::parseDsnameMember(const char*,char**,char**)\n  2 101F5AE8+00000080 RenameMember::RenameMember(DatasetUtilServlet*)\n  3 101F2A20+00001010 DatasetUtilServlet::validateRequest()\n  4 101F2500+000000A0 DatasetUtilServlet::doPut()\n  5 1020A060+000000DC TsoServlet::service()\n  6 10238D58+0000017E TsoServlet::run()\n  7 10238730+00000386 main\n  8 07DF4EE0+0000127E CEEVROND\n  9 0F9F1CE8+000000B4 EDCZHINV\n 10 07C8EC40+000001C6 CEEBBEXT\n"
+}},
+"expected":{
+  "oldName":"EXIST.TEST(EXIST)",
+  "newName":"EXIST.TEST(NEWNAME12345678)",
+   "statusCode": 400,
+   "response":{
+  "status": "BAD_REQUEST",
+  "message": "Rename request of dataset EXIST.TEST(EXIST) failed because of invalid name EXIST.TEST(NEWNAME12345678)"
+}
+}
+}
+
