@@ -31,8 +31,8 @@ public class ZosmfDataSetService implements DataSetService {
     // https://www.ibm.com/support/knowledgecenter/SSLTBW_2.3.0/com.ibm.zos.v2r3.izua700/IZUHPINFO_API_RESTFILES_Error_Categories.htm
 
     @Override
-    public ItemsWrapper<String> listDataSetMembers(String dataSetName) {
-        ListDataSetMembersZosmfRequestRunner runner = new ListDataSetMembersZosmfRequestRunner(dataSetName);
+    public ItemsWrapper<String> listDataSetMembers(String dataSetName, String authToken) {
+        ListDataSetMembersZosmfRequestRunner runner = new ListDataSetMembersZosmfRequestRunner(dataSetName, authToken);
         return runner.run(zosmfConnector);
     }
 

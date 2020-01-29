@@ -22,7 +22,7 @@ public interface DataSetService {
 
     ItemsWrapper<DataSet> listDataSets(String filter);
 
-    ItemsWrapper<String> listDataSetMembers(String dataSetName);
+    ItemsWrapper<String> listDataSetMembers(String dataSetName, String authToken);
 
     DataSetContentWithEtag getContent(String dataSetName);
 

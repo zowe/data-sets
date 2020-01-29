@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.zowe.api.common.controller.AbstractApiController;
 import org.zowe.api.common.model.ItemsWrapper;
 import org.zowe.data.sets.model.DataSet;
 import org.zowe.data.sets.model.DataSetAttributes;
@@ -45,7 +44,7 @@ import java.net.URI;
 @RestController
 @RequestMapping("/api/v1/datasets")
 @Api(value = "Data Sets APIs")
-public class DataSetsController extends AbstractApiController {
+public class DataSetsController {
 
     @Autowired
     private DataSetService dataSetService;
@@ -54,8 +53,10 @@ public class DataSetsController extends AbstractApiController {
     @ApiOperation(value = "Get a list of members for a partitioned data set", nickname = "getMembers", notes = "This API returns a list of members for a given partitioned data set.", tags = "Data Sets APIs")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok") })
     public ItemsWrapper<String> getMembers(
-            @ApiParam(value = "Partitioned data set name", required = true) @PathVariable String dataSetName) {
-        return dataSetService.listDataSetMembers(dataSetName);
+            @ApiParam(value = "Partitioned data set name", required = true) @PathVariable String dataSetName,
+            @RequestHeader("apimlAuthenticationToken") String authToken) {
+        
+        return dataSetService.listDataSetMembers(dataSetName, authToken);
     }
 
     @GetMapping(value = "{filter:.+}", produces = { "application/json" })
