@@ -28,15 +28,18 @@ import java.net.URISyntaxException;
 public class GetDataSetContentZosmfRequestRunner extends AbstractZosmfDataSetsRequestRunner<DataSetContentWithEtag> {
 
     private String dataSetName;
+    private String authToken;
 
-    public GetDataSetContentZosmfRequestRunner(String dataSetName) {
+    public GetDataSetContentZosmfRequestRunner(String dataSetName, String authToken) {
         this.dataSetName = dataSetName;
+        this.authToken = authToken;
     }
 
     @Override
     protected RequestBuilder prepareQuery(ZosmfConnector zosmfConnector) throws URISyntaxException, IOException {
         String urlPath = String.format("restfiles/ds/%s", dataSetName);
         URI requestUrl = zosmfConnector.getFullUrl(urlPath); // $NON-NLS-1$
+        zosmfConnector.setAuthToken(this.authToken);
         RequestBuilder requestBuilder = RequestBuilder.get(requestUrl);
         requestBuilder.addHeader("X-IBM-Return-Etag", "true");
         return requestBuilder;

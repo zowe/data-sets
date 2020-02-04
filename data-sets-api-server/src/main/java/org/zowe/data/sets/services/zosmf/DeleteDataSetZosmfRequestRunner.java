@@ -26,14 +26,17 @@ import java.net.URISyntaxException;
 public class DeleteDataSetZosmfRequestRunner extends AbstractZosmfDataSetsRequestRunner<Void> {
 
     private String dataSetName;
+    private String authToken;
 
-    public DeleteDataSetZosmfRequestRunner(String dataSetName) {
+    public DeleteDataSetZosmfRequestRunner(String dataSetName, String authToken) {
         this.dataSetName = dataSetName;
+        this.authToken = authToken;
     }
 
     @Override
     protected RequestBuilder prepareQuery(ZosmfConnector zosmfConnector) throws URISyntaxException, IOException {
         URI requestUrl = zosmfConnector.getFullUrl(String.format("restfiles/ds/%s", dataSetName));
+        zosmfConnector.setAuthToken(this.authToken);
         return RequestBuilder.delete(requestUrl);
     }
 

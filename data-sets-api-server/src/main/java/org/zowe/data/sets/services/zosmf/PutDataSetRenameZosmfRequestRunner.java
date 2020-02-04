@@ -31,16 +31,19 @@ import java.net.URISyntaxException;
 public class PutDataSetRenameZosmfRequestRunner extends AbstractZosmfDataSetsRequestRunner<String> {
     private DataSetRenameRequest request;
     private String oldDataSetName;
-
-    public PutDataSetRenameZosmfRequestRunner(String oldDataSetName, DataSetRenameRequest request) {
+    private String authToken;
+    
+    public PutDataSetRenameZosmfRequestRunner(String oldDataSetName, DataSetRenameRequest request, String authToken) {
         this.oldDataSetName = oldDataSetName;
         this.request = request;
+        this.authToken = authToken;
     }
 
     @Override
     protected RequestBuilder prepareQuery(ZosmfConnector zosmfConnector) throws URISyntaxException, IOException {
         String urlPath = String.format("restfiles/ds/%s", request.getNewName());
         URI requestUrl = zosmfConnector.getFullUrl(urlPath); // $NON-NLS-1$
+        zosmfConnector.setAuthToken(this.authToken);
         
         JsonObject requestBody = convertIntoZosmfRequestJson(oldDataSetName);      
         StringEntity requestEntity = new StringEntity(requestBody.toString(), ContentType.APPLICATION_JSON);

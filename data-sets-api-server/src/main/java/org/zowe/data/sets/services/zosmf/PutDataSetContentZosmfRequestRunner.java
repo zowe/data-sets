@@ -32,16 +32,19 @@ public class PutDataSetContentZosmfRequestRunner extends AbstractZosmfDataSetsRe
 
     private String dataSetName;
     private DataSetContentWithEtag contentWithEtag;
+    private String authToken;
 
-    public PutDataSetContentZosmfRequestRunner(String dataSetName, DataSetContentWithEtag contentWithEtag) {
+    public PutDataSetContentZosmfRequestRunner(String dataSetName, DataSetContentWithEtag contentWithEtag, String authToken) {
         this.dataSetName = dataSetName;
-        this.contentWithEtag = contentWithEtag;
+        this.contentWithEtag = contentWithEtag;        
+        this.authToken = authToken;
     }
 
     @Override
     protected RequestBuilder prepareQuery(ZosmfConnector zosmfConnector) throws URISyntaxException, IOException {
         String urlPath = String.format("restfiles/ds/%s", dataSetName);
         URI requestUrl = zosmfConnector.getFullUrl(urlPath); // $NON-NLS-1$
+        zosmfConnector.setAuthToken(this.authToken);
         DataSetContent content = contentWithEtag.getContent();
         StringEntity requestEntity = new StringEntity(content.getRecords());
         RequestBuilder requestBuilder = RequestBuilder.put(requestUrl).setEntity(requestEntity);

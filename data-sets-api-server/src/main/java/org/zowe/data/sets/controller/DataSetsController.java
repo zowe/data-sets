@@ -63,24 +63,27 @@ public class DataSetsController {
     @ApiOperation(value = "Get a list of data sets matching the filter", nickname = "getDataSetAttributes", notes = "This API returns the attributes of data sets matching the filter", tags = "Data Sets APIs")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok") })
     public ItemsWrapper<DataSetAttributes> getDataSetAttributes(
-            @ApiParam(value = "Dataset filter string, e.g. HLQ.\\*\\*, \\*\\*.SUF, etc.", required = true) @PathVariable String filter) {
-        return dataSetService.listDataSetAttributes(filter);
+            @ApiParam(value = "Dataset filter string, e.g. HLQ.\\*\\*, \\*\\*.SUF, etc.", required = true) @PathVariable String filter,
+            @RequestHeader("apimlAuthenticationToken") String authToken) {
+        return dataSetService.listDataSetAttributes(filter, authToken);
     }
 
     @GetMapping(value = "{filter:.+}/list", produces = { "application/json" })
     @ApiOperation(value = "Get a list of data sets without attributes matching the filter", nickname = "getDataSets", notes = "This API returns the list of data sets matching the filter", tags = "Data Sets APIs")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok") })
     public ItemsWrapper<DataSet> getDataSets(
-            @ApiParam(value = "Dataset filter string, e.g. HLQ.\\*\\*, \\*\\*.SUF, etc.", required = true) @PathVariable String filter) {
-        return dataSetService.listDataSets(filter);
+            @ApiParam(value = "Dataset filter string, e.g. HLQ.\\*\\*, \\*\\*.SUF, etc.", required = true) @PathVariable String filter,
+            @RequestHeader("apimlAuthenticationToken") String authToken) {
+        return dataSetService.listDataSets(filter, authToken);
     }
 
     @GetMapping(value = "{dataSetName}/content", produces = { "application/json" })
     @ApiOperation(value = "Get the content of a sequential data set, or PDS member", nickname = "getContent", notes = "This API reads content from a sequential data set or member of a partitioned data set.", tags = "Data Sets APIs")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok", response = DataSetContent.class) })
     public ResponseEntity<DataSetContent> getContent(
-            @ApiParam(value = "Data set name, e.g. HLQ.PS or HLQ.PO(MEMBER)", required = true) @PathVariable String dataSetName) {
-        DataSetContentWithEtag content = dataSetService.getContent(dataSetName);
+            @ApiParam(value = "Data set name, e.g. HLQ.PS or HLQ.PO(MEMBER)", required = true) @PathVariable String dataSetName,
+            @RequestHeader("apimlAuthenticationToken") String authToken) {
+        DataSetContentWithEtag content = dataSetService.getContent(dataSetName, authToken);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Access-Control-Expose-Headers", "ETag");
@@ -92,9 +95,11 @@ public class DataSetsController {
     @ApiOperation(value = "Create a data set", notes = "This creates a data set based on the attributes passed in", tags = "Data Sets APIs")
     @ApiResponses({ @ApiResponse(code = 201, message = "Data set successfully created") })
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> createDataSet(@RequestBody DataSetCreateRequest input) {
+    public ResponseEntity<?> createDataSet(
+            @RequestBody DataSetCreateRequest input, 
+            @RequestHeader("apimlAuthenticationToken") String authToken) {
 
-        String dataSetName = dataSetService.createDataSet(input);
+        String dataSetName = dataSetService.createDataSet(input, authToken);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{dataSetName}")
             .buildAndExpand(dataSetName).toUri();
@@ -107,9 +112,10 @@ public class DataSetsController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok") })
     public ResponseEntity<?> putContent(
             @ApiParam(value = "Data set name, e.g. HLQ.PS or HLQ.PO(MEMBER)", required = true) @PathVariable String dataSetName,
-            @RequestBody DataSetContent input, @RequestHeader(value = "If-Match", required = false) String ifMatch) {
+            @RequestBody DataSetContent input, @RequestHeader(value = "If-Match", required = false) String ifMatch,
+            @RequestHeader("apimlAuthenticationToken") String authToken) {
         DataSetContentWithEtag request = new DataSetContentWithEtag(input, ifMatch);
-        String putEtag = dataSetService.putContent(dataSetName, request);
+        String putEtag = dataSetService.putContent(dataSetName, request, authToken);
 
         return ResponseEntity.noContent().eTag(putEtag).build();
     }
@@ -119,8 +125,9 @@ public class DataSetsController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok") })
     public ResponseEntity<Void> putRename(
             @ApiParam(value = "Data set name, e.g. HLQ.PS or HLQ.PO(MEMBER)", required = true) @PathVariable String oldDataSetName,
-            @RequestBody DataSetRenameRequest input) {
-        dataSetService.renameDataSet(oldDataSetName, input);
+            @RequestBody DataSetRenameRequest input,
+            @RequestHeader("apimlAuthenticationToken") String authToken) {
+        dataSetService.renameDataSet(oldDataSetName, input, authToken);
         return ResponseEntity.noContent().build();
     }
 
@@ -128,9 +135,10 @@ public class DataSetsController {
     @ApiOperation(value = "Delete a data set or member", notes = "This API deletes a data set or data set member.", tags = "Data Sets APIs")
     @ApiResponses({ @ApiResponse(code = 204, message = "Data set or member successfully deleted") })
     public ResponseEntity<?> deleteDatasetMember(
-            @ApiParam(value = "Data set name", required = true) @PathVariable String dataSetName) {
+            @ApiParam(value = "Data set name", required = true) @PathVariable String dataSetName,
+            @RequestHeader("apimlAuthenticationToken") String authToken) {
 
-        dataSetService.deleteDataSet(dataSetName);
+        dataSetService.deleteDataSet(dataSetName, authToken);
         return ResponseEntity.noContent().build();
     }
 }

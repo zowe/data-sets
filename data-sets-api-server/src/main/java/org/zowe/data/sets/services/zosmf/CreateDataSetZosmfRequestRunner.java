@@ -32,10 +32,12 @@ public class CreateDataSetZosmfRequestRunner extends AbstractZosmfDataSetsReques
 
     private DataSetCreateRequest request;
     private String dataSetName;
+    private String authToken;
 
-    public CreateDataSetZosmfRequestRunner(DataSetCreateRequest request) {
+    public CreateDataSetZosmfRequestRunner(DataSetCreateRequest request, String authToken) {
         this.request = request;
         dataSetName = request.getName();
+        this.authToken = authToken;
     }
 
     @Override
@@ -47,6 +49,7 @@ public class CreateDataSetZosmfRequestRunner extends AbstractZosmfDataSetsReques
         }
         String urlPath = String.format("restfiles/ds/%s", dataSetName);
         URI requestUrl = zosmfConnector.getFullUrl(urlPath);
+        zosmfConnector.setAuthToken(this.authToken);
         JsonObject requestBody = convertIntoZosmfRequestJson(request);
         StringEntity requestEntity = new StringEntity(requestBody.toString(), ContentType.APPLICATION_JSON);
         RequestBuilder requestBuilder = RequestBuilder.post(requestUrl).setEntity(requestEntity);
