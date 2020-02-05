@@ -17,6 +17,8 @@ import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
+import org.zowe.api.common.errors.ApiError;
+import org.zowe.api.common.exceptions.ZoweApiErrorException;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.ResponseCache;
 import org.zowe.data.sets.model.DataSetRenameRequest;
