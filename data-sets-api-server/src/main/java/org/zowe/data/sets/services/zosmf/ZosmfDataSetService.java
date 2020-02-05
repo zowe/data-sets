@@ -31,53 +31,53 @@ public class ZosmfDataSetService implements DataSetService {
     // https://www.ibm.com/support/knowledgecenter/SSLTBW_2.3.0/com.ibm.zos.v2r3.izua700/IZUHPINFO_API_RESTFILES_Error_Categories.htm
 
     @Override
-    public ItemsWrapper<String> listDataSetMembers(String dataSetName, String authToken) {
-        ListDataSetMembersZosmfRequestRunner runner = new ListDataSetMembersZosmfRequestRunner(dataSetName, authToken);
+    public ItemsWrapper<String> listDataSetMembers(String dataSetName) {
+        ListDataSetMembersZosmfRequestRunner runner = new ListDataSetMembersZosmfRequestRunner(dataSetName);
         return runner.run(zosmfConnector);
     }
 
 
     @Override
-    public ItemsWrapper<DataSetAttributes> listDataSetAttributes(String filter, String authToken) {
-        ListDataSetsAttributesZosmfRequestRunner runner = new ListDataSetsAttributesZosmfRequestRunner(filter, authToken);
+    public ItemsWrapper<DataSetAttributes> listDataSetAttributes(String filter) {
+        ListDataSetsAttributesZosmfRequestRunner runner = new ListDataSetsAttributesZosmfRequestRunner(filter);
         return runner.run(zosmfConnector);
     }
 
     @Override
-    public ItemsWrapper<DataSet> listDataSets(String filter, String authToken) {
-        ListDataSetsZosmfRequestRunner runner = new ListDataSetsZosmfRequestRunner(filter, authToken);
+    public ItemsWrapper<DataSet> listDataSets(String filter) {
+        ListDataSetsZosmfRequestRunner runner = new ListDataSetsZosmfRequestRunner(filter);
         return runner.run(zosmfConnector);
     }
 
     @Override
-    public DataSetContentWithEtag getContent(String dataSetName, String authToken) {
-        GetDataSetContentZosmfRequestRunner runner = new GetDataSetContentZosmfRequestRunner(dataSetName, authToken);
+    public DataSetContentWithEtag getContent(String dataSetName) {
+        GetDataSetContentZosmfRequestRunner runner = new GetDataSetContentZosmfRequestRunner(dataSetName);
         return runner.run(zosmfConnector);
     }
 
     @Override
-    public String putContent(String dataSetName, DataSetContentWithEtag contentWithEtag, String authToken) {
+    public String putContent(String dataSetName, DataSetContentWithEtag contentWithEtag) {
         PutDataSetContentZosmfRequestRunner runner = new PutDataSetContentZosmfRequestRunner(dataSetName,
-                contentWithEtag, authToken);
+                contentWithEtag);
         return runner.run(zosmfConnector);
     }
     
     @Override
-    public String renameDataSet(String oldDataSetName, DataSetRenameRequest input, String authToken) {
+    public String renameDataSet(String oldDataSetName, DataSetRenameRequest input) {
         PutDataSetRenameZosmfRequestRunner runner = new PutDataSetRenameZosmfRequestRunner(oldDataSetName, 
-                input, authToken);
+                input);
         return runner.run(zosmfConnector);
     }
 
     @Override
-    public String createDataSet(DataSetCreateRequest request, String authToken) {
-        CreateDataSetZosmfRequestRunner runner = new CreateDataSetZosmfRequestRunner(request, authToken);
+    public String createDataSet(DataSetCreateRequest request) {
+        CreateDataSetZosmfRequestRunner runner = new CreateDataSetZosmfRequestRunner(request);
         return runner.run(zosmfConnector);
     }
 
     @Override
-    public void deleteDataSet(String dataSetName, String authToken) {
-        DeleteDataSetZosmfRequestRunner runner = new DeleteDataSetZosmfRequestRunner(dataSetName, authToken);
+    public void deleteDataSet(String dataSetName) {
+        DeleteDataSetZosmfRequestRunner runner = new DeleteDataSetZosmfRequestRunner(dataSetName);
         runner.run(zosmfConnector);
     }
 }

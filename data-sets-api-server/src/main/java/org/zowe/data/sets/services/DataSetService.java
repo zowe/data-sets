@@ -18,19 +18,19 @@ import org.zowe.data.sets.model.DataSetRenameRequest;
 
 public interface DataSetService {
 
-    ItemsWrapper<DataSetAttributes> listDataSetAttributes(String filter, String authToken);
+    ItemsWrapper<DataSetAttributes> listDataSetAttributes(String filter);
 
-    ItemsWrapper<DataSet> listDataSets(String filter, String authToken);
+    ItemsWrapper<DataSet> listDataSets(String filter);
 
-    ItemsWrapper<String> listDataSetMembers(String dataSetName, String authToken);
+    ItemsWrapper<String> listDataSetMembers(String dataSetName);
 
-    DataSetContentWithEtag getContent(String dataSetName, String authToken);
+    DataSetContentWithEtag getContent(String dataSetName);
 
-    String putContent(String dataSetName, DataSetContentWithEtag content, String authToken);
+    String putContent(String dataSetName, DataSetContentWithEtag content);
 
-    String createDataSet(DataSetCreateRequest input, String authToken);
+    String createDataSet(DataSetCreateRequest input);
 
-    void deleteDataSet(String dataSetName, String authToken);
+    void deleteDataSet(String dataSetName);
 
-    String renameDataSet(String oldDataSetName, DataSetRenameRequest input, String authToken);
+    String renameDataSet(String oldDataSetName, DataSetRenameRequest input);
 }

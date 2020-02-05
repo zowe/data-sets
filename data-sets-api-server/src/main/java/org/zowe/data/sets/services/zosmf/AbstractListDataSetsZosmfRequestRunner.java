@@ -25,18 +25,15 @@ import java.net.URISyntaxException;
 public abstract class AbstractListDataSetsZosmfRequestRunner<T> extends AbstractZosmfDataSetsRequestRunner<T> {
 
     protected String filter;
-    protected String authToken;
 
-    public AbstractListDataSetsZosmfRequestRunner(String filter, String authToken) {
+    public AbstractListDataSetsZosmfRequestRunner(String filter) {
         this.filter = filter;
-        this.authToken = authToken;
     }
 
     @Override
     protected RequestBuilder prepareQuery(ZosmfConnector zosmfConnector) throws URISyntaxException, IOException {
         String query = String.format("dslevel=%s", filter);
         URI requestUrl = zosmfConnector.getFullUrl("restfiles/ds", query); // $NON-NLS-1$
-        zosmfConnector.setAuthToken(this.authToken);
         RequestBuilder requestBuilder = RequestBuilder.get(requestUrl);
         addHeaders(requestBuilder);
         return requestBuilder;

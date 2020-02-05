@@ -28,18 +28,15 @@ import java.util.List;
 public class ListDataSetMembersZosmfRequestRunner extends AbstractZosmfDataSetsRequestRunner<ItemsWrapper<String>> {
 
     private String dataSetName;
-    private String authToken;
 
-    public ListDataSetMembersZosmfRequestRunner(String dataSetName, String authToken) {
+    public ListDataSetMembersZosmfRequestRunner(String dataSetName) {
         this.dataSetName = dataSetName;
-        this.authToken = authToken;
     }
 
     @Override
     protected RequestBuilder prepareQuery(ZosmfConnector zosmfConnector) throws URISyntaxException, IOException {
         String urlPath = String.format("restfiles/ds/%s/member", dataSetName);
         URI requestUrl = zosmfConnector.getFullUrl(urlPath);
-        zosmfConnector.setAuthToken(this.authToken);
         return RequestBuilder.get(requestUrl);
     }
 

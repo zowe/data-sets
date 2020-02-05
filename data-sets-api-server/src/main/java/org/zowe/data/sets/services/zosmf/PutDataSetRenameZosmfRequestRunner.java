@@ -17,8 +17,6 @@ import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
-import org.zowe.api.common.errors.ApiError;
-import org.zowe.api.common.exceptions.ZoweApiErrorException;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.ResponseCache;
 import org.zowe.data.sets.model.DataSetRenameRequest;
@@ -31,19 +29,16 @@ import java.net.URISyntaxException;
 public class PutDataSetRenameZosmfRequestRunner extends AbstractZosmfDataSetsRequestRunner<String> {
     private DataSetRenameRequest request;
     private String oldDataSetName;
-    private String authToken;
     
-    public PutDataSetRenameZosmfRequestRunner(String oldDataSetName, DataSetRenameRequest request, String authToken) {
+    public PutDataSetRenameZosmfRequestRunner(String oldDataSetName, DataSetRenameRequest request) {
         this.oldDataSetName = oldDataSetName;
         this.request = request;
-        this.authToken = authToken;
     }
 
     @Override
     protected RequestBuilder prepareQuery(ZosmfConnector zosmfConnector) throws URISyntaxException, IOException {
         String urlPath = String.format("restfiles/ds/%s", request.getNewName());
         URI requestUrl = zosmfConnector.getFullUrl(urlPath); // $NON-NLS-1$
-        zosmfConnector.setAuthToken(this.authToken);
         
         JsonObject requestBody = convertIntoZosmfRequestJson(oldDataSetName);      
         StringEntity requestEntity = new StringEntity(requestBody.toString(), ContentType.APPLICATION_JSON);

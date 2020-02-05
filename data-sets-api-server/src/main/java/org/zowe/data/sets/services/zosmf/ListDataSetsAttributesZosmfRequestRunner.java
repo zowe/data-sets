@@ -24,8 +24,8 @@ import java.util.List;
 @Slf4j
 public class ListDataSetsAttributesZosmfRequestRunner extends AbstractListDataSetsZosmfRequestRunner<ItemsWrapper<DataSetAttributes>> {
 
-    public ListDataSetsAttributesZosmfRequestRunner(String filter, String authToken) {
-        super(filter, authToken);
+    public ListDataSetsAttributesZosmfRequestRunner(String filter) {
+        super(filter);
     }
 
     @Override
