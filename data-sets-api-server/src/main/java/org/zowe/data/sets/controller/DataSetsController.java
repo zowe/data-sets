@@ -40,6 +40,7 @@ import org.zowe.data.sets.model.DataSetRenameRequest;
 import org.zowe.data.sets.services.DataSetService;
 
 import java.net.URI;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/datasets")
@@ -54,8 +55,15 @@ public class DataSetsController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok") })
     public ItemsWrapper<String> getMembers(
             @ApiParam(value = "Partitioned data set name", required = true) @PathVariable String dataSetName,
+            @RequestHeader Map<String, String> headers,
             @RequestHeader("apimlAuthenticationToken") String authToken) {
-        
+        System.out.println("headers: ");
+        for (String string : headers.keySet()) {
+            System.out.println(string);
+        }
+        for (String string : headers.values()) {
+            System.out.println(string);
+        }
         return dataSetService.listDataSetMembers(dataSetName, authToken);
     }
 
