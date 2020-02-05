@@ -40,7 +40,9 @@ import org.zowe.data.sets.model.DataSetRenameRequest;
 import org.zowe.data.sets.services.DataSetService;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/datasets")
@@ -49,22 +51,21 @@ public class DataSetsController {
 
     @Autowired
     private DataSetService dataSetService;
+    
+    private String getAuthTokenFromHeaders(Map<String, String> headers) {
+        String cookies[] = headers.get("cookie").split(";");
+        Optional<String> authTokenCookie = Arrays.stream(cookies).filter(c -> c.contains("apimlAuthenticationToken")).findFirst();
+        return authTokenCookie.get().split("=")[1];
+    }
 
     @GetMapping(value = "{dataSetName}/members", produces = { "application/json" })
     @ApiOperation(value = "Get a list of members for a partitioned data set", nickname = "getMembers", notes = "This API returns a list of members for a given partitioned data set.", tags = "Data Sets APIs")
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok") })
     public ItemsWrapper<String> getMembers(
             @ApiParam(value = "Partitioned data set name", required = true) @PathVariable String dataSetName,
-            @RequestHeader Map<String, String> headers,
-            @RequestHeader("apimlAuthenticationToken") String authToken) {
-        System.out.println("headers: ");
-        for (String string : headers.keySet()) {
-            System.out.println(string);
-        }
-        for (String string : headers.values()) {
-            System.out.println(string);
-        }
-        return dataSetService.listDataSetMembers(dataSetName, authToken);
+            @RequestHeader (required = false) Map<String, String> headers) {
+        
+        return dataSetService.listDataSetMembers(dataSetName, getAuthTokenFromHeaders(headers));
     }
 
     @GetMapping(value = "{filter:.+}", produces = { "application/json" })
@@ -72,8 +73,8 @@ public class DataSetsController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok") })
     public ItemsWrapper<DataSetAttributes> getDataSetAttributes(
             @ApiParam(value = "Dataset filter string, e.g. HLQ.\\*\\*, \\*\\*.SUF, etc.", required = true) @PathVariable String filter,
-            @RequestHeader("apimlAuthenticationToken") String authToken) {
-        return dataSetService.listDataSetAttributes(filter, authToken);
+            @RequestHeader (required = false) Map<String, String> headers) {
+        return dataSetService.listDataSetAttributes(filter, getAuthTokenFromHeaders(headers));
     }
 
     @GetMapping(value = "{filter:.+}/list", produces = { "application/json" })
@@ -81,8 +82,8 @@ public class DataSetsController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok") })
     public ItemsWrapper<DataSet> getDataSets(
             @ApiParam(value = "Dataset filter string, e.g. HLQ.\\*\\*, \\*\\*.SUF, etc.", required = true) @PathVariable String filter,
-            @RequestHeader("apimlAuthenticationToken") String authToken) {
-        return dataSetService.listDataSets(filter, authToken);
+            @RequestHeader (required = false) Map<String, String> headers) {
+        return dataSetService.listDataSets(filter, getAuthTokenFromHeaders(headers));
     }
 
     @GetMapping(value = "{dataSetName}/content", produces = { "application/json" })
@@ -90,13 +91,13 @@ public class DataSetsController {
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Ok", response = DataSetContent.class) })
     public ResponseEntity<DataSetContent> getContent(
             @ApiParam(value = "Data set name, e.g. HLQ.PS or HLQ.PO(MEMBER)", required = true) @PathVariable String dataSetName,
-            @RequestHeader("apimlAuthenticationToken") String authToken) {
-        DataSetContentWithEtag content = dataSetService.getContent(dataSetName, authToken);
+            @RequestHeader (required = false) Map<String, String> headers) {
+        DataSetContentWithEtag content = dataSetService.getContent(dataSetName, getAuthTokenFromHeaders(headers));
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Expose-Headers", "ETag");
-        headers.add("ETag", content.getEtag());
-        return new ResponseEntity<>(content.getContent(), headers, HttpStatus.OK);
+        HttpHeaders headersOutbound = new HttpHeaders();
+        headersOutbound.add("Access-Control-Expose-Headers", "ETag");
+        headersOutbound.add("ETag", content.getEtag());
+        return new ResponseEntity<>(content.getContent(), headersOutbound, HttpStatus.OK);
     }
 
     @PostMapping(consumes = "application/json")
@@ -105,9 +106,9 @@ public class DataSetsController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> createDataSet(
             @RequestBody DataSetCreateRequest input, 
-            @RequestHeader("apimlAuthenticationToken") String authToken) {
+            @RequestHeader (required = false) Map<String, String> headers) {
 
-        String dataSetName = dataSetService.createDataSet(input, authToken);
+        String dataSetName = dataSetService.createDataSet(input, getAuthTokenFromHeaders(headers));
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{dataSetName}")
             .buildAndExpand(dataSetName).toUri();
@@ -121,9 +122,9 @@ public class DataSetsController {
     public ResponseEntity<?> putContent(
             @ApiParam(value = "Data set name, e.g. HLQ.PS or HLQ.PO(MEMBER)", required = true) @PathVariable String dataSetName,
             @RequestBody DataSetContent input, @RequestHeader(value = "If-Match", required = false) String ifMatch,
-            @RequestHeader("apimlAuthenticationToken") String authToken) {
+            @RequestHeader (required = false) Map<String, String> headers) {
         DataSetContentWithEtag request = new DataSetContentWithEtag(input, ifMatch);
-        String putEtag = dataSetService.putContent(dataSetName, request, authToken);
+        String putEtag = dataSetService.putContent(dataSetName, request, getAuthTokenFromHeaders(headers));
 
         return ResponseEntity.noContent().eTag(putEtag).build();
     }
@@ -134,8 +135,8 @@ public class DataSetsController {
     public ResponseEntity<Void> putRename(
             @ApiParam(value = "Data set name, e.g. HLQ.PS or HLQ.PO(MEMBER)", required = true) @PathVariable String oldDataSetName,
             @RequestBody DataSetRenameRequest input,
-            @RequestHeader("apimlAuthenticationToken") String authToken) {
-        dataSetService.renameDataSet(oldDataSetName, input, authToken);
+            @RequestHeader (required = false) Map<String, String> headers) {
+        dataSetService.renameDataSet(oldDataSetName, input, getAuthTokenFromHeaders(headers));
         return ResponseEntity.noContent().build();
     }
 
@@ -144,9 +145,9 @@ public class DataSetsController {
     @ApiResponses({ @ApiResponse(code = 204, message = "Data set or member successfully deleted") })
     public ResponseEntity<?> deleteDatasetMember(
             @ApiParam(value = "Data set name", required = true) @PathVariable String dataSetName,
-            @RequestHeader("apimlAuthenticationToken") String authToken) {
+            @RequestHeader (required = false) Map<String, String> headers) {
 
-        dataSetService.deleteDataSet(dataSetName, authToken);
+        dataSetService.deleteDataSet(dataSetName, getAuthTokenFromHeaders(headers));
         return ResponseEntity.noContent().build();
     }
 }
