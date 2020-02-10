@@ -22,7 +22,6 @@ import org.zowe.api.common.errors.ApiError;
 import org.zowe.api.common.exceptions.ZoweApiErrorException;
 import org.zowe.api.common.test.controller.ApiControllerTest;
 import org.zowe.api.common.utils.JsonUtils;
-import org.zowe.api.common.utils.ZosUtils;
 import org.zowe.unix.files.model.UnixCreateAssetRequest;
 import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.unix.files.model.UnixDirectoryChild;
@@ -50,7 +49,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ZosUtils.class, ServletUriComponentsBuilder.class })
+@PrepareForTest({ ServletUriComponentsBuilder.class })
 public class UnixFilesControllerTest extends ApiControllerTest {
 
     private static final String ENDPOINT_ROOT = "/api/v1/unixfiles";
