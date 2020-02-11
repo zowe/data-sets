@@ -37,8 +37,9 @@ public class AbstractUnixFilesIntegrationTest extends AbstractFilesIntegrationTe
     }
 
     public static void testGetDirectory(String directoryPath, UnixDirectoryChild[] expectedChildren) throws Exception {
-        UnixDirectoryAttributesWithChildren response = RestAssured.given().when().get("?path=" + directoryPath).then()
-            .statusCode(HttpStatus.SC_OK).extract().body().as(UnixDirectoryAttributesWithChildren.class);
+        UnixDirectoryAttributesWithChildren response = RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN)
+                .when().get("?path=" + directoryPath).then()
+                .statusCode(HttpStatus.SC_OK).extract().body().as(UnixDirectoryAttributesWithChildren.class);
 
         validateDirectory(response, expectedChildren);
     }

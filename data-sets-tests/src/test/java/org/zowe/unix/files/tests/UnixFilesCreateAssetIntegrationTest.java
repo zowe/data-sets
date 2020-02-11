@@ -73,7 +73,8 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
     private void unixAssetCreateTest(String path, UnixEntityType entityType, String permissions) {
         String requestBody = constructRequestBody(entityType, permissions);
         
-        RestAssured.given().contentType(MediaType.APPLICATION_JSON_VALUE).body(requestBody).when().post(path)
+        RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN).contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(requestBody).when().post(path)
             .then().statusCode(HttpStatus.SC_CREATED)
             .header("Location", BASE_URL + UNIX_FILES_ENDPOINT + path);
     }
@@ -82,7 +83,8 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
         unixAssetCheckCreatedTest(path, null);
     }
     private void unixAssetCheckCreatedTest(String path, String permissions) {
-        Response response = RestAssured.given().when().get(BASE_URL + UNIX_FILES_ENDPOINT + "?path=" + path);
+        Response response = RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN)
+                .when().get(BASE_URL + UNIX_FILES_ENDPOINT + "?path=" + path);
         response.then().statusCode(HttpStatus.SC_OK);
         if ( permissions != null) {
             JsonPath jsonPath = response.body().jsonPath();
@@ -128,8 +130,8 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
     private void createUnixAssetWithErrorTest(String path, UnixEntityType entityType, ApiError expectedError, String permissions) {
         String requestBody = constructRequestBody(entityType, permissions);
         
-        RestAssured.given().contentType(MediaType.APPLICATION_JSON_VALUE).body(requestBody)
-            .when().post(BASE_URL + UNIX_FILES_ENDPOINT + path)
+        RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN).contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(requestBody).when().post(BASE_URL + UNIX_FILES_ENDPOINT + path)
             .then().statusCode(expectedError.getStatus().value())
             .body("message", equalTo(expectedError.getMessage()));
     }

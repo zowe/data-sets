@@ -28,7 +28,7 @@ public class UnixFilesGetFileContentIntegrationTest extends AbstractUnixFilesInt
     
     @Test
     public void testGetUnixFileContent() throws Exception {        
-        RestAssured.given().when().get(TEST_DIRECTORY + "/fileWithAccess")
+        RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN).when().get(TEST_DIRECTORY + "/fileWithAccess")
             .then().statusCode(HttpStatus.SC_OK)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(multiLineTestString + "\n"));
@@ -36,7 +36,7 @@ public class UnixFilesGetFileContentIntegrationTest extends AbstractUnixFilesInt
     
     @Test
     public void testGetUnixFileContentWithConvertTrue() throws Exception {
-         RestAssured.given().header("Convert", true).when().get(TEST_DIRECTORY + "/fileWithAccessAscii")
+         RestAssured.given().header("Convert", true, "Authorization", "Bearer " + AUTH_TOKEN).when().get(TEST_DIRECTORY + "/fileWithAccessAscii")
             .then().statusCode(HttpStatus.SC_OK)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(multiLineTestString + "\n"));
@@ -44,7 +44,7 @@ public class UnixFilesGetFileContentIntegrationTest extends AbstractUnixFilesInt
 
     @Test
     public void testGetUnixFileContentWithConvertFalse() throws Exception {
-         RestAssured.given().header("Convert", false).when().get(TEST_DIRECTORY + "/fileWithAccessEbcdic")
+         RestAssured.given().header("Convert", false, "Authorization", "Bearer " + AUTH_TOKEN).when().get(TEST_DIRECTORY + "/fileWithAccessEbcdic")
             .then().statusCode(HttpStatus.SC_OK)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(multiLineTestString + "\n"));
@@ -52,7 +52,7 @@ public class UnixFilesGetFileContentIntegrationTest extends AbstractUnixFilesInt
     
     @Test
     public void testGetUnixFileContentAsciiTaggedFileWithConvertNull() throws Exception {
-         RestAssured.given().when().get(TEST_DIRECTORY + "/fileWithAccessAscii")
+         RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN).when().get(TEST_DIRECTORY + "/fileWithAccessAscii")
             .then().statusCode(HttpStatus.SC_OK)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(multiLineTestString + "\n"));
@@ -60,7 +60,7 @@ public class UnixFilesGetFileContentIntegrationTest extends AbstractUnixFilesInt
     
     @Test
     public void testGetUnixFileContentEbcdicTaggedFileWithConvertNull() throws Exception {
-         RestAssured.given().when().get(TEST_DIRECTORY + "/fileWithAccessEbcdic")
+         RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN).when().get(TEST_DIRECTORY + "/fileWithAccessEbcdic")
             .then().statusCode(HttpStatus.SC_OK)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(multiLineTestString + "\n"));
@@ -71,7 +71,7 @@ public class UnixFilesGetFileContentIntegrationTest extends AbstractUnixFilesInt
         String unauthorisedFile = TEST_DIRECTORY + "/fileWithoutAccess";
         ApiError expectedError = new UnauthorisedFileException(unauthorisedFile).getApiError();
         
-        RestAssured.given().when().get(unauthorisedFile)
+        RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN).when().get(unauthorisedFile)
             .then().statusCode(HttpStatus.SC_FORBIDDEN)
             .body("message", equalTo(expectedError.getMessage()));
     }
@@ -81,7 +81,7 @@ public class UnixFilesGetFileContentIntegrationTest extends AbstractUnixFilesInt
         String invalidPath = "/u/zzzzzztxt";
         ApiError expectedError = new FileNotFoundException(invalidPath).getApiError();
         
-        RestAssured.given().when().get(invalidPath)
+        RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN).when().get(invalidPath)
             .then().statusCode(HttpStatus.SC_NOT_FOUND).contentType(ContentType.JSON)
             .body("message", equalTo(expectedError.getMessage()));
     }

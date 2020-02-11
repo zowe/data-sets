@@ -133,6 +133,7 @@ EOF"""
       sh """java -Xms16m -Xmx512m -Dibm.serversocket.recover=true -Dfile.encoding=UTF-8 \
 -Djava.io.tmpdir=/tmp \
 -Dserver.port=8443 \
+-Dcom.ibm.jsse2.overrideDefaultTLS=true \
 -Dserver.ssl.keyAlias=localhost \
 -Dserver.ssl.keyStore=localhost.keystore.p12 \
 -Dserver.ssl.keyStorePassword=password \

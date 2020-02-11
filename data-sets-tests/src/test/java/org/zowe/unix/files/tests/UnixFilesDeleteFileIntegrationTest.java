@@ -33,7 +33,7 @@ public class UnixFilesDeleteFileIntegrationTest extends AbstractUnixFilesIntegra
         
         ApiError expectedError = new FileNotFoundException(fvtDeleteFile).getApiError();
         
-        RestAssured.given().when().get(fvtDeleteFile)
+        RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN).when().get(fvtDeleteFile)
             .then().statusCode(HttpStatus.SC_NOT_FOUND).contentType(ContentType.JSON)
             .body("message", equalTo(expectedError.getMessage()));
     }
@@ -44,12 +44,12 @@ public class UnixFilesDeleteFileIntegrationTest extends AbstractUnixFilesIntegra
                 + "/deleteTestDirectoryWithoutAccess/deleteFileWithoutWritePermission";
         ApiError expectedError = new UnauthorisedFileException(noPermissionDenied).getApiError();
 
-        RestAssured.given().when().delete(noPermissionDenied).then().statusCode(HttpStatus.SC_FORBIDDEN).body("message",
-                equalTo(expectedError.getMessage()));
+        RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN).when().delete(noPermissionDenied)
+            .then().statusCode(HttpStatus.SC_FORBIDDEN).body("message", equalTo(expectedError.getMessage()));
         
-        RestAssured.given().when().get(noPermissionDenied)
-        .then().statusCode(HttpStatus.SC_OK).contentType(ContentType.JSON)
-        .body("content", equalTo(""));
+        RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN).when().get(noPermissionDenied)
+            .then().statusCode(HttpStatus.SC_OK).contentType(ContentType.JSON)
+            .body("content", equalTo(""));
     }
 
     @Test
@@ -57,9 +57,9 @@ public class UnixFilesDeleteFileIntegrationTest extends AbstractUnixFilesIntegra
         String invalidPath = "/u/zzzzzztxt";
         ApiError expectedError = new FileNotFoundException(invalidPath).getApiError();
 
-        RestAssured.given().when().delete(invalidPath)
-        .then().statusCode(HttpStatus.SC_NOT_FOUND).contentType(ContentType.JSON)
-        .body("message", equalTo(expectedError.getMessage()));
+        RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN).when().delete(invalidPath)
+            .then().statusCode(HttpStatus.SC_NOT_FOUND).contentType(ContentType.JSON)
+            .body("message", equalTo(expectedError.getMessage()));
     }
 
     @Test
@@ -70,7 +70,7 @@ public class UnixFilesDeleteFileIntegrationTest extends AbstractUnixFilesIntegra
 
         ApiError expectedError = new NotAnEmptyDirectoryException(directoryPath).getApiError();
 
-        RestAssured.given().when().delete(directoryPath).then()
+        RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN).when().delete(directoryPath).then()
             .statusCode(HttpStatus.SC_BAD_REQUEST).contentType(ContentType.JSON)
             .body("message", equalTo(expectedError.getMessage()));
         
@@ -103,9 +103,9 @@ public class UnixFilesDeleteFileIntegrationTest extends AbstractUnixFilesIntegra
                 .statusCode(HttpStatus.SC_NO_CONTENT);
         
         ApiError expectedError = new FileNotFoundException(deleteNonEmptyDirectoryWithHeader).getApiError();
-        RestAssured.given().when().get(deleteNonEmptyDirectoryWithHeader)
-        .then().statusCode(HttpStatus.SC_NOT_FOUND).contentType(ContentType.JSON)
-        .body("message", equalTo(expectedError.getMessage()));
+        RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN).when().get(deleteNonEmptyDirectoryWithHeader)
+            .then().statusCode(HttpStatus.SC_NOT_FOUND).contentType(ContentType.JSON)
+            .body("message", equalTo(expectedError.getMessage()));
         
     }
 }

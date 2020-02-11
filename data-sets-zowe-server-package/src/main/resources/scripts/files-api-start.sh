@@ -24,6 +24,7 @@ COMPONENT_CODE=EF
 _BPX_JOBNAME=${ZOWE_PREFIX}${COMPONENT_CODE} java -Xms16m -Xmx512m -Dibm.serversocket.recover=true -Dfile.encoding=UTF-8 \
     -Djava.io.tmpdir=/tmp -Xquickstart \
     -Dserver.port=${FILES_API_PORT} \
+    -Dcom.ibm.jsse2.overrideDefaultTLS=true \
     -Dserver.ssl.keyAlias=${KEY_ALIAS} \
     -Dserver.ssl.keyStore=${KEYSTORE} \
     -Dserver.ssl.keyStorePassword=${KEYSTORE_PASSWORD} \

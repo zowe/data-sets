@@ -29,7 +29,7 @@ public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesInt
     public void testPutUnixFileContent() throws Exception {
         final UnixFileContent content = new UnixFileContent("New testable content \\n testPutUnixFileContent");
         
-        RestAssured.given().contentType("application/json").body(content)
+        RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN).contentType("application/json").body(content)
             .when().put(TEST_DIRECTORY + "/editableFile")
             .then().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
@@ -60,13 +60,13 @@ public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesInt
         final UnixFileContent content = new UnixFileContent("New testable content");
         
         if (ifMatch) {
-            RestAssured.given().contentType("application/json").body(content).header("If-Match", "wrong")
-                .when().put(path)
+            RestAssured.given().header("If-Match", "wrong", "Authorization", "Bearer " + AUTH_TOKEN)
+                .contentType("application/json").body(content).when().put(path)
                 .then().statusCode(expectedError.getStatus().value())
                 .body("message", equalTo(expectedError.getMessage()));
         } else {
-            RestAssured.given().contentType("application/json").body(content)
-                .when().put(path)
+            RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN)
+                .contentType("application/json").body(content).when().put(path)
                 .then().statusCode(expectedError.getStatus().value())
                 .body("message", equalTo(expectedError.getMessage()));
         }
@@ -80,12 +80,12 @@ public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesInt
             .then().statusCode(HttpStatus.SC_OK)
             .extract().header("ETag");
         
-        RestAssured.given().contentType("application/json").body(content).header("If-Match", eTag)
-            .when().put(TEST_DIRECTORY + "/editableFile")
+        RestAssured.given().header("If-Match", eTag, "Authorization", "Bearer " + AUTH_TOKEN)
+            .contentType("application/json").body(content).when().put(TEST_DIRECTORY + "/editableFile")
             .then().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
         
-        RestAssured.given().when().get(TEST_DIRECTORY + "/editableFile")
+        RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN).when().get(TEST_DIRECTORY + "/editableFile")
             .then().statusCode(HttpStatus.SC_OK)
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(content.getContent()));
     }
@@ -102,12 +102,13 @@ public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesInt
     public void testPutUnixFileContentWithConvertTrueAndAsciiFile() throws Exception {
         final UnixFileContent content = new UnixFileContent("New testable content \\n testPutUnixFileContentWithConvertTrueAndAsciiFile");
         
-        RestAssured.given().contentType("application/json").body(content).header("Convert", true)
+        RestAssured.given().contentType("application/json").body(content).header("Convert", true, "Authorization", "Bearer " + AUTH_TOKEN)
             .when().put(TEST_DIRECTORY + "/editableAsciiTaggedFile")
             .then().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
         
-        RestAssured.given().header("Convert", true).when().get(TEST_DIRECTORY + "/editableAsciiTaggedFile")
+        RestAssured.given().header("Convert", true, "Authorization", "Bearer " + AUTH_TOKEN)
+            .when().get(TEST_DIRECTORY + "/editableAsciiTaggedFile")
             .then().statusCode(HttpStatus.SC_OK)
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(content.getContent()));
     }
@@ -116,12 +117,13 @@ public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesInt
     public void testPutUnixFileContentWithConvertNullAndAsciiFile() throws Exception {
         final UnixFileContent content = new UnixFileContent("New testable content \\n testPutUnixFileContentWithConvertTrueAndAsciiFile");
     
-        RestAssured.given().contentType("application/json").body(content)
+        RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN).contentType("application/json").body(content)
             .when().put(TEST_DIRECTORY + "/editableAsciiTaggedFile")
             .then().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
       
-        RestAssured.given().header("Convert", true).when().get(TEST_DIRECTORY + "/editableAsciiTaggedFile")
+        RestAssured.given().header("Convert", true, "Authorization", "Bearer " + AUTH_TOKEN)
+            .when().get(TEST_DIRECTORY + "/editableAsciiTaggedFile")
             .then().statusCode(HttpStatus.SC_OK)
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(content.getContent()));
     }
@@ -130,12 +132,12 @@ public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesInt
     public void testPutUnixFileContentWithConvertFalseAndEbcdicFile() throws Exception {
         final UnixFileContent content = new UnixFileContent("New testable content \\n testPutUnixFileContentWithConvertFalseAndEbcdicFile");
         
-        RestAssured.given().contentType("application/json").body(content).header("Convert", false)
-            .when().put(TEST_DIRECTORY + "/editableEbcdicTaggedFile")
+        RestAssured.given().header("Convert", false, "Authorization", "Bearer " + AUTH_TOKEN)
+            .contentType("application/json").body(content).when().put(TEST_DIRECTORY + "/editableEbcdicTaggedFile")
             .then().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
         
-        RestAssured.given().when().get(TEST_DIRECTORY + "/editableEbcdicTaggedFile")
+        RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN).when().get(TEST_DIRECTORY + "/editableEbcdicTaggedFile")
             .then().statusCode(HttpStatus.SC_OK)
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(content.getContent()));
     }
@@ -144,12 +146,12 @@ public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesInt
     public void testPutUnixFileContentWithConvertNullAndEbcdicFile() throws Exception {
         final UnixFileContent content = new UnixFileContent("New testable content \\n testPutUnixFileContentWithConvertNullAndEbcdicFile");
         
-        RestAssured.given().contentType("application/json").body(content)
+        RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN).contentType("application/json").body(content)
             .when().put(TEST_DIRECTORY + "/editableEbcdicTaggedFile")
             .then().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
         
-        RestAssured.given().when().get(TEST_DIRECTORY + "/editableEbcdicTaggedFile")
+        RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN).when().get(TEST_DIRECTORY + "/editableEbcdicTaggedFile")
             .then().statusCode(HttpStatus.SC_OK)
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(content.getContent()));
     }    
