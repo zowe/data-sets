@@ -156,7 +156,7 @@ EOF"""
       ]) {
         sh """./gradlew runIntegrationTests \
 -Pserver.host=localhost \
--Pserver.port=8443 \
+-Pserver.port=10010 \
 -Pserver.username=${USERNAME} \
 -Pserver.password=${PASSWORD} \
 -Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}"""

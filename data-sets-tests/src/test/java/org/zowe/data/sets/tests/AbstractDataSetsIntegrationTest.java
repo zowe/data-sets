@@ -10,6 +10,7 @@
 package org.zowe.data.sets.tests;
 
 import io.restassured.RestAssured;
+import io.restassured.http.Header;
 import io.restassured.response.Response;
 
 import org.apache.http.HttpStatus;
@@ -25,10 +26,10 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractFilesInteg
     static final String DATASETS_ROOT_ENDPOINT = "datasets";
 
     static final String HLQ = USER.toUpperCase();
-    static final String API_AUTH_TOKEN = AUTH_TOKEN;
     static final String INVALID_DATASET_NAME = HLQ + ".TEST.INVALID";
     static final String UNAUTHORIZED_DATASET = "IBMUSER.NOWRITE.CNTL";
     static final String DEFAULT_MEMBER_CONTENT = "//ATLJ0000 JOB (ADL),'ATLAS',MSGCLASS=X,CLASS=A,TIME=1440\n//*        TEST JOB\n";
+    static final Header AUTH_HEADER = new Header("Authorization", "Bearer " + AUTH_TOKEN);
 
     @BeforeClass
     public static void setUpEndpoint() throws Exception {
@@ -46,32 +47,32 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractFilesInteg
     }
 
     static Response getMembers(String dataSetName) {
-        return RestAssured.given().header("Authorization", "Bearer " + API_AUTH_TOKEN).when().get(dataSetName + "/members");
+        return RestAssured.given().header(AUTH_HEADER).when().get(dataSetName + "/members");
     }
 
     static Response getDataSetsDetails(String dataSetFilter) {
-        return RestAssured.given().header("Authorization", "Bearer " + API_AUTH_TOKEN).when().get(dataSetFilter);
+        return RestAssured.given().header(AUTH_HEADER).when().get(dataSetFilter);
     }
 
     static Response getDataSets(String dataSetFilter) {
-        return RestAssured.given().header("Authorization", "Bearer " + API_AUTH_TOKEN).when().get(dataSetFilter + "/list");
+        return RestAssured.given().header(AUTH_HEADER).when().get(dataSetFilter + "/list");
     }
 
     static Response createDataSet(DataSetCreateRequest attributes) {
-        return RestAssured.given().header("Authorization", "Bearer " + API_AUTH_TOKEN).contentType("application/json").body(attributes).when().post();
+        return RestAssured.given().header(AUTH_HEADER).contentType("application/json").body(attributes).when().post();
     }
 
     static Response getDataSetContent(String dataSetName) {
-        return RestAssured.given().header("Authorization", "Bearer " + API_AUTH_TOKEN).when().get(dataSetName + "/content");
+        return RestAssured.given().header(AUTH_HEADER).when().get(dataSetName + "/content");
     }
 
     static Response putDataSetContent(String dataSetName, DataSetContent body) {
-        return RestAssured.given().header("Authorization", "Bearer " + API_AUTH_TOKEN).contentType("application/json").body(body).when().put(dataSetName + "/content");
+        return RestAssured.given().header(AUTH_HEADER).contentType("application/json").body(body).when().put(dataSetName + "/content");
     }
 
     static Response putDataSetContent(String dataSetName, DataSetContent body, String etag) {
         return RestAssured.given().contentType("application/json").body(body)
-                .header("Authorization", "Bearer " + API_AUTH_TOKEN, "If-Match", etag).when()
+                .header("If-Match", etag, AUTH_HEADER).when()
                 .put(dataSetName + "/content");
     }
 
@@ -98,7 +99,7 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractFilesInteg
     }
 
     static Response deleteDataSet(String dataSetName) {
-        return RestAssured.given().header("Authorization", "Bearer " + API_AUTH_TOKEN).when().delete(dataSetName);
+        return RestAssured.given().header(AUTH_HEADER).when().delete(dataSetName);
     }
 
     static String getDataSetMemberPath(String pds, String member) {
