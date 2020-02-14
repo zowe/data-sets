@@ -22,6 +22,13 @@ node('ibm-jenkins-slave-nvm') {
   // we have extra parameters for integration test
   pipeline.addBuildParameters(
     string(
+      name: 'INTEGRATION_TEST_APIML_BUILD',
+      description: 'APIML build for integration test',
+      defaultValue: 'libs-release-local/com/ca/mfaas/sdk/mfaas-zowe-install/*/mfaas-zowe-install-*.zip',
+      trim: true,
+      required: true
+    ),
+    string(
       name: 'INTEGRATION_TEST_ZOSMF_HOST',
       description: 'z/OSMF server for integration test',
       defaultValue: 'river.zowe.org',
@@ -106,11 +113,22 @@ node('ibm-jenkins-slave-nvm') {
       withCredentials([
         usernamePassword(
           credentialsId: params.INTEGRATION_TEST_DIRECTORY_INIT_USER,
-          usernameVariable: 'FVT_SERVER_SSH_USERNAME',
-          passwordVariable: 'FVT_SERVER_SSH_PASSWORD'
+          usernameVariable: 'USERNAME',
+          passwordVariable: 'PASSWORD'
         )
       ]) {
-        sh "FVT_ZOSMF_HOST=${params.INTEGRATION_TEST_ZOSMF_HOST} FVT_ZOSMF_PORT=${params.INTEGRATION_TEST_ZOSMF_PORT} FVT_SERVER_SSH_HOST=${params.INTEGRATION_TEST_ZOSMF_HOST} FVT_SERVER_SSH_PORT=${params.INTEGRATION_TEST_SSH_PORT} FVT_SERVER_DIRECTORY_ROOT=${params.INTEGRATION_TEST_DIRECTORY_ROOT} FVT_UID=${uniqueBuildId} ./scripts/prepare-fvt.sh"
+        withEnv([
+          "FVT_ZOSMF_HOST=${params.INTEGRATION_TEST_ZOSMF_HOST}",
+          "FVT_ZOSMF_PORT=${params.INTEGRATION_TEST_ZOSMF_PORT}",
+          "FVT_SERVER_SSH_HOST=${params.INTEGRATION_TEST_ZOSMF_HOST}",
+          "FVT_SERVER_SSH_PORT=${params.INTEGRATION_TEST_SSH_PORT}",
+          "FVT_SERVER_SSH_USERNAME=${USERNAME}",
+          "FVT_SERVER_SSH_PASSWORD=${PASSWORD}",
+          "FVT_SERVER_DIRECTORY_ROOT=${params.INTEGRATION_TEST_DIRECTORY_ROOT}",
+          "FVT_UID=${uniqueBuildId}"
+        ]) {
+          sh "scripts/prepare-fvt.sh '${params.INTEGRATION_TEST_APIML_BUILD}'"
+        }
       }
 
       // give it a little time to start the server
@@ -127,8 +145,8 @@ node('ibm-jenkins-slave-nvm') {
         sh """./gradlew runIntegrationTests \
 -Pserver.host=localhost \
 -Pserver.port=10010 \
--Pserver.username=${FVT_SERVER_SSH_USERNAME} \
--Pserver.password=${FVT_SERVER_SSH_PASSWORD} \
+-Pserver.username=${USERNAME} \
+-Pserver.password=${PASSWORD} \
 -Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}"""
       }
       
