@@ -248,7 +248,7 @@ cd "${ROOT_DIR}"
 SSHPASS=${FVT_SERVER_SSH_PASSWORD} sshpass -e sftp -o BatchMode=no -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -b - -P ${FVT_SERVER_SSH_PORT} ${FVT_SERVER_SSH_USERNAME}@${FVT_SERVER_SSH_HOST} << EOF
 put scripts/prepare-integration-test-folders.sh
 EOF
-SSHPASS=${FVT_SERVER_SSH_PASSWORD} sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${FVT_SERVER_SSH_PORT} ${FVT_SERVER_SSH_USERNAME}@${params.FVT_SERVER_SSH_HOST} << EOF
+SSHPASS=${FVT_SERVER_SSH_PASSWORD} sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${FVT_SERVER_SSH_PORT} ${FVT_SERVER_SSH_USERNAME}@${FVT_SERVER_SSH_HOST} << EOF
 cd ~ && \
   (iconv -f ISO8859-1 -t IBM-1047 prepare-integration-test-folders.sh > prepare-integration-test-folders.sh.new) && mv prepare-integration-test-folders.sh.new prepare-integration-test-folders.sh && chmod +x prepare-integration-test-folders.sh
 ./prepare-integration-test-folders.sh "${FVT_SERVER_DIRECTORY_ROOT}/${FVT_UID}" || { echo "[prepare-integration-test-folders] failed"; exit 1; }
