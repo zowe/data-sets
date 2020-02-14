@@ -30,8 +30,6 @@ SCRIPT_NAME=$(basename "$0")
 SCRIPT_PWD=$(cd "$(dirname "$0")" && pwd)
 ROOT_DIR=$(cd "$SCRIPT_PWD" && cd .. && pwd)
 FVT_APIML_ARTIFACT=$1
-FVT_ZOSMF_HOST=$2
-FVT_ZOSMF_PORT=$3
 FVT_WORKSPACE="${ROOT_DIR}/.fvt"
 FVT_APIML_DIR=api-layer
 FVT_DATASETS_API_DIR=data-sets
@@ -84,12 +82,6 @@ fi
 if [ -z "$FVT_APIML_ARTIFACT" ]; then
   FVT_APIML_ARTIFACT="libs-release-local/com/ca/mfaas/sdk/mfaas-zowe-install/*/mfaas-zowe-install-*.zip"
   echo "[${SCRIPT_NAME}][warn] API-ML artifact is not defined, using default value."
-fi
-if [ -z "$FVT_ZOSMF_HOST" ]; then
-  FVT_ZOSMF_HOST=river.zowe.org
-fi
-if [ -z "$FVT_ZOSMF_PORT" ]; then
-  FVT_ZOSMF_PORT=10443
 fi
 echo
 
