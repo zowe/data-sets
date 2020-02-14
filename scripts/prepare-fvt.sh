@@ -88,12 +88,12 @@ echo
 ################################################################################
 echo "[${SCRIPT_NAME}] find data-sets api jar"
 cd "${ROOT_DIR}"
-DATA_SETS_API_JAR=$(find data-sets-api-server -type file -name 'data-sets-api-server-*-boot.jar')
+DATA_SETS_API_JAR=$(find data-sets-api-server -type f -name 'data-sets-api-server-*-boot.jar')
 if [ -z "${DATA_SETS_API_JAR}" ]; then
   echo "[${SCRIPT_NAME}] build data-sets api"
   ./bootstrap_gradlew.sh
   ./gradlew assemble
-  DATA_SETS_API_JAR=$(find data-sets-api-server -type file -name 'data-sets-api-server-*-boot.jar')
+  DATA_SETS_API_JAR=$(find data-sets-api-server -type f -name 'data-sets-api-server-*-boot.jar')
 fi
 if [ -z "${DATA_SETS_API_JAR}" ]; then
   echo "[${SCRIPT_NAME}][error] failed to find data-sets api jar."
