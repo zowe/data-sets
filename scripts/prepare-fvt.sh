@@ -217,7 +217,7 @@ sed -e "s#{ARTIFACT}#${FVT_APIML_ARTIFACT}#g" \
     scripts/fvt/artifactory-download-spec.json.template > ${FVT_WORKSPACE}/artifactory-download-spec.json
 cat ${FVT_WORKSPACE}/artifactory-download-spec.json
 echo "[${SCRIPT_NAME}] download APIML to target test folder"
-# jfrog rt dl --spec=${FVT_WORKSPACE}/artifactory-download-spec.json
+jfrog rt dl --spec=${FVT_WORKSPACE}/artifactory-download-spec.json
 cd "${FVT_WORKSPACE}"
 APIML_JAR=$(find . -name 'gateway-service.jar')
 if [ -z "${APIML_JAR}" ]; then
