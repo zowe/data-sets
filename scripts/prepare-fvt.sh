@@ -294,7 +294,7 @@ java -Xms32m -Xmx256m \
     -Dapiml.service.ipAddress=127.0.0.1 \
     -Dapiml.service.preferIpAddress=true \
     -Dapiml.discovery.staticApiDefinitionsDirectories=${APIML_STATIC_DEF} \
-    -Dapiml.security.ssl.verifySslCertificatesOfServices=true \
+    -Dapiml.security.ssl.verifySslCertificatesOfServices=false \
     -Dserver.ssl.enabled=true \
     -Dserver.ssl.keyStore=${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}/localhost.keystore.p12 \
     -Dserver.ssl.keyStoreType=PKCS12 \
@@ -322,7 +322,7 @@ java -Xms32m -Xmx256m \
     -Dapiml.service.preferIpAddress=true \
     -Denvironment.ipAddress=127.0.0.1 \
     -Dapiml.gateway.timeoutMillis=30000 \
-    -Dapiml.security.ssl.verifySslCertificatesOfServices=true \
+    -Dapiml.security.ssl.verifySslCertificatesOfServices=false \
     -Dapiml.security.auth.zosmfServiceId=zosmf \
     -Dserver.address=0.0.0.0 \
     -Dserver.ssl.enabled=true \
