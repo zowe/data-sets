@@ -1,0 +1,11 @@
+{
+  "files": [{
+    "pattern": "{ARTIFACT}",
+    "target": "{TARGET}",
+    "flat": "true",
+    "explode": "{EXPLODE}",
+    "sortBy": ["created"],
+    "sortOrder": "desc",
+    "limit": 1
+  }]
+}
