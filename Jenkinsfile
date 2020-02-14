@@ -110,16 +110,13 @@ node('ibm-jenkins-slave-nvm') {
           passwordVariable: 'FVT_SERVER_SSH_PASSWORD'
         )
       ]) {
-        withEnv([
-          "FVT_ZOSMF_HOST=${params.INTEGRATION_TEST_ZOSMF_HOST}",
-          "FVT_ZOSMF_PORT=${params.INTEGRATION_TEST_ZOSMF_PORT}",
-          "FVT_SERVER_SSH_HOST=${params.INTEGRATION_TEST_ZOSMF_HOST}",
-          "FVT_SERVER_SSH_PORT=${params.INTEGRATION_TEST_SSH_PORT}",
-          "FVT_SERVER_DIRECTORY_ROOT=${params.INTEGRATION_TEST_DIRECTORY_ROOT}",
-          "FVT_UID=${uniqueBuildId}"
-        ]) {
-          sh 'scripts/prepare-fvt.sh'
-        }
+        sh """FVT_ZOSMF_HOST=${params.INTEGRATION_TEST_ZOSMF_HOST} \
+  FVT_ZOSMF_PORT=${params.INTEGRATION_TEST_ZOSMF_PORT} \
+  FVT_SERVER_SSH_HOST=${params.INTEGRATION_TEST_ZOSMF_HOST} \
+  FVT_SERVER_SSH_PORT=${params.INTEGRATION_TEST_SSH_PORT} \
+  FVT_SERVER_DIRECTORY_ROOT=${params.INTEGRATION_TEST_DIRECTORY_ROOT} \
+  FVT_UID=${uniqueBuildId} \
+  ./scripts/prepare-fvt.sh"""
       }
 
       // give it a little time to start the server
