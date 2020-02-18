@@ -144,7 +144,7 @@ node('ibm-jenkins-slave-nvm') {
       ]) {
         sh """./gradlew runIntegrationTests \
 -Pserver.host=localhost \
--Pserver.port=${FVT_GATEWAY_PORT} \
+-Pserver.port=7554 \
 -Pserver.username=${USERNAME} \
 -Pserver.password=${PASSWORD} \
 -Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}"""

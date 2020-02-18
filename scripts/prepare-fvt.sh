@@ -37,7 +37,7 @@ FVT_KEYSTORE_DIR=keystore
 FVT_CONFIG_DIR=configs
 FVT_DISCOVERY_PORT=7552
 FVT_GATEWAY_PORT=7554
-FVT_API_PORT=10010
+FVT_API_PORT=8443
 
 ################################################################################
 # validate parameters
