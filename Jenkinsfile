@@ -132,7 +132,7 @@ node('ibm-jenkins-slave-nvm') {
       }
 
       // give it a little time to start the server
-      sleep time: 2, unit: 'MINUTES'
+      sleep time: 4, unit: 'MINUTES'
 
       echo "Starting test ..."
       withCredentials([
