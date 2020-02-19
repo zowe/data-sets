@@ -190,7 +190,7 @@ node('ibm-jenkins-slave-nvm') {
       // display fvt test logs
       // this should match FVT_WORKSPACE and FVT_LOGS_DIR defined in scripts/prepare-fvt.sh
       dir('.fvt/logs') {
-        sh "find . -type f | xargs -i sh -c 'echo \">>>>>>>>>>>>>>>>>>>>>>>> {} >>>>>>>>>>>>>>>>>>>>>>>\" && cat {}"
+        sh "find . -type f | xargs -i sh -c 'echo \">>>>>>>>>>>>>>>>>>>>>>>> {} >>>>>>>>>>>>>>>>>>>>>>>\" && cat {}'"
       }
       // clean up integration test folder
       if (uniqueBuildId) {
