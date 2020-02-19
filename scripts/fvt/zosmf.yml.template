@@ -9,8 +9,8 @@ services:
       routes:
         - gatewayUrl: api/v1                                      
           serviceRelativeUrl: /                                   
-      authentication:
-          scheme: zosmf                                           
+      # authentication:
+      #     scheme: zosmf                                           
       apiInfo:                                                    
         - apiId: com.ibm.zosmf
           gatewayUrl: api/v1
