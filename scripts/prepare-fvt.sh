@@ -35,6 +35,7 @@ FVT_APIML_DIR=api-layer
 FVT_DATASETS_API_DIR=data-sets
 FVT_KEYSTORE_DIR=keystore
 FVT_CONFIG_DIR=configs
+FVT_LOGS_DIR=logs
 FVT_DISCOVERY_PORT=7552
 FVT_GATEWAY_PORT=7554
 FVT_API_PORT=8443
@@ -105,14 +106,12 @@ echo
 
 ################################################################################
 echo "[${SCRIPT_NAME}] prepare FVT workspace"
-# if [ -d "${FVT_WORKSPACE}" ]; then
-#   rm -fr "${FVT_WORKSPACE}"
-# fi
+rm -fr "${FVT_WORKSPACE}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_APIML_DIR}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_DATASETS_API_DIR}"
-rm -fr "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}"
 mkdir -p "${FVT_WORKSPACE}/${FVT_CONFIG_DIR}"
+mkdir -p "${FVT_WORKSPACE}/${FVT_LOGS_DIR}"
 echo
 
 ################################################################################
@@ -273,7 +272,8 @@ java -Xms16m -Xmx512m \
     -Dgateway.httpsPort=${FVT_DISCOVERY_PORT} \
     -Dgateway.ipAddress=localhost \
     -Dspring.main.banner-mode=off \
-    -jar "${DATA_SETS_API_JAR}" &
+    -jar "${DATA_SETS_API_JAR}" \
+    > "${FVT_WORKSPACE}/${FVT_LOGS_DIR}/data-sets-api.log" &
 echo 
 
 ################################################################################
@@ -305,7 +305,8 @@ java -Xms32m -Xmx256m \
     -Dserver.ssl.trustStoreType=PKCS12 \
     -Dserver.ssl.trustStorePassword=password \
     -Djava.protocol.handler.pkgs=com.ibm.crypto.provider \
-    -jar "${FVT_WORKSPACE}/api-layer/discovery-service.jar" &
+    -jar "${FVT_WORKSPACE}/api-layer/discovery-service.jar" \
+    > "${FVT_WORKSPACE}/${FVT_LOGS_DIR}/discovery-service.log" &
 echo
 
 ################################################################################
@@ -335,7 +336,8 @@ java -Xms32m -Xmx256m \
     -Dserver.ssl.trustStoreType=PKCS12 \
     -Dserver.ssl.trustStorePassword=password \
     -Djava.protocol.handler.pkgs=com.ibm.crypto.provider \
-    -jar "${FVT_WORKSPACE}/api-layer/gateway-service.jar" &
+    -jar "${FVT_WORKSPACE}/api-layer/gateway-service.jar" \
+    > "${FVT_WORKSPACE}/${FVT_LOGS_DIR}/gateway-service.log"  &
 echo
 
 ################################################################################
