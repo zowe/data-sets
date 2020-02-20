@@ -10,6 +10,7 @@
 package org.zowe.unix.files.tests;
 
 import io.restassured.RestAssured;
+import io.restassured.http.Header;
 
 import org.apache.http.HttpStatus;
 import org.junit.BeforeClass;
@@ -30,6 +31,7 @@ public class AbstractUnixFilesIntegrationTest extends AbstractFilesIntegrationTe
 
     static final String UNIX_FILES_ENDPOINT = "unixfiles";
     static final String TEST_DIRECTORY = System.getProperty("server.test.directory");
+    static final Header AUTH_HEADER = new Header("Authorization", "Bearer " + AUTH_TOKEN);
 
     @BeforeClass
     public static void setUpEndpoint() throws Exception {
@@ -37,7 +39,7 @@ public class AbstractUnixFilesIntegrationTest extends AbstractFilesIntegrationTe
     }
 
     public static void testGetDirectory(String directoryPath, UnixDirectoryChild[] expectedChildren) throws Exception {
-        UnixDirectoryAttributesWithChildren response = RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN)
+        UnixDirectoryAttributesWithChildren response = RestAssured.given().header(AUTH_HEADER)
                 .when().get("?path=" + directoryPath).then()
                 .statusCode(HttpStatus.SC_OK).extract().body().as(UnixDirectoryAttributesWithChildren.class);
 

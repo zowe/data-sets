@@ -64,7 +64,7 @@ public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractUnixFil
         final String testDirectoryPath = TEST_DIRECTORY + "/directoryWithoutAccess";
         ApiError expectedError = new UnauthorisedDirectoryException(testDirectoryPath).getApiError();
         
-        RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN).when().get("?path=" + testDirectoryPath).then()
+        RestAssured.given().header(AUTH_HEADER).when().get("?path=" + testDirectoryPath).then()
             .statusCode(HttpStatus.SC_FORBIDDEN).contentType(ContentType.JSON)
             .body("message", equalTo(expectedError.getMessage()));
     }
@@ -75,7 +75,7 @@ public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractUnixFil
         ZoweApiRestException expected = new PathNameNotValidException(invalidPath);
         ApiError expectedError = expected.getApiError();
         
-        RestAssured.given().header("Authorization", "Bearer " + AUTH_TOKEN).when().get("?path=" + invalidPath).then()
+        RestAssured.given().header(AUTH_HEADER).when().get("?path=" + invalidPath).then()
             .statusCode(HttpStatus.SC_BAD_REQUEST).contentType(ContentType.JSON)
             .body("message", equalTo(expectedError.getMessage()));
     }
