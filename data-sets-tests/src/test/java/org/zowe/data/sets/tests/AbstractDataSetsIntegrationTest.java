@@ -72,7 +72,7 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractFilesInteg
 
     static Response putDataSetContent(String dataSetName, DataSetContent body, String etag) {
         return RestAssured.given().contentType("application/json").body(body)
-                .header("If-Match", etag, AUTH_HEADER).when()
+                .header("If-Match", etag).header(AUTH_HEADER).when()
                 .put(dataSetName + "/content");
     }
 

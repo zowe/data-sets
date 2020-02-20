@@ -99,7 +99,7 @@ public class UnixFilesDeleteFileIntegrationTest extends AbstractUnixFilesIntegra
     public void testDeleteUnixNonEmptyDirectoryWithHeader() throws Exception {
         final String deleteNonEmptyDirectoryWithHeader = TEST_DIRECTORY + "/deleteTestDirectoryAccess/nestedDir";
 
-        RestAssured.given().header("recursive", true, AUTH_HEADER).when().delete(deleteNonEmptyDirectoryWithHeader).then()
+        RestAssured.given().header("recursive", true).header(AUTH_HEADER).when().delete(deleteNonEmptyDirectoryWithHeader).then()
                 .statusCode(HttpStatus.SC_NO_CONTENT);
         
         ApiError expectedError = new FileNotFoundException(deleteNonEmptyDirectoryWithHeader).getApiError();

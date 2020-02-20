@@ -36,7 +36,7 @@ public class UnixFilesGetFileContentIntegrationTest extends AbstractUnixFilesInt
     
     @Test
     public void testGetUnixFileContentWithConvertTrue() throws Exception {
-         RestAssured.given().header("Convert", true, AUTH_HEADER).when().get(TEST_DIRECTORY + "/fileWithAccessAscii")
+         RestAssured.given().header("Convert", true).header(AUTH_HEADER).when().get(TEST_DIRECTORY + "/fileWithAccessAscii")
             .then().statusCode(HttpStatus.SC_OK)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(multiLineTestString + "\n"));
@@ -44,7 +44,7 @@ public class UnixFilesGetFileContentIntegrationTest extends AbstractUnixFilesInt
 
     @Test
     public void testGetUnixFileContentWithConvertFalse() throws Exception {
-         RestAssured.given().header("Convert", false, AUTH_HEADER).when().get(TEST_DIRECTORY + "/fileWithAccessEbcdic")
+         RestAssured.given().header("Convert", false).header(AUTH_HEADER).when().get(TEST_DIRECTORY + "/fileWithAccessEbcdic")
             .then().statusCode(HttpStatus.SC_OK)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(multiLineTestString + "\n"));
