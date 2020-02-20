@@ -65,12 +65,14 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractFilesInteg
     }
 
     static Response getDataSetContent(String dataSetName) {
-        return RestAssured.given().header(AUTH_HEADER).when().get(dataSetName + "/content");
+        RequestSpecification requestSpecification = new RequestSpecBuilder().setUrlEncodingEnabled(false).build();
+        return RestAssured.given().spec(requestSpecification).header(AUTH_HEADER).when().get(dataSetName + "/content");
     }
 
     static Response putDataSetContent(String dataSetName, DataSetContent body) {
-        RequestSpecification mySpec = new RequestSpecBuilder().setUrlEncodingEnabled(false).build();
-        return RestAssured.given().spec(mySpec).header(AUTH_HEADER).contentType("application/json").body(body).when().put(dataSetName + "/content");
+        RequestSpecification requestSpecification = new RequestSpecBuilder().setUrlEncodingEnabled(false).build();
+        return RestAssured.given().spec(requestSpecification).header(AUTH_HEADER).contentType("application/json")
+                .body(body).when().put(dataSetName + "/content");
     }
 
     static Response putDataSetContent(String dataSetName, DataSetContent body, String etag) {
