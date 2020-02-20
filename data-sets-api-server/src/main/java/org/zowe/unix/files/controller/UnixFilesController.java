@@ -125,6 +125,10 @@ public class UnixFilesController {
 
         unixFileService.createUnixAsset(getPathFromRequest(request), input);
         URI location = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri();
+        System.out.println("Hello world");
+        System.out.println(ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString());
+        System.out.println(ServletUriComponentsBuilder.fromCurrentServletMapping().build().toUriString());
+        System.out.println(ServletUriComponentsBuilder.fromCurrentRequest().toUriString());
         return ResponseEntity.created(location).build();
     }
 }
