@@ -10,8 +10,10 @@
 package org.zowe.data.sets.tests;
 
 import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.Header;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 
 import org.apache.http.HttpStatus;
 import org.junit.BeforeClass;
@@ -67,7 +69,8 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractFilesInteg
     }
 
     static Response putDataSetContent(String dataSetName, DataSetContent body) {
-        return RestAssured.given().header(AUTH_HEADER).contentType("application/json").body(body).when().put(dataSetName + "/content");
+        RequestSpecification mySpec = new RequestSpecBuilder().setUrlEncodingEnabled(false).build();
+        return RestAssured.given().spec(mySpec).header(AUTH_HEADER).contentType("application/json").body(body).when().put(dataSetName + "/content");
     }
 
     static Response putDataSetContent(String dataSetName, DataSetContent body, String etag) {
