@@ -125,8 +125,8 @@ public class UnixFilesController {
 
         unixFileService.createUnixAsset(getPathFromRequest(request), input);
         System.out.println("Hello world");
-        System.out.println(ServletUriComponentsBuilder.fromCurrentContextPath().port(System.getProperty("gateway.httpsPort")).build().toUriString());
-        URI location = ServletUriComponentsBuilder.fromCurrentContextPath().port(System.getProperty("gateway.httpsPort")).build().toUri();
+        System.out.println(ServletUriComponentsBuilder.fromCurrentContextPath().port(System.getProperty("gateway.httpsPort")).path(getPathFromRequest(request)).build().toUriString());
+        URI location = ServletUriComponentsBuilder.fromCurrentContextPath().port(System.getProperty("gateway.httpsPort")).path(getPathFromRequest(request)).build().toUri();
         return ResponseEntity.created(location).build();
     }
 }
