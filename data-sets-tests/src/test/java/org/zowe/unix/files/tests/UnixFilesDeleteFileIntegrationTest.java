@@ -29,7 +29,7 @@ public class UnixFilesDeleteFileIntegrationTest extends AbstractUnixFilesIntegra
     public void testDeleteUnixFileContent() throws Exception {
         final String fvtDeleteFile = TEST_DIRECTORY + "/deleteTestDirectoryAccess/deleteFileWithWritePermission";
 
-        RestAssured.given().when().delete(fvtDeleteFile).then().statusCode(HttpStatus.SC_NO_CONTENT);
+        RestAssured.given().header(AUTH_HEADER).when().delete(fvtDeleteFile).then().statusCode(HttpStatus.SC_NO_CONTENT);
         
         ApiError expectedError = new FileNotFoundException(fvtDeleteFile).getApiError();
         
@@ -99,7 +99,7 @@ public class UnixFilesDeleteFileIntegrationTest extends AbstractUnixFilesIntegra
     public void testDeleteUnixNonEmptyDirectoryWithHeader() throws Exception {
         final String deleteNonEmptyDirectoryWithHeader = TEST_DIRECTORY + "/deleteTestDirectoryAccess/nestedDir";
 
-        RestAssured.given().header("recursive", true).when().delete(deleteNonEmptyDirectoryWithHeader).then()
+        RestAssured.given().header("recursive", true, AUTH_HEADER).when().delete(deleteNonEmptyDirectoryWithHeader).then()
                 .statusCode(HttpStatus.SC_NO_CONTENT);
         
         ApiError expectedError = new FileNotFoundException(deleteNonEmptyDirectoryWithHeader).getApiError();
