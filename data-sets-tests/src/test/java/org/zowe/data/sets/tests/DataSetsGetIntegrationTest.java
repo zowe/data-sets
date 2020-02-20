@@ -69,7 +69,7 @@ public class DataSetsGetIntegrationTest extends AbstractDataSetsIntegrationTest 
         try {
             DataSet expected = DataSet.builder().name(TEMP_DATA_SET).migrated(false).build();
 
-            List<DataSet> actual = getDataSets(TEMP_DATA_SET).then().statusCode(HttpStatus.SC_OK).extract()
+            List<DataSet> actual = getDataSets(TEMP_DATA_SET).then().log().all().statusCode(HttpStatus.SC_OK).extract()
                     .body().jsonPath().getList("items", DataSet.class);
             assertThat(actual, hasItem(expected));
         } finally {
