@@ -76,7 +76,8 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractFilesInteg
     }
 
     static Response putDataSetContent(String dataSetName, DataSetContent body, String etag) {
-        return RestAssured.given().contentType("application/json").body(body)
+        RequestSpecification requestSpecification = new RequestSpecBuilder().setUrlEncodingEnabled(false).build();
+        return RestAssured.given().spec(requestSpecification).contentType("application/json").body(body)
                 .header("If-Match", etag).header(AUTH_HEADER).when()
                 .put(dataSetName + "/content");
     }
@@ -104,7 +105,8 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractFilesInteg
     }
 
     static Response deleteDataSet(String dataSetName) {
-        return RestAssured.given().header(AUTH_HEADER).when().delete(dataSetName);
+        RequestSpecification requestSpecification = new RequestSpecBuilder().setUrlEncodingEnabled(false).build();
+        return RestAssured.given().spec(requestSpecification).header(AUTH_HEADER).when().delete(dataSetName);
     }
 
     static String getDataSetMemberPath(String pds, String member) {
