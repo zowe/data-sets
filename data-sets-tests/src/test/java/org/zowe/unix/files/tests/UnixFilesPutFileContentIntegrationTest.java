@@ -34,7 +34,7 @@ public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesInt
             .then().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
         
-        RestAssured.given().when().get(TEST_DIRECTORY + "/editableFile")
+        RestAssured.given().header(AUTH_HEADER).when().get(TEST_DIRECTORY + "/editableFile")
             .then().statusCode(HttpStatus.SC_OK)
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(content.getContent()));
     }
