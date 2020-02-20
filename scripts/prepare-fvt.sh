@@ -269,7 +269,7 @@ java -Xms16m -Xmx512m \
     -Dserver.ssl.keyStorePassword=password \
     -Dserver.ssl.keyStoreType=PKCS12 \
     -Dserver.compression.enabled=true \
-    -Dgateway.httpsPort=${FVT_DISCOVERY_PORT} \
+    -Dgateway.httpsPort=${FVT_GATEWAY_PORT} \
     -Dgateway.ipAddress=localhost \
     -Dspring.main.banner-mode=off \
     -jar "${DATA_SETS_API_JAR}" \
