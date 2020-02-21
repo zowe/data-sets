@@ -63,7 +63,7 @@ public class ListUnixDirectoryZosmfRunnerTest extends AbstractZosmfRequestRunner
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
-        assertEquals(expectedListedDirectory, new ListUnixDirectoryZosmfRunner(path).run(zosmfConnector));
+        assertEquals(expectedListedDirectory, new ListUnixDirectoryZosmfRunner(path, "http://localhost").run(zosmfConnector));
 
         verifyInteractions(requestBuilder, true);
     }
@@ -78,7 +78,7 @@ public class ListUnixDirectoryZosmfRunnerTest extends AbstractZosmfRequestRunner
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/fs?path=%s", path));
         when(zosmfConnector.request(requestBuilder)).thenReturn(response);
 
-        shouldThrow(expectedException, () -> new ListUnixDirectoryZosmfRunner(path).run(zosmfConnector));
+        shouldThrow(expectedException, () -> new ListUnixDirectoryZosmfRunner(path, "http://localhost").run(zosmfConnector));
         verifyInteractions(requestBuilder, true);
     }
 

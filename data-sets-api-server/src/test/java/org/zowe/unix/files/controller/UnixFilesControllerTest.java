@@ -79,13 +79,13 @@ public class UnixFilesControllerTest extends ApiControllerTest {
             .size(8192).lastModified("2019-02-03T16:04:19").children(children).build();
         String path = "/u/ibmuser";
 
-        when(unixFilesService.listUnixDirectory(path)).thenReturn(listedDirectory);
+        when(unixFilesService.listUnixDirectory(path, "http://localhost/api/v1/unixfiles")).thenReturn(listedDirectory);
 
         mockMvc.perform(get(ENDPOINT_ROOT + "?path={path}", path)).andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(content().string(JsonUtils.convertToJsonString(listedDirectory)));
 
-        verify(unixFilesService, times(1)).listUnixDirectory(path);
+        verify(unixFilesService, times(1)).listUnixDirectory(path, "http://localhost/api/v1/unixfiles");
         verifyNoMoreInteractions(unixFilesService);
     }
 
@@ -96,14 +96,14 @@ public class UnixFilesControllerTest extends ApiControllerTest {
         String errorMessage = String.format("You are not authorised to access directory ''{0}''", invalidPath);
         ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.FORBIDDEN).build();
 
-        when(unixFilesService.listUnixDirectory(invalidPath)).thenThrow(new ZoweApiErrorException(expectedError));
+        when(unixFilesService.listUnixDirectory(invalidPath, "http://localhost/api/v1/unixfiles")).thenThrow(new ZoweApiErrorException(expectedError));
 
         mockMvc.perform(get(ENDPOINT_ROOT + "?path={path}", invalidPath))
             .andExpect(status().is(expectedError.getStatus().value()))
             .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
             .andExpect(jsonPath("$.message").value(errorMessage));
 
-        verify(unixFilesService, times(1)).listUnixDirectory(invalidPath);
+        verify(unixFilesService, times(1)).listUnixDirectory(invalidPath, "http://localhost/api/v1/unixfiles");
         verifyNoMoreInteractions(unixFilesService);
     }
 

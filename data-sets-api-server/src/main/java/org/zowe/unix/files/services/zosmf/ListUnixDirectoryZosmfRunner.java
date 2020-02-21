@@ -15,13 +15,7 @@ import com.google.gson.JsonObject;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.client.utils.URIUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.HandlerMapping;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.ResponseCache;
@@ -31,8 +25,6 @@ import org.zowe.unix.files.exceptions.UnauthorisedDirectoryException;
 import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.unix.files.model.UnixDirectoryChild;
 import org.zowe.unix.files.model.UnixEntityType;
-
-import javax.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
 import java.net.URI;
