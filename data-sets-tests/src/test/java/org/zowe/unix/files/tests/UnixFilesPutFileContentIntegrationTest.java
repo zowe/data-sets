@@ -76,7 +76,7 @@ public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesInt
     public void testPutUnixFileContentWithCorrectIfMatch() throws Exception {
         final UnixFileContent content = new UnixFileContent("New testable content \\n testPutUnixFileContentWithCorrectIfMatch");
         
-        String eTag = RestAssured.given().when().get(TEST_DIRECTORY + "/editableFile")
+        String eTag = RestAssured.given().header(AUTH_HEADER).when().get(TEST_DIRECTORY + "/editableFile")
             .then().statusCode(HttpStatus.SC_OK)
             .extract().header("ETag");
         
