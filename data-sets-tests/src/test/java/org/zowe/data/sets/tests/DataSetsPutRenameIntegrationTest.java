@@ -36,6 +36,8 @@ public class DataSetsPutRenameIntegrationTest extends AbstractDataSetsIntegratio
 
     @BeforeClass
     public static void createTempDataSets() throws Exception {
+        deleteDataSet(TEMP_OLD_SEQ);    // Make sure previous test didn't leave anything behind
+        deleteDataSet(TEMP_OLD_PDS);
         DataSetCreateRequest sdsRequest = createSdsRequest(TEMP_OLD_SEQ);
         createDataSet(sdsRequest).then().statusCode(HttpStatus.SC_CREATED);
         createPdsWithMembers(TEMP_OLD_PDS, TEMP_OLD_MEMBER, TEMP_EXIST_MEMBER1, TEMP_EXIST_MEMBER2);
@@ -43,9 +45,9 @@ public class DataSetsPutRenameIntegrationTest extends AbstractDataSetsIntegratio
 
     @AfterClass
     public static void cleanUp() throws Exception {
-        deleteDataSet(TEMP_OLD_SEQ); //This may still exist if test to rename failed
-        deleteDataSet(TEMP_NEW_SEQ).then().statusCode(HttpStatus.SC_NO_CONTENT);
-        deleteDataSet(TEMP_OLD_PDS).then().statusCode(HttpStatus.SC_NO_CONTENT);
+        deleteDataSet(TEMP_OLD_SEQ);    // This may still exist if test to rename failed
+        deleteDataSet(TEMP_OLD_PDS);
+        deleteDataSet(TEMP_NEW_SEQ);
     }
 
     @Test
