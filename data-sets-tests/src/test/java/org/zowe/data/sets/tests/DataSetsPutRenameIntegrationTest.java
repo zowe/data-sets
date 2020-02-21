@@ -113,6 +113,6 @@ public class DataSetsPutRenameIntegrationTest extends AbstractDataSetsIntegratio
     
     private Response putDataSetRename(String oldDataSetName, DataSetRenameRequest body) {
         RequestSpecification requestSpecification = new RequestSpecBuilder().setUrlEncodingEnabled(false).build();
-        return RestAssured.given().spec(requestSpecification).contentType("application/json").body(body).when().put(oldDataSetName + "/rename");
+        return RestAssured.given().header(AUTH_HEADER).spec(requestSpecification).contentType("application/json").body(body).when().put(oldDataSetName + "/rename");
     }
 }
