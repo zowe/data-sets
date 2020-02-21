@@ -24,8 +24,8 @@ public class ZosmfUnixFilesService implements UnixFilesService {
     ZosmfConnector zosmfConnector;
     
     @Override
-    public UnixDirectoryAttributesWithChildren listUnixDirectory(String path) {
-        ListUnixDirectoryZosmfRunner runner = new ListUnixDirectoryZosmfRunner(path);
+    public UnixDirectoryAttributesWithChildren listUnixDirectory(String path, String hypermediaLinkToBase) {
+        ListUnixDirectoryZosmfRunner runner = new ListUnixDirectoryZosmfRunner(path, hypermediaLinkToBase);
         return runner.run(zosmfConnector);
     }
 

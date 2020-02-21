@@ -52,7 +52,7 @@ public class DataSetsPutRenameIntegrationTest extends AbstractDataSetsIntegratio
 
     @Test
     public void testRenameSequentialDataSet() throws Exception {
-        putDataSetRename(TEMP_OLD_SEQ, DataSetRenameRequest.builder().newName(TEMP_NEW_SEQ).build()).then().log().all()
+        putDataSetRename(TEMP_OLD_SEQ, DataSetRenameRequest.builder().newName(TEMP_NEW_SEQ).build()).then()
             .statusCode(HttpStatus.SC_NO_CONTENT);
         getDataSetContent(TEMP_NEW_SEQ).then().statusCode(HttpStatus.SC_OK);
         getDataSetContent(TEMP_OLD_SEQ).then().statusCode(HttpStatus.SC_NOT_FOUND);
@@ -63,7 +63,7 @@ public class DataSetsPutRenameIntegrationTest extends AbstractDataSetsIntegratio
         String oldName = TEMP_OLD_PDS+"("+TEMP_OLD_MEMBER+")";
         String newName = TEMP_OLD_PDS+"("+TEMP_NEW_MEMBER+")";
         
-        putDataSetRename(oldName, DataSetRenameRequest.builder().newName(newName).build()).then().log().all()
+        putDataSetRename(oldName, DataSetRenameRequest.builder().newName(newName).build()).then()
             .statusCode(HttpStatus.SC_NO_CONTENT);
         getDataSetContent(newName).then().statusCode(HttpStatus.SC_OK);
         getDataSetContent(oldName).then().statusCode(HttpStatus.SC_NOT_FOUND);
@@ -75,7 +75,7 @@ public class DataSetsPutRenameIntegrationTest extends AbstractDataSetsIntegratio
         String newName = TEMP_OLD_PDS+"("+"DEF"+")";
         
         //non existent member name is PDS throw NOT FOUND
-        putDataSetRename(oldName, DataSetRenameRequest.builder().newName(newName).build()).then().log().all()
+        putDataSetRename(oldName, DataSetRenameRequest.builder().newName(newName).build()).then()
             .statusCode(HttpStatus.SC_NOT_FOUND);
     }
     
@@ -85,7 +85,7 @@ public class DataSetsPutRenameIntegrationTest extends AbstractDataSetsIntegratio
         String newName = "NewExist.ABC";
         
         //non existent dataset name is PDS throw INTERNAL ERROR, zosmf throw very general 500 exception
-        putDataSetRename(oldName, DataSetRenameRequest.builder().newName(newName).build()).then().log().all()
+        putDataSetRename(oldName, DataSetRenameRequest.builder().newName(newName).build()).then()
             .statusCode(HttpStatus.SC_BAD_REQUEST);
     }
     
@@ -95,7 +95,7 @@ public class DataSetsPutRenameIntegrationTest extends AbstractDataSetsIntegratio
         //invalid new name where member name length greater than length 8
         String newName = TEMP_OLD_PDS+"("+TEMP_NEW_MEMBER+"ABCDEFGH)";
         
-        putDataSetRename(oldName, DataSetRenameRequest.builder().newName(newName).build()).then().log().all()
+        putDataSetRename(oldName, DataSetRenameRequest.builder().newName(newName).build()).then()
             .statusCode(HttpStatus.SC_BAD_REQUEST);
     }
     
@@ -107,12 +107,13 @@ public class DataSetsPutRenameIntegrationTest extends AbstractDataSetsIntegratio
         String newName = TEMP_OLD_PDS+"("+TEMP_EXIST_MEMBER2+")";
         
         //non existent dataset name is PDS throw INTERNAL ERROR, zosmf throw very general 500 exception
-        putDataSetRename(oldName, DataSetRenameRequest.builder().newName(newName).build()).then().log().all()
+        putDataSetRename(oldName, DataSetRenameRequest.builder().newName(newName).build()).then()
             .statusCode(HttpStatus.SC_BAD_REQUEST).content("message", org.hamcrest.Matchers.containsString("exists")); 
     }
     
     private Response putDataSetRename(String oldDataSetName, DataSetRenameRequest body) {
         RequestSpecification requestSpecification = new RequestSpecBuilder().setUrlEncodingEnabled(false).build();
-        return RestAssured.given().header(AUTH_HEADER).spec(requestSpecification).contentType("application/json").body(body).when().put(oldDataSetName + "/rename");
+        return RestAssured.given().header(AUTH_HEADER).spec(requestSpecification).contentType("application/json")
+                .body(body).when().put(oldDataSetName + "/rename");
     }
 }

@@ -15,9 +15,13 @@ import com.google.gson.JsonObject;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.client.utils.URIUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.HandlerMapping;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.ResponseCache;
@@ -41,10 +45,13 @@ public class ListUnixDirectoryZosmfRunner extends AbstractZosmfRequestRunner<Uni
     @Autowired
     ZosmfConnector zosmfConnector;
     
+    
     private String path;
+    private String hypermediaLinkToBase;
 
-    public ListUnixDirectoryZosmfRunner(String path) {
+    public ListUnixDirectoryZosmfRunner(String path, String hypermediaLinkToBase) {
         this.path = path;
+        this.hypermediaLinkToBase = hypermediaLinkToBase;
     }
 
     @Override
@@ -109,8 +116,7 @@ public class ListUnixDirectoryZosmfRunner extends AbstractZosmfRequestRunner<Uni
     }
 
     private String constructLinkString(String fileName) {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        String requestURL = request.getRequestURL().toString();
+        String requestURL = this.hypermediaLinkToBase;
         if (requestURL.charAt(requestURL.length() - 1) == '/') {
             requestURL = requestURL.substring(0, requestURL.length() - 1);
         }

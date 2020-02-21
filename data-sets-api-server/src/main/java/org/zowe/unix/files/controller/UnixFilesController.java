@@ -53,8 +53,11 @@ public class UnixFilesController {
     @ApiOperation(value = "Get a list of a directories contents", nickname = "getDirectoryListing", notes = "This API gets a list of files and directories for a given path", tags = "Unix Files APIs")
     @ApiResponses({ @ApiResponse(code = 200, message = "Ok", response = UnixDirectoryAttributesWithChildren.class) })
     public UnixDirectoryAttributesWithChildren getUnixDirectoryListing(
-            @ApiParam(value = "Path of Directory to be listed", required = true) @RequestParam String path) {
-        return unixFileService.listUnixDirectory(path);
+            @ApiParam(value = "Path of Directory to be listed", required = true) @RequestParam String path, HttpServletRequest request) {
+        String locationPath = request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
+        String hypermediaLinkToBase = ServletUriComponentsBuilder.fromCurrentContextPath().port(System.getProperty("gateway.httpsPort"))
+                .path(locationPath).build().toString();
+        return unixFileService.listUnixDirectory(path, hypermediaLinkToBase);
     }
 
     private String getPathFromRequest(HttpServletRequest request) {
