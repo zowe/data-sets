@@ -53,7 +53,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UnixFilesControllerTest extends ApiControllerTest {
 
     private static final String ENDPOINT_ROOT = "/api/v1/unixfiles";
-    private static final String URI_BASE = "http://localhost/api/v1/unixfiles;";
+    private static final String URI_BASE = "http://localhost/api/v1/unixfiles";
 
     @Mock
     private UnixFilesService unixFilesService;
