@@ -35,6 +35,13 @@
       -ext san=dns:localhost,ip:127.0.0.1
   ```
 
+- Install, Configure and Start API Mediation layer
+
+  [API ML Quick Start](https://github.com/zowe/api-layer#quick-start) - 
+  The optional step of enabling z/OSMF Authentication is required, an api-definition file for the data-sets api service is also required. (Sample api-definition can be found in scripts/fvt/files-api.yml.template)
+
+
+
 - Start test server
 
   ```
@@ -46,19 +53,19 @@
     -Dserver.ssl.keyStorePassword=password \
     -Dserver.ssl.keyStoreType=PKCS12 \
     -Dserver.compression.enabled=true \
-    -Dzosmf.httpsPort=${ZOSMF_PORT} \
-    -Dzosmf.ipAddress=${ZOSMF_HOST} \
+    -Dgateway.httpsPort=${GATEWAY_PORT} \
+    -Dgateway.ipAddress=${GATEWAY_HOST} \
     -jar $(ls -1 data-sets-api-server/build/libs/data-sets-api-server-*-boot.jar) &
   ```
 
-  *Note: please replace the `${ZOSMF_PORT}` and `${ZOSMF_HOST}` variable in above with your z/OSMF server information.
+  *Note: please replace the `${GATEWAY_PORT}` and `${GATEWAY_HOST}` variable in above with your z/OSMF server information.
 
 - Run integration test
 
   ```
   ./gradlew runIntegrationTests \
     -Pserver.host=localhost \
-    -Pserver.port=8443 \
+    -Pserver.port=${GATEWAY_PORT} \
     -Pserver.username=${USERNAME} \
     -Pserver.password=${PASSWORD}
   ```
