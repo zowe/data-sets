@@ -64,8 +64,7 @@ public class ZosmfDataSetService implements DataSetService {
     
     @Override
     public String renameDataSet(String oldDataSetName, DataSetRenameRequest input) {
-        PutDataSetRenameZosmfRequestRunner runner = new PutDataSetRenameZosmfRequestRunner(oldDataSetName, 
-                input);
+        PutDataSetRenameZosmfRequestRunner runner = new PutDataSetRenameZosmfRequestRunner(oldDataSetName, input);
         return runner.run(zosmfConnector);
     }
 

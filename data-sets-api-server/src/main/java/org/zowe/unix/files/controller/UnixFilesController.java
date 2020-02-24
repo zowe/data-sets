@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponents;
 import org.zowe.unix.files.model.UnixCreateAssetRequest;
 import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.unix.files.model.UnixFileContent;
@@ -38,8 +39,6 @@ import org.zowe.unix.files.model.UnixFileContentWithETag;
 import org.zowe.unix.files.services.UnixFilesService;
 
 import javax.servlet.http.HttpServletRequest;
-
-import java.net.URI;
 
 @RestController
 @RequestMapping("/api/v1/unixfiles")
@@ -49,21 +48,27 @@ public class UnixFilesController {
     @Autowired
     private UnixFilesService unixFileService;
 
+    private String getPathFromRequest(HttpServletRequest request) {
+        String requestPath = request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
+        String fullPath = requestPath.substring(requestPath.indexOf("/api/v1/unixfiles") + 17);
+        return fullPath;
+    }
+    
+    private UriComponents getLinkToBaseURI(HttpServletRequest request) {
+        String requestMappingPath = request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
+        UriComponents baseURIForLinkTo = ServletUriComponentsBuilder.fromCurrentContextPath().port(System.getProperty("gateway.httpsPort"))
+                .path(requestMappingPath).build();
+        return baseURIForLinkTo;
+    }
+    
     @GetMapping(value = "", produces = { "application/json" })
     @ApiOperation(value = "Get a list of a directories contents", nickname = "getDirectoryListing", notes = "This API gets a list of files and directories for a given path", tags = "Unix Files APIs")
     @ApiResponses({ @ApiResponse(code = 200, message = "Ok", response = UnixDirectoryAttributesWithChildren.class) })
     public UnixDirectoryAttributesWithChildren getUnixDirectoryListing(
             @ApiParam(value = "Path of Directory to be listed", required = true) @RequestParam String path, HttpServletRequest request) {
-        String locationPath = request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
-        String hypermediaLinkToBase = ServletUriComponentsBuilder.fromCurrentContextPath().port(System.getProperty("gateway.httpsPort"))
-                .path(locationPath).build().toString();
+        
+        String hypermediaLinkToBase = getLinkToBaseURI(request).toString();
         return unixFileService.listUnixDirectory(path, hypermediaLinkToBase);
-    }
-
-    private String getPathFromRequest(HttpServletRequest request) {
-        String requestPath = request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
-        String fullPath = requestPath.substring(requestPath.indexOf("/api/v1/unixfiles") + 17);
-        return fullPath;
     }
 
     @GetMapping(value = "{path}/**", produces = { "application/json" })
@@ -125,10 +130,7 @@ public class UnixFilesController {
     @ApiResponses(value = { @ApiResponse(code = 201, message = "Created") })
     public ResponseEntity<?> createUnifFileOrDirectory(@PathVariable String path, HttpServletRequest request,
             @RequestBody UnixCreateAssetRequest input) {
-
-        unixFileService.createUnixAsset(getPathFromRequest(request), input);
-        String locationPath = request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
-        URI location = ServletUriComponentsBuilder.fromCurrentContextPath().port(System.getProperty("gateway.httpsPort")).path(locationPath).build().toUri();
-        return ResponseEntity.created(location).build();
+        unixFileService.createUnixAsset(getPathFromRequest(request), input);        
+        return ResponseEntity.created(getLinkToBaseURI(request).toUri()).build();
     }
 }

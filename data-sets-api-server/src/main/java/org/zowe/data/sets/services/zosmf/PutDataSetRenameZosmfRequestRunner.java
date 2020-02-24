@@ -31,7 +31,7 @@ import java.net.URISyntaxException;
 public class PutDataSetRenameZosmfRequestRunner extends AbstractZosmfDataSetsRequestRunner<String> {
     private DataSetRenameRequest request;
     private String oldDataSetName;
-    
+
     public PutDataSetRenameZosmfRequestRunner(String oldDataSetName, DataSetRenameRequest request) {
         this.oldDataSetName = oldDataSetName;
         this.request = request;
