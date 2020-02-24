@@ -58,7 +58,7 @@
     -jar $(ls -1 data-sets-api-server/build/libs/data-sets-api-server-*-boot.jar) &
   ```
 
-  *Note: please replace the `${GATEWAY_PORT}` and `${GATEWAY_HOST}` variable in above with your z/OSMF server information.
+  *Note: please replace the `${GATEWAY_PORT}` and `${GATEWAY_HOST}` variable in above with your API Gateway server information.
 
 - Run integration test
 
@@ -70,7 +70,7 @@
     -Pserver.password=${PASSWORD}
   ```
 
-  *Note: please replace the `${USERNAME}` and `${PASSWORD}` variable in above with your z/OSMF server information.
+  *Note: please replace the `${USERNAME}` and `${PASSWORD}` variable in above with your z/OS TSO user Credentials.
 
 ## Package and Deploy
 
