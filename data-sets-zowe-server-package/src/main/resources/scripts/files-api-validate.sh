@@ -44,4 +44,4 @@ fi
 
 . ${ROOT_DIR}/scripts/utils/validate-java.sh
 
-return $ERRORS_FOUND-$INITIAL_ERRORS_FOUND
+return $(($ERRORS_FOUND-$INITIAL_ERRORS_FOUND))

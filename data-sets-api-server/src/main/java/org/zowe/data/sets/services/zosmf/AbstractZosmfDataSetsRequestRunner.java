@@ -27,7 +27,7 @@ public abstract class AbstractZosmfDataSetsRequestRunner<T> extends AbstractZosm
 
     ZoweApiRestException createDataSetException(JsonObject jsonResponse, int statusCode, String dataSetName) {
         JsonElement details = jsonResponse.get("details");
-        if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
+        if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR && details != null) {
             if (details.toString().contains(AUTHORIZATION_FAILURE)) {
                 throw new UnauthorisedDataSetException(dataSetName);
             } else if (details.toString().contains("IEFA110I")) {
@@ -36,7 +36,7 @@ public abstract class AbstractZosmfDataSetsRequestRunner<T> extends AbstractZosm
                 String[] dataLine = array.get(array.size() - 1).getAsString().split("\\s+");
                 throw new DataSetLockedException(dataSetName, dataLine[0], dataLine[1], dataLine[2]);
             }
-        } else if (statusCode == HttpStatus.SC_NOT_FOUND) {
+        } else if (statusCode == HttpStatus.SC_NOT_FOUND && details != null) {
             if (details.toString().contains(DATA_SET_NOT_FOUND)) {
                 throw new DataSetNotFoundException(dataSetName);
             }

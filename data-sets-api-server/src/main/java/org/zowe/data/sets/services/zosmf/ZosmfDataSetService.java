@@ -17,6 +17,7 @@ import org.zowe.data.sets.model.DataSet;
 import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetContentWithEtag;
 import org.zowe.data.sets.model.DataSetCreateRequest;
+import org.zowe.data.sets.model.DataSetRenameRequest;
 import org.zowe.data.sets.services.DataSetService;
 
 @Service
@@ -58,6 +59,12 @@ public class ZosmfDataSetService implements DataSetService {
     public String putContent(String dataSetName, DataSetContentWithEtag contentWithEtag) {
         PutDataSetContentZosmfRequestRunner runner = new PutDataSetContentZosmfRequestRunner(dataSetName,
                 contentWithEtag);
+        return runner.run(zosmfConnector);
+    }
+    
+    @Override
+    public String renameDataSet(String oldDataSetName, DataSetRenameRequest input) {
+        PutDataSetRenameZosmfRequestRunner runner = new PutDataSetRenameZosmfRequestRunner(oldDataSetName, input);
         return runner.run(zosmfConnector);
     }
 
