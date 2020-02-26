@@ -15,6 +15,7 @@
 # - FILES_API_PORT - The port the data sets server will use
 # - KEY_ALIAS
 # - KEYSTORE - The keystore to use for SSL certificates
+# - KEYSTORE_TYPE - The keystore type to use for SSL certificates
 # - KEYSTORE_PASSWORD - The password to access the keystore supplied by KEYSTORE
 # - KEY_ALIAS - The alias of the key within the keystore
 # - ZOSMF_PORT - The SSL port z/OSMF is listening on.
