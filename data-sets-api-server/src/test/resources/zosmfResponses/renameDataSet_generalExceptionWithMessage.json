@@ -1,0 +1,22 @@
+{"zosmf":{
+"resource":"restfiles/ds/TEST.DIFF(ABC)",
+"body":{"request":"rename", "from-dataset":{"dsn":"TEST.PDS", "member":"ABC"} },
+"statusCode":500,
+"response": {
+  "category": 1,
+  "rc": 4,
+  "reason": 3,
+  "message": "when renaming member, 'from' dsn if specified much match 'to' dsn",
+  "stack": "  1 101F8CC8+000000B4 RenameMember::validate()\n  2 101F2A20+00001408 DatasetUtilServlet::validateRequest()\n  3 101F2500+000000A0 DatasetUtilServlet::doPut()\n  4 1020A060+000000DC TsoServlet::service()\n  5 10238D58+0000017E TsoServlet::run()\n  6 10238730+00000386 main\n  7 07DF4EE0+0000127E CEEVROND\n  8 0F9F1CE8+000000B4 EDCZHINV\n  9 07C8EC40+000001C6 CEEBBEXT\n"
+}},
+"expected":{
+  "oldName":"TEST.PDS(ABC)",
+  "newName":"TEST.DIFF(ABC)",
+   "statusCode": 500,
+   "response":{
+  "status": "INTERNAL_SERVER_ERROR",
+  "message": "when renaming member, 'from' dsn if specified much match 'to' dsn"
+}
+}
+}
+
