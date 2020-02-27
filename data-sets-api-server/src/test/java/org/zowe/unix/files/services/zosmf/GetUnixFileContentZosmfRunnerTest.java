@@ -21,6 +21,7 @@ import org.zowe.unix.files.model.UnixFileContentWithETag;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class GetUnixFileContentZosmfRunnerTest extends AbstractZosmfRequestRunnerTest {
@@ -45,6 +46,7 @@ public class GetUnixFileContentZosmfRunnerTest extends AbstractZosmfRequestRunne
         assertEquals(expected, new GetUnixFileContentZosmfRunner(path, false).run(zosmfConnector));
         
         verifyInteractions(requestBuilder, false);
+        verify(requestBuilder).addHeader("X-IBM-Return-Etag", "true");
     }
 
     @Test
