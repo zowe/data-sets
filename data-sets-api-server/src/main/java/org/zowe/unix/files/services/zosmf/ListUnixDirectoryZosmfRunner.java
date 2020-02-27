@@ -52,6 +52,7 @@ public class ListUnixDirectoryZosmfRunner extends AbstractZosmfRequestRunner<Uni
         String query = String.format("path=%s", path);
         URI requestUrl = zosmfConnector.getFullUrl("restfiles/fs", query);
         RequestBuilder requestBuilder = RequestBuilder.get(requestUrl);
+        requestBuilder.addHeader("X-IBM-Max-Items","0");
         return requestBuilder;
     }
 
