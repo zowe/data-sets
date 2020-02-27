@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2018, 2019
+ * Copyright IBM Corporation 2018, 2020
  */
 package org.zowe.data.sets.controller;
 
@@ -34,6 +34,7 @@ import org.zowe.data.sets.model.DataSetContent;
 import org.zowe.data.sets.model.DataSetContentWithEtag;
 import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.model.DataSetOrganisationType;
+import org.zowe.data.sets.model.DataSetRenameRequest;
 import org.zowe.data.sets.services.DataSetService;
 
 import java.net.URI;
@@ -182,7 +183,49 @@ public class DataSetsControllerTest extends ApiControllerTest {
         verify(dataSetService, times(1)).putContent(memberName, request);
         verifyNoMoreInteractions(dataSetService);
     }
+    
+    @Test
+    public void put_data_set_rename_success() throws Exception {
+        String oldName = "TEST.JCL";
+        String newName = "NEWTEST.JCL";
+        DataSetRenameRequest input = DataSetRenameRequest.builder().newName(newName).build();
+        
+        when(dataSetService.renameDataSet(oldName, input)).thenReturn("");
 
+        mockMvc
+            .perform(put(ENDPOINT_ROOT + "/{dsn}/rename", oldName)
+            .content("{\"newName\":\"" + newName + "\"}")
+            .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(status().isNoContent()).andExpect(content().string(""));
+
+        verify(dataSetService).renameDataSet(oldName, input);
+        verifyNoMoreInteractions(dataSetService);
+    }
+    
+    @Test
+    public void put_data_set_rename_with_exception_should_be_converted_to_error_message() throws Exception {
+
+        String oldName = "EXIST.TEST(NOEXIST)";
+        String newName = "EXIST.TEST(NEWNAME)";
+        DataSetRenameRequest request = DataSetRenameRequest.builder().newName(newName).build();
+
+        String errorMessage = MessageFormat.format("ISRZ002 Member not found - The specified member name '{0}' not found in the directory.", "NOEXIST");
+        ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.BAD_REQUEST).build();
+
+        doThrow(new ZoweApiErrorException(expectedError)).when(dataSetService).renameDataSet(oldName, request);
+
+        mockMvc
+            .perform(put(ENDPOINT_ROOT + "/{oldName}/rename", oldName)
+                .content(String.format("{\"newName\":\"%s\"}",newName))    
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(status().is(expectedError.getStatus().value()))
+            .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
+            .andExpect(jsonPath("$.message").value(errorMessage));
+        
+        verify(dataSetService, times(1)).renameDataSet(oldName, request);
+        verifyNoMoreInteractions(dataSetService);
+    }
+    
     // TODO LATER - validation of If-Match / ETag to check if surrounded by double quotes? https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag
     @Test
     public void put_data_set_with_if_match_content_success() throws Exception {
