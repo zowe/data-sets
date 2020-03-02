@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/v1/unixfiles")
-@Api(value = "Unix Files APIs")
+@Api(value = "Unix Files APIs", tags = "Unix Files APIs")
 public class UnixFilesController {
 
     @Autowired

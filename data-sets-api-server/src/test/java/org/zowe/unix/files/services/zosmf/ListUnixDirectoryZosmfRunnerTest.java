@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ListUnixDirectoryZosmfRunnerTest extends AbstractZosmfRequestRunnerTest {
@@ -66,6 +67,7 @@ public class ListUnixDirectoryZosmfRunnerTest extends AbstractZosmfRequestRunner
         assertEquals(expectedListedDirectory, new ListUnixDirectoryZosmfRunner(path, "http://localhost").run(zosmfConnector));
 
         verifyInteractions(requestBuilder, true);
+        verify(requestBuilder).addHeader("X-IBM-Max-Items", "0");
     }
 
     @Test
