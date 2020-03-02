@@ -44,7 +44,7 @@ import java.net.URI;
 @RestController
 @RequestMapping("/api/v1/datasets")
 @Api(value = "Data Sets APIs", tags = "Data Sets APIs")
-public class DataSetsController extends AbstractApiController {
+public class DataSetsController {
 
 
     @Autowired
