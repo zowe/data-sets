@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.zowe.api.common.controller.AbstractApiController;
 import org.zowe.api.common.model.ItemsWrapper;
 import org.zowe.data.sets.model.DataSet;
 import org.zowe.data.sets.model.DataSetAttributes;
@@ -45,7 +44,8 @@ import java.net.URI;
 @RestController
 @RequestMapping("/api/v1/datasets")
 @Api(value = "Data Sets APIs", tags = "Data Sets APIs")
-public class DataSetsController extends AbstractApiController {
+public class DataSetsController {
+
 
     @Autowired
     private DataSetService dataSetService;
@@ -92,7 +92,6 @@ public class DataSetsController extends AbstractApiController {
     @ApiResponses({ @ApiResponse(code = 201, message = "Data set successfully created") })
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> createDataSet(@RequestBody DataSetCreateRequest input) {
-
         String dataSetName = dataSetService.createDataSet(input);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{dataSetName}")

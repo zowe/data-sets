@@ -45,8 +45,8 @@ public class ZosmfUnixFileServiceTest extends ZoweApiTest {
         String path = "/a/path"; 
         
         ListUnixDirectoryZosmfRunner runner = mock(ListUnixDirectoryZosmfRunner.class);
-        PowerMockito.whenNew(ListUnixDirectoryZosmfRunner.class).withArguments(path).thenReturn(runner);
-        zosmfUnixFilesService.listUnixDirectory(path);
+        PowerMockito.whenNew(ListUnixDirectoryZosmfRunner.class).withArguments(path, "").thenReturn(runner);
+        zosmfUnixFilesService.listUnixDirectory(path, "");
         
         verify(runner).run(zosmfConnector);
     }
@@ -59,7 +59,7 @@ public class ZosmfUnixFileServiceTest extends ZoweApiTest {
         
         ListUnixDirectoryZosmfRunner runner = mock(ListUnixDirectoryZosmfRunner.class);
         when(runner.run(zosmfConnector)).thenThrow(expectedException);
-        PowerMockito.whenNew(ListUnixDirectoryZosmfRunner.class).withArguments(path).thenReturn(runner);
-        shouldThrow(expectedException, () -> zosmfUnixFilesService.listUnixDirectory(path));
+        PowerMockito.whenNew(ListUnixDirectoryZosmfRunner.class).withArguments(path, "").thenReturn(runner);
+        shouldThrow(expectedException, () -> zosmfUnixFilesService.listUnixDirectory(path, ""));
     }
 }

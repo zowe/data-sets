@@ -22,6 +22,13 @@ node('ibm-jenkins-slave-nvm') {
   // we have extra parameters for integration test
   pipeline.addBuildParameters(
     string(
+      name: 'INTEGRATION_TEST_APIML_BUILD',
+      description: 'APIML build for integration test',
+      defaultValue: 'libs-release-local/com/ca/mfaas/sdk/mfaas-zowe-install/*/mfaas-zowe-install-*.zip',
+      trim: true,
+      required: true
+    ),
+    string(
       name: 'INTEGRATION_TEST_ZOSMF_HOST',
       description: 'z/OSMF server for integration test',
       defaultValue: 'river.zowe.org',
@@ -96,19 +103,13 @@ node('ibm-jenkins-slave-nvm') {
     operation     : {
       lock("data-sets-integration-test-at-${params.INTEGRATION_TEST_ZOSMF_HOST}-${params.INTEGRATION_TEST_ZOSMF_PORT}") {
 
-      echo "Preparing certificates ..."
-      sh """keytool -genkeypair -keystore localhost.keystore.p12 -storetype PKCS12 \
--storepass password -alias localhost -keyalg RSA -keysize 2048 -validity 99999 \
--dname \"CN=Zowe Data Sets Explorer API Default Certificate, OU=Zowe API Squad, O=Zowe, L=Hursley, ST=Hampshire, C=UK\" \
--ext san=dns:localhost,ip:127.0.0.1"""
-
       def buildIdentifier = lib.Utils.getBuildIdentifier(env)
       uniqueBuildId = "datasets-integration-test-${buildIdentifier}"
       if (!uniqueBuildId) {
           error "Cannot determine unique build ID."
       }
 
-      echo "Preparing test folder ..."
+      echo "Preparing services for test ..."
       withCredentials([
         usernamePassword(
           credentialsId: params.INTEGRATION_TEST_DIRECTORY_INIT_USER,
@@ -116,34 +117,22 @@ node('ibm-jenkins-slave-nvm') {
           passwordVariable: 'PASSWORD'
         )
       ]) {
-        // send file to test image host
-        sh """SSHPASS=${PASSWORD} sshpass -e sftp -o BatchMode=no -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -b - -P ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
-put scripts/prepare-integration-test-folders.sh
-EOF"""
-        // create TEST_DIRECTORY_ROOT/uniqueBuildId
-        sh """SSHPASS=${PASSWORD} sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
-cd ~ && \
-  (iconv -f ISO8859-1 -t IBM-1047 prepare-integration-test-folders.sh > prepare-integration-test-folders.sh.new) && mv prepare-integration-test-folders.sh.new prepare-integration-test-folders.sh && chmod +x prepare-integration-test-folders.sh
-./prepare-integration-test-folders.sh ${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId} || { echo "[prepare-integration-test-folders] failed"; exit 1; }
-echo "[prepare-integration-test-folders] succeeds" && exit 0
-EOF"""
+        withEnv([
+          "FVT_ZOSMF_HOST=${params.INTEGRATION_TEST_ZOSMF_HOST}",
+          "FVT_ZOSMF_PORT=${params.INTEGRATION_TEST_ZOSMF_PORT}",
+          "FVT_SERVER_SSH_HOST=${params.INTEGRATION_TEST_ZOSMF_HOST}",
+          "FVT_SERVER_SSH_PORT=${params.INTEGRATION_TEST_SSH_PORT}",
+          "FVT_SERVER_SSH_USERNAME=${USERNAME}",
+          "FVT_SERVER_SSH_PASSWORD=${PASSWORD}",
+          "FVT_SERVER_DIRECTORY_ROOT=${params.INTEGRATION_TEST_DIRECTORY_ROOT}",
+          "FVT_UID=${uniqueBuildId}"
+        ]) {
+          sh "scripts/prepare-fvt.sh '${params.INTEGRATION_TEST_APIML_BUILD}'"
+        }
       }
 
-      echo "Starting test server ..."
-      sh """java -Xms16m -Xmx512m -Dibm.serversocket.recover=true -Dfile.encoding=UTF-8 \
--Djava.io.tmpdir=/tmp \
--Dserver.port=8443 \
--Dserver.ssl.keyAlias=localhost \
--Dserver.ssl.keyStore=localhost.keystore.p12 \
--Dserver.ssl.keyStorePassword=password \
--Dserver.ssl.keyStoreType=PKCS12 \
--Dserver.compression.enabled=true \
--Dzosmf.httpsPort=${params.INTEGRATION_TEST_ZOSMF_PORT} \
--Dzosmf.ipAddress=${params.INTEGRATION_TEST_ZOSMF_HOST} \
--jar \$(ls -1 data-sets-api-server/build/libs/data-sets-api-server-*-boot.jar) &"""
-
       // give it a little time to start the server
-      sleep time: 1, unit: 'MINUTES'
+      sleep time: 4, unit: 'MINUTES'
 
       echo "Starting test ..."
       withCredentials([
@@ -155,7 +144,7 @@ EOF"""
       ]) {
         sh """./gradlew runIntegrationTests \
 -Pserver.host=localhost \
--Pserver.port=8443 \
+-Pserver.port=7554 \
 -Pserver.username=${USERNAME} \
 -Pserver.password=${PASSWORD} \
 -Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}"""
@@ -198,6 +187,11 @@ EOF"""
 
   pipeline.end(
     always: {
+      // display fvt test logs
+      // this should match FVT_WORKSPACE and FVT_LOGS_DIR defined in scripts/prepare-fvt.sh
+      dir('.fvt/logs') {
+        sh "find . -type f | xargs -i sh -c 'echo \">>>>>>>>>>>>>>>>>>>>>>>> {} >>>>>>>>>>>>>>>>>>>>>>>\" && cat {}'"
+      }
       // clean up integration test folder
       if (uniqueBuildId) {
         withCredentials([
