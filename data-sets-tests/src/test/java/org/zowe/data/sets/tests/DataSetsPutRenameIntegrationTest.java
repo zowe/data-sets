@@ -17,7 +17,9 @@ import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.model.DataSetRenameRequest;
 
 import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 
 public class DataSetsPutRenameIntegrationTest extends AbstractDataSetsIntegrationTest {
 
@@ -34,6 +36,8 @@ public class DataSetsPutRenameIntegrationTest extends AbstractDataSetsIntegratio
 
     @BeforeClass
     public static void createTempDataSets() throws Exception {
+        deleteDataSet(TEMP_OLD_SEQ);    // Make sure previous test didn't leave anything behind
+        deleteDataSet(TEMP_OLD_PDS);
         DataSetCreateRequest sdsRequest = createSdsRequest(TEMP_OLD_SEQ);
         createDataSet(sdsRequest).then().statusCode(HttpStatus.SC_CREATED);
         createPdsWithMembers(TEMP_OLD_PDS, TEMP_OLD_MEMBER, TEMP_EXIST_MEMBER1, TEMP_EXIST_MEMBER2);
@@ -41,8 +45,9 @@ public class DataSetsPutRenameIntegrationTest extends AbstractDataSetsIntegratio
 
     @AfterClass
     public static void cleanUp() throws Exception {
-        deleteDataSet(TEMP_NEW_SEQ);
+        deleteDataSet(TEMP_OLD_SEQ);    // This may still exist if test to rename failed
         deleteDataSet(TEMP_OLD_PDS);
+        deleteDataSet(TEMP_NEW_SEQ);
     }
 
     @Test
@@ -107,6 +112,8 @@ public class DataSetsPutRenameIntegrationTest extends AbstractDataSetsIntegratio
     }
     
     private Response putDataSetRename(String oldDataSetName, DataSetRenameRequest body) {
-        return RestAssured.given().contentType("application/json").body(body).when().put(oldDataSetName + "/rename");
+        RequestSpecification requestSpecification = new RequestSpecBuilder().setUrlEncodingEnabled(false).build();
+        return RestAssured.given().header(AUTH_HEADER).spec(requestSpecification).contentType("application/json")
+                .body(body).when().put(oldDataSetName + "/rename");
     }
 }

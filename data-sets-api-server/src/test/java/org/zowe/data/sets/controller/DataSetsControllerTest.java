@@ -26,7 +26,6 @@ import org.zowe.api.common.exceptions.ZoweApiErrorException;
 import org.zowe.api.common.model.ItemsWrapper;
 import org.zowe.api.common.test.controller.ApiControllerTest;
 import org.zowe.api.common.utils.JsonUtils;
-import org.zowe.api.common.utils.ZosUtils;
 import org.zowe.data.sets.model.AllocationUnitType;
 import org.zowe.data.sets.model.DataSet;
 import org.zowe.data.sets.model.DataSetAttributes;
@@ -61,7 +60,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ZosUtils.class, ServletUriComponentsBuilder.class })
+@PrepareForTest({ ServletUriComponentsBuilder.class })
 public class DataSetsControllerTest extends ApiControllerTest {
 
     private static final String ENDPOINT_ROOT = "/api/v1/datasets";

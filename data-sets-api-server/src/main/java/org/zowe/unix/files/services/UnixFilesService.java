@@ -14,7 +14,7 @@ import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.unix.files.model.UnixFileContentWithETag;
 
 public interface UnixFilesService {
-    UnixDirectoryAttributesWithChildren listUnixDirectory(String path);
+    UnixDirectoryAttributesWithChildren listUnixDirectory(String path, String hypermediaLinkToBase);
     
     UnixFileContentWithETag getUnixFileContentWithETag(String path, boolean convert);
     
@@ -25,5 +25,6 @@ public interface UnixFilesService {
     String getUnixFileChtag(String path);
     
     void deleteUnixFileContent(String path, boolean isRecursive);
+    
     void createUnixAsset(String path, UnixCreateAssetRequest request);
 }
