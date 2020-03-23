@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2019
+ * Copyright IBM Corporation 2019, 2020
  */
 package org.zowe.unix.files.services.zosmf;
 
@@ -30,10 +30,11 @@ public class ZosmfUnixFilesService implements UnixFilesService {
     }
 
     @Override
-    public UnixFileContentWithETag getUnixFileContentWithETag(String path, boolean convert) {
-        GetUnixFileContentZosmfRunner runner = new GetUnixFileContentZosmfRunner(path, convert);
+    public UnixFileContentWithETag getUnixFileContentWithETag(String path, boolean convert, boolean decode) {
+        GetUnixFileContentZosmfRunner runner = new GetUnixFileContentZosmfRunner(path, convert, decode);
         return runner.run(zosmfConnector);
     }
+
     
     @Override
     public String putUnixFileContent(String path, UnixFileContentWithETag content, boolean convert) {
