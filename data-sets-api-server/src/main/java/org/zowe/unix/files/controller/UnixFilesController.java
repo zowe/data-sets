@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2019
+ * Copyright IBM Corporation 2019, 2020
  */
 package org.zowe.unix.files.controller;
 
@@ -43,7 +43,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/api/v1/unixfiles")
-@Api(value = "Unix Files APIs")
+@Api(value = "Unix Files APIs", tags = "Unix Files APIs")
 public class UnixFilesController {
 
     @Autowired
@@ -72,10 +72,12 @@ public class UnixFilesController {
 
         String fullPath = getPathFromRequest(request);
 
+        boolean decode = false;
         if (convert == null) {
-            convert = unixFileService.shouldUnixFileConvert(fullPath);
+            decode = unixFileService.shouldUnixFileConvert(fullPath);
+            convert = decode;
         }
-        UnixFileContentWithETag content = unixFileService.getUnixFileContentWithETag(fullPath, convert);
+        UnixFileContentWithETag content = unixFileService.getUnixFileContentWithETag(fullPath, convert, decode);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Access-Control-Expose-Headers", "ETag");
@@ -95,7 +97,7 @@ public class UnixFilesController {
         String fullPath = getPathFromRequest(request);
 
         // Ensure file already exists
-        unixFileService.getUnixFileContentWithETag(fullPath, false);
+        unixFileService.getUnixFileContentWithETag(fullPath, false, false);
 
         if (convert == null) {
             convert = unixFileService.shouldUnixFileConvert(fullPath);
