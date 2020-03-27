@@ -83,4 +83,43 @@ chmod a+w "$TEST_DIRECTORY_ROOT/editableEbcdicFileUntaggedFile"
 touch "$TEST_DIRECTORY_ROOT/fileAlreadyExists"
 mkdir "$TEST_DIRECTORY_ROOT/directoryAlreadyExists"
 
+#create binaryExample
+# create binaryExample
+mkdir $TEST_DIRECTORY_ROOT/binaryExample
+
+#Create binary c program
+cat <<EOF >$TEST_DIRECTORY_ROOT/binaryExample/binaryProgram.c
+#include <stdio.h>
+
+int main() {
+    /* Create the file */
+    int x = 255;
+    FILE *fh = fopen ("file.bin", "wb");
+    if (fh != NULL) {
+        fwrite (&x, sizeof (x), 1, fh);
+        fclose (fh);
+    }
+
+    /* Read the file back in */
+    x = 7;
+    fh = fopen ("file.bin", "rb");
+    if (fh != NULL) {
+        fread (&x, sizeof (x), 1, fh);
+        fclose (fh);
+    }
+
+    /* Check that it worked */
+    printf ("Value is: %d\n", x);
+
+    return 0;
+}
+EOF
+
+#compile and run binary program c
+cd $TEST_DIRECTORY_ROOT/binaryExample
+cc binaryProgram.c
+./a.out
+cd $TEST_DIRECTORY_ROOT
+
+
 ls -alT $TEST_DIRECTORY_ROOT

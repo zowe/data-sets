@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2019
+ * Copyright IBM Corporation 2019, 2020
  */
 package org.zowe.unix.files.tests;
 
@@ -22,6 +22,8 @@ import org.zowe.unix.files.exceptions.UnauthorisedFileException;
 import org.zowe.unix.files.model.UnixFileContent;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+
+import java.util.Base64;
 
 public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesIntegrationTest {
 
@@ -100,30 +102,34 @@ public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesInt
     
     @Test
     public void testPutUnixFileContentWithConvertTrueAndAsciiFile() throws Exception {
-        final UnixFileContent content = new UnixFileContent("New testable content \\n testPutUnixFileContentWithConvertTrueAndAsciiFile");
+        final String fileContent = "New testable content \\n testPutUnixFileContentWithConvertTrueAndAsciiFile";
+        final UnixFileContent content = new UnixFileContent(fileContent);
         
         RestAssured.given().contentType("application/json").body(content).header("Convert", true)
             .when().put(TEST_DIRECTORY + "/editableAsciiTaggedFile")
             .then().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
         
+        final String encodedFileContent = Base64.getEncoder().encodeToString(fileContent.getBytes());
         RestAssured.given().header("Convert", true).when().get(TEST_DIRECTORY + "/editableAsciiTaggedFile")
             .then().statusCode(HttpStatus.SC_OK)
-            .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(content.getContent()));
+            .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(encodedFileContent));
     }
     
     @Test
     public void testPutUnixFileContentWithConvertNullAndAsciiFile() throws Exception {
-        final UnixFileContent content = new UnixFileContent("New testable content \\n testPutUnixFileContentWithConvertTrueAndAsciiFile");
+        final String fileContent = "New testable content \\n testPutUnixFileContentWithConvertTrueAndAsciiFile";
+        final UnixFileContent content = new UnixFileContent(fileContent);
     
         RestAssured.given().contentType("application/json").body(content)
             .when().put(TEST_DIRECTORY + "/editableAsciiTaggedFile")
             .then().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
       
+        final String encodedFileContent = Base64.getEncoder().encodeToString(fileContent.getBytes());
         RestAssured.given().header("Convert", true).when().get(TEST_DIRECTORY + "/editableAsciiTaggedFile")
             .then().statusCode(HttpStatus.SC_OK)
-            .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(content.getContent()));
+            .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(encodedFileContent));
     }
     
     @Test

@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2019
+ * Copyright IBM Corporation 2019, 2020
  */
 package org.zowe.unix.files.tests;
 
@@ -22,9 +22,14 @@ import org.zowe.unix.files.exceptions.UnauthorisedFileException;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
+import java.util.Base64;
+
 public class UnixFilesGetFileContentIntegrationTest extends AbstractUnixFilesIntegrationTest {
     
     private String multiLineTestString = "Hello world\nhello world on new line.\n";
+    private String binary255ToBase64 = "AAAA/w==";
+    private String encodedMultiLineTestString = Base64.getEncoder().encodeToString(multiLineTestString.getBytes());
+
     
     @Test
     public void testGetUnixFileContent() throws Exception {        
@@ -39,7 +44,15 @@ public class UnixFilesGetFileContentIntegrationTest extends AbstractUnixFilesInt
          RestAssured.given().header("Convert", true).when().get(TEST_DIRECTORY + "/fileWithAccessAscii")
             .then().statusCode(HttpStatus.SC_OK)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
-            .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(multiLineTestString + "\n"));
+            .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(encodedMultiLineTestString));
+    }
+    
+    @Test
+    public void testGetUnixFileContentBinaryWithConvertTrue() throws Exception {
+         RestAssured.given().header("Convert", true).when().get(TEST_DIRECTORY + "/binaryExample/file.bin")
+            .then().statusCode(HttpStatus.SC_OK)
+            .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
+            .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(binary255ToBase64));
     }
 
     @Test
@@ -55,7 +68,7 @@ public class UnixFilesGetFileContentIntegrationTest extends AbstractUnixFilesInt
          RestAssured.given().when().get(TEST_DIRECTORY + "/fileWithAccessAscii")
             .then().statusCode(HttpStatus.SC_OK)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
-            .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(multiLineTestString + "\n"));
+            .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(multiLineTestString + "\r\n"));
     }
     
     @Test
