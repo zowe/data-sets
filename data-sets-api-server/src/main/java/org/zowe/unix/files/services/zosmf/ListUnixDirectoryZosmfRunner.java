@@ -17,6 +17,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
+import org.zowe.api.common.connectors.zosmf.ZosmfConnectorLtpaAuth;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.ResponseCache;
 import org.zowe.api.common.zosmf.services.AbstractZosmfRequestRunner;
@@ -35,7 +36,7 @@ import java.util.List;
 public class ListUnixDirectoryZosmfRunner extends AbstractZosmfRequestRunner<UnixDirectoryAttributesWithChildren> {
 
     @Autowired
-    ZosmfConnector zosmfConnector;
+    ZosmfConnectorLtpaAuth zosmfConnector;
     
     
     private String path;

@@ -18,6 +18,7 @@ import org.apache.http.client.methods.RequestBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Base64Utils;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
+import org.zowe.api.common.connectors.zosmf.ZosmfConnectorLtpaAuth;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.ResponseCache;
 import org.zowe.unix.files.exceptions.NotAFileException;
@@ -31,7 +32,7 @@ import java.net.URISyntaxException;
 public class GetUnixFileContentZosmfRunner extends AbstractZosmfUnixFilesRequestRunner<UnixFileContentWithETag> {
     
     @Autowired
-    ZosmfConnector zosmfConnector;
+    ZosmfConnectorLtpaAuth zosmfConnector;
 
     private String path;
     private boolean convert;

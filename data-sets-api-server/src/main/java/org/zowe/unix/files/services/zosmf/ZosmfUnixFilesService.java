@@ -11,7 +11,7 @@ package org.zowe.unix.files.services.zosmf;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
+import org.zowe.api.common.connectors.zosmf.ZosmfConnectorLtpaAuth;
 import org.zowe.unix.files.model.UnixCreateAssetRequest;
 import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.unix.files.model.UnixFileContentWithETag;
@@ -21,7 +21,7 @@ import org.zowe.unix.files.services.UnixFilesService;
 public class ZosmfUnixFilesService implements UnixFilesService {
     
     @Autowired
-    ZosmfConnector zosmfConnector;
+    ZosmfConnectorLtpaAuth zosmfConnector;
     
     @Override
     public UnixDirectoryAttributesWithChildren listUnixDirectory(String path, String hypermediaLinkToBase) {

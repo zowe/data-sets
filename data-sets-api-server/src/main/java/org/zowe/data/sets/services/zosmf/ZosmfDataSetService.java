@@ -11,7 +11,7 @@ package org.zowe.data.sets.services.zosmf;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
+import org.zowe.api.common.connectors.zosmf.ZosmfConnectorLtpaAuth;
 import org.zowe.api.common.model.ItemsWrapper;
 import org.zowe.data.sets.model.DataSet;
 import org.zowe.data.sets.model.DataSetAttributes;
@@ -24,7 +24,7 @@ import org.zowe.data.sets.services.DataSetService;
 public class ZosmfDataSetService implements DataSetService {
 
     @Autowired
-    ZosmfConnector zosmfConnector;
+    ZosmfConnectorLtpaAuth zosmfConnector;
 
     // TODO - review error handling, serviceability, https://github.com/zowe/data-sets/issues/16
     // use the zomsf error categories to work out errors
