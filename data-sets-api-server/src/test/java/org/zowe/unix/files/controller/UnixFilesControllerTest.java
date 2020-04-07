@@ -59,7 +59,7 @@ public class UnixFilesControllerTest extends ApiControllerTest {
     private UnixFilesService unixFilesService;
 
     @InjectMocks
-    private UnixFilesController unixFilesController;
+    private UnixFilesControllerV1 unixFilesController;
 
     @Override
     public Object getController() {
