@@ -60,8 +60,8 @@ public class DataSetsPutRenameIntegrationTest extends AbstractDataSetsIntegratio
     
     @Test
     public void testRenameMemberDataSet() throws Exception {
-        String oldName = TEMP_OLD_PDS+"("+TEMP_OLD_MEMBER+")";
-        String newName = TEMP_OLD_PDS+"("+TEMP_NEW_MEMBER+")";
+        String oldName = TEMP_OLD_PDS + "(" + TEMP_OLD_MEMBER + ")";
+        String newName = TEMP_OLD_PDS + "(" + TEMP_NEW_MEMBER + ")";
         
         putDataSetRename(oldName, DataSetRenameRequest.builder().newName(newName).build()).then()
             .statusCode(HttpStatus.SC_NO_CONTENT);
@@ -71,8 +71,8 @@ public class DataSetsPutRenameIntegrationTest extends AbstractDataSetsIntegratio
     
     @Test
     public void testRenameMemberNonExistentMember() throws Exception {
-        String oldName = TEMP_OLD_PDS+"("+"ABC"+")";
-        String newName = TEMP_OLD_PDS+"("+"DEF"+")";
+        String oldName = TEMP_OLD_PDS + "(" + "ABC" + ")";
+        String newName = TEMP_OLD_PDS + "(" + "DEF" + ")";
         
         //non existent member name is PDS throw NOT FOUND
         putDataSetRename(oldName, DataSetRenameRequest.builder().newName(newName).build()).then()
@@ -91,9 +91,9 @@ public class DataSetsPutRenameIntegrationTest extends AbstractDataSetsIntegratio
     
     @Test
     public void testRenameMemberInvalidMember() throws Exception {
-        String oldName = TEMP_OLD_PDS+"("+TEMP_OLD_MEMBER+")";
+        String oldName = TEMP_OLD_PDS + "(" + TEMP_OLD_MEMBER + ")";
         //invalid new name where member name length greater than length 8
-        String newName = TEMP_OLD_PDS+"("+TEMP_NEW_MEMBER+"ABCDEFGH)";
+        String newName = TEMP_OLD_PDS + "(" + TEMP_NEW_MEMBER + "ABCDEFGH)";
         
         putDataSetRename(oldName, DataSetRenameRequest.builder().newName(newName).build()).then()
             .statusCode(HttpStatus.SC_BAD_REQUEST);
@@ -102,9 +102,9 @@ public class DataSetsPutRenameIntegrationTest extends AbstractDataSetsIntegratio
     
     @Test
     public void testRenameMemberExisting() throws Exception {
-        String oldName = TEMP_OLD_PDS+"("+TEMP_EXIST_MEMBER1+")";
+        String oldName = TEMP_OLD_PDS + "(" + TEMP_EXIST_MEMBER1 + ")";
         //invalid new name where member name length greater than length 8
-        String newName = TEMP_OLD_PDS+"("+TEMP_EXIST_MEMBER2+")";
+        String newName = TEMP_OLD_PDS + "(" + TEMP_EXIST_MEMBER2 + ")";
         
         //non existent dataset name is PDS throw INTERNAL ERROR, zosmf throw very general 500 exception
         putDataSetRename(oldName, DataSetRenameRequest.builder().newName(newName).build()).then()

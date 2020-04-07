@@ -19,11 +19,11 @@ import org.zowe.unix.files.exceptions.UnauthorisedFileException;
 import org.zowe.unix.files.model.UnixFileContent;
 import org.zowe.unix.files.model.UnixFileContentWithETag;
 
+import java.util.Base64;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import java.util.Base64;
 
 public class GetUnixFileContentZosmfRunnerTest extends AbstractZosmfRequestRunnerTest {
     
@@ -34,7 +34,7 @@ public class GetUnixFileContentZosmfRunnerTest extends AbstractZosmfRequestRunne
         String encodedFileContent = Base64.getEncoder().encodeToString(fileContent.getBytes());
         
         UnixFileContent expectedFileContent;
-        if(decode) {
+        if (decode) {
             expectedFileContent  = new UnixFileContent(fileContent);
         } else {
             expectedFileContent = new UnixFileContent(encodedFileContent);
@@ -49,7 +49,7 @@ public class GetUnixFileContentZosmfRunnerTest extends AbstractZosmfRequestRunne
         when(responseCache.getFirstHeader("ETag")).thenReturn(header);
 
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/fs%s", path));
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
         
         assertEquals(expected, new GetUnixFileContentZosmfRunner(path, false, decode).run(zosmfConnector));        
         verifyInteractions(requestBuilder, false);
@@ -74,7 +74,7 @@ public class GetUnixFileContentZosmfRunnerTest extends AbstractZosmfRequestRunne
 
         mockJsonResponse(HttpStatus.SC_INTERNAL_SERVER_ERROR, loadTestFile("getUnixFileContentUnauthorised.json"));
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/fs%s", path));
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
         
         shouldThrow(expectedException, () -> new GetUnixFileContentZosmfRunner(path, false, false).run(zosmfConnector));
         verifyInteractions(requestBuilder, false);
