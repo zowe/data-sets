@@ -62,7 +62,7 @@ public class PutDataSetRenameZosmfRequestRunnerTest extends AbstractZosmfRequest
         mockResponseCache(org.apache.http.HttpStatus.SC_NO_CONTENT);
         DataSetRenameRequest request = DataSetRenameRequest.builder().newName(newName).build();
         RequestBuilder requestBuilder = mockPutBuilder(String.format("restfiles/ds/%s", newName),requestBody);
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
         
         new PutDataSetRenameZosmfRequestRunner(oldName, request).run(zosmfConnector); 
         verifyInteractions(requestBuilder);
@@ -148,7 +148,7 @@ public class PutDataSetRenameZosmfRequestRunnerTest extends AbstractZosmfRequest
         mockJsonResponse(tc.zosmfStatus, tc.zosmfResponse);
         DataSetRenameRequest request = DataSetRenameRequest.builder().newName(tc.newName).build();
         RequestBuilder requestBuilder = mockPutBuilder(tc.zosmfResource,tc.zosmfBody);
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
         
         String errorMessage = tc.expectedResponse.get("message").getAsString();
         String errorStatus = tc.expectedResponse.get("status").getAsString();

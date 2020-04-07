@@ -61,7 +61,7 @@ public class PutUnixFileContentZosmfRunnerTest extends AbstractZosmfRequestRunne
         when(responseCache.getFirstHeader("ETag")).thenReturn(header);
 
         RequestBuilder requestBuilder = mockPutBuilder("restfiles/fs" + path, content.getContent());
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
         assertEquals(eTag, new PutUnixFileContentZosmfRunner(path, contentWithETag, convert).run(zosmfConnector));
 
@@ -111,7 +111,7 @@ public class PutUnixFileContentZosmfRunnerTest extends AbstractZosmfRequestRunne
             mockResponseCache(returnCode);
         }
         RequestBuilder requestBuilder = mockPutBuilder("restfiles/fs" + path, content.getContent());
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
         shouldThrow(exception,
                 () -> new PutUnixFileContentZosmfRunner(path, contentWithETag, false).run(zosmfConnector));

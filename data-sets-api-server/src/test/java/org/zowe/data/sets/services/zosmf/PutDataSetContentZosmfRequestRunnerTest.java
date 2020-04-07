@@ -61,7 +61,7 @@ public class PutDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
         when(header.getValue()).thenReturn(putETag);
         when(responseCache.getFirstHeader("ETag")).thenReturn(header);
         RequestBuilder requestBuilder = mockPutBuilder(String.format("restfiles/ds/%s", dataSetName), jclString);
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
         assertEquals(putETag, new PutDataSetContentZosmfRequestRunner(dataSetName, request).run(zosmfConnector));
 
@@ -88,7 +88,7 @@ public class PutDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
         when(header.getValue()).thenReturn(putETag);
         when(responseCache.getFirstHeader("ETag")).thenReturn(header);
         RequestBuilder requestBuilder = mockPutBuilder(String.format("restfiles/ds/%s", dataSetName), jclString);
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
         assertEquals(putETag, new PutDataSetContentZosmfRequestRunner(dataSetName, request).run(zosmfConnector));
 
@@ -124,7 +124,7 @@ public class PutDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
 
         RequestBuilder requestBuilder = mockPutBuilder(String.format("restfiles/ds/%s", dataSetName), jclString);
 
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
         DataSetContent content = new DataSetContent(jclString);
         DataSetContentWithEtag request = new DataSetContentWithEtag(content, "");
@@ -146,7 +146,7 @@ public class PutDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
 
         RequestBuilder requestBuilder = mockPutBuilder(String.format("restfiles/ds/%s", dataSetName), jclString);
 
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
         DataSetContent content = new DataSetContent(jclString);
         DataSetContentWithEtag request = new DataSetContentWithEtag(content, "");

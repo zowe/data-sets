@@ -50,7 +50,7 @@ public class CreateUnixAssetZosmfRunnerTest extends AbstractZosmfRequestRunnerTe
         RequestBuilder requestBuilder = mockPostBuilder("restfiles/fs" + path,
                 JsonUtils.readAsJsonElement(zosmfJsonString).getAsJsonObject());
 
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
         assertEquals(path, new CreateUnixAssetZosmfRunner(path, createAssetRequest).run(zosmfConnector));
         verifyInteractions(requestBuilder);
@@ -69,7 +69,7 @@ public class CreateUnixAssetZosmfRunnerTest extends AbstractZosmfRequestRunnerTe
         RequestBuilder requestBuilder = mockPostBuilder("restfiles/fs" + path,
                 JsonUtils.readAsJsonElement(json).getAsJsonObject());
 
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
         shouldThrow(exception, () -> new CreateUnixAssetZosmfRunner(path, createAssetRequest).run(zosmfConnector));
         verifyInteractions(requestBuilder);

@@ -34,7 +34,7 @@ public class ListDataSetMembersZosmfRequestRunnerTest extends AbstractZosmfReque
 
         mockJsonResponse(HttpStatus.SC_OK, loadTestFile("zosmf_getMembers.json"));
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds/%s/member", dataSetName));
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
         assertEquals(expected, new ListDataSetMembersZosmfRequestRunner(dataSetName).run(zosmfConnector));
 
@@ -66,7 +66,7 @@ public class ListDataSetMembersZosmfRequestRunnerTest extends AbstractZosmfReque
 
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds/%s/member", pdsName));
 
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
         shouldThrow(expectedException, () -> new ListDataSetMembersZosmfRequestRunner(pdsName).run(zosmfConnector));
         verifyInteractions(requestBuilder);

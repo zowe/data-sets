@@ -29,7 +29,7 @@ public class GetUnixFileChtagZosmfRunnerTest extends AbstractZosmfRequestRunnerT
 
         RequestBuilder requestBuilder = mockPutBuilder("restfiles/fs" + path,
                 "{ \"request\": \"chtag\", \"action\": \"list\" }");
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
         
         assertEquals(codepage, new GetUnixFileChtagZosmfRunner(path).run(zosmfConnector));
         

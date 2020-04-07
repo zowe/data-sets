@@ -16,7 +16,7 @@ import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
+import org.zowe.api.common.connectors.zosmf.ZosmfConnectorLtpaAuth;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.test.ZoweApiTest;
 import org.zowe.unix.files.exceptions.UnauthorisedDirectoryException;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 public class ZosmfUnixFileServiceTest extends ZoweApiTest {
 
     @Mock
-    ZosmfConnector zosmfConnector;
+    ZosmfConnectorLtpaAuth zosmfConnector;
 
     ZosmfUnixFilesService zosmfUnixFilesService;
     

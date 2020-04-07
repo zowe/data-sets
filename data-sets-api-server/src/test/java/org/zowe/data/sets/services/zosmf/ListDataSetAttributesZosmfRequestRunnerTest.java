@@ -73,9 +73,9 @@ public class ListDataSetAttributesZosmfRequestRunnerTest extends AbstractZosmfRe
 
         mockJsonResponse(HttpStatus.SC_OK, loadTestFile("getDataSetsAttributes.json"));
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds?dslevel=%s", filter));
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
-
-        assertEquals(expected, new ListDataSetsAttributesZosmfRequestRunner(filter).run(zosmfConnector));
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
+        ItemsWrapper<DataSetAttributes> actual = new ListDataSetsAttributesZosmfRequestRunner(filter).run(zosmfConnector);
+        assertEquals(expected, actual);
 
         verify(requestBuilder).addHeader("X-IBM-Attributes", "base");
         verifyInteractions(requestBuilder, true);
@@ -88,7 +88,7 @@ public class ListDataSetAttributesZosmfRequestRunnerTest extends AbstractZosmfRe
 
         mockJsonResponse(HttpStatus.SC_OK, loadTestFile("getDataSets_noResults.json"));
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds?dslevel=%s", filter));
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
         assertEquals(expected, new ListDataSetsAttributesZosmfRequestRunner(filter).run(zosmfConnector));
 
