@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zowe.unix.files.services.UnixFilesService;
 
 @RestController
-@RequestMapping("/api/v1/unixfiles")
-@Api(value = "Unix Files APIs V1", tags = "Unix Files APIs V1")
-public class UnixFilesControllerV1 extends AbstractUnixFilesController {
+@RequestMapping("/api/v2/unixfiles")
+@Api(value = "Unix Files APIs V2", tags = "Unix Files APIs V2")
+public class UnixFilesControllerV2 extends AbstractUnixFilesController {
 
     @Autowired
-    @Qualifier("ZosmfUnixFilesService1")
+    @Qualifier("ZosmfUnixFilesService2")
     private UnixFilesService unixFilesService; 
     
     @Override

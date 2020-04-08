@@ -11,21 +11,21 @@ package org.zowe.unix.files.services.zosmf;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.zowe.api.common.connectors.zosmf.ZosmfConnectorLtpaAuth;
+import org.zowe.api.common.connectors.zosmf.ZosmfConnectorJWTAuth;
 import org.zowe.unix.files.model.UnixCreateAssetRequest;
 import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.unix.files.model.UnixFileContentWithETag;
 import org.zowe.unix.files.services.UnixFilesService;
 
-@Service
-public class ZosmfUnixFilesService implements UnixFilesService {
+@Service("ZosmfUnixFilesService2")
+public class ZosmfUnixFilesService2 implements UnixFilesService {
     
     @Autowired
-    ZosmfConnectorLtpaAuth zosmfConnector;
+    ZosmfConnectorJWTAuth zosmfConnector;
     
     @Override
-    public UnixDirectoryAttributesWithChildren listUnixDirectory(String path, String hypermediaLinkToBase) {
-        ListUnixDirectoryZosmfRunner runner = new ListUnixDirectoryZosmfRunner(path, hypermediaLinkToBase);
+    public UnixDirectoryAttributesWithChildren listUnixDirectory(String path) {
+        ListUnixDirectoryZosmfRunner runner = new ListUnixDirectoryZosmfRunner(path);
         return runner.run(zosmfConnector);
     }
 

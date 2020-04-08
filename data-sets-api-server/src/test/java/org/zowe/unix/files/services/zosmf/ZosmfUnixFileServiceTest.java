@@ -26,17 +26,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ZosmfUnixFilesService.class })
+@PrepareForTest({ ZosmfUnixFilesService1.class })
 public class ZosmfUnixFileServiceTest extends ZoweApiTest {
 
     @Mock
     ZosmfConnectorLtpaAuth zosmfConnector;
 
-    ZosmfUnixFilesService zosmfUnixFilesService;
+    ZosmfUnixFilesService1 zosmfUnixFilesService;
     
     @Before
     public void setUp() throws Exception {
-        zosmfUnixFilesService = new ZosmfUnixFilesService();
+        zosmfUnixFilesService = new ZosmfUnixFilesService1();
         zosmfUnixFilesService.zosmfConnector = zosmfConnector;
     }    
     
