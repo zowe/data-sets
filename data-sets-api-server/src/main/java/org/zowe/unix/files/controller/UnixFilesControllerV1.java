@@ -22,14 +22,21 @@ import org.zowe.unix.files.services.UnixFilesService;
 @RequestMapping("/api/v1/unixfiles")
 @Api(value = "Unix Files APIs V1", tags = "Unix Files APIs V1")
 public class UnixFilesControllerV1 extends AbstractUnixFilesController {
+    
+    private static final String ENDPOINT_ROOT = "/api/v1/unixfiles";
 
     @Autowired
     @Qualifier("ZosmfUnixFilesService1")
-    private UnixFilesService unixFilesService; 
-    
+    private UnixFilesService unixFilesService;
+
     @Override
     UnixFilesService getUnixFileService() {
         return unixFilesService;
+    }
+    
+    @Override
+    String getEndPointRoot() {
+        return ENDPOINT_ROOT;
     }
 
 }

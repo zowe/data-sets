@@ -41,6 +41,7 @@ import java.net.URI;
 public abstract class AbstractUnixFilesController {
 
     abstract UnixFilesService getUnixFileService();
+    abstract String getEndPointRoot(); 
 
     @GetMapping(value = "", produces = { "application/json" })
     @ApiOperation(value = "Get a list of a directories contents", nickname = "getDirectoryListing", notes = "This API gets a list of files and directories for a given path")
@@ -52,7 +53,7 @@ public abstract class AbstractUnixFilesController {
 
     private String getPathFromRequest(HttpServletRequest request) {
         String requestPath = request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
-        String fullPath = requestPath.substring(requestPath.indexOf("/api/v1/unixfiles") + 17);
+        String fullPath = requestPath.substring(requestPath.indexOf(getEndPointRoot()) + 17);
         return fullPath;
     }
     
