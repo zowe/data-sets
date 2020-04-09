@@ -135,21 +135,29 @@ node('ibm-jenkins-slave-nvm') {
       sleep time: 4, unit: 'MINUTES'
 
       echo "Starting test ..."
-      withCredentials([
-        usernamePassword(
-          credentialsId: params.INTEGRATION_TEST_ZOSMF_CREDENTIAL,
-          usernameVariable: 'USERNAME',
-          passwordVariable: 'PASSWORD'
-        )
-      ]) {
-        sh """./gradlew runIntegrationTests \
+      try {
+        withCredentials([
+          usernamePassword(
+            credentialsId: params.INTEGRATION_TEST_ZOSMF_CREDENTIAL,
+            usernameVariable: 'USERNAME',
+            passwordVariable: 'PASSWORD'
+          )
+        ]) {
+          sh """./gradlew runIntegrationTests \
 -Pserver.host=localhost \
 -Pserver.port=7554 \
 -Pserver.username=${USERNAME} \
 -Pserver.password=${PASSWORD} \
 -Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}"""
+       }
+      } catch (e) {
+        echo "Error with integration test: ${e}"
+        throw e
+      } finally {
+        // show logs (the folder should match the folder defined in prepare-fvt.sh)
+        sh "find .fvt/logs -type f | xargs -i sh -c 'echo \">>>>>>>>>>>>>>>>>>>>>>>> {} >>>>>>>>>>>>>>>>>>>>>>>\" && cat {}'"
       }
-      
+
       } // end of lock
     },
     junit         : '**/test-results/test/*.xml',
