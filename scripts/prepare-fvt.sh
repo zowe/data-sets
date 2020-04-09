@@ -310,12 +310,13 @@ echo
 
 ################################################################################
 echo "[${SCRIPT_NAME}] start APIML gateway server"
+# Hint: assign -Dspring.profiles.include=debug if we want to show debug level APIML logs
 # -Xquickstart \
 java -Xms32m -Xmx256m \
     -Dibm.serversocket.recover=true \
     -Dfile.encoding=UTF-8 \
     -Djava.io.tmpdir=/tmp \
-    -Dspring.profiles.include=debug \
+    -Dspring.profiles.include= \
     -Dapiml.service.hostname=localhost \
     -Dapiml.service.port=${FVT_GATEWAY_PORT} \
     -Dapiml.service.discoveryServiceUrls="https://localhost:${FVT_DISCOVERY_PORT}/eureka/" \
