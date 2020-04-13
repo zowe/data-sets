@@ -15,10 +15,8 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
-import org.zowe.api.common.connectors.zosmf.ZosmfConnectorLtpaAuth;
 import org.zowe.api.common.exceptions.PreconditionFailedException;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.ResponseCache;
@@ -30,9 +28,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public class PutUnixFileContentZosmfRunner extends AbstractZosmfUnixFilesRequestRunner<String> {
-
-    @Autowired
-    ZosmfConnectorLtpaAuth zosmfConnector;
     
     private String path;
     private UnixFileContentWithETag contentWithETag;
@@ -83,7 +78,5 @@ public class PutUnixFileContentZosmfRunner extends AbstractZosmfUnixFilesRequest
         }
         return super.createGeneralException(responseCache, uri);
     }
-    
-   
 
 }

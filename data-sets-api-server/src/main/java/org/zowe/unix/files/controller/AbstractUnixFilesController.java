@@ -36,8 +36,6 @@ import org.zowe.unix.files.services.UnixFilesService;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.net.URI;
-
 public abstract class AbstractUnixFilesController {
 
     abstract UnixFilesService getUnixFileService();
@@ -120,16 +118,14 @@ public abstract class AbstractUnixFilesController {
         getUnixFileService().deleteUnixFileContent(fullPath, isRecursive);
         return ResponseEntity.noContent().build();
     }
-
+    
     @PostMapping(value = "{path}/**", produces = { "application/json" })
     @ApiOperation(value = "Create a new Unix File or Diretory", nickname = "postUnixFileOrDirectory", notes = "This API will create a new UnixFile or Directory. Try it out function not functional due to encoding of slashes and auto insertion of wildcard characters, "
             + "an example request path would be /api/v1/unixFiles/u/ibmuser/newDirectory")
     @ApiResponses(value = { @ApiResponse(code = 201, message = "Created") })
     public ResponseEntity<?> createUnifFileOrDirectory(@PathVariable String path, HttpServletRequest request,
             @RequestBody UnixCreateAssetRequest input) {
-
         getUnixFileService().createUnixAsset(getPathFromRequest(request), input);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri();
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.created(getLinkToBaseURI(request).toUri()).build();
     }
 }
