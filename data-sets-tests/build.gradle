@@ -8,6 +8,9 @@ ext {
 	username = project.hasProperty('server.username') ? project.getProperty('server.username') : "undefined"
 	password = project.hasProperty('server.password') ? project.getProperty('server.password') : "undefined"
 	server_test_directory = project.hasProperty('server.test.directory') ? project.getProperty('server.test.directory') : "undefined"
+	test_version = project.hasProperty('test.version') ? project.getProperty('test.version') : "undefined"
+	gateway_host = project.hasProperty('gateway.host') ? project.getProperty('gateway.host') : "undefined"
+	gateway_port = project.hasProperty('gateway.port') ? project.getProperty('gateway.port') : "undefined"
 }
 
 dependencies {
@@ -43,6 +46,9 @@ test {
 	systemProperty "server.username", username
 	systemProperty "server.password", password
 	systemProperty "server.test.directory", server_test_directory
+	systemProperty "test.version", test_version
+	systemProperty "gateway.host", gateway_host
+	systemProperty "gateway.port", gateway_port
 }
 
 task validate << {
