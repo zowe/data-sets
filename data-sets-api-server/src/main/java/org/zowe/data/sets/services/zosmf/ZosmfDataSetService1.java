@@ -21,7 +21,7 @@ public class ZosmfDataSetService1 extends AbstractZosmfDataSetService {
     ZosmfConnectorLtpaAuth zosmfConnector;
     
     @Override
-    public ZosmfConnector getZosmfConnector() {
+    ZosmfConnector getZosmfConnector() {
         return zosmfConnector;
     }
 }

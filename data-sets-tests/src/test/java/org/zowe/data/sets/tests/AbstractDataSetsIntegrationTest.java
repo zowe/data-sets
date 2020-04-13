@@ -11,7 +11,6 @@ package org.zowe.data.sets.tests;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.http.Header;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
@@ -31,7 +30,6 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractFilesInteg
     static final String INVALID_DATASET_NAME = HLQ + ".TEST.INVALID";
     static final String UNAUTHORIZED_DATASET = "IBMUSER.NOWRITE.CNTL";
     static final String DEFAULT_MEMBER_CONTENT = "//ATLJ0000 JOB (ADL),'ATLAS',MSGCLASS=X,CLASS=A,TIME=1440\n//*        TEST JOB\n";
-    static final Header AUTH_HEADER = new Header("Authorization", "Bearer " + AUTH_TOKEN);
 
     @BeforeClass
     public static void setUpEndpoint() throws Exception {

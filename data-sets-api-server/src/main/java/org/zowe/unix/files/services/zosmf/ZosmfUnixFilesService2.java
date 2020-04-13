@@ -21,7 +21,7 @@ public class ZosmfUnixFilesService2 extends AbstractZosmfUnixFilesService {
     ZosmfConnectorJWTAuth zosmfConnector;
     
     @Override
-    public ZosmfConnector getZosmfConnector() {
+    ZosmfConnector getZosmfConnector() {
         return zosmfConnector;
     }
 }

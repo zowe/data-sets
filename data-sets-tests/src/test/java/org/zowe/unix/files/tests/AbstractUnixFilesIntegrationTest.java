@@ -10,7 +10,6 @@
 package org.zowe.unix.files.tests;
 
 import io.restassured.RestAssured;
-import io.restassured.http.Header;
 
 import org.apache.http.HttpStatus;
 import org.junit.BeforeClass;
@@ -31,7 +30,6 @@ public class AbstractUnixFilesIntegrationTest extends AbstractFilesIntegrationTe
 
     static final String UNIX_FILES_ENDPOINT = "unixfiles";
     static final String TEST_DIRECTORY = System.getProperty("server.test.directory");
-    static final Header AUTH_HEADER = new Header("Authorization", "Bearer " + AUTH_TOKEN);
 
     @BeforeClass
     public static void setUpEndpoint() throws Exception {

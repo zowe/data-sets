@@ -20,7 +20,7 @@ import org.zowe.data.sets.services.DataSetService;
 
 public abstract class AbstractZosmfDataSetService implements DataSetService {
 
-    public abstract ZosmfConnector getZosmfConnector();
+    abstract ZosmfConnector getZosmfConnector();
 
 
     // TODO - review error handling, serviceability, https://github.com/zowe/data-sets/issues/16

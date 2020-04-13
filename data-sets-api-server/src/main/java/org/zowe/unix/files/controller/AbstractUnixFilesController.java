@@ -43,14 +43,6 @@ public abstract class AbstractUnixFilesController {
     abstract UnixFilesService getUnixFileService();
     abstract String getEndPointRoot(); 
 
-    @GetMapping(value = "", produces = { "application/json" })
-    @ApiOperation(value = "Get a list of a directories contents", nickname = "getDirectoryListing", notes = "This API gets a list of files and directories for a given path")
-    @ApiResponses({ @ApiResponse(code = 200, message = "Ok", response = UnixDirectoryAttributesWithChildren.class) })
-    public UnixDirectoryAttributesWithChildren getUnixDirectoryListing(
-            @ApiParam(value = "Path of Directory to be listed", required = true) @RequestParam String path) {
-        return getUnixFileService().listUnixDirectory(path);
-    }
-
     private String getPathFromRequest(HttpServletRequest request) {
         String requestPath = request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
         String fullPath = requestPath.substring(requestPath.indexOf(getEndPointRoot()) + 17);
@@ -71,7 +63,7 @@ public abstract class AbstractUnixFilesController {
             @ApiParam(value = "Path of Directory to be listed", required = true) @RequestParam String path, HttpServletRequest request) {
         
         String hypermediaLinkToBase = getLinkToBaseURI(request).toString();
-        return unixFileService.listUnixDirectory(path, hypermediaLinkToBase);
+        return getUnixFileService().listUnixDirectory(path, hypermediaLinkToBase);
     }
 
     @GetMapping(value = "{path}/**", produces = { "application/json" })

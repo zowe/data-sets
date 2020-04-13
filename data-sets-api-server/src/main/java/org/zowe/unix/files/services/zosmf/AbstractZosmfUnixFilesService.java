@@ -17,11 +17,11 @@ import org.zowe.unix.files.services.UnixFilesService;
 
 public abstract class AbstractZosmfUnixFilesService implements UnixFilesService {
     
-    public abstract ZosmfConnector getZosmfConnector();
+    abstract ZosmfConnector getZosmfConnector();
     
     @Override
-    public UnixDirectoryAttributesWithChildren listUnixDirectory(String path) {
-        ListUnixDirectoryZosmfRunner runner = new ListUnixDirectoryZosmfRunner(path);
+    public UnixDirectoryAttributesWithChildren listUnixDirectory(String path, String hypermediaLinkToBase) {
+        ListUnixDirectoryZosmfRunner runner = new ListUnixDirectoryZosmfRunner(path, hypermediaLinkToBase);
         return runner.run(getZosmfConnector());
     }
 
