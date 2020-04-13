@@ -9,13 +9,13 @@
  */
 package org.zowe.data.sets.controller;
 
+import io.swagger.annotations.Api;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.zowe.data.sets.services.DataSetService;
-
-import io.swagger.annotations.Api;
 
 @RestController
 @RequestMapping("/api/v1/datasets")
