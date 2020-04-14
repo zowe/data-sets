@@ -49,7 +49,7 @@ public abstract class AbstractUnixFilesController {
     
     private UriComponents getLinkToBaseURI(HttpServletRequest request) {
         String requestMappingPath = request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
-        UriComponents baseURIForLinkTo = ServletUriComponentsBuilder.fromCurrentContextPath().port(System.getProperty("gateway.httpsPort"))
+        UriComponents baseURIForLinkTo = ServletUriComponentsBuilder.fromCurrentContextPath().port(System.getProperty("connection.httpsPort"))
                 .path(requestMappingPath).build();
         return baseURIForLinkTo;
     }
