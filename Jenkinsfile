@@ -132,7 +132,7 @@ node('ibm-jenkins-slave-nvm') {
       }
 
       // give it a little time to start the server
-      sleep time: 4, unit: 'MINUTES'
+      sleep time: 2, unit: 'MINUTES'
 
       echo "Starting test ..."
       try {
@@ -143,12 +143,22 @@ node('ibm-jenkins-slave-nvm') {
             passwordVariable: 'PASSWORD'
           )
         ]) {
-          sh """./gradlew runIntegrationTests \
--Pserver.host=localhost \
--Pserver.port=7554 \
--Pserver.username=${USERNAME} \
--Pserver.password=${PASSWORD} \
--Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}"""
+          echo "Testing version 1 - v1 Ltpa"
+            sh """./gradlew runIntegrationTests \
+                -Pserver.host=localhost \
+                -Pserver.port=7554 \
+                -Pserver.username=${USERNAME} \
+                -Pserver.password=${PASSWORD} \
+                -Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId} \
+                -Ptest.version=1"""
+            echo "Testing version 2 - v2 JWT"
+            sh """./gradlew runIntegrationTests \
+                -Pserver.host=localhost \
+                -Pserver.port=7554 \
+                -Pserver.username=${USERNAME} \
+                -Pserver.password=${PASSWORD} \
+                -Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId} \
+                -Ptest.version=2"""
        }
       } catch (e) {
         echo "Error with integration test: ${e}"
