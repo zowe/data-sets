@@ -143,7 +143,7 @@ node('ibm-jenkins-slave-nvm') {
             passwordVariable: 'PASSWORD'
           )
         ]) {
-          echo "Testing version 1 - v1 Ltpa"
+            echo "Testing version 1 - v1 Ltpa"
             sh """./gradlew runIntegrationTests \
                 -Pserver.host=localhost \
                 -Pserver.port=7554 \
@@ -159,7 +159,7 @@ node('ibm-jenkins-slave-nvm') {
                 -Pserver.password=${PASSWORD} \
                 -Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId} \
                 -Ptest.version=2"""
-       }
+          }
       } catch (e) {
         echo "Error with integration test: ${e}"
         throw e
@@ -170,9 +170,10 @@ node('ibm-jenkins-slave-nvm') {
 
       } // end of lock
     },
-    junit         : '**/test-results/test/*.xml',
+    junit         : '**/test-results/**/*.xml',
     htmlReports   : [
-      [dir: "data-sets-tests/build/reports/tests/test", files: "index.html", name: "Report: Integration Test"],
+      [dir: "data-sets-tests/build/reports/tests/test-1", files: "index.html", name: "Report: Integration Test v1"],
+      [dir: "data-sets-tests/build/reports/tests/test-2", files: "index.html", name: "Report: Integration Test v2"],
     ],
     timeout: [time: 30, unit: 'MINUTES']
   )
