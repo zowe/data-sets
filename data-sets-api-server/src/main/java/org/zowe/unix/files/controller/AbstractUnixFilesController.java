@@ -55,7 +55,7 @@ public abstract class AbstractUnixFilesController {
     }
     
     @GetMapping(value = "", produces = { "application/json" })
-    @ApiOperation(value = "Get a list of a directories contents", nickname = "getDirectoryListing", notes = "This API gets a list of files and directories for a given path", tags = "Unix Files APIs")
+    @ApiOperation(value = "Get a list of a directories contents", nickname = "getDirectoryListing", notes = "This API gets a list of files and directories for a given path")
     @ApiResponses({ @ApiResponse(code = 200, message = "Ok", response = UnixDirectoryAttributesWithChildren.class) })
     public UnixDirectoryAttributesWithChildren getUnixDirectoryListing(
             @ApiParam(value = "Path of Directory to be listed", required = true) @RequestParam String path, HttpServletRequest request) {
