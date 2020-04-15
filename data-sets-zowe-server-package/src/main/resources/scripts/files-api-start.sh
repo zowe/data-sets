@@ -31,6 +31,7 @@ _BPX_JOBNAME=${ZOWE_PREFIX}${COMPONENT_CODE} java -Xms16m -Xmx512m -Dibm.servers
     -Dserver.ssl.keyStorePassword=${KEYSTORE_PASSWORD} \
     -Dserver.ssl.keyStoreType=${KEYSTORE_TYPE} \
     -Dserver.compression.enabled=true \
+    -Dserver.connection-timeout=60000 \
     -Dgateway.httpsPort=${GATEWAY_PORT} \
     -Dgateway.ipAddress=${ZOWE_EXPLORER_HOST} \
     -Dspring.main.banner-mode=off \
