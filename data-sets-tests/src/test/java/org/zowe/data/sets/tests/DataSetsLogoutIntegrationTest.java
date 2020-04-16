@@ -12,11 +12,19 @@ package org.zowe.data.sets.tests;
 import io.restassured.RestAssured;
 
 import org.apache.http.HttpStatus;
+import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assume.assumeTrue;
 
 public class DataSetsLogoutIntegrationTest extends AbstractDataSetsIntegrationTest {
     public static final String path = INVALID_DATASET_NAME + "/list";
 
+    @Before
+    public void checkVersionBeforeRunningTest() throws Exception {
+        assumeTrue(System.getProperty("test.version").equals("1"));        
+    }
+    
     @Test
     public void testGetInvalidDatasetMembersWithoutAuth() throws Exception {
         RestAssured.given().header(AUTH_HEADER).when().auth().none().get(path)

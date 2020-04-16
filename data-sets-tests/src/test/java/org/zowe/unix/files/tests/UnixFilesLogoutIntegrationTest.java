@@ -12,11 +12,19 @@ package org.zowe.unix.files.tests;
 import io.restassured.RestAssured;
 
 import org.apache.http.HttpStatus;
+import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assume.assumeTrue;
 
 public class UnixFilesLogoutIntegrationTest extends AbstractUnixFilesIntegrationTest {
     final String path = "?path=" + TEST_DIRECTORY;
 
+    @Before
+    public void checkVersionBeforeRunningTest() throws Exception {
+        assumeTrue(System.getProperty("test.version").equals("1"));        
+    }
+    
     @Test
     public void testGetDirectoryListingWithoutAuth() throws Exception {
         RestAssured.given().header(AUTH_HEADER).when().auth().none().get(path)

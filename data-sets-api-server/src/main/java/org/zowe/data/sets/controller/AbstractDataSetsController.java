@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.zowe.api.common.controller.AbstractApiController;
 import org.zowe.api.common.model.ItemsWrapper;
 import org.zowe.data.sets.model.DataSet;
 import org.zowe.data.sets.model.DataSetAttributes;
@@ -38,7 +37,7 @@ import org.zowe.data.sets.services.DataSetService;
 
 import java.net.URI;
 
-public abstract class AbstractDataSetsController extends AbstractApiController {
+public abstract class AbstractDataSetsController {
 
     abstract DataSetService getDataSetService();
 

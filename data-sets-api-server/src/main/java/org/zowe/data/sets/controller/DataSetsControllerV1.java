@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.zowe.api.common.controller.AbstractApiController;
 import org.zowe.data.sets.services.DataSetService;
 
 @RestController
@@ -29,6 +30,13 @@ public class DataSetsControllerV1 extends AbstractDataSetsController {
     @Override
     DataSetService getDataSetService() {
         return dataSetService;
+    }
+    
+    @RestController
+    @RequestMapping("/api/v1/datasets")
+    @Api(value = "Data Sets V1 APIs", tags = "Data Sets V1 APIs")
+    public class UsernameController extends AbstractApiController {
+        
     }
 
 }
