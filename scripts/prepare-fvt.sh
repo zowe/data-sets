@@ -252,9 +252,7 @@ cd ~ && \
   (iconv -f ISO8859-1 -t IBM-1047 prepare-integration-test-folders.sh > prepare-integration-test-folders.sh.new) && mv prepare-integration-test-folders.sh.new prepare-integration-test-folders.sh && chmod +x prepare-integration-test-folders.sh
 ./prepare-integration-test-folders.sh "${FVT_SERVER_DIRECTORY_ROOT}/${FVT_UID}" || { echo "[prepare-integration-test-folders] failed"; exit 1; }
 ./prepare-integration-test-folders.sh "${FVT_SERVER_DIRECTORY_ROOT}/${FVT_UID}_2" || { echo "[prepare-integration-test-folders 2] failed"; exit 1; }
-echo "[prepare-integration-test-folders] succeeds" 
-&& echo "${FVT_SERVER_DIRECTORY_ROOT}/${FVT_UID} ${FVT_SERVER_DIRECTORY_ROOT}/${FVT_UID}_2 succeeds" 
-&& exit 0
+echo "[prepare-integration-test-folders] succeeds" && exit 0
 EOF
 echo
 
