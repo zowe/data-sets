@@ -34,6 +34,8 @@ public class ZosmfUnixFileServiceTest extends ZoweApiTest {
 
     ZosmfUnixFilesService1 zosmfUnixFilesService;
     
+    private final String UNIX_PATH = "/a/path";
+    
     @Before
     public void setUp() throws Exception {
         zosmfUnixFilesService = new ZosmfUnixFilesService1();
@@ -42,24 +44,39 @@ public class ZosmfUnixFileServiceTest extends ZoweApiTest {
     
     @Test
     public void testGetUnixDirectoryListRunnerValueCorrectlyReturned() throws Exception {
-        String path = "/a/path"; 
-        
         ListUnixDirectoryZosmfRunner runner = mock(ListUnixDirectoryZosmfRunner.class);
-        PowerMockito.whenNew(ListUnixDirectoryZosmfRunner.class).withArguments(path, "").thenReturn(runner);
-        zosmfUnixFilesService.listUnixDirectory(path, "");
+        PowerMockito.whenNew(ListUnixDirectoryZosmfRunner.class).withArguments(UNIX_PATH, "").thenReturn(runner);
+        zosmfUnixFilesService.listUnixDirectory(UNIX_PATH, "");
         
         verify(runner).run(zosmfConnector);
     }
     
     @Test
     public void testGetUnixDirectoryListRunnerExceptionThrown() throws Exception {
-        String path = "/a/path";
-        
-        ZoweApiRestException expectedException = new UnauthorisedDirectoryException(path);
+        ZoweApiRestException expectedException = new UnauthorisedDirectoryException(UNIX_PATH);
         
         ListUnixDirectoryZosmfRunner runner = mock(ListUnixDirectoryZosmfRunner.class);
         when(runner.run(zosmfConnector)).thenThrow(expectedException);
-        PowerMockito.whenNew(ListUnixDirectoryZosmfRunner.class).withArguments(path, "").thenReturn(runner);
-        shouldThrow(expectedException, () -> zosmfUnixFilesService.listUnixDirectory(path, ""));
+        PowerMockito.whenNew(ListUnixDirectoryZosmfRunner.class).withArguments(UNIX_PATH, "").thenReturn(runner);
+        shouldThrow(expectedException, () -> zosmfUnixFilesService.listUnixDirectory(UNIX_PATH, ""));
+    }
+    
+    @Test
+    public void testGetUnixFileContentZosmfRunnerCorrectResponse() throws Exception {
+        GetUnixFileContentZosmfRunner runner = mock(GetUnixFileContentZosmfRunner.class);
+        PowerMockito.whenNew(GetUnixFileContentZosmfRunner.class).withArguments(UNIX_PATH, false, false).thenReturn(runner);
+        zosmfUnixFilesService.getUnixFileContentWithETag(UNIX_PATH, false, false);
+        
+        verify(runner).run(zosmfConnector);
+    }
+    
+    @Test
+    public void testGetUnixFileContentZosmfRunnerExceptionThrown() throws Exception {
+        ZoweApiRestException expectedException = new UnauthorisedDirectoryException(UNIX_PATH);
+        
+        GetUnixFileContentZosmfRunner runner = mock(GetUnixFileContentZosmfRunner.class);
+        when(runner.run(zosmfConnector)).thenThrow(expectedException);
+        PowerMockito.whenNew(GetUnixFileContentZosmfRunner.class).withArguments(UNIX_PATH, false, false).thenReturn(runner);
+        shouldThrow(expectedException, () -> zosmfUnixFilesService.getUnixFileContentWithETag(UNIX_PATH, false, false));
     }
 }
