@@ -25,6 +25,7 @@ import org.zowe.unix.files.model.UnixEntityType;
 import org.zowe.unix.files.model.UnixFileContent;
 import org.zowe.unix.files.model.UnixFileContentWithETag;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -121,6 +122,12 @@ public class ZosmfUnixFileServiceTest extends ZoweApiTest {
     public void testShouldUnixFileConvertShouldReturnTrueForUTF() throws Exception {
         setupTestShouldUnixFileConvert("UTF-8");
         assertTrue(zosmfUnixFilesService.shouldUnixFileConvert(UNIX_PATH));
+    }
+    
+    @Test
+    public void testShouldUnixFileConvertShouldReturnFalseForIBM1047() throws Exception {
+        setupTestShouldUnixFileConvert("IBM-1047");
+        assertFalse(zosmfUnixFilesService.shouldUnixFileConvert(UNIX_PATH));
     }
     
     public void setupTestShouldUnixFileConvert(String codepage) throws Exception {
