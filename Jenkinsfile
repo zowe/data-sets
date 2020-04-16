@@ -158,7 +158,7 @@ node('ibm-jenkins-slave-nvm') {
                 -Pserver.port=7554 \
                 -Pserver.username=${USERNAME} \
                 -Pserver.password=${PASSWORD} \
-                -Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}_2/${uniqueBuildId} \
+                -Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}_2 \
                 -Ptest.version=2"""
           }
       } catch (e) {
@@ -226,8 +226,8 @@ node('ibm-jenkins-slave-nvm') {
 cd ~ && \
   [ -d "${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}" ] && \
   rm -fr "${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}" && \
-  [ -d "${params.INTEGRATION_TEST_DIRECTORY_ROOT}_2/${uniqueBuildId}" ] && \
-  rm -fr "${params.INTEGRATION_TEST_DIRECTORY_ROOT}_2/${uniqueBuildId}"
+  [ -d "${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}_2" ] && \
+  rm -fr "${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}_2"
 echo "[cleanup-integration-test-folders] done" && exit 0
 EOF"""
         }
