@@ -157,7 +157,7 @@ node('ibm-jenkins-slave-nvm') {
                 -Pserver.port=7554 \
                 -Pserver.username=${USERNAME} \
                 -Pserver.password=${PASSWORD} \
-                -Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId} \
+                -Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}_2/${uniqueBuildId} \
                 -Ptest.version=2"""
           }
       } catch (e) {
