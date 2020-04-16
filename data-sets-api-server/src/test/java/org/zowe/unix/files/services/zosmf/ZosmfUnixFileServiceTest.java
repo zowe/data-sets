@@ -20,7 +20,12 @@ import org.zowe.api.common.connectors.zosmf.ZosmfConnectorLtpaAuth;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.test.ZoweApiTest;
 import org.zowe.unix.files.exceptions.UnauthorisedDirectoryException;
+import org.zowe.unix.files.model.UnixCreateAssetRequest;
+import org.zowe.unix.files.model.UnixEntityType;
+import org.zowe.unix.files.model.UnixFileContent;
+import org.zowe.unix.files.model.UnixFileContentWithETag;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -35,6 +40,7 @@ public class ZosmfUnixFileServiceTest extends ZoweApiTest {
     ZosmfUnixFilesService1 zosmfUnixFilesService;
     
     private final String UNIX_PATH = "/a/path";
+    private final UnixFileContentWithETag UNIX_FILE_CONTENT = new UnixFileContentWithETag(new UnixFileContent("new content"), "etag");
     
     @Before
     public void setUp() throws Exception {
@@ -79,4 +85,108 @@ public class ZosmfUnixFileServiceTest extends ZoweApiTest {
         PowerMockito.whenNew(GetUnixFileContentZosmfRunner.class).withArguments(UNIX_PATH, false, false).thenReturn(runner);
         shouldThrow(expectedException, () -> zosmfUnixFilesService.getUnixFileContentWithETag(UNIX_PATH, false, false));
     }
+    
+    @Test
+    public void testPutUnixFileContentZosmfRunnerCorrectResponse() throws Exception {
+        PutUnixFileContentZosmfRunner runner = mock(PutUnixFileContentZosmfRunner.class);
+        PowerMockito.whenNew(PutUnixFileContentZosmfRunner.class).withArguments(UNIX_PATH, UNIX_FILE_CONTENT, false).thenReturn(runner);
+        zosmfUnixFilesService.putUnixFileContent(UNIX_PATH, UNIX_FILE_CONTENT, false);
+        
+        verify(runner).run(zosmfConnector);
+    }
+    
+    @Test
+    public void testPutUnixFileContentZosmfRunnerExceptionThrown() throws Exception {
+        ZoweApiRestException expectedException = new UnauthorisedDirectoryException(UNIX_PATH);
+        
+        PutUnixFileContentZosmfRunner runner = mock(PutUnixFileContentZosmfRunner.class);
+        when(runner.run(zosmfConnector)).thenThrow(expectedException);
+        PowerMockito.whenNew(PutUnixFileContentZosmfRunner.class).withArguments(UNIX_PATH, UNIX_FILE_CONTENT, false).thenReturn(runner);
+        shouldThrow(expectedException, () -> zosmfUnixFilesService.putUnixFileContent(UNIX_PATH, UNIX_FILE_CONTENT, false));
+    }
+    
+    @Test
+    public void testShouldUnixFileConvertShouldReturnTrueForISO8859() throws Exception {
+        setupTestShouldUnixFileConvert("ISO8859-1");
+        assertTrue(zosmfUnixFilesService.shouldUnixFileConvert(UNIX_PATH));
+    }
+    
+    @Test
+    public void testShouldUnixFileConvertShouldReturnTrueForIBM850() throws Exception {
+        setupTestShouldUnixFileConvert("IBM-850");
+        assertTrue(zosmfUnixFilesService.shouldUnixFileConvert(UNIX_PATH));
+    }
+    
+    @Test
+    public void testShouldUnixFileConvertShouldReturnTrueForUTF() throws Exception {
+        setupTestShouldUnixFileConvert("UTF-8");
+        assertTrue(zosmfUnixFilesService.shouldUnixFileConvert(UNIX_PATH));
+    }
+    
+    public void setupTestShouldUnixFileConvert(String codepage) throws Exception {
+        GetUnixFileChtagZosmfRunner runner = mock(GetUnixFileChtagZosmfRunner.class);
+        PowerMockito.whenNew(GetUnixFileChtagZosmfRunner.class).withArguments(UNIX_PATH).thenReturn(runner);
+        when(runner.run(zosmfConnector)).thenReturn(codepage);
+    }
+    
+    @Test
+    public void testGetUnixFileChtagZosmfRunnerCorrectResponse() throws Exception {
+        GetUnixFileChtagZosmfRunner runner = mock(GetUnixFileChtagZosmfRunner.class);
+        PowerMockito.whenNew(GetUnixFileChtagZosmfRunner.class).withArguments(UNIX_PATH).thenReturn(runner);
+        zosmfUnixFilesService.getUnixFileChtag(UNIX_PATH);
+        
+        verify(runner).run(zosmfConnector);
+    }
+    
+    @Test
+    public void testGetUnixFileChtagZosmfRunnerExceptionThrown() throws Exception {
+        ZoweApiRestException expectedException = new UnauthorisedDirectoryException(UNIX_PATH);
+        
+        GetUnixFileChtagZosmfRunner runner = mock(GetUnixFileChtagZosmfRunner.class);
+        when(runner.run(zosmfConnector)).thenThrow(expectedException);
+        PowerMockito.whenNew(GetUnixFileChtagZosmfRunner.class).withArguments(UNIX_PATH).thenReturn(runner);
+        shouldThrow(expectedException, () -> zosmfUnixFilesService.getUnixFileChtag(UNIX_PATH));
+    }
+    
+    @Test
+    public void testDeleteUnixFileZosmfRunnerCorrectResponse() throws Exception {
+        DeleteUnixFileZosmfRunner runner = mock(DeleteUnixFileZosmfRunner.class);
+        PowerMockito.whenNew(DeleteUnixFileZosmfRunner.class).withArguments(UNIX_PATH, true).thenReturn(runner);
+        zosmfUnixFilesService.deleteUnixFileContent(UNIX_PATH, true);
+        
+        verify(runner).run(zosmfConnector);
+    }
+    
+    @Test
+    public void testDeleteUnixFileZosmfRunnerExceptionThrown() throws Exception {
+        ZoweApiRestException expectedException = new UnauthorisedDirectoryException(UNIX_PATH);
+        
+        DeleteUnixFileZosmfRunner runner = mock(DeleteUnixFileZosmfRunner.class);
+        when(runner.run(zosmfConnector)).thenThrow(expectedException);
+        PowerMockito.whenNew(DeleteUnixFileZosmfRunner.class).withArguments(UNIX_PATH, true).thenReturn(runner);
+        shouldThrow(expectedException, () -> zosmfUnixFilesService.deleteUnixFileContent(UNIX_PATH, true));
+    }
+    
+    @Test
+    public void testCreateUnixAssetZosmfRunnerCorrectResponse() throws Exception {
+        UnixCreateAssetRequest request = new UnixCreateAssetRequest(UnixEntityType.FILE, "-rwxrwxrwx");
+        
+        CreateUnixAssetZosmfRunner runner = mock(CreateUnixAssetZosmfRunner.class);
+        PowerMockito.whenNew(CreateUnixAssetZosmfRunner.class).withArguments(UNIX_PATH, request).thenReturn(runner);
+        zosmfUnixFilesService.createUnixAsset(UNIX_PATH, request);
+        
+        verify(runner).run(zosmfConnector);
+    }
+    
+    @Test
+    public void testCreateUnixAssetZosmfRunnerExceptionThrown() throws Exception {
+        ZoweApiRestException expectedException = new UnauthorisedDirectoryException(UNIX_PATH);
+        UnixCreateAssetRequest request = new UnixCreateAssetRequest(UnixEntityType.FILE, "-rwxrwxrwx");
+        
+        CreateUnixAssetZosmfRunner runner = mock(CreateUnixAssetZosmfRunner.class);
+        when(runner.run(zosmfConnector)).thenThrow(expectedException);
+        PowerMockito.whenNew(CreateUnixAssetZosmfRunner.class).withArguments(UNIX_PATH, request).thenReturn(runner);
+        shouldThrow(expectedException, () -> zosmfUnixFilesService.createUnixAsset(UNIX_PATH, request));
+    }
+    
 }
