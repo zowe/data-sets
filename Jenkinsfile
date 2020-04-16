@@ -151,7 +151,8 @@ node('ibm-jenkins-slave-nvm') {
                 -Pserver.password=${PASSWORD} \
                 -Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId} \
                 -Ptest.version=1"""
-            echo "Testing version 2 - v2 JWT"
+            echo "Testing version 2 - v2 JWT "
+            echo "using test folder ${params.INTEGRATION_TEST_DIRECTORY_ROOT}_2/${uniqueBuildId}"
             sh """./gradlew runIntegrationTests \
                 -Pserver.host=localhost \
                 -Pserver.port=7554 \
@@ -224,7 +225,9 @@ node('ibm-jenkins-slave-nvm') {
           sh """SSHPASS=${PASSWORD} sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
 cd ~ && \
   [ -d "${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}" ] && \
-  rm -fr "${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}"
+  rm -fr "${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}" && \
+  [ -d "${params.INTEGRATION_TEST_DIRECTORY_ROOT}_2/${uniqueBuildId}" ] && \
+  rm -fr "${params.INTEGRATION_TEST_DIRECTORY_ROOT}_2/${uniqueBuildId}"
 echo "[cleanup-integration-test-folders] done" && exit 0
 EOF"""
         }
