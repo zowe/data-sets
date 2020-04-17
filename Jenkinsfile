@@ -152,7 +152,6 @@ node('ibm-jenkins-slave-nvm') {
                 -Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId} \
                 -Ptest.version=1"""
             echo "Testing version 2 - v2 JWT "
-            echo "using test folder ${params.INTEGRATION_TEST_DIRECTORY_ROOT}_2/${uniqueBuildId}"
             sh """./gradlew runIntegrationTests \
                 -Pserver.host=localhost \
                 -Pserver.port=7554 \
