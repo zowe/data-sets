@@ -32,20 +32,20 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ZosmfUnixFilesService1.class })
+@PrepareForTest({ ZosmfUnixFilesServiceV1.class })
 public class ZosmfUnixFileServiceTest extends ZoweApiTest {
 
     @Mock
     ZosmfConnectorLtpaAuth zosmfConnector;
 
-    ZosmfUnixFilesService1 zosmfUnixFilesService;
+    ZosmfUnixFilesServiceV1 zosmfUnixFilesService;
     
     private final String UNIX_PATH = "/a/path";
     private final UnixFileContentWithETag UNIX_FILE_CONTENT = new UnixFileContentWithETag(new UnixFileContent("new content"), "etag");
     
     @Before
     public void setUp() throws Exception {
-        zosmfUnixFilesService = new ZosmfUnixFilesService1();
+        zosmfUnixFilesService = new ZosmfUnixFilesServiceV1();
         zosmfUnixFilesService.zosmfConnector = zosmfConnector;
     }    
     

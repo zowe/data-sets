@@ -12,13 +12,13 @@ package org.zowe.unix.files.services.zosmf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
-import org.zowe.api.common.connectors.zosmf.ZosmfConnectorJWTAuth;
+import org.zowe.api.common.connectors.zosmf.ZosmfConnectorLtpaAuth;
 
-@Service("ZosmfUnixFilesService2")
-public class ZosmfUnixFilesService2 extends AbstractZosmfUnixFilesService {
+@Service("ZosmfUnixFilesServiceV1")
+public class ZosmfUnixFilesServiceV1 extends AbstractZosmfUnixFilesService {
     
     @Autowired
-    ZosmfConnectorJWTAuth zosmfConnector;
+    ZosmfConnectorLtpaAuth zosmfConnector;
     
     @Override
     ZosmfConnector getZosmfConnector() {

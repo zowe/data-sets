@@ -26,7 +26,7 @@ public class UnixFilesControllerV1 extends AbstractUnixFilesController {
     private static final String ENDPOINT_ROOT = "/api/v1/unixfiles";
 
     @Autowired
-    @Qualifier("ZosmfUnixFilesService1")
+    @Qualifier("ZosmfUnixFilesServiceV1")
     private UnixFilesService unixFilesService;
 
     @Override

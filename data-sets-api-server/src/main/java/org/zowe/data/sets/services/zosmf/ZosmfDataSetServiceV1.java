@@ -12,13 +12,13 @@ package org.zowe.data.sets.services.zosmf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
-import org.zowe.api.common.connectors.zosmf.ZosmfConnectorJWTAuth;
+import org.zowe.api.common.connectors.zosmf.ZosmfConnectorLtpaAuth;
 
-@Service("ZosmfDataSetService2")
-public class ZosmfDataSetService2 extends AbstractZosmfDataSetService {
+@Service("ZosmfDataSetServiceV1")
+public class ZosmfDataSetServiceV1 extends AbstractZosmfDataSetService {
 
     @Autowired
-    ZosmfConnectorJWTAuth zosmfConnector;
+    ZosmfConnectorLtpaAuth zosmfConnector;
     
     @Override
     ZosmfConnector getZosmfConnector() {

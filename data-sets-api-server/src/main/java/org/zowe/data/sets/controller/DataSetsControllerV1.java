@@ -24,7 +24,7 @@ import org.zowe.data.sets.services.DataSetService;
 public class DataSetsControllerV1 extends AbstractDataSetsController {
 
     @Autowired
-    @Qualifier("ZosmfDataSetService1")
+    @Qualifier("ZosmfDataSetServiceV1")
     private DataSetService dataSetService;
 
     @Override
