@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2018, 2019
+ * Copyright IBM Corporation 2018, 2020
  */
 package org.zowe.data.sets.services.zosmf;
 
@@ -16,7 +16,7 @@ import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
+import org.zowe.api.common.connectors.zosmf.ZosmfConnectorLtpaAuth;
 import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.model.ItemsWrapper;
@@ -32,17 +32,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ZosmfDataSetService.class})
+@PrepareForTest({ZosmfDataSetServiceV1.class})
 public class ZosmfDataSetsServiceTest extends ZoweApiTest {
 
     @Mock
-    ZosmfConnector zosmfConnector;
+    ZosmfConnectorLtpaAuth zosmfConnector;
 
-    ZosmfDataSetService dataService;
+    ZosmfDataSetServiceV1 dataService;
 
     @Before
     public void setUp() throws Exception {
-        dataService = new ZosmfDataSetService();
+        dataService = new ZosmfDataSetServiceV1();
         dataService.zosmfConnector = zosmfConnector;
     }
 

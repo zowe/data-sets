@@ -9,8 +9,6 @@
  */
 package org.zowe.data.sets.services.zosmf;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
 import org.zowe.api.common.model.ItemsWrapper;
 import org.zowe.data.sets.model.DataSet;
@@ -20,11 +18,10 @@ import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.model.DataSetRenameRequest;
 import org.zowe.data.sets.services.DataSetService;
 
-@Service
-public class ZosmfDataSetService implements DataSetService {
+public abstract class AbstractZosmfDataSetService implements DataSetService {
 
-    @Autowired
-    ZosmfConnector zosmfConnector;
+    abstract ZosmfConnector getZosmfConnector();
+
 
     // TODO - review error handling, serviceability, https://github.com/zowe/data-sets/issues/16
     // use the zomsf error categories to work out errors
@@ -33,50 +30,50 @@ public class ZosmfDataSetService implements DataSetService {
     @Override
     public ItemsWrapper<String> listDataSetMembers(String dataSetName) {
         ListDataSetMembersZosmfRequestRunner runner = new ListDataSetMembersZosmfRequestRunner(dataSetName);
-        return runner.run(zosmfConnector);
+        return runner.run(getZosmfConnector());
     }
 
 
     @Override
     public ItemsWrapper<DataSetAttributes> listDataSetAttributes(String filter) {
         ListDataSetsAttributesZosmfRequestRunner runner = new ListDataSetsAttributesZosmfRequestRunner(filter);
-        return runner.run(zosmfConnector);
+        return runner.run(getZosmfConnector());
     }
 
     @Override
     public ItemsWrapper<DataSet> listDataSets(String filter) {
         ListDataSetsZosmfRequestRunner runner = new ListDataSetsZosmfRequestRunner(filter);
-        return runner.run(zosmfConnector);
+        return runner.run(getZosmfConnector());
     }
 
     @Override
     public DataSetContentWithEtag getContent(String dataSetName) {
         GetDataSetContentZosmfRequestRunner runner = new GetDataSetContentZosmfRequestRunner(dataSetName);
-        return runner.run(zosmfConnector);
+        return runner.run(getZosmfConnector());
     }
 
     @Override
     public String putContent(String dataSetName, DataSetContentWithEtag contentWithEtag) {
         PutDataSetContentZosmfRequestRunner runner = new PutDataSetContentZosmfRequestRunner(dataSetName,
                 contentWithEtag);
-        return runner.run(zosmfConnector);
+        return runner.run(getZosmfConnector());
     }
     
     @Override
     public String renameDataSet(String oldDataSetName, DataSetRenameRequest input) {
         PutDataSetRenameZosmfRequestRunner runner = new PutDataSetRenameZosmfRequestRunner(oldDataSetName, input);
-        return runner.run(zosmfConnector);
+        return runner.run(getZosmfConnector());
     }
 
     @Override
     public String createDataSet(DataSetCreateRequest request) {
         CreateDataSetZosmfRequestRunner runner = new CreateDataSetZosmfRequestRunner(request);
-        return runner.run(zosmfConnector);
+        return runner.run(getZosmfConnector());
     }
 
     @Override
     public void deleteDataSet(String dataSetName) {
         DeleteDataSetZosmfRequestRunner runner = new DeleteDataSetZosmfRequestRunner(dataSetName);
-        runner.run(zosmfConnector);
+        runner.run(getZosmfConnector());
     }
 }

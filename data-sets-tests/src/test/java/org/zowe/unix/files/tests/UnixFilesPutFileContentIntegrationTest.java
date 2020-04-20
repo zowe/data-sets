@@ -21,9 +21,9 @@ import org.zowe.unix.files.exceptions.FileNotFoundException;
 import org.zowe.unix.files.exceptions.UnauthorisedFileException;
 import org.zowe.unix.files.model.UnixFileContent;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-
 import java.util.Base64;
+
+import static org.hamcrest.CoreMatchers.equalTo;
 
 public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesIntegrationTest {
 

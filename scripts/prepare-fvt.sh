@@ -251,6 +251,7 @@ SSHPASS=${FVT_SERVER_SSH_PASSWORD} sshpass -e ssh -tt -o StrictHostKeyChecking=n
 cd ~ && \
   (iconv -f ISO8859-1 -t IBM-1047 prepare-integration-test-folders.sh > prepare-integration-test-folders.sh.new) && mv prepare-integration-test-folders.sh.new prepare-integration-test-folders.sh && chmod +x prepare-integration-test-folders.sh
 ./prepare-integration-test-folders.sh "${FVT_SERVER_DIRECTORY_ROOT}/${FVT_UID}" || { echo "[prepare-integration-test-folders] failed"; exit 1; }
+./prepare-integration-test-folders.sh "${FVT_SERVER_DIRECTORY_ROOT}/${FVT_UID}_2" || { echo "[prepare-integration-test-folders 2] failed"; exit 1; }
 echo "[prepare-integration-test-folders] succeeds" && exit 0
 EOF
 echo
@@ -269,8 +270,8 @@ java -Xms16m -Xmx512m \
     -Dserver.ssl.keyStorePassword=password \
     -Dserver.ssl.keyStoreType=PKCS12 \
     -Dserver.compression.enabled=true \
-    -Dgateway.httpsPort=${FVT_GATEWAY_PORT} \
-    -Dgateway.ipAddress=localhost \
+    -Dconnection.httpsPort=${FVT_GATEWAY_PORT} \
+    -Dconnection.ipAddress=localhost \
     -Dspring.main.banner-mode=off \
     -jar "${DATA_SETS_API_JAR}" \
     > "${FVT_WORKSPACE}/${FVT_LOGS_DIR}/data-sets-api.log" &

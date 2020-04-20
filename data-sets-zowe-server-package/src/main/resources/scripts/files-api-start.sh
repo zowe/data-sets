@@ -7,7 +7,7 @@
 #
 # SPDX-License-Identifier: EPL-2.0
 #
-# Copyright IBM Corporation 2018, 2019
+# Copyright IBM Corporation 2018, 2020
 ################################################################################
 
 # Variables required on shell:
@@ -32,7 +32,7 @@ _BPX_JOBNAME=${ZOWE_PREFIX}${COMPONENT_CODE} java -Xms16m -Xmx512m -Dibm.servers
     -Dserver.ssl.keyStoreType=${KEYSTORE_TYPE} \
     -Dserver.compression.enabled=true \
     -Dserver.connection-timeout=60000 \
-    -Dgateway.httpsPort=${GATEWAY_PORT} \
-    -Dgateway.ipAddress=${ZOWE_EXPLORER_HOST} \
+    -Dconnection.httpsPort=${GATEWAY_PORT} \
+    -Dconnection.ipAddress=${ZOWE_EXPLORER_HOST} \
     -Dspring.main.banner-mode=off \
     -jar {{jar_path}} &

@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2019
+ * Copyright IBM Corporation 2019, 2020
  */
 package org.zowe.unix.files.services.zosmf;
 
@@ -15,7 +15,6 @@ import com.google.gson.JsonObject;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.ResponseCache;
@@ -33,10 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListUnixDirectoryZosmfRunner extends AbstractZosmfRequestRunner<UnixDirectoryAttributesWithChildren> {
-
-    @Autowired
-    ZosmfConnector zosmfConnector;
-    
     
     private String path;
     private String hypermediaLinkToBase;

@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2019
+ * Copyright IBM Corporation 2019, 2020
  */
 package org.zowe.data.sets.services.zosmf;
 
@@ -47,7 +47,7 @@ public class GetDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
         when(responseCache.getFirstHeader("ETag")).thenReturn(header);
 
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds/%s", dataSetName));
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
         assertEquals(expected, new GetDataSetContentZosmfRequestRunner(dataSetName).run(zosmfConnector));
 
@@ -68,7 +68,7 @@ public class GetDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
         mockTextResponse(HttpStatus.SC_OK, loadTestFile("getContent.json"));
 
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds/%s", dataSetName));
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
         assertEquals(expected, new GetDataSetContentZosmfRequestRunner(dataSetName).run(zosmfConnector));
 
@@ -119,7 +119,7 @@ public class GetDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
 
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds/%s", dataSetName));
 
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
         shouldThrow(expectedException, () -> new GetDataSetContentZosmfRequestRunner(dataSetName).run(zosmfConnector));
         verifyInteractions(requestBuilder);

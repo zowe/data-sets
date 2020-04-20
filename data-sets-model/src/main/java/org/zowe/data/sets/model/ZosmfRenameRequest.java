@@ -27,11 +27,11 @@ public class ZosmfRenameRequest {
        String member;
        
        if (hasMember(name)) {
-           dsn=parseDsn(name);
-           member=parseMember(name);
+           dsn = parseDsn(name);
+           member = parseMember(name);
        } else {
-           dsn=name;
-           member="";
+           dsn = name;
+           member = "";
        }
         
         return new ZosmfRenameRequest(dsn, member);
@@ -53,7 +53,7 @@ public class ZosmfRenameRequest {
     }
     
     private static String parseMember(String name) {
-        return name.substring(name.indexOf('(')+1,name.indexOf(')'));
+        return name.substring(name.indexOf('(') + 1,name.indexOf(')'));
     }
     
     private static boolean hasMember(String name) {
@@ -65,7 +65,7 @@ public class ZosmfRenameRequest {
         
         JsonObject fromJObj = new JsonObject();
         fromJObj.addProperty("dsn", dsn);
-        if(!member.isEmpty()) {
+        if (!member.isEmpty()) {
           fromJObj.addProperty("member", member);  
         }
         

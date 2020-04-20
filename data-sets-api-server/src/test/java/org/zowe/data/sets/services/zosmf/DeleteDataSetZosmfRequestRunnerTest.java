@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2019
+ * Copyright IBM Corporation 2019, 2020
  */
 package org.zowe.data.sets.services.zosmf;
 
@@ -25,7 +25,7 @@ public class DeleteDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRun
         mockResponseCache(HttpStatus.SC_NO_CONTENT);
         RequestBuilder builder = mockDeleteBuilder(String.format("restfiles/ds/%s", dataSetName));
 
-        when(zosmfConnector.request(builder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(builder)).thenReturn(response);
 
         new DeleteDataSetZosmfRequestRunner(dataSetName).run(zosmfConnector);
 
@@ -42,7 +42,7 @@ public class DeleteDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRun
 
         RequestBuilder requestBuilder = mockDeleteBuilder(String.format("restfiles/ds/%s", dataSetName));
 
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
         shouldThrow(expectedException, () -> new DeleteDataSetZosmfRequestRunner(dataSetName).run(zosmfConnector));
         verifyInteractions(requestBuilder);
