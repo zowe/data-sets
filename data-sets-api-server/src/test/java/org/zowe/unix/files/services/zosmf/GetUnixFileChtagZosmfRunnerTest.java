@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2019
+ * Copyright IBM Corporation 2019, 2020
  */
 package org.zowe.unix.files.services.zosmf;
 
@@ -29,7 +29,7 @@ public class GetUnixFileChtagZosmfRunnerTest extends AbstractZosmfRequestRunnerT
 
         RequestBuilder requestBuilder = mockPutBuilder("restfiles/fs" + path,
                 "{ \"request\": \"chtag\", \"action\": \"list\" }");
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
         
         assertEquals(codepage, new GetUnixFileChtagZosmfRunner(path).run(zosmfConnector));
         

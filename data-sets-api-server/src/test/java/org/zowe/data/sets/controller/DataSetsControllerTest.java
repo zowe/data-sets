@@ -69,7 +69,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
     private DataSetService dataSetService;
 
     @InjectMocks
-    private DataSetsController datasetsController;
+    private DataSetsControllerV1 datasetsController;
 
     @Override
     public Object getController() {

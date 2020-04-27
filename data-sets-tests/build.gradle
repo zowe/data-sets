@@ -8,6 +8,7 @@ ext {
 	username = project.hasProperty('server.username') ? project.getProperty('server.username') : "undefined"
 	password = project.hasProperty('server.password') ? project.getProperty('server.password') : "undefined"
 	server_test_directory = project.hasProperty('server.test.directory') ? project.getProperty('server.test.directory') : "undefined"
+	test_version = project.hasProperty('test.version') ? project.getProperty('test.version') : "undefined"
 }
 
 dependencies {
@@ -43,6 +44,18 @@ test {
 	systemProperty "server.username", username
 	systemProperty "server.password", password
 	systemProperty "server.test.directory", server_test_directory
+	systemProperty "test.version", test_version
+
+	reports.junitXml.destination = file(
+		file(reports.junitXml.destination).getParent() + 
+		"/test-" + 
+		test_version
+	)
+	reports.html.destination = file(
+		file(reports.html.destination).getParent() + 
+		"/test-" + 
+		test_version
+	)
 }
 
 task validate << {
@@ -51,6 +64,8 @@ task validate << {
 	checkAndThrow("username", "undefined", "server.username");
 	checkAndThrow("password", "undefined", "server.password");
 	checkAndThrow("server_test_directory", "undefined", "server.test.directory");
+	checkAndThrow("test_version", "undefined", "test.version");
+	
 }	
 
 task runIntegrationTests(dependsOn: ['validate', 'test']){

@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2019
+ * Copyright IBM Corporation 2019, 2020
  */
 package org.zowe.unix.files.services.zosmf;
 
@@ -59,7 +59,7 @@ public class ListUnixDirectoryZosmfRunnerTest extends AbstractZosmfRequestRunner
 
         mockJsonResponse(HttpStatus.SC_OK, loadTestFile("getUnixDirectoryList.json"));
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/fs?path=%s", path));
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
@@ -78,7 +78,7 @@ public class ListUnixDirectoryZosmfRunnerTest extends AbstractZosmfRequestRunner
 
         mockJsonResponse(HttpStatus.SC_INTERNAL_SERVER_ERROR, loadTestFile("getUnixDirectoryListUnauthorised.json"));
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/fs?path=%s", path));
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
         shouldThrow(expectedException, () -> new ListUnixDirectoryZosmfRunner(path, "http://localhost").run(zosmfConnector));
         verifyInteractions(requestBuilder, true);

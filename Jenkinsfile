@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2018, 2019
+ * Copyright IBM Corporation 2018, 2020
  */
 
 
@@ -132,29 +132,48 @@ node('ibm-jenkins-slave-nvm') {
       }
 
       // give it a little time to start the server
-      sleep time: 4, unit: 'MINUTES'
+      sleep time: 2, unit: 'MINUTES'
 
       echo "Starting test ..."
-      withCredentials([
-        usernamePassword(
-          credentialsId: params.INTEGRATION_TEST_ZOSMF_CREDENTIAL,
-          usernameVariable: 'USERNAME',
-          passwordVariable: 'PASSWORD'
-        )
-      ]) {
-        sh """./gradlew runIntegrationTests \
--Pserver.host=localhost \
--Pserver.port=7554 \
--Pserver.username=${USERNAME} \
--Pserver.password=${PASSWORD} \
--Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}"""
+      try {
+        withCredentials([
+          usernamePassword(
+            credentialsId: params.INTEGRATION_TEST_ZOSMF_CREDENTIAL,
+            usernameVariable: 'USERNAME',
+            passwordVariable: 'PASSWORD'
+          )
+        ]) {
+            echo "Testing version 1 - v1 Ltpa"
+            sh """./gradlew runIntegrationTests \
+                -Pserver.host=localhost \
+                -Pserver.port=7554 \
+                -Pserver.username=${USERNAME} \
+                -Pserver.password=${PASSWORD} \
+                -Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId} \
+                -Ptest.version=1"""
+            echo "Testing version 2 - v2 JWT "
+            sh """./gradlew runIntegrationTests \
+                -Pserver.host=localhost \
+                -Pserver.port=7554 \
+                -Pserver.username=${USERNAME} \
+                -Pserver.password=${PASSWORD} \
+                -Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}_2 \
+                -Ptest.version=2"""
+          }
+      } catch (e) {
+        echo "Error with integration test: ${e}"
+        throw e
+      } finally {
+        // show logs (the folder should match the folder defined in prepare-fvt.sh)
+        sh "find .fvt/logs -type f | xargs -i sh -c 'echo \">>>>>>>>>>>>>>>>>>>>>>>> {} >>>>>>>>>>>>>>>>>>>>>>>\" && cat {}'"
       }
-      
+
       } // end of lock
     },
-    junit         : '**/test-results/test/*.xml',
+    junit         : '**/test-results/**/*.xml',
     htmlReports   : [
-      [dir: "data-sets-tests/build/reports/tests/test", files: "index.html", name: "Report: Integration Test"],
+      [dir: "data-sets-tests/build/reports/tests/test-1", files: "index.html", name: "Report: Integration Test v1"],
+      [dir: "data-sets-tests/build/reports/tests/test-2", files: "index.html", name: "Report: Integration Test v2"],
     ],
     timeout: [time: 30, unit: 'MINUTES']
   )
@@ -205,7 +224,9 @@ node('ibm-jenkins-slave-nvm') {
           sh """SSHPASS=${PASSWORD} sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${params.INTEGRATION_TEST_SSH_PORT} ${USERNAME}@${params.INTEGRATION_TEST_ZOSMF_HOST} << EOF
 cd ~ && \
   [ -d "${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}" ] && \
-  rm -fr "${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}"
+  rm -fr "${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}" && \
+  [ -d "${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}_2" ] && \
+  rm -fr "${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId}_2"
 echo "[cleanup-integration-test-folders] done" && exit 0
 EOF"""
         }

@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2019
+ * Copyright IBM Corporation 2019, 2020
  */
 package org.zowe.data.sets.services.zosmf;
 
@@ -51,9 +51,10 @@ public class ListDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRunne
 
         mockJsonResponse(HttpStatus.SC_OK, loadTestFile("getDataSets.json"));
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds?dslevel=%s", filter));
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
-        assertEquals(expected, new ListDataSetsZosmfRequestRunner(filter).run(zosmfConnector));
+        ItemsWrapper<DataSet> actual = new ListDataSetsZosmfRequestRunner(filter).run(zosmfConnector); 
+        assertEquals(expected, actual);
 
         verify(requestBuilder).addHeader("X-IBM-Attributes", "dsname");
         verifyInteractions(requestBuilder, true);
@@ -66,7 +67,7 @@ public class ListDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRunne
 
         mockJsonResponse(HttpStatus.SC_OK, loadTestFile("getDataSets_noResults.json"));
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds?dslevel=%s", filter));
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
         assertEquals(expected, new ListDataSetsZosmfRequestRunner(filter).run(zosmfConnector));
 

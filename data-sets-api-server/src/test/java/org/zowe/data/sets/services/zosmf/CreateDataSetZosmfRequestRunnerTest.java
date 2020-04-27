@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2019
+ * Copyright IBM Corporation 2019,2020
  */
 package org.zowe.data.sets.services.zosmf;
 
@@ -115,7 +115,7 @@ public class CreateDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRun
 
         RequestBuilder builder = mockPostBuilder(String.format("restfiles/ds/%s", dataSetName), zosmfRequest);
 
-        when(zosmfConnector.request(builder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(builder)).thenReturn(response);
 
         assertEquals(dataSetName, new CreateDataSetZosmfRequestRunner(request).run(zosmfConnector));
 
@@ -164,7 +164,7 @@ public class CreateDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRun
         mockJsonResponse(statusCode, loadTestFile(file));
         RequestBuilder builder = mockPostBuilder(String.format("restfiles/ds/%s", dataSetName), zosmfRequest);
 
-        when(zosmfConnector.request(builder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(builder)).thenReturn(response);
 
         shouldThrow(expectedException, () -> new CreateDataSetZosmfRequestRunner(request).run(zosmfConnector));
         verifyInteractions(builder);

@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2019
+ * Copyright IBM Corporation 2019, 2020
  */
 package org.zowe.unix.files.services.zosmf;
 
@@ -29,7 +29,7 @@ public class DeleteUnixFileZosmfRequestRunnerTest extends AbstractZosmfRequestRu
 
         RequestBuilder builder = mockDeleteBuilder(String.format("restfiles/fs%s", filename));
 
-        when(zosmfConnector.request(builder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(builder)).thenReturn(response);
 
         new DeleteUnixFileZosmfRunner(filename).run(zosmfConnector);
 
@@ -44,7 +44,7 @@ public class DeleteUnixFileZosmfRequestRunnerTest extends AbstractZosmfRequestRu
 
         RequestBuilder builder = mockDeleteBuilder(String.format("restfiles/fs%s", filename));
 
-        when(zosmfConnector.request(builder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(builder)).thenReturn(response);
 
         new DeleteUnixFileZosmfRunner(filename, true).run(zosmfConnector);
 
@@ -60,7 +60,7 @@ public class DeleteUnixFileZosmfRequestRunnerTest extends AbstractZosmfRequestRu
 
         RequestBuilder requestBuilder = mockDeleteBuilder(String.format("restfiles/fs%s", filename));
 
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
         shouldThrow(expectedException, () -> new DeleteUnixFileZosmfRunner(filename).run(zosmfConnector));
         verifyInteractions(requestBuilder);
@@ -75,7 +75,7 @@ public class DeleteUnixFileZosmfRequestRunnerTest extends AbstractZosmfRequestRu
 
         RequestBuilder requestBuilder = mockDeleteBuilder(String.format("restfiles/fs%s", filename));
 
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
         shouldThrow(expectedException, () -> new DeleteUnixFileZosmfRunner(filename).run(zosmfConnector));
         verifyInteractions(requestBuilder);
@@ -90,7 +90,7 @@ public class DeleteUnixFileZosmfRequestRunnerTest extends AbstractZosmfRequestRu
 
         RequestBuilder requestBuilder = mockDeleteBuilder(String.format("restfiles/fs%s", filename));
 
-        when(zosmfConnector.request(requestBuilder)).thenReturn(response);
+        when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
         shouldThrow(expectedException, () -> new DeleteUnixFileZosmfRunner(filename).run(zosmfConnector));
         verifyInteractions(requestBuilder);

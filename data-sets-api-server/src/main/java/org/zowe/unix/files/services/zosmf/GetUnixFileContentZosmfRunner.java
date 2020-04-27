@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Copyright IBM Corporation 2019
+ * Copyright IBM Corporation 2019, 2020
  */
 package org.zowe.unix.files.services.zosmf;
 
@@ -15,7 +15,7 @@ import com.google.gson.JsonObject;
 import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Base64Utils;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
 import org.zowe.api.common.utils.ResponseCache;
@@ -29,15 +29,14 @@ import java.net.URISyntaxException;
 
 public class GetUnixFileContentZosmfRunner extends AbstractZosmfUnixFilesRequestRunner<UnixFileContentWithETag> {
     
-    @Autowired
-    ZosmfConnector zosmfConnector;
-
     private String path;
     private boolean convert;
+    private boolean decode;
     
-    public GetUnixFileContentZosmfRunner(String path, boolean convert) {
+    public GetUnixFileContentZosmfRunner(String path, boolean convert, boolean decode) {
         this.path = path;
         this.convert = convert;
+        this.decode = decode;
     }
 
     @Override
@@ -55,14 +54,25 @@ public class GetUnixFileContentZosmfRunner extends AbstractZosmfUnixFilesRequest
         return requestBuilder;
     }
 
+    private UnixFileContent getContent(ResponseCache responseCache) {
+        String content = responseCache.getEntity();
+        if (decode) {
+            String decodedContent = new String(Base64Utils.decodeFromString(content));
+            return new UnixFileContent(decodedContent);
+        } 
+        return new UnixFileContent(content);
+    }
+
     @Override
     protected UnixFileContentWithETag getResult(ResponseCache responseCache) throws IOException {
-        UnixFileContent content = new UnixFileContent(responseCache.getEntity());
+        UnixFileContent content = getContent(responseCache);
+        
         String eTag = null;
         Header eTagHeader = responseCache.getFirstHeader("ETag");
         if (eTagHeader != null) {
             eTag = eTagHeader.getValue();
         }
+
         return new UnixFileContentWithETag(content, eTag);
     }
     
