@@ -33,6 +33,7 @@ import java.util.List;
 
 public class ListUnixDirectoryZosmfRunner extends AbstractZosmfRequestRunner<UnixDirectoryAttributesWithChildren> {
     
+    
     private String path;
     private String hypermediaLinkToBase;
 
