@@ -35,4 +35,5 @@ _BPX_JOBNAME=${ZOWE_PREFIX}${COMPONENT_CODE} java -Xms16m -Xmx512m -Dibm.servers
     -Dconnection.httpsPort=${GATEWAY_PORT} \
     -Dconnection.ipAddress=${ZOWE_EXPLORER_HOST} \
     -Dspring.main.banner-mode=off \
+    -Djava.protocol.handler.pkgs=com.ibm.crypto.provider \
     -jar {{jar_path}} &
