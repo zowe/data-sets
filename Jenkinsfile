@@ -24,7 +24,7 @@ node('ibm-jenkins-slave-nvm') {
     string(
       name: 'INTEGRATION_TEST_APIML_BUILD',
       description: 'APIML build for integration test',
-      defaultValue: 'libs-release-local/com/ca/mfaas/sdk/mfaas-zowe-install/*/mfaas-zowe-install-*.zip',
+      defaultValue: 'libs-release-local/org/zowe/apiml/sdk/zowe-install/*/zowe-install-*.zip',
       trim: true,
       required: true
     ),
