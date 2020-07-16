@@ -37,6 +37,9 @@ services:
         version: 2.0.0
         swaggerUrl: https://${ZOWE_EXPLORER_HOST}:${FILES_API_PORT}/v2/api-docs
         documentationUrl: https://${ZOWE_EXPLORER_HOST}:${FILES_API_PORT}/swagger-ui.html
+    customMetadata:
+      apiml:
+        enableUrlEncodedCharacters: true
   - serviceId: unixfiles
     title: IBM z/OS Unix Files
     description: IBM z/OS Unix Files REST API service
