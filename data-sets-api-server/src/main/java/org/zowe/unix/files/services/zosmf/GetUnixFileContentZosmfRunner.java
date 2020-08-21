@@ -26,6 +26,7 @@ import org.zowe.unix.files.model.UnixFileContentWithETag;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 public class GetUnixFileContentZosmfRunner extends AbstractZosmfUnixFilesRequestRunner<UnixFileContentWithETag> {
     
@@ -33,7 +34,8 @@ public class GetUnixFileContentZosmfRunner extends AbstractZosmfUnixFilesRequest
     private boolean convert;
     private boolean decode;
     
-    public GetUnixFileContentZosmfRunner(String path, boolean convert, boolean decode) {
+    public GetUnixFileContentZosmfRunner(String path, boolean convert, boolean decode, List<Header> headers) {
+        super(headers);
         this.path = path;
         this.convert = convert;
         this.decode = decode;

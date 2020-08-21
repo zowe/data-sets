@@ -27,6 +27,7 @@ import org.zowe.data.sets.model.DataSetContent;
 import org.zowe.data.sets.model.DataSetContentWithEtag;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -63,7 +64,7 @@ public class PutDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
         RequestBuilder requestBuilder = mockPutBuilder(String.format("restfiles/ds/%s", dataSetName), jclString);
         when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
-        assertEquals(putETag, new PutDataSetContentZosmfRequestRunner(dataSetName, request).run(zosmfConnector));
+        assertEquals(putETag, new PutDataSetContentZosmfRequestRunner(dataSetName, request, new ArrayList<>()).run(zosmfConnector));
 
         verifyInteractions(requestBuilder);
         verify(requestBuilder).addHeader("Content-type", ContentType.TEXT_PLAIN.getMimeType());
@@ -90,7 +91,7 @@ public class PutDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
         RequestBuilder requestBuilder = mockPutBuilder(String.format("restfiles/ds/%s", dataSetName), jclString);
         when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
-        assertEquals(putETag, new PutDataSetContentZosmfRequestRunner(dataSetName, request).run(zosmfConnector));
+        assertEquals(putETag, new PutDataSetContentZosmfRequestRunner(dataSetName, request, new ArrayList<>()).run(zosmfConnector));
 
         verifyInteractions(requestBuilder);
         verify(requestBuilder).addHeader("Content-type", ContentType.TEXT_PLAIN.getMimeType());
@@ -129,7 +130,7 @@ public class PutDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
         DataSetContent content = new DataSetContent(jclString);
         DataSetContentWithEtag request = new DataSetContentWithEtag(content, "");
         shouldThrow(expectedException,
-                () -> new PutDataSetContentZosmfRequestRunner(dataSetName, request).run(zosmfConnector));
+                () -> new PutDataSetContentZosmfRequestRunner(dataSetName, request, new ArrayList<>()).run(zosmfConnector));
         verifyInteractions(requestBuilder);
     }
 
@@ -151,7 +152,7 @@ public class PutDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
         DataSetContent content = new DataSetContent(jclString);
         DataSetContentWithEtag request = new DataSetContentWithEtag(content, "");
         shouldThrow(expectedException,
-                () -> new PutDataSetContentZosmfRequestRunner(dataSetName, request).run(zosmfConnector));
+                () -> new PutDataSetContentZosmfRequestRunner(dataSetName, request, new ArrayList<>()).run(zosmfConnector));
         verifyInteractions(requestBuilder);
     }
 }

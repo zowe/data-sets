@@ -12,8 +12,7 @@ package org.zowe.unix.files.services.zosmf;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import lombok.AllArgsConstructor;
-
+import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
@@ -24,16 +23,22 @@ import org.zowe.unix.files.exceptions.NotAnEmptyDirectoryException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 
-@AllArgsConstructor
 public class DeleteUnixFileZosmfRunner extends AbstractZosmfUnixFilesRequestRunner<Void> {
 
     private String path;
     private boolean isRecursive;
+    
+    public DeleteUnixFileZosmfRunner(String path, boolean isRecursive, List<Header> headers) {
+        super(headers);
+        this.path = path;
+        this.isRecursive = isRecursive;
+    }
 
-    public DeleteUnixFileZosmfRunner(String path) {
-        this(path, false);
+    public DeleteUnixFileZosmfRunner(String path, List<Header> headers) {
+        this(path, false, headers);
     }
 
     @Override

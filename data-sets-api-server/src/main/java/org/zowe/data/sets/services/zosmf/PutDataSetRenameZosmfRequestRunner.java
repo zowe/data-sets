@@ -12,6 +12,7 @@ package org.zowe.data.sets.services.zosmf;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.ContentType;
@@ -27,12 +28,14 @@ import org.zowe.data.sets.model.ZosmfRenameRequest;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 public class PutDataSetRenameZosmfRequestRunner extends AbstractZosmfDataSetsRequestRunner<String> {
     private DataSetRenameRequest request;
     private String oldDataSetName;
 
-    public PutDataSetRenameZosmfRequestRunner(String oldDataSetName, DataSetRenameRequest request) {
+    public PutDataSetRenameZosmfRequestRunner(String oldDataSetName, DataSetRenameRequest request, List<Header> headers) {
+        super(headers);
         this.oldDataSetName = oldDataSetName;
         this.request = request;
     }

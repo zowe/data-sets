@@ -12,6 +12,7 @@ package org.zowe.data.sets.services.zosmf;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
@@ -29,7 +30,8 @@ public class ListDataSetMembersZosmfRequestRunner extends AbstractZosmfDataSetsR
 
     private String dataSetName;
 
-    public ListDataSetMembersZosmfRequestRunner(String dataSetName) {
+    public ListDataSetMembersZosmfRequestRunner(String dataSetName, List<Header> headers) {
+        super(headers);
         this.dataSetName = dataSetName;
     }
 

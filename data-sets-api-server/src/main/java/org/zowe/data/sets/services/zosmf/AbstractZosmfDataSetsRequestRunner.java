@@ -13,6 +13,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
 import org.zowe.api.common.exceptions.ZoweApiRestException;
@@ -20,7 +21,13 @@ import org.zowe.api.common.zosmf.services.AbstractZosmfRequestRunner;
 import org.zowe.data.sets.exceptions.DataSetLockedException;
 import org.zowe.data.sets.exceptions.UnauthorisedDataSetException;
 
+import java.util.List;
+
 public abstract class AbstractZosmfDataSetsRequestRunner<T> extends AbstractZosmfRequestRunner<T> {
+    
+    public AbstractZosmfDataSetsRequestRunner(List<Header> headers) {
+        super(headers);
+    }
 
     private static final String AUTHORIZATION_FAILURE = "ISRZ002 Authorization failed";
     private static final String DATA_SET_NOT_FOUND = "ISRZ002 Data set not cataloged";

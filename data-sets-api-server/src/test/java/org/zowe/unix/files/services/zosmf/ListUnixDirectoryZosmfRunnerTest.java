@@ -21,6 +21,7 @@ import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.unix.files.model.UnixDirectoryChild;
 import org.zowe.unix.files.model.UnixEntityType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -64,7 +65,8 @@ public class ListUnixDirectoryZosmfRunnerTest extends AbstractZosmfRequestRunner
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
-        assertEquals(expectedListedDirectory, new ListUnixDirectoryZosmfRunner(path, "http://localhost").run(zosmfConnector));
+        assertEquals(expectedListedDirectory, new ListUnixDirectoryZosmfRunner(path, "http://localhost", new ArrayList<>())
+                .run(zosmfConnector));
 
         verifyInteractions(requestBuilder, true);
         verify(requestBuilder).addHeader("X-IBM-Max-Items", "0");
@@ -80,7 +82,8 @@ public class ListUnixDirectoryZosmfRunnerTest extends AbstractZosmfRequestRunner
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/fs?path=%s", path));
         when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
-        shouldThrow(expectedException, () -> new ListUnixDirectoryZosmfRunner(path, "http://localhost").run(zosmfConnector));
+        shouldThrow(expectedException, () -> new ListUnixDirectoryZosmfRunner(path, "http://localhost", new ArrayList<>())
+                .run(zosmfConnector));
         verifyInteractions(requestBuilder, true);
     }
 

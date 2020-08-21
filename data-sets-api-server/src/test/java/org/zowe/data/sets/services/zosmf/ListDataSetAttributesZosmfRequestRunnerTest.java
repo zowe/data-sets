@@ -18,6 +18,7 @@ import org.zowe.data.sets.model.AllocationUnitType;
 import org.zowe.data.sets.model.DataSetAttributes;
 import org.zowe.data.sets.model.DataSetOrganisationType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -74,7 +75,7 @@ public class ListDataSetAttributesZosmfRequestRunnerTest extends AbstractZosmfRe
         mockJsonResponse(HttpStatus.SC_OK, loadTestFile("getDataSetsAttributes.json"));
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds?dslevel=%s", filter));
         when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
-        ItemsWrapper<DataSetAttributes> actual = new ListDataSetsAttributesZosmfRequestRunner(filter).run(zosmfConnector);
+        ItemsWrapper<DataSetAttributes> actual = new ListDataSetsAttributesZosmfRequestRunner(filter, new ArrayList<>()).run(zosmfConnector);
         assertEquals(expected, actual);
 
         verify(requestBuilder).addHeader("X-IBM-Attributes", "base");
@@ -90,7 +91,7 @@ public class ListDataSetAttributesZosmfRequestRunnerTest extends AbstractZosmfRe
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds?dslevel=%s", filter));
         when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
-        assertEquals(expected, new ListDataSetsAttributesZosmfRequestRunner(filter).run(zosmfConnector));
+        assertEquals(expected, new ListDataSetsAttributesZosmfRequestRunner(filter, new ArrayList<>()).run(zosmfConnector));
 
         verify(requestBuilder).addHeader("X-IBM-Attributes", "base");
         verifyInteractions(requestBuilder, true);
