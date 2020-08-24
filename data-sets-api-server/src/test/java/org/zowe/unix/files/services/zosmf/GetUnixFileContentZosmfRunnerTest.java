@@ -19,6 +19,7 @@ import org.zowe.unix.files.exceptions.UnauthorisedFileException;
 import org.zowe.unix.files.model.UnixFileContent;
 import org.zowe.unix.files.model.UnixFileContentWithETag;
 
+import java.util.ArrayList;
 import java.util.Base64;
 
 import static org.junit.Assert.assertEquals;
@@ -51,7 +52,7 @@ public class GetUnixFileContentZosmfRunnerTest extends AbstractZosmfRequestRunne
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/fs%s", path));
         when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
         
-        assertEquals(expected, new GetUnixFileContentZosmfRunner(path, false, decode).run(zosmfConnector));        
+        assertEquals(expected, new GetUnixFileContentZosmfRunner(path, false, decode, new ArrayList<>()).run(zosmfConnector));        
         verifyInteractions(requestBuilder, false);
     }
         
@@ -76,7 +77,7 @@ public class GetUnixFileContentZosmfRunnerTest extends AbstractZosmfRequestRunne
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/fs%s", path));
         when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
         
-        shouldThrow(expectedException, () -> new GetUnixFileContentZosmfRunner(path, false, false).run(zosmfConnector));
+        shouldThrow(expectedException, () -> new GetUnixFileContentZosmfRunner(path, false, false, new ArrayList<>()).run(zosmfConnector));
         verifyInteractions(requestBuilder, false);
     }
 }

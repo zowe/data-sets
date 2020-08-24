@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.zowe.data.sets.services.DataSetService;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/api/v2/datasets")
 @Api(value = "Data Sets V2 APIs", tags = "Data Sets V2 APIs")
@@ -26,8 +28,14 @@ public class DataSetsControllerV2 extends AbstractDataSetsController {
     @Qualifier("ZosmfDataSetServiceV2")
     private DataSetService dataSetService;
 
+    @Autowired
+    private HttpServletRequest request;
+
     @Override
     DataSetService getDataSetService() {
+        if (request != null) {
+            dataSetService.setRequest(request);
+        }
         return dataSetService;
     }
 

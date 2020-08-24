@@ -9,22 +9,51 @@
  */
 package org.zowe.unix.files.services;
 
+import lombok.Setter;
+
+import org.apache.http.Header;
+import org.apache.http.message.BasicHeader;
 import org.zowe.unix.files.model.UnixCreateAssetRequest;
 import org.zowe.unix.files.model.UnixDirectoryAttributesWithChildren;
 import org.zowe.unix.files.model.UnixFileContentWithETag;
 
-public interface UnixFilesService {
-    UnixDirectoryAttributesWithChildren listUnixDirectory(String path, String hypermediaLinkToBase);
+import javax.servlet.http.HttpServletRequest;
+
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+
+@Setter
+public abstract class UnixFilesService {
     
-    UnixFileContentWithETag getUnixFileContentWithETag(String path, boolean convert, boolean decode);
+    private HttpServletRequest request;
     
-    String putUnixFileContent(String path, UnixFileContentWithETag content, boolean convert);
+    public List<Header> getIbmHeadersFromRequest() {
+        ArrayList<Header> ibmHeaders = new ArrayList<Header>();
+        if (request != null ) {
+            Enumeration<String> headerNames = request.getHeaderNames();
+            while (headerNames.hasMoreElements()) {
+                String headerName = headerNames.nextElement().toUpperCase();
+                if (headerName.contains("X-IBM")) {
+                    Header newHeader = new BasicHeader(headerName, request.getHeader(headerName));
+                    ibmHeaders.add(newHeader);
+                }
+            }
+        }
+        return ibmHeaders;
+    }
     
-    boolean shouldUnixFileConvert(String path);
+    public abstract UnixDirectoryAttributesWithChildren listUnixDirectory(String path, String hypermediaLinkToBase);
     
-    String getUnixFileChtag(String path);
+    public abstract UnixFileContentWithETag getUnixFileContentWithETag(String path, boolean convert, boolean decode);
     
-    void deleteUnixFileContent(String path, boolean isRecursive);
+    public abstract String putUnixFileContent(String path, UnixFileContentWithETag content, boolean convert);
     
-    void createUnixAsset(String path, UnixCreateAssetRequest request);
+    public abstract boolean shouldUnixFileConvert(String path);
+    
+    public abstract String getUnixFileChtag(String path);
+    
+    public abstract void deleteUnixFileContent(String path, boolean isRecursive);
+    
+    public abstract void createUnixAsset(String path, UnixCreateAssetRequest request);
 }

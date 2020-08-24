@@ -17,6 +17,8 @@ import org.zowe.unix.files.exceptions.FileNotFoundException;
 import org.zowe.unix.files.exceptions.NotAnEmptyDirectoryException;
 import org.zowe.unix.files.exceptions.UnauthorisedFileException;
 
+import java.util.ArrayList;
+
 import static org.mockito.Mockito.when;
 
 public class DeleteUnixFileZosmfRequestRunnerTest extends AbstractZosmfRequestRunnerTest {
@@ -31,7 +33,7 @@ public class DeleteUnixFileZosmfRequestRunnerTest extends AbstractZosmfRequestRu
 
         when(zosmfConnector.executeRequest(builder)).thenReturn(response);
 
-        new DeleteUnixFileZosmfRunner(filename).run(zosmfConnector);
+        new DeleteUnixFileZosmfRunner(filename, new ArrayList<>()).run(zosmfConnector);
 
         verifyInteractions(builder);
     }
@@ -46,7 +48,7 @@ public class DeleteUnixFileZosmfRequestRunnerTest extends AbstractZosmfRequestRu
 
         when(zosmfConnector.executeRequest(builder)).thenReturn(response);
 
-        new DeleteUnixFileZosmfRunner(filename, true).run(zosmfConnector);
+        new DeleteUnixFileZosmfRunner(filename, true, new ArrayList<>()).run(zosmfConnector);
 
         verifyInteractions(builder);
     }
@@ -62,7 +64,7 @@ public class DeleteUnixFileZosmfRequestRunnerTest extends AbstractZosmfRequestRu
 
         when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
-        shouldThrow(expectedException, () -> new DeleteUnixFileZosmfRunner(filename).run(zosmfConnector));
+        shouldThrow(expectedException, () -> new DeleteUnixFileZosmfRunner(filename, new ArrayList<>()).run(zosmfConnector));
         verifyInteractions(requestBuilder);
     }
 
@@ -77,7 +79,7 @@ public class DeleteUnixFileZosmfRequestRunnerTest extends AbstractZosmfRequestRu
 
         when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
-        shouldThrow(expectedException, () -> new DeleteUnixFileZosmfRunner(filename).run(zosmfConnector));
+        shouldThrow(expectedException, () -> new DeleteUnixFileZosmfRunner(filename, new ArrayList<>()).run(zosmfConnector));
         verifyInteractions(requestBuilder);
     }
 
@@ -92,7 +94,7 @@ public class DeleteUnixFileZosmfRequestRunnerTest extends AbstractZosmfRequestRu
 
         when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
-        shouldThrow(expectedException, () -> new DeleteUnixFileZosmfRunner(filename).run(zosmfConnector));
+        shouldThrow(expectedException, () -> new DeleteUnixFileZosmfRunner(filename, new ArrayList<>()).run(zosmfConnector));
         verifyInteractions(requestBuilder);
     }
 }

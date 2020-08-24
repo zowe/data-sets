@@ -11,6 +11,7 @@ package org.zowe.unix.files.services.zosmf;
 
 import com.google.gson.JsonObject;
 
+import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.ContentType;
@@ -26,6 +27,7 @@ import org.zowe.unix.files.model.UnixFileContentWithETag;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 public class PutUnixFileContentZosmfRunner extends AbstractZosmfUnixFilesRequestRunner<String> {
     
@@ -33,7 +35,8 @@ public class PutUnixFileContentZosmfRunner extends AbstractZosmfUnixFilesRequest
     private UnixFileContentWithETag contentWithETag;
     private boolean convert;
     
-    public PutUnixFileContentZosmfRunner(String path, UnixFileContentWithETag content, Boolean convert) {
+    public PutUnixFileContentZosmfRunner(String path, UnixFileContentWithETag content, Boolean convert, List<Header> headers) {
+        super(headers);
         this.path = path;
         this.contentWithETag = content;
         this.convert = convert;

@@ -24,12 +24,14 @@ import org.zowe.data.sets.model.DataSetContentWithEtag;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 public class GetDataSetContentZosmfRequestRunner extends AbstractZosmfDataSetsRequestRunner<DataSetContentWithEtag> {
 
     private String dataSetName;
 
-    public GetDataSetContentZosmfRequestRunner(String dataSetName) {
+    public GetDataSetContentZosmfRequestRunner(String dataSetName, List<Header> headers) {
+        super(headers);
         this.dataSetName = dataSetName;
     }
 

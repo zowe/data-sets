@@ -29,6 +29,7 @@ import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.model.DataSetOrganisationType;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -117,7 +118,7 @@ public class CreateDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRun
 
         when(zosmfConnector.executeRequest(builder)).thenReturn(response);
 
-        assertEquals(dataSetName, new CreateDataSetZosmfRequestRunner(request).run(zosmfConnector));
+        assertEquals(dataSetName, new CreateDataSetZosmfRequestRunner(request, new ArrayList<>()).run(zosmfConnector));
 
         verifyInteractions(builder);
     }
@@ -129,7 +130,7 @@ public class CreateDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRun
             .dataSetOrganization(DataSetOrganisationType.PS).directoryBlocks(12).build();
 
         Exception expected = new InvalidDirectoryBlockException(name);
-        shouldThrow(expected, () -> new CreateDataSetZosmfRequestRunner(request).run(zosmfConnector));
+        shouldThrow(expected, () -> new CreateDataSetZosmfRequestRunner(request, new ArrayList<>()).run(zosmfConnector));
         verifyNoMoreInteractions(zosmfConnector);
     }
 
@@ -166,7 +167,7 @@ public class CreateDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRun
 
         when(zosmfConnector.executeRequest(builder)).thenReturn(response);
 
-        shouldThrow(expectedException, () -> new CreateDataSetZosmfRequestRunner(request).run(zosmfConnector));
+        shouldThrow(expectedException, () -> new CreateDataSetZosmfRequestRunner(request, new ArrayList<>()).run(zosmfConnector));
         verifyInteractions(builder);
     }
 

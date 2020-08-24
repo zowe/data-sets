@@ -11,6 +11,7 @@ package org.zowe.data.sets.services.zosmf;
 
 import com.google.gson.JsonObject;
 
+import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.ContentType;
@@ -27,13 +28,15 @@ import org.zowe.data.sets.model.DataSetContentWithEtag;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 public class PutDataSetContentZosmfRequestRunner extends AbstractZosmfDataSetsRequestRunner<String> {
 
     private String dataSetName;
     private DataSetContentWithEtag contentWithEtag;
 
-    public PutDataSetContentZosmfRequestRunner(String dataSetName, DataSetContentWithEtag contentWithEtag) {
+    public PutDataSetContentZosmfRequestRunner(String dataSetName, DataSetContentWithEtag contentWithEtag, List<Header> headers) {
+        super(headers);
         this.dataSetName = dataSetName;
         this.contentWithEtag = contentWithEtag;
     }

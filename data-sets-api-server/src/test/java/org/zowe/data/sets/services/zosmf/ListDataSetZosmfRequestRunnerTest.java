@@ -16,6 +16,7 @@ import org.zowe.api.common.model.ItemsWrapper;
 import org.zowe.api.common.test.services.zosmf.AbstractZosmfRequestRunnerTest;
 import org.zowe.data.sets.model.DataSet;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -53,7 +54,7 @@ public class ListDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRunne
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds?dslevel=%s", filter));
         when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
-        ItemsWrapper<DataSet> actual = new ListDataSetsZosmfRequestRunner(filter).run(zosmfConnector); 
+        ItemsWrapper<DataSet> actual = new ListDataSetsZosmfRequestRunner(filter, new ArrayList<>()).run(zosmfConnector); 
         assertEquals(expected, actual);
 
         verify(requestBuilder).addHeader("X-IBM-Attributes", "dsname");
@@ -69,7 +70,7 @@ public class ListDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRunne
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds?dslevel=%s", filter));
         when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
-        assertEquals(expected, new ListDataSetsZosmfRequestRunner(filter).run(zosmfConnector));
+        assertEquals(expected, new ListDataSetsZosmfRequestRunner(filter, new ArrayList<>()).run(zosmfConnector));
 
         verify(requestBuilder).addHeader("X-IBM-Attributes", "dsname");
         verifyInteractions(requestBuilder, true);

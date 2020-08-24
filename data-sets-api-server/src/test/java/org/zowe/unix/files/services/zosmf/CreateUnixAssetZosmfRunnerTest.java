@@ -22,6 +22,8 @@ import org.zowe.unix.files.exceptions.InvalidPermissionsException;
 import org.zowe.unix.files.model.UnixCreateAssetRequest;
 import org.zowe.unix.files.model.UnixEntityType;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -52,7 +54,7 @@ public class CreateUnixAssetZosmfRunnerTest extends AbstractZosmfRequestRunnerTe
 
         when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
-        assertEquals(path, new CreateUnixAssetZosmfRunner(path, createAssetRequest).run(zosmfConnector));
+        assertEquals(path, new CreateUnixAssetZosmfRunner(path, createAssetRequest, new ArrayList<>()).run(zosmfConnector));
         verifyInteractions(requestBuilder);
     }
 
@@ -71,7 +73,7 @@ public class CreateUnixAssetZosmfRunnerTest extends AbstractZosmfRequestRunnerTe
 
         when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
-        shouldThrow(exception, () -> new CreateUnixAssetZosmfRunner(path, createAssetRequest).run(zosmfConnector));
+        shouldThrow(exception, () -> new CreateUnixAssetZosmfRunner(path, createAssetRequest, new ArrayList<>()).run(zosmfConnector));
         verifyInteractions(requestBuilder);
     }
 
@@ -89,6 +91,6 @@ public class CreateUnixAssetZosmfRunnerTest extends AbstractZosmfRequestRunnerTe
         UnixCreateAssetRequest createAssetRequest = new UnixCreateAssetRequest(UnixEntityType.FILE, permissions);
         Exception exception = new InvalidPermissionsException(permissions);
 
-        shouldThrow(exception, () -> new CreateUnixAssetZosmfRunner(path, createAssetRequest).run(zosmfConnector));
+        shouldThrow(exception, () -> new CreateUnixAssetZosmfRunner(path, createAssetRequest, new ArrayList<>()).run(zosmfConnector));
     }
 }
