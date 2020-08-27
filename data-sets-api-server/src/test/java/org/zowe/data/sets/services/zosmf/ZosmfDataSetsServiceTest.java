@@ -9,6 +9,8 @@
  */
 package org.zowe.data.sets.services.zosmf;
 
+import org.apache.http.Header;
+import org.apache.http.message.BasicHeader;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,10 +25,16 @@ import org.zowe.api.common.model.ItemsWrapper;
 import org.zowe.api.common.test.ZoweApiTest;
 import org.zowe.data.sets.model.*;
 
+import javax.servlet.http.HttpServletRequest;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -55,7 +63,7 @@ public class ZosmfDataSetsServiceTest extends ZoweApiTest {
 
         ListDataSetMembersZosmfRequestRunner runner = mock(ListDataSetMembersZosmfRequestRunner.class);
         when(runner.run(zosmfConnector)).thenReturn(expected);
-        PowerMockito.whenNew(ListDataSetMembersZosmfRequestRunner.class).withArguments(dataSetName).thenReturn(runner);
+        PowerMockito.whenNew(ListDataSetMembersZosmfRequestRunner.class).withArguments(dataSetName, new ArrayList<>()).thenReturn(runner);
         assertEquals(expected, dataService.listDataSetMembers(dataSetName));
     }
 
@@ -67,7 +75,7 @@ public class ZosmfDataSetsServiceTest extends ZoweApiTest {
 
         ListDataSetMembersZosmfRequestRunner runner = mock(ListDataSetMembersZosmfRequestRunner.class);
         when(runner.run(zosmfConnector)).thenThrow(expectedException);
-        PowerMockito.whenNew(ListDataSetMembersZosmfRequestRunner.class).withArguments(dataSetName).thenReturn(runner);
+        PowerMockito.whenNew(ListDataSetMembersZosmfRequestRunner.class).withArguments(dataSetName, new ArrayList<>()).thenReturn(runner);
 
         shouldThrow(expectedException, () -> dataService.listDataSetMembers(dataSetName));
     }
@@ -83,7 +91,7 @@ public class ZosmfDataSetsServiceTest extends ZoweApiTest {
 
         ListDataSetsZosmfRequestRunner runner = mock(ListDataSetsZosmfRequestRunner.class);
         when(runner.run(zosmfConnector)).thenReturn(expected);
-        PowerMockito.whenNew(ListDataSetsZosmfRequestRunner.class).withArguments(filter).thenReturn(runner);
+        PowerMockito.whenNew(ListDataSetsZosmfRequestRunner.class).withArguments(filter, new ArrayList<>()).thenReturn(runner);
         assertEquals(expected, dataService.listDataSets(filter));
     }
 
@@ -98,7 +106,7 @@ public class ZosmfDataSetsServiceTest extends ZoweApiTest {
 
         ListDataSetsAttributesZosmfRequestRunner runner = mock(ListDataSetsAttributesZosmfRequestRunner.class);
         when(runner.run(zosmfConnector)).thenReturn(expected);
-        PowerMockito.whenNew(ListDataSetsAttributesZosmfRequestRunner.class).withArguments(filter).thenReturn(runner);
+        PowerMockito.whenNew(ListDataSetsAttributesZosmfRequestRunner.class).withArguments(filter, new ArrayList<>()).thenReturn(runner);
         assertEquals(expected, dataService.listDataSetAttributes(filter));
     }
 
@@ -110,7 +118,7 @@ public class ZosmfDataSetsServiceTest extends ZoweApiTest {
 
         ListDataSetsZosmfRequestRunner runner = mock(ListDataSetsZosmfRequestRunner.class);
         when(runner.run(zosmfConnector)).thenThrow(expectedException);
-        PowerMockito.whenNew(ListDataSetsZosmfRequestRunner.class).withArguments(filter).thenReturn(runner);
+        PowerMockito.whenNew(ListDataSetsZosmfRequestRunner.class).withArguments(filter, new ArrayList<>()).thenReturn(runner);
 
         shouldThrow(expectedException, () -> dataService.listDataSets(filter));
     }
@@ -123,7 +131,7 @@ public class ZosmfDataSetsServiceTest extends ZoweApiTest {
 
         ListDataSetsAttributesZosmfRequestRunner runner = mock(ListDataSetsAttributesZosmfRequestRunner.class);
         when(runner.run(zosmfConnector)).thenThrow(expectedException);
-        PowerMockito.whenNew(ListDataSetsAttributesZosmfRequestRunner.class).withArguments(filter).thenReturn(runner);
+        PowerMockito.whenNew(ListDataSetsAttributesZosmfRequestRunner.class).withArguments(filter, new ArrayList<>()).thenReturn(runner);
 
         shouldThrow(expectedException, () -> dataService.listDataSetAttributes(filter));
     }
@@ -136,7 +144,7 @@ public class ZosmfDataSetsServiceTest extends ZoweApiTest {
 
         GetDataSetContentZosmfRequestRunner runner = mock(GetDataSetContentZosmfRequestRunner.class);
         when(runner.run(zosmfConnector)).thenReturn(expected);
-        PowerMockito.whenNew(GetDataSetContentZosmfRequestRunner.class).withArguments(dataSetName).thenReturn(runner);
+        PowerMockito.whenNew(GetDataSetContentZosmfRequestRunner.class).withArguments(dataSetName, new ArrayList<>()).thenReturn(runner);
         assertEquals(expected, dataService.getContent(dataSetName));
     }
 
@@ -148,7 +156,7 @@ public class ZosmfDataSetsServiceTest extends ZoweApiTest {
 
         GetDataSetContentZosmfRequestRunner runner = mock(GetDataSetContentZosmfRequestRunner.class);
         when(runner.run(zosmfConnector)).thenThrow(expectedException);
-        PowerMockito.whenNew(GetDataSetContentZosmfRequestRunner.class).withArguments(dataSetName).thenReturn(runner);
+        PowerMockito.whenNew(GetDataSetContentZosmfRequestRunner.class).withArguments(dataSetName, new ArrayList<>()).thenReturn(runner);
 
         shouldThrow(expectedException, () -> dataService.getContent(dataSetName));
     }
@@ -162,7 +170,7 @@ public class ZosmfDataSetsServiceTest extends ZoweApiTest {
 
         PutDataSetContentZosmfRequestRunner runner = mock(PutDataSetContentZosmfRequestRunner.class);
         when(runner.run(zosmfConnector)).thenReturn(etag);
-        PowerMockito.whenNew(PutDataSetContentZosmfRequestRunner.class).withArguments(dataSetName, content)
+        PowerMockito.whenNew(PutDataSetContentZosmfRequestRunner.class).withArguments(dataSetName, content, new ArrayList<>())
                 .thenReturn(runner);
         assertEquals(etag, dataService.putContent(dataSetName, content));
     }
@@ -176,7 +184,7 @@ public class ZosmfDataSetsServiceTest extends ZoweApiTest {
 
         PutDataSetContentZosmfRequestRunner runner = mock(PutDataSetContentZosmfRequestRunner.class);
         when(runner.run(zosmfConnector)).thenThrow(expectedException);
-        PowerMockito.whenNew(PutDataSetContentZosmfRequestRunner.class).withArguments(dataSetName, content)
+        PowerMockito.whenNew(PutDataSetContentZosmfRequestRunner.class).withArguments(dataSetName, content, new ArrayList<>())
                 .thenReturn(runner);
         shouldThrow(expectedException, () -> dataService.putContent(dataSetName, content));
     }
@@ -188,7 +196,7 @@ public class ZosmfDataSetsServiceTest extends ZoweApiTest {
 
         CreateDataSetZosmfRequestRunner runner = mock(CreateDataSetZosmfRequestRunner.class);
         when(runner.run(zosmfConnector)).thenReturn(name);
-        PowerMockito.whenNew(CreateDataSetZosmfRequestRunner.class).withArguments(request).thenReturn(runner);
+        PowerMockito.whenNew(CreateDataSetZosmfRequestRunner.class).withArguments(request, new ArrayList<>()).thenReturn(runner);
         assertEquals(name, dataService.createDataSet(request));
     }
 
@@ -201,7 +209,7 @@ public class ZosmfDataSetsServiceTest extends ZoweApiTest {
 
         CreateDataSetZosmfRequestRunner runner = mock(CreateDataSetZosmfRequestRunner.class);
         when(runner.run(zosmfConnector)).thenThrow(expectedException);
-        PowerMockito.whenNew(CreateDataSetZosmfRequestRunner.class).withArguments(request).thenReturn(runner);
+        PowerMockito.whenNew(CreateDataSetZosmfRequestRunner.class).withArguments(request, new ArrayList<>()).thenReturn(runner);
         shouldThrow(expectedException, () -> dataService.createDataSet(request));
     }
 
@@ -210,7 +218,7 @@ public class ZosmfDataSetsServiceTest extends ZoweApiTest {
         String name = "DATA.SET.NAME";
 
         DeleteDataSetZosmfRequestRunner runner = mock(DeleteDataSetZosmfRequestRunner.class);
-        PowerMockito.whenNew(DeleteDataSetZosmfRequestRunner.class).withArguments(name).thenReturn(runner);
+        PowerMockito.whenNew(DeleteDataSetZosmfRequestRunner.class).withArguments(name, new ArrayList<>()).thenReturn(runner);
         dataService.deleteDataSet(name);
 
         verify(runner).run(zosmfConnector);
@@ -224,7 +232,55 @@ public class ZosmfDataSetsServiceTest extends ZoweApiTest {
 
         DeleteDataSetZosmfRequestRunner runner = mock(DeleteDataSetZosmfRequestRunner.class);
         when(runner.run(zosmfConnector)).thenThrow(expectedException);
-        PowerMockito.whenNew(DeleteDataSetZosmfRequestRunner.class).withArguments(name).thenReturn(runner);
+        PowerMockito.whenNew(DeleteDataSetZosmfRequestRunner.class).withArguments(name, new ArrayList<>()).thenReturn(runner);
         shouldThrow(expectedException, () -> dataService.deleteDataSet(name));
+    }
+    
+    @Test
+    public void testGetIbmHeadersFromRequest() throws Exception {
+        List<Header> testHeaders = new ArrayList<Header>();
+        testHeaders.add(new BasicHeader("X-IBM-ONE", "test"));
+        testHeaders.add(new BasicHeader("X-IBM-TWO", "test2"));
+        testHeaders.add(new BasicHeader("X-TEST-TWO", "test3"));
+
+        List<String> headerNames = new ArrayList<String>();
+        headerNames.add("X-IBM-ONE");
+        headerNames.add("X-IBM-TWO");
+        Enumeration<String> enumerationHeaderNames = Collections.enumeration(headerNames); 
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        dataService.setRequest(request);
+
+        when(request.getHeaderNames()).thenReturn(enumerationHeaderNames);
+        request = mockRequestGetHeaders(testHeaders, request);
+
+        List<Header> expectedHeaders = new ArrayList<Header>();
+        expectedHeaders.add(new BasicHeader("X-IBM-ONE", "test"));
+        expectedHeaders.add(new BasicHeader("X-IBM-TWO", "test2"));
+        assertTrue("Actual headers do not match Expected", testHeadersMatch(dataService.getIbmHeadersFromRequest(), expectedHeaders));
+    }
+
+    public HttpServletRequest mockRequestGetHeaders(List<Header> headers, HttpServletRequest request) {
+        for (Header header : headers) {
+            when(request.getHeader(header.getName())).thenReturn(header.getValue());
+        }
+        return request;
+    }
+
+    public boolean testHeadersMatch(List<Header> list, List<Header> expectedHeaders) {
+        if (list.size() != expectedHeaders.size()) { return false; } 
+        for (int i = 0; i < list.size(); i++) {
+            BasicHeader header1 = (BasicHeader) list.get(i);
+            BasicHeader header2 = (BasicHeader) expectedHeaders.get(i);
+            if (header1.getName() != header2.getName()  || header1.getValue() != header2.getValue()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Test
+    public void testGetIbmHeadersFromRequestNullRequest() throws Exception {
+        assertEquals(dataService.getIbmHeadersFromRequest(), new ArrayList<Header>());
     }
 }

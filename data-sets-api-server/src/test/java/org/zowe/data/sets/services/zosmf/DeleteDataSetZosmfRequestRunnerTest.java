@@ -15,6 +15,8 @@ import org.junit.Test;
 import org.zowe.api.common.connectors.zosmf.exceptions.DataSetNotFoundException;
 import org.zowe.api.common.test.services.zosmf.AbstractZosmfRequestRunnerTest;
 
+import java.util.ArrayList;
+
 import static org.mockito.Mockito.when;
 
 public class DeleteDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRunnerTest {
@@ -27,7 +29,7 @@ public class DeleteDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRun
 
         when(zosmfConnector.executeRequest(builder)).thenReturn(response);
 
-        new DeleteDataSetZosmfRequestRunner(dataSetName).run(zosmfConnector);
+        new DeleteDataSetZosmfRequestRunner(dataSetName, new ArrayList<>()).run(zosmfConnector);
 
         verifyInteractions(builder);
     }
@@ -44,7 +46,7 @@ public class DeleteDataSetZosmfRequestRunnerTest extends AbstractZosmfRequestRun
 
         when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
-        shouldThrow(expectedException, () -> new DeleteDataSetZosmfRequestRunner(dataSetName).run(zosmfConnector));
+        shouldThrow(expectedException, () -> new DeleteDataSetZosmfRequestRunner(dataSetName, new ArrayList<>()).run(zosmfConnector));
         verifyInteractions(requestBuilder);
     }
 }

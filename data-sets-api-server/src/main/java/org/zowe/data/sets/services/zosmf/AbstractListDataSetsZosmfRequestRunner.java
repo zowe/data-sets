@@ -12,6 +12,7 @@ package org.zowe.data.sets.services.zosmf;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
@@ -21,12 +22,14 @@ import org.zowe.api.common.utils.ResponseCache;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 public abstract class AbstractListDataSetsZosmfRequestRunner<T> extends AbstractZosmfDataSetsRequestRunner<T> {
 
     protected String filter;
 
-    public AbstractListDataSetsZosmfRequestRunner(String filter) {
+    public AbstractListDataSetsZosmfRequestRunner(String filter, List<Header> headers) {
+        super(headers);
         this.filter = filter;
     }
 

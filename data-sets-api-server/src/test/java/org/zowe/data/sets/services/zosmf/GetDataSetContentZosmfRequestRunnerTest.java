@@ -22,6 +22,7 @@ import org.zowe.data.sets.model.DataSetContent;
 import org.zowe.data.sets.model.DataSetContentWithEtag;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -49,7 +50,7 @@ public class GetDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds/%s", dataSetName));
         when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
-        assertEquals(expected, new GetDataSetContentZosmfRequestRunner(dataSetName).run(zosmfConnector));
+        assertEquals(expected, new GetDataSetContentZosmfRequestRunner(dataSetName, new ArrayList<>()).run(zosmfConnector));
 
         verifyInteractions(requestBuilder);
         verify(requestBuilder).addHeader("X-IBM-Return-Etag", "true");
@@ -70,7 +71,7 @@ public class GetDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds/%s", dataSetName));
         when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
-        assertEquals(expected, new GetDataSetContentZosmfRequestRunner(dataSetName).run(zosmfConnector));
+        assertEquals(expected, new GetDataSetContentZosmfRequestRunner(dataSetName, new ArrayList<>()).run(zosmfConnector));
 
         verifyInteractions(requestBuilder);
         verify(requestBuilder).addHeader("X-IBM-Return-Etag", "true");
@@ -121,7 +122,7 @@ public class GetDataSetContentZosmfRequestRunnerTest extends AbstractZosmfReques
 
         when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
-        shouldThrow(expectedException, () -> new GetDataSetContentZosmfRequestRunner(dataSetName).run(zosmfConnector));
+        shouldThrow(expectedException, () -> new GetDataSetContentZosmfRequestRunner(dataSetName, new ArrayList<>()).run(zosmfConnector));
         verifyInteractions(requestBuilder);
     }
 }

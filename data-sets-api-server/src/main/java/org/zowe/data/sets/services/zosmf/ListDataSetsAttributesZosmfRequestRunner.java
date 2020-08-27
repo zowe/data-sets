@@ -13,6 +13,7 @@ import com.google.gson.JsonElement;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.http.Header;
 import org.apache.http.client.methods.RequestBuilder;
 import org.zowe.api.common.model.ItemsWrapper;
 import org.zowe.data.sets.mapper.DataSetMapper;
@@ -24,8 +25,8 @@ import java.util.List;
 @Slf4j
 public class ListDataSetsAttributesZosmfRequestRunner extends AbstractListDataSetsZosmfRequestRunner<ItemsWrapper<DataSetAttributes>> {
 
-    public ListDataSetsAttributesZosmfRequestRunner(String filter) {
-        super(filter);
+    public ListDataSetsAttributesZosmfRequestRunner(String filter, List<Header> headers) {
+        super(filter, headers);
     }
 
     @Override

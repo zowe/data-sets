@@ -18,6 +18,7 @@ import org.zowe.api.common.test.services.zosmf.AbstractZosmfRequestRunnerTest;
 import org.zowe.data.sets.exceptions.UnauthorisedDataSetException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class ListDataSetMembersZosmfRequestRunnerTest extends AbstractZosmfReque
         RequestBuilder requestBuilder = mockGetBuilder(String.format("restfiles/ds/%s/member", dataSetName));
         when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
-        assertEquals(expected, new ListDataSetMembersZosmfRequestRunner(dataSetName).run(zosmfConnector));
+        assertEquals(expected, new ListDataSetMembersZosmfRequestRunner(dataSetName, new ArrayList<>()).run(zosmfConnector));
 
         verifyInteractions(requestBuilder);
     }
@@ -68,7 +69,7 @@ public class ListDataSetMembersZosmfRequestRunnerTest extends AbstractZosmfReque
 
         when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
 
-        shouldThrow(expectedException, () -> new ListDataSetMembersZosmfRequestRunner(pdsName).run(zosmfConnector));
+        shouldThrow(expectedException, () -> new ListDataSetMembersZosmfRequestRunner(pdsName, new ArrayList<>()).run(zosmfConnector));
         verifyInteractions(requestBuilder);
     }
 }

@@ -11,9 +11,7 @@ package org.zowe.unix.files.services.zosmf;
 
 import com.google.gson.JsonObject;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
+import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.ContentType;
@@ -25,12 +23,16 @@ import org.zowe.api.common.utils.ResponseCache;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
 public class GetUnixFileChtagZosmfRunner extends AbstractZosmfUnixFilesRequestRunner<String> {
     
     private String path;
+    
+    public GetUnixFileChtagZosmfRunner(String path, List<Header> headers) {
+        super(headers);
+        this.path = path;
+    }
 
     @Override
     protected int[] getSuccessStatus() {

@@ -13,6 +13,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.zowe.api.common.connectors.zosmf.ZosmfConnector;
@@ -37,7 +38,8 @@ public class ListUnixDirectoryZosmfRunner extends AbstractZosmfRequestRunner<Uni
     private String path;
     private String hypermediaLinkToBase;
 
-    public ListUnixDirectoryZosmfRunner(String path, String hypermediaLinkToBase) {
+    public ListUnixDirectoryZosmfRunner(String path, String hypermediaLinkToBase, List<Header> headers) {
+        super(headers);
         this.path = path;
         this.hypermediaLinkToBase = hypermediaLinkToBase;
     }

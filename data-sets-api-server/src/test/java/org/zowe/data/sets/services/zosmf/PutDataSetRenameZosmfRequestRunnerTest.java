@@ -24,6 +24,7 @@ import org.zowe.api.common.test.services.zosmf.AbstractZosmfRequestRunnerTest;
 import org.zowe.data.sets.model.DataSetRenameRequest;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static org.mockito.Mockito.when;
 
@@ -64,7 +65,7 @@ public class PutDataSetRenameZosmfRequestRunnerTest extends AbstractZosmfRequest
         RequestBuilder requestBuilder = mockPutBuilder(String.format("restfiles/ds/%s", newName),requestBody);
         when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
         
-        new PutDataSetRenameZosmfRequestRunner(oldName, request).run(zosmfConnector); 
+        new PutDataSetRenameZosmfRequestRunner(oldName, request, new ArrayList<>()).run(zosmfConnector); 
         verifyInteractions(requestBuilder);
     }
     
@@ -73,7 +74,7 @@ public class PutDataSetRenameZosmfRequestRunnerTest extends AbstractZosmfRequest
     public void fail_rename_data_set_invalid_member_name() throws Exception {
         TestCase tc = loadTestCase("renameDataSet_memberInvalidName.json");
         TestObj tObj = setUpTest(tc);
-        shouldThrow(tObj.expectedException, () -> new PutDataSetRenameZosmfRequestRunner(tc.oldName,tObj.request).run(zosmfConnector));
+        shouldThrow(tObj.expectedException, () -> new PutDataSetRenameZosmfRequestRunner(tc.oldName,tObj.request, new ArrayList<>()).run(zosmfConnector));
         verifyInteractions(tObj.requestBuilder);
     }
     
@@ -81,7 +82,7 @@ public class PutDataSetRenameZosmfRequestRunnerTest extends AbstractZosmfRequest
     public void fail_rename_data_set_invalid_data_set_name() throws Exception {
         TestCase tc = loadTestCase("renameDataSet_InvalidDataSetName.json");
         TestObj tObj = setUpTest(tc);
-        shouldThrow(tObj.expectedException, () -> new PutDataSetRenameZosmfRequestRunner(tc.oldName,tObj.request).run(zosmfConnector));
+        shouldThrow(tObj.expectedException, () -> new PutDataSetRenameZosmfRequestRunner(tc.oldName,tObj.request, new ArrayList<>()).run(zosmfConnector));
         verifyInteractions(tObj.requestBuilder);
     }
     
@@ -89,7 +90,7 @@ public class PutDataSetRenameZosmfRequestRunnerTest extends AbstractZosmfRequest
     public void fail_rename_data_set_member_doesnt_exist() throws Exception {
         TestCase tc = loadTestCase("renameDataSet_memberDoesntExist.json");
         TestObj tObj = setUpTest(tc);
-        shouldThrow(tObj.expectedException, () -> new PutDataSetRenameZosmfRequestRunner(tc.oldName,tObj.request).run(zosmfConnector));
+        shouldThrow(tObj.expectedException, () -> new PutDataSetRenameZosmfRequestRunner(tc.oldName,tObj.request, new ArrayList<>()).run(zosmfConnector));
         verifyInteractions(tObj.requestBuilder);
     }
     
@@ -97,7 +98,7 @@ public class PutDataSetRenameZosmfRequestRunnerTest extends AbstractZosmfRequest
     public void fail_rename_data_set_doesnt_exist() throws Exception {
         TestCase tc = loadTestCase("renameDataSet_doesntExist.json");
         TestObj tObj = setUpTest(tc);
-        shouldThrow(tObj.expectedException, () -> new PutDataSetRenameZosmfRequestRunner(tc.oldName,tObj.request).run(zosmfConnector));
+        shouldThrow(tObj.expectedException, () -> new PutDataSetRenameZosmfRequestRunner(tc.oldName,tObj.request, new ArrayList<>()).run(zosmfConnector));
         verifyInteractions(tObj.requestBuilder);
     }
     
@@ -107,7 +108,7 @@ public class PutDataSetRenameZosmfRequestRunnerTest extends AbstractZosmfRequest
         TestObj tObj = setUpTest(tc);
         HtmlEscapedZoweApiRestException expectedException = new HtmlEscapedZoweApiRestException(tObj.expectedException.getApiError().getStatus()
                 ,tc.expectedResponse.get("message").getAsString());
-        shouldThrow(expectedException, () -> new PutDataSetRenameZosmfRequestRunner(tc.oldName,tObj.request).run(zosmfConnector));
+        shouldThrow(expectedException, () -> new PutDataSetRenameZosmfRequestRunner(tc.oldName,tObj.request, new ArrayList<>()).run(zosmfConnector));
         verifyInteractions(tObj.requestBuilder);
     }
 

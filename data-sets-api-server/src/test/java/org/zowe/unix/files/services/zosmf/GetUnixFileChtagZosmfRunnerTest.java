@@ -14,6 +14,8 @@ import org.apache.http.client.methods.RequestBuilder;
 import org.junit.Test;
 import org.zowe.api.common.test.services.zosmf.AbstractZosmfRequestRunnerTest;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -31,7 +33,7 @@ public class GetUnixFileChtagZosmfRunnerTest extends AbstractZosmfRequestRunnerT
                 "{ \"request\": \"chtag\", \"action\": \"list\" }");
         when(zosmfConnector.executeRequest(requestBuilder)).thenReturn(response);
         
-        assertEquals(codepage, new GetUnixFileChtagZosmfRunner(path).run(zosmfConnector));
+        assertEquals(codepage, new GetUnixFileChtagZosmfRunner(path, new ArrayList<>()).run(zosmfConnector));
         
         verifyInteractions(requestBuilder, false);
     }

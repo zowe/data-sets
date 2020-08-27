@@ -11,6 +11,7 @@ package org.zowe.unix.files.services.zosmf;
 
 import com.google.gson.JsonObject;
 
+import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.ContentType;
@@ -26,6 +27,7 @@ import org.zowe.unix.files.model.UnixEntityType;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,7 +36,8 @@ public class CreateUnixAssetZosmfRunner extends AbstractZosmfUnixFilesRequestRun
     private UnixCreateAssetRequest request;
     private String path;
     
-    public CreateUnixAssetZosmfRunner(String name, UnixCreateAssetRequest request) {
+    public CreateUnixAssetZosmfRunner(String name, UnixCreateAssetRequest request, List<Header> headers) {
+        super(headers);
         this.request = request;
         this.path = name;
     }
