@@ -21,6 +21,13 @@
 # - GATEWAY_PORT - The SSL port z/OSMF is listening on.
 # - ZOWE_EXPLORER_HOST - The IP Address z/OSMF can be reached
 
+stop_jobs()
+{
+  kill -15 $pid
+}
+
+trap 'stop_jobs' INT
+
 COMPONENT_CODE=EF
 _BPX_JOBNAME=${ZOWE_PREFIX}${COMPONENT_CODE} java -Xms16m -Xmx512m -Dibm.serversocket.recover=true -Dfile.encoding=UTF-8 \
     -Djava.io.tmpdir=/tmp -Xquickstart \
@@ -37,3 +44,6 @@ _BPX_JOBNAME=${ZOWE_PREFIX}${COMPONENT_CODE} java -Xms16m -Xmx512m -Dibm.servers
     -Dspring.main.banner-mode=off \
     -Djava.protocol.handler.pkgs=com.ibm.crypto.provider \
     -jar {{jar_path}} &
+pid=$?
+
+wait
