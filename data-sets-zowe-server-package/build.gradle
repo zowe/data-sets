@@ -14,13 +14,14 @@ dependencies {
 task packageDataSetsApiServer(type: Zip) {
     archiveName = artifactName + ".zip"
     includeEmptyDirs = true
+    resourceDir = 'src/main/resources/'
 
-     into('/') {
-        from "$buildDir/convert/manifest.yaml", "$buildDir/convert/apiml-static-registration.yaml.template"
+    into('/') {
+        from "$resourceDir/manifest.yaml", "$resourceDir/apiml-static-registration.yaml.template"
     }
 
     into('bin/') {
-        from configurations.dataSetsApiServerJar, "$buildDir/convert/start.sh", "$buildDir/convert/configure.sh", "$buildDir/convert/validate.sh"
+        from configurations.dataSetsApiServerJar, "$resourceDir/bin/start.sh", "$resourceDir/bin/configure.sh", "$resourceDir/bin/validate.sh"
     }
 }
 
