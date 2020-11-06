@@ -1,0 +1,32 @@
+---
+# ===== Zowe Component Manifest Definition =====
+# Component name
+# this will be the folder name under <zowe-runtime>/components folder
+# please note this value is not same as the service id we defined in apiml-static-registration.yaml.template
+name: data-sets-api
+# Component identifier. This identifier matches artifact path in Zowe Artifactory https://zowe.jfrog.io/.
+id: org.zowe.explorer.data.sets
+# Component version is defined in gradle.properties for Gradle project
+# Human readable component name
+title: IBM z/OS Datasets and Unix Files
+# Human readable component description
+description: IBM z/OS Datasets and Unix Files REST API service
+license: EPL-2.0
+repository:
+    type: git
+    url: https://github.com/zowe/data-sets.git
+build:
+    branch: "{{build.branch}}"
+    number: "{{build.number}}"
+    commitHash: "{{build.commitHash}}"
+    timestamp: "{{build.timestamp}}"
+commands:
+    start: bin/start.sh
+    # eventually we expect to remove this configure entry
+    # the logic should be automatically handled by Zowe component launcher with
+    # apimlServices.static.file definition
+    configure: bin/configure.sh
+    validate: bin/validate.sh
+apimlServices:
+    static:
+    file: apiml-static-registration.yaml.template
