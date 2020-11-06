@@ -3,7 +3,7 @@
 # Component name
 # this will be the folder name under <zowe-runtime>/components folder
 # please note this value is not same as the service id we defined in apiml-static-registration.yaml.template
-name: data-sets-api
+name: files-api
 # Component identifier. This identifier matches artifact path in Zowe Artifactory https://zowe.jfrog.io/.
 id: org.zowe.explorer.data.sets
 # Component version is defined in gradle.properties for Gradle project
