@@ -14,7 +14,7 @@ dependencies {
 task packageDataSetsApiServer(type: Zip) {
     archiveName = artifactName + ".zip"
     includeEmptyDirs = true
-    resourceDir = 'src/main/resources/'
+    def resourceDir = 'src/main/resources/'
 
     into('/') {
         from "$resourceDir/manifest.yaml", "$resourceDir/apiml-static-registration.yaml.template"
