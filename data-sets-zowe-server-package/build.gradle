@@ -25,39 +25,6 @@ task packageDataSetsApiServer(type: Zip) {
     }
 }
 
-// packageDataSetsApiServer.doFirst {
-//     List<File> scriptFiles =  new ArrayList<File>() {{
-//         add(file('src/main/resources/manifest.yaml'));
-//         add(file('src/main/resources/bin/start.sh'));
-//         add(file('src/main/resources/bin/configure.sh'));
-//         add(file('src/main/resources/bin/validate.sh'));
-//         add(file('src/main/resources/apiml-static-registration.yaml.template'));
-//     }};
-//     for (File scriptFile : scriptFiles){
-//         def inputStream = new InputStreamReader(new FileInputStream(scriptFile), "ISO-8859-1");
-//         def lineReader = new BufferedReader(inputStream);
-//         def scriptOutputDir = new File("$buildDir/convert/");
-//         if (!scriptOutputDir.exists()) {
-//             scriptOutputDir.mkdirs();
-//         }
-//         File scriptConvertedOutput = new File("$buildDir/convert/"+scriptFile.getName());
-//         if (scriptConvertedOutput.exists()) {
-//             scriptConvertedOutput.delete();
-//         }
-//         scriptConvertedOutput.createNewFile();
-//         def printer = new PrintWriter(scriptConvertedOutput, "IBM-1047");
-//         def line;
-//         def eol = [10] as byte[]
-//         //  def ebcdicEol = [ 21 ] as byte []
-//         while ((line = lineReader.readLine()) != null) {
-//             printer.write(line);
-//             printer.write(new String(eol, "ISO-8859-1"))
-//         }
-//         printer.flush();
-//         printer.close();
-//     }
-// }
-
 jar.dependsOn(packageDataSetsApiServer)
 build.dependsOn(packageDataSetsApiServer)
 
