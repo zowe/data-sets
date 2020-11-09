@@ -21,9 +21,7 @@
 # - GATEWAY_PORT - The SSL port z/OSMF is listening on.
 # - ZOWE_EXPLORER_HOST - The IP Address z/OSMF can be reached
 
-COMPONENT_ROOT_DIR=$(cd $(dirname $0)/..;pwd)
-# the jar file is placed in the root folder of the component package
-JAR_FILE=$(ls -1 data-sets-api-server-*.jar)
+JAR_FILE=$(ls -1 ${LAUNCH_COMPONENT}/data-sets-api-server-*.jar)
 
 stop_jobs()
 {
@@ -50,7 +48,7 @@ _BPX_JOBNAME=${ZOWE_PREFIX}${COMPONENT_CODE} java \
   -Dconnection.ipAddress=${ZOWE_EXPLORER_HOST} \
   -Dspring.main.banner-mode=off \
   -Djava.protocol.handler.pkgs=com.ibm.crypto.provider \
-  -jar "$COMPONENT_ROOT_DIR/$JAR_FILE" &
+  -jar "${JAR_FILE}" &
 pid=$?
 
 wait
