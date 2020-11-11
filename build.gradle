@@ -1,7 +1,7 @@
 import java.util.regex.Matcher
 
 //noinspection GroovyAssignabilityCheck
-group 'org.zowe.explorer.data.sets'
+group 'org.zowe.explorer.files'
 
 buildscript {
     ext {

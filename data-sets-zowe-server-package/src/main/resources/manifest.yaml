@@ -5,7 +5,7 @@
 # please note this value is not same as the service id we defined in apiml-static-registration.yaml.template
 name: files-api
 # Component identifier. This identifier matches artifact path in Zowe Artifactory https://zowe.jfrog.io/.
-id: org.zowe.explorer.data.sets
+id: org.zowe.explorer.files
 # Component version is defined in gradle.properties for Gradle project
 # Human readable component name
 title: IBM z/OS Datasets and Unix Files
