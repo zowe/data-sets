@@ -189,7 +189,7 @@ node('ibm-jenkins-slave-nvm') {
   pipeline.packaging(
       name: 'explorer-data-sets',
       operation: {
-          sh './gradlew packageDataSetsApiServer'
+          sh './gradlew packageFilesApiServer'
       }
   )
 
