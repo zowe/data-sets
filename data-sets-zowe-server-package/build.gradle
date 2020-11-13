@@ -8,7 +8,7 @@ configurations {
 }
 
 dependencies {
-    filesApiServerJar(project(path: ":files-api-server", configuration: "bootArchives"))
+    filesApiServerJar(project(path: ":data-sets-api-server", configuration: "bootArchives"))
 }
 
 task packageFilesApiServer(type: Zip) {
