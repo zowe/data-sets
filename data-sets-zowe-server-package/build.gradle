@@ -3,15 +3,15 @@ ext {
 }
 
 configurations {
-    dataSetsApiServerJar
+    filesApiServerJar
     zip
 }
 
 dependencies {
-    dataSetsApiServerJar(project(path: ":data-sets-api-server", configuration: "bootArchives"))
+    filesApiServerJar(project(path: ":files-api-server", configuration: "bootArchives"))
 }
 
-task packageDataSetsApiServer(type: Zip) {
+task packageFilesApiServer(type: Zip) {
     archiveName = artifactName + ".zip"
     includeEmptyDirs = true
     def resourceDir = 'src/main/resources/'
@@ -21,15 +21,15 @@ task packageDataSetsApiServer(type: Zip) {
     }
 
     into('bin/') {
-        from configurations.dataSetsApiServerJar, "$resourceDir/bin/start.sh", "$resourceDir/bin/configure.sh", "$resourceDir/bin/validate.sh"
+        from configurations.filesApiServerJar, "$resourceDir/bin/start.sh", "$resourceDir/bin/configure.sh", "$resourceDir/bin/validate.sh"
     }
 }
 
-jar.dependsOn(packageDataSetsApiServer)
-build.dependsOn(packageDataSetsApiServer)
+jar.dependsOn(packageFilesApiServer)
+build.dependsOn(packageFilesApiServer)
 
 artifacts {
-    zip packageDataSetsApiServer
+    zip packageFilesApiServer
 }
 
 publishing {
