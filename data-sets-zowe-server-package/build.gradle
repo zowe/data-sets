@@ -1,5 +1,5 @@
 ext {
-    artifactName = 'files-server-zowe-package'
+    artifactName = 'files-api-package'
 }
 
 configurations {
