@@ -12,36 +12,14 @@
 
 INITIAL_ERRORS_FOUND=$ERRORS_FOUND
 
-error() {
-  . ${ROOT_DIR}/scripts/utils/error.sh $1
-}
+# Source main utils script
+. ${ROOT_DIR}/bin/utils/utils.sh
 
-. ${ROOT_DIR}/scripts/utils/validate-zowe-prefix.sh 
-
-# - FILES_API_PORT - should not be bound to a port currently
-. ${ROOT_DIR}/scripts/utils/validate-port-available.sh $FILES_API_PORT
-
-# Mediation stuff, should validate in a separate script
-. ${ROOT_DIR}/scripts/utils/validate-apiml-variables.sh 
-
-# - ZOSMF_PORT - The SSL port z/OSMF is listening on.
-# - ZOSMF_HOST - The hostname, or ip address z/OSMF can be reached on
-. ${ROOT_DIR}/scripts/utils/validate-zosmf-host-and-port.sh
-
-# Not sure how we validate - just exist ok? dig/oping?
-#TODO - use oping, or the switcher in zowe-install-packaging utils?
-# - ZOWE_EXPLORER_HOST
-if [[ -n "${ZOWE_EXPLORER_HOST}" ]]
-then 
-    oping ${ZOWE_EXPLORER_HOST} > /dev/null    # check host
-    if [[ $? -ne 0 ]]
-    then    
-        error "ZOWE_EXPLORER_HOST '$ZOWE_EXPLORER_HOST' does not point to a valid hostname"
-    fi
-else 
-    error "ZOWE_EXPLORER_HOST is empty"
-fi
-
-. ${ROOT_DIR}/scripts/utils/validate-java.sh
+validate_port_is_available ${FILES_API_PORT}
+validate_zowe_prefix
+validate_variables_are_set "KEYSTORE,KEYSTORE_PASSWORD,KEY_ALIAS,VERIFY_CERTIFICATES"
+validate_directory_is_writable "${STATIC_DEF_CONFIG_DIR}"
+validate_zosmf_host_and_port "${ZOSMF_HOST}" "${ZOSMF_PORT}"
+validate_java_home
 
 return $(($ERRORS_FOUND-$INITIAL_ERRORS_FOUND))
