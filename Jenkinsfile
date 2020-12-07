@@ -189,7 +189,7 @@ node('ibm-jenkins-slave-nvm') {
   pipeline.packaging(
       name: 'explorer-data-sets',
       operation: {
-          sh './gradlew packageDataSetsApiServer'
+          sh './gradlew packageFilesApiServer'
       }
   )
 
@@ -197,7 +197,7 @@ node('ibm-jenkins-slave-nvm') {
   pipeline.publish(
     // NOTE: task publishArtifacts will publish to lib-release-local because we don't have SNAPSHOT in version
     artifacts: [
-      'data-sets-zowe-server-package/build/distributions/data-sets-server-zowe-package.zip'
+      'data-sets-zowe-server-package/build/distributions/files-api-package.zip'
     ]
   )
 

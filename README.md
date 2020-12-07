@@ -109,7 +109,7 @@ Development requires an API ML [Quick Start here](https://github.com/zowe/api-la
 
 ```
 # packaging for Zowe
-./gradlew packageDataSetsApiServer
+./gradlew packageFilesApiServer
 # deploy artifact
 ./gradlew publishArtifacts --info -Pdeploy.username=${USERNAME} -Pdeploy.password=${PASSWORD}
 ```

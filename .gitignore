@@ -39,6 +39,7 @@ gradle/wrapper/gradle-wrapper.jar
 #Gradle
 .gradle/
 bin/
+!data-sets-zowe-server-package/src/main/resources/bin
 
 ### Mac ###
 .DS_Store
