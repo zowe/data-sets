@@ -22,10 +22,6 @@ build:
   timestamp: "{{build.timestamp}}"
 commands:
   start: bin/start.sh
-  # eventually we expect to remove this configure entry
-  # the logic should be automatically handled by Zowe component launcher with
-  # apimlServices.static.file definition
-  configure: bin/configure.sh
   validate: bin/validate.sh
 apimlServices:
   static:
