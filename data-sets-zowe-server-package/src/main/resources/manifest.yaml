@@ -13,20 +13,20 @@ title: IBM z/OS Datasets and Unix Files
 description: IBM z/OS Datasets and Unix Files REST API service
 license: EPL-2.0
 repository:
-    type: git
-    url: https://github.com/zowe/data-sets.git
+  type: git
+  url: https://github.com/zowe/data-sets.git
 build:
-    branch: "{{build.branch}}"
-    number: "{{build.number}}"
-    commitHash: "{{build.commitHash}}"
-    timestamp: "{{build.timestamp}}"
+  branch: "{{build.branch}}"
+  number: "{{build.number}}"
+  commitHash: "{{build.commitHash}}"
+  timestamp: "{{build.timestamp}}"
 commands:
-    start: bin/start.sh
-    # eventually we expect to remove this configure entry
-    # the logic should be automatically handled by Zowe component launcher with
-    # apimlServices.static.file definition
-    configure: bin/configure.sh
-    validate: bin/validate.sh
+  start: bin/start.sh
+  validate: bin/validate.sh
+# if we need to automatically tag file encoding on z/OS during installation
+autoEncoding:
+# tag all files
+- "."
 apimlServices:
-    static:
-    file: apiml-static-registration.yaml.template
+  static:
+  - file: apiml-static-registration.yaml.template
