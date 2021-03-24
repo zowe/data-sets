@@ -17,7 +17,7 @@ node('zowe-jenkins-agent') {
   def pipeline = lib.pipelines.gradle.GradlePipeline.new(this)
   def uniqueBuildId
 
-  pipeline.admins.add("jackjia", "jcain", "stevenh")
+  pipeline.admins.add("jackjia", "jcain")
 
   // we have extra parameters for integration test
   pipeline.addBuildParameters(
