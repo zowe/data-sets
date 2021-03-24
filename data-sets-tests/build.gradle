@@ -58,14 +58,15 @@ test {
 	)
 }
 
-task validate << {
-	checkAndThrow("server_host", "undefined", "server.host");
-	checkAndThrow("server_port", -1, "server.port");
-	checkAndThrow("username", "undefined", "server.username");
-	checkAndThrow("password", "undefined", "server.password");
-	checkAndThrow("server_test_directory", "undefined", "server.test.directory");
-	checkAndThrow("test_version", "undefined", "test.version");
-	
+task validate {
+	doLast {
+		checkAndThrow("server_host", "undefined", "server.host");
+		checkAndThrow("server_port", -1, "server.port");
+		checkAndThrow("username", "undefined", "server.username");
+		checkAndThrow("password", "undefined", "server.password");
+		checkAndThrow("server_test_directory", "undefined", "server.test.directory");
+		checkAndThrow("test_version", "undefined", "test.version");
+	}
 }	
 
 task runIntegrationTests(dependsOn: ['validate', 'test']){
