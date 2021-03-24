@@ -1,11 +1,14 @@
+apply plugin: 'jacoco'
+
 ext.javaProjectsWithUnitTests = [
     'data-sets-api-server',
     'data-sets-tests',
     'data-sets-model'
 ]
 
+ext.jacocoSubProjects = subprojects.findAll { it.name in javaProjectsWithUnitTests }
 
-configure(subprojects.findAll { it.name in javaProjectsWithUnitTests }) {
+configure(jacocoSubProjects) {
     apply plugin: 'java'
     apply plugin: 'idea'
     apply plugin: 'jacoco'
@@ -41,7 +44,7 @@ configure(subprojects.findAll { it.name in javaProjectsWithUnitTests }) {
     test.dependsOn instrument
 
     jacoco {
-        toolVersion = '0.8.2'
+        toolVersion = '0.8.3'
     }
 
     jacocoTestReport {
@@ -50,5 +53,46 @@ configure(subprojects.findAll { it.name in javaProjectsWithUnitTests }) {
             xml.enabled true
             html.enabled true
         }
+        afterEvaluate {
+            executionData.setFrom(files(executionData.files.collect {
+                fileTree(dir: it, exclude: 'jobs-tests/**')
+            }))
+        }
     }
+}
+
+task jacocoFullReport(type: JacocoReport) {
+    description = 'Generates an aggregate report from all subprojects'
+    dependsOn(jacocoSubProjects.jacocoTestReport)
+
+    getAdditionalSourceDirs().from(
+            files(jacocoSubProjects.sourceSets.main.allSource.srcDirs)
+    )
+
+    getSourceDirectories().from(
+            files(jacocoSubProjects.sourceSets.main.allSource.srcDirs)
+    )
+
+    getClassDirectories().from(
+            files(jacocoSubProjects.sourceSets.main.output)
+    )
+
+    getExecutionData().from(
+            files(jacocoSubProjects.jacocoTestReport.executionData)
+    )
+
+    reports {
+        html.enabled = true
+        xml.enabled = true
+    }
+
+    doFirst {
+        getExecutionData().from(
+                files(executionData.findAll { it.exists() })
+        )
+    }
+}
+
+task coverage() {
+    dependsOn jacocoFullReport
 }
