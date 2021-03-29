@@ -13,6 +13,7 @@ ext {
     jsonPathVersion = "2.4.0"
     junitVersion = "4.13.1"
     mapStructVersion = "1.2.0.Final"
+    restAssuredVersion = "4.3.0"
     explorerApiCommonVersion = "1.1.5"
 
     libraries = [
@@ -45,6 +46,7 @@ ext {
         mockito_core                       : "org.mockito:mockito-core:${mockitoCoreVersion}",
 
         junit                              : "junit:junit:${junitVersion}",
+        restAssured						   : "io.rest-assured:rest-assured:${restAssuredVersion}",
 
         explorer_api_common                : "org.zowe.explorer.api:explorer-api-common:${explorerApiCommonVersion}",
         explorer_api_common_model          : "org.zowe.explorer.api:explorer-api-common-model:${explorerApiCommonVersion}",
