@@ -28,7 +28,6 @@ dependencies {
     compile libraries.springFoxSwaggerUI
     compile libraries.lombok
     compile libraries.explorer_api_common
-	compile libraries.restAssured
 
     testCompile libraries.spring_boot_starter_test
     testCompile libraries.powermock_api_mockito2
@@ -59,15 +58,14 @@ test {
 	)
 }
 
-task validate {
-	doLast {
-		checkAndThrow("server_host", "undefined", "server.host");
-		checkAndThrow("server_port", -1, "server.port");
-		checkAndThrow("username", "undefined", "server.username");
-		checkAndThrow("password", "undefined", "server.password");
-		checkAndThrow("server_test_directory", "undefined", "server.test.directory");
-		checkAndThrow("test_version", "undefined", "test.version");
-	}
+task validate << {
+	checkAndThrow("server_host", "undefined", "server.host");
+	checkAndThrow("server_port", -1, "server.port");
+	checkAndThrow("username", "undefined", "server.username");
+	checkAndThrow("password", "undefined", "server.password");
+	checkAndThrow("server_test_directory", "undefined", "server.test.directory");
+	checkAndThrow("test_version", "undefined", "test.version");
+	
 }	
 
 task runIntegrationTests(dependsOn: ['validate', 'test']){

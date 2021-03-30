@@ -108,7 +108,7 @@ public class DataSetsPutRenameIntegrationTest extends AbstractDataSetsIntegratio
         
         //non existent dataset name is PDS throw INTERNAL ERROR, zosmf throw very general 500 exception
         putDataSetRename(oldName, DataSetRenameRequest.builder().newName(newName).build()).then()
-            .statusCode(HttpStatus.SC_BAD_REQUEST).body("message", org.hamcrest.Matchers.containsString("exists"));
+            .statusCode(HttpStatus.SC_BAD_REQUEST).content("message", org.hamcrest.Matchers.containsString("exists")); 
     }
     
     private Response putDataSetRename(String oldDataSetName, DataSetRenameRequest body) {
