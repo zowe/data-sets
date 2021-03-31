@@ -86,7 +86,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
         when(dataSetService.listDataSetMembers(pdsName)).thenReturn(items);
 
         mockMvc.perform(get(ENDPOINT_ROOT + "/{dsn}/members", pdsName)).andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(content().string(JsonUtils.convertToJsonString(items)));
 
         verify(dataSetService, times(1)).listDataSetMembers(pdsName);
@@ -101,7 +101,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
         when(dataSetService.listDataSetMembers(pdsName)).thenReturn(new ItemsWrapper<String>(Collections.emptyList()));
 
         mockMvc.perform(get(ENDPOINT_ROOT + "/{dsn}/members", pdsName)).andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(content().string(EMPTY_ITEMS));
 
         verify(dataSetService, times(1)).listDataSetMembers(pdsName);
@@ -138,7 +138,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
         when(dataSetService.getContent(memberName)).thenReturn(response);
 
         mockMvc.perform(get(ENDPOINT_ROOT + "/{dsn}/content", memberName)).andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(content().string(JsonUtils.convertToJsonString(expected)))
             .andExpect(header().string("ETag", equalTo(eTag)));
 
@@ -293,7 +293,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
         when(dataSetService.listDataSets(filter)).thenReturn(wrapperList);
 
         mockMvc.perform(get(ENDPOINT_ROOT + "/{filter}/list", filter)).andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(content().string(JsonUtils.convertToJsonString(wrapperList)));
 
         verify(dataSetService, times(1)).listDataSets(filter);
@@ -310,7 +310,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
         when(dataSetService.listDataSets(anyString())).thenReturn(empty);
 
         mockMvc.perform(get(ENDPOINT_ROOT + "/{filter}/list", dummy)).andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(content().string(EMPTY_ITEMS));
 
         verify(dataSetService, times(1)).listDataSets(dummy);
@@ -354,7 +354,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
         when(dataSetService.listDataSetAttributes(filter)).thenReturn(wrapperList);
 
         mockMvc.perform(get(ENDPOINT_ROOT + "/{filter}", filter)).andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(content().string(JsonUtils.convertToJsonString(wrapperList)));
 
         verify(dataSetService, times(1)).listDataSetAttributes(filter);
@@ -371,7 +371,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
         when(dataSetService.listDataSetAttributes(anyString())).thenReturn(empty);
 
         mockMvc.perform(get(ENDPOINT_ROOT + "/{filter}", dummy)).andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(content().string(EMPTY_ITEMS));
 
         verify(dataSetService, times(1)).listDataSetAttributes(dummy);

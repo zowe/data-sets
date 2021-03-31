@@ -83,7 +83,7 @@ public class UnixFilesControllerTest extends ApiControllerTest {
         when(unixFilesService.listUnixDirectory(path, URI_BASE)).thenReturn(listedDirectory);
 
         mockMvc.perform(get(ENDPOINT_ROOT + "?path={path}", path)).andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(content().string(JsonUtils.convertToJsonString(listedDirectory)));
 
         verify(unixFilesService, times(1)).listUnixDirectory(path, URI_BASE);

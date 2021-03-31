@@ -12,7 +12,6 @@ dependencies {
     compile libraries.springFoxSwagger2
     compile libraries.springFoxSwaggerUI
     compile libraries.lombok
-    annotationProcessor libraries.lombok
 
     testCompile libraries.spring_boot_starter_test
     testCompile libraries.powermock_api_mockito2
