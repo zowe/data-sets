@@ -13,7 +13,7 @@ spring:
         name: data-sets
     output:
         ansi:
-            enabled: detect
+            enabled: always
 
 logging:
     level:

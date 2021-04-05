@@ -9,17 +9,31 @@
  */
 package org.zowe;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.ComponentScan;
+
+import java.lang.management.ManagementFactory;
 
 @SpringBootApplication
 
 // @EnableApiDiscovery
-@ComponentScan({ "org.zowe" })
-public class DataSetsAndUnixFilesApplication {
+@ComponentScan({"org.zowe"})
+@Slf4j
+public class DataSetsAndUnixFilesApplication implements ApplicationListener<ApplicationReadyEvent> {
 
     public static void main(String[] args) {
-        SpringApplication.run(DataSetsAndUnixFilesApplication.class, args);
+        SpringApplication app = new SpringApplication(DataSetsAndUnixFilesApplication.class);
+        app.setLogStartupInfo(false);
+        app.run(args);
+    }
+
+    @Override
+    public void onApplicationEvent(final ApplicationReadyEvent event) {
+        long uptime = ManagementFactory.getRuntimeMXBean().getUptime();
+        log.info("ZWEE0000I {} started in {} seconds", DataSetsAndUnixFilesApplication.class.getSimpleName(), uptime / 1000.0);
     }
 }
