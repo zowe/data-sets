@@ -21,7 +21,7 @@
 # - GATEWAY_PORT - The SSL port z/OSMF is listening on.
 # - ZOWE_EXPLORER_HOST - The IP Address z/OSMF can be reached
 
-JAR_FILE=$(ls -or1 ${LAUNCH_COMPONENT}/data-sets-api-server-*.jar | head -n 1)
+JAR_FILE=$(ls -1 ${LAUNCH_COMPONENT}/data-sets-api-server-*.jar | head -n 1)
 
 COMPONENT_CODE=EF
 _BPX_JOBNAME=${ZOWE_PREFIX}${COMPONENT_CODE} java \
