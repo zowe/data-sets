@@ -16,10 +16,7 @@ INITIAL_ERRORS_FOUND=$ERRORS_FOUND
 . ${ROOT_DIR}/bin/utils/utils.sh
 
 validate_port_is_available ${FILES_API_PORT}
-validate_zowe_prefix
 validate_variables_are_set "KEYSTORE,KEYSTORE_PASSWORD,KEY_ALIAS,VERIFY_CERTIFICATES"
 validate_directory_is_writable "${STATIC_DEF_CONFIG_DIR}"
-validate_zosmf_host_and_port "${ZOSMF_HOST}" "${ZOSMF_PORT}"
-validate_java_home
 
 return $(($ERRORS_FOUND-$INITIAL_ERRORS_FOUND))
