@@ -28,7 +28,7 @@ public class DataSetsAndUnixFilesApplication implements ApplicationListener<Appl
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(DataSetsAndUnixFilesApplication.class);
         app.setLogStartupInfo(false);
-        SpringApplication.run(DataSetsAndUnixFilesApplication.class, args);
+        app.run(args);
     }
 
     @Override
