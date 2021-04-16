@@ -80,7 +80,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
     public void get_data_set_member_names_success() throws Exception {
 
         List<String> memberList = Arrays.asList("MEMBER1", "MEMBER2");
-        ItemsWrapper<String> items = new ItemsWrapper<String>(memberList);
+        ItemsWrapper<String> items = new ItemsWrapper<>(memberList);
         String pdsName = "TEST.JCL";
 
         when(dataSetService.listDataSetMembers(pdsName)).thenReturn(items);
@@ -98,7 +98,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
 
         String pdsName = "TEST.JCL";
 
-        when(dataSetService.listDataSetMembers(pdsName)).thenReturn(new ItemsWrapper<String>(Collections.emptyList()));
+        when(dataSetService.listDataSetMembers(pdsName)).thenReturn(new ItemsWrapper<>(Collections.emptyList()));
 
         mockMvc.perform(get(ENDPOINT_ROOT + "/{dsn}/members", pdsName)).andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -175,7 +175,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
 
         mockMvc
             .perform(put(ENDPOINT_ROOT + "/{dsn}/content", memberName)
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(JsonUtils.convertToJsonString(content)))
+                .contentType(MediaType.APPLICATION_JSON_VALUE).content(JsonUtils.convertToJsonString(content)))
             .andExpect(status().isNoContent()).andExpect(content().string(""))
             .andExpect(header().string("ETag", equalTo("\"" + eTag + "\"")));
 
@@ -194,7 +194,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
         mockMvc
             .perform(put(ENDPOINT_ROOT + "/{dsn}/rename", oldName)
             .content("{\"newName\":\"" + newName + "\"}")
-            .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isNoContent()).andExpect(content().string(""));
 
         verify(dataSetService).renameDataSet(oldName, input);
@@ -216,7 +216,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
         mockMvc
             .perform(put(ENDPOINT_ROOT + "/{oldName}/rename", oldName)
                 .content(String.format("{\"newName\":\"%s\"}",newName))    
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().is(expectedError.getStatus().value()))
             .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
             .andExpect(jsonPath("$.message").value(errorMessage));
@@ -237,7 +237,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
 
         mockMvc
             .perform(put(ENDPOINT_ROOT + "/{dsn}/content", memberName).header("If-Match", ifMatch)
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(JsonUtils.convertToJsonString(content)))
+                .contentType(MediaType.APPLICATION_JSON_VALUE).content(JsonUtils.convertToJsonString(content)))
             .andExpect(status().isNoContent()).andExpect(content().string(""))
             .andExpect(header().string("ETag", equalTo(eTag)));
 
@@ -259,7 +259,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
 
         mockMvc
             .perform(put(ENDPOINT_ROOT + "/{dsn}/content", invalidPdsName)
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(JsonUtils.convertToJsonString(content)))
+                .contentType(MediaType.APPLICATION_JSON_VALUE).content(JsonUtils.convertToJsonString(content)))
             .andExpect(status().is(expectedError.getStatus().value()))
             .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
             .andExpect(jsonPath("$.message").value(errorMessage));
@@ -274,7 +274,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
         String invalidPdsName = "TEST.JCL";
 
         mockMvc.perform(put(ENDPOINT_ROOT + "/{dsn}/content", invalidPdsName)
-            .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content("JUNK")).andExpect(status().isBadRequest());
+            .contentType(MediaType.APPLICATION_JSON_VALUE).content("JUNK")).andExpect(status().isBadRequest());
 
         verifyNoMoreInteractions(dataSetService);
     }
@@ -286,7 +286,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
 
         DataSet ds = DataSet.builder().build();
 
-        List<DataSet> dataSetsList = Arrays.asList(ds);
+        List<DataSet> dataSetsList = Collections.singletonList(ds);
         ItemsWrapper<DataSet> wrapperList = new ItemsWrapper<>(dataSetsList);
         String filter = "TEST";
 
@@ -348,7 +348,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
         DataSetAttributes vsam = DataSetAttributes.builder().build();
 
         List<DataSetAttributes> dataSetsList = Arrays.asList(cobol, rexx, vsam);
-        ItemsWrapper<DataSetAttributes> wrapperList = new ItemsWrapper<DataSetAttributes>(dataSetsList);
+        ItemsWrapper<DataSetAttributes> wrapperList = new ItemsWrapper<>(dataSetsList);
         String filter = "TEST";
 
         when(dataSetService.listDataSetAttributes(filter)).thenReturn(wrapperList);
@@ -366,7 +366,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
 
         String dummy = "junk";
 
-        ItemsWrapper<DataSetAttributes> empty = new ItemsWrapper<DataSetAttributes>(Collections.emptyList());
+        ItemsWrapper<DataSetAttributes> empty = new ItemsWrapper<>(Collections.emptyList());
 
         when(dataSetService.listDataSetAttributes(anyString())).thenReturn(empty);
 
@@ -411,7 +411,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
         mockDataSetUriConstruction(dataSetName, locationUri);
 
         mockMvc
-            .perform(post(ENDPOINT_ROOT).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+            .perform(post(ENDPOINT_ROOT).contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(JsonUtils.convertToJsonString(request)))
             .andExpect(status().isCreated()).andExpect(header().string("Location", locationUri.toString()));
 
