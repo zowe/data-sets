@@ -34,6 +34,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -109,6 +111,23 @@ public class UnixFilesControllerTest extends ApiControllerTest {
     }
 
     @Test
+    public void get_unix_file_content_with_no_etag() throws Exception {
+        String path = "/file";
+        UnixFileContent fileContent = new UnixFileContent("Some file content");
+
+        UnixFileContentWithETag fileContentWithETag = new UnixFileContentWithETag(fileContent, null);
+
+        when(unixFilesService.getUnixFileContentWithETag(any(), anyBoolean(), anyBoolean())).thenReturn(fileContentWithETag);
+
+        mockMvc.perform(get(ENDPOINT_ROOT + path))
+                .andExpect(status().isOk())
+                .andExpect(content().string(JsonUtils.convertToJsonString(fileContent)))
+                .andExpect(header().string("ETag", equalTo(null)));
+
+        verify(unixFilesService, times(1)).getUnixFileContentWithETag(any(), anyBoolean(), anyBoolean());
+    }
+
+    @Test
     public void get_unix_file_content_convert_false_success() throws Exception {
         String path = "/file";
         String eTag = "\"E1B212479173E273A8ACFD682BCBEADE\"";
@@ -118,14 +137,17 @@ public class UnixFilesControllerTest extends ApiControllerTest {
 
         when(unixFilesService.getUnixFileContentWithETag(path, false, false)).thenReturn(fileContentWithETag);
 
-        mockMvc.perform(get(ENDPOINT_ROOT + path).header("Convert", false)).andExpect(status().isOk())
+        mockMvc.perform(get(ENDPOINT_ROOT + path)
+                .header("Convert", false)
+                .header("X-IBM-Return-Etag", "true"))
+            .andExpect(status().isOk())
             .andExpect(content().string(JsonUtils.convertToJsonString(fileContent)))
             .andExpect(header().string("ETag", equalTo(eTag)));
 
         verify(unixFilesService, times(1)).getUnixFileContentWithETag(path, false, false);
         verifyNoMoreInteractions(unixFilesService);
     }
-    
+
     @Test
     public void get_unix_file_content_convert_null_shouldUnixConvert_false_success() throws Exception {
         String path = "/file";
@@ -138,7 +160,9 @@ public class UnixFilesControllerTest extends ApiControllerTest {
         when(unixFilesService.shouldUnixFileConvert(path)).thenReturn(false);
 
 
-        mockMvc.perform(get(ENDPOINT_ROOT + path)).andExpect(status().isOk())
+        mockMvc.perform(get(ENDPOINT_ROOT + path)
+                .header("X-IBM-Return-Etag", "true"))
+            .andExpect(status().isOk())
             .andExpect(content().string(JsonUtils.convertToJsonString(fileContent)))
             .andExpect(header().string("ETag", equalTo(eTag)));
 
@@ -146,7 +170,7 @@ public class UnixFilesControllerTest extends ApiControllerTest {
         verify(unixFilesService, times(1)).getUnixFileContentWithETag(path, false, false);
         verifyNoMoreInteractions(unixFilesService);
     }
-    
+
     @Test
     public void get_unix_file_content_convert_null_shouldUnixConvert_true_success() throws Exception {
         String path = "/file";
@@ -159,7 +183,9 @@ public class UnixFilesControllerTest extends ApiControllerTest {
         when(unixFilesService.shouldUnixFileConvert(path)).thenReturn(true);
 
 
-        mockMvc.perform(get(ENDPOINT_ROOT + path)).andExpect(status().isOk())
+        mockMvc.perform(get(ENDPOINT_ROOT + path)
+                .header("X-IBM-Return-Etag", "true"))
+            .andExpect(status().isOk())
             .andExpect(content().string(JsonUtils.convertToJsonString(fileContent)))
             .andExpect(header().string("ETag", equalTo(eTag)));
 
@@ -167,7 +193,7 @@ public class UnixFilesControllerTest extends ApiControllerTest {
         verify(unixFilesService, times(1)).getUnixFileContentWithETag(path, true, true);
         verifyNoMoreInteractions(unixFilesService);
     }
-    
+
     @Test
     public void get_unix_file_content_convert_true_success() throws Exception {
         String path = "/file";
@@ -178,7 +204,10 @@ public class UnixFilesControllerTest extends ApiControllerTest {
 
         when(unixFilesService.getUnixFileContentWithETag(path, true, false)).thenReturn(fileContentWithETag);
 
-        mockMvc.perform(get(ENDPOINT_ROOT + path).header("Convert", true)).andExpect(status().isOk())
+        mockMvc.perform(get(ENDPOINT_ROOT + path)
+                .header("Convert", true)
+                .header("X-IBM-Return-Etag", "true"))
+            .andExpect(status().isOk())
             .andExpect(content().string(JsonUtils.convertToJsonString(fileContent)))
             .andExpect(header().string("ETag", equalTo(eTag)));
 
@@ -196,7 +225,9 @@ public class UnixFilesControllerTest extends ApiControllerTest {
         when(unixFilesService.getUnixFileContentWithETag(path, false, false))
             .thenThrow(new ZoweApiErrorException(expectedError));
 
-        mockMvc.perform(get(ENDPOINT_ROOT + path).header("Convert", false)).andExpect(status().isForbidden())
+        mockMvc.perform(get(ENDPOINT_ROOT + path)
+                .header("Convert", false))
+            .andExpect(status().isForbidden())
             .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
             .andExpect(jsonPath("$.message").value(errorMessage));
 
@@ -214,9 +245,14 @@ public class UnixFilesControllerTest extends ApiControllerTest {
         when(unixFilesService.putUnixFileContent(path, fileContentWithETag, false)).thenReturn(eTag);
 
         mockMvc
-            .perform(put(ENDPOINT_ROOT + path).header("Convert", false).contentType(MediaType.APPLICATION_JSON)
+            .perform(put(ENDPOINT_ROOT + path)
+                .header("Convert", false)
+                .header("X-IBM-Return-Etag", "true")
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.convertToJsonString(fileContent.getContent())))
-            .andExpect(status().isNoContent()).andExpect(content().string("")).andExpect(header().string("ETag", eTag));
+            .andExpect(status().isNoContent())
+            .andExpect(content().string(""))
+            .andExpect(header().string("ETag", eTag));
 
         verify(unixFilesService, times(1)).putUnixFileContent(path, fileContentWithETag, false);
         verify(unixFilesService, times(1)).getUnixFileContentWithETag(path, false, false);
@@ -233,9 +269,15 @@ public class UnixFilesControllerTest extends ApiControllerTest {
 
         when(unixFilesService.putUnixFileContent(path, fileContentWithETag, false)).thenReturn(eTag);
 
-        mockMvc.perform(put(ENDPOINT_ROOT + path).header("Convert", false).header("If-Match", ifMatch)
-            .contentType(MediaType.APPLICATION_JSON).content(JsonUtils.convertToJsonString(fileContent.getContent())))
-            .andExpect(status().isNoContent()).andExpect(content().string("")).andExpect(header().string("ETag", eTag));
+        mockMvc.perform(put(ENDPOINT_ROOT + path)
+                .header("Convert", false)
+                .header("If-Match", ifMatch)
+                .header("X-IBM-Return-Etag", "true")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtils.convertToJsonString(fileContent.getContent())))
+            .andExpect(status().isNoContent())
+            .andExpect(content().string(""))
+            .andExpect(header().string("ETag", eTag));
 
         verify(unixFilesService, times(1)).putUnixFileContent(path, fileContentWithETag, false);
         verify(unixFilesService, times(1)).getUnixFileContentWithETag(path, false, false);
@@ -253,9 +295,13 @@ public class UnixFilesControllerTest extends ApiControllerTest {
         when(unixFilesService.shouldUnixFileConvert(path)).thenReturn(false);
 
         mockMvc
-            .perform(put(ENDPOINT_ROOT + path).contentType(MediaType.APPLICATION_JSON)
+            .perform(put(ENDPOINT_ROOT + path)
+                .header("X-IBM-Return-Etag", "true")
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.convertToJsonString(fileContent.getContent())))
-            .andExpect(status().isNoContent()).andExpect(content().string("")).andExpect(header().string("ETag", eTag));
+            .andExpect(status().isNoContent())
+            .andExpect(content().string(""))
+            .andExpect(header().string("ETag", eTag));
 
         verify(unixFilesService, times(1)).putUnixFileContent(path, fileContentWithETag, false);
         verify(unixFilesService, times(1)).getUnixFileContentWithETag(path, false, false);
@@ -329,8 +375,8 @@ public class UnixFilesControllerTest extends ApiControllerTest {
         verify(unixFilesService, times(1)).getUnixFileContentWithETag(path, false, false);
         verifyNoMoreInteractions(unixFilesService);
     }
-    
-    
+
+
     @Test
     public void test_delete_calls_service_properly() throws Exception {
         String dummy = "/junk";
@@ -359,43 +405,43 @@ public class UnixFilesControllerTest extends ApiControllerTest {
         verify(unixFilesService, times(1)).deleteUnixFileContent(path,false);
         verifyNoMoreInteractions(unixFilesService);
     }
-    
-    
+
+
     @Test
     public void post_unix_file_succss() throws Exception {
         String path = "/u/newFile";
         String permissions = "rwxrwxrwx";
         UnixCreateAssetRequest createRequest = new UnixCreateAssetRequest(UnixEntityType.FILE, permissions);
-        
+
         mockMvc.perform(post(ENDPOINT_ROOT + path)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.convertToJsonString(createRequest)))
             .andExpect(status().isCreated())
             .andExpect(header().string("Location", "http://localhost" + ENDPOINT_ROOT + path));
-        
+
         verify(unixFilesService, times(1)).createUnixAsset(path, createRequest);
         verifyNoMoreInteractions(unixFilesService);
     }
-    
+
     @Test
     public void post_unix_file_with_conflict_exception_should_be_converted_to_error_message() throws Exception {
         String path = "/u/newFile";
         String permissions = "rwxrwxrwx";
         UnixCreateAssetRequest createRequest = new UnixCreateAssetRequest(UnixEntityType.FILE, permissions);
-        
+
         String errorMessage = String.format("%s already exists", path);
         ApiError expectedError = ApiError.builder().message(errorMessage).status(HttpStatus.CONFLICT).build();
-        
-        
+
+
         doThrow(new ZoweApiErrorException(expectedError)).when(unixFilesService).createUnixAsset(path, createRequest);
-        
+
         mockMvc.perform(post(ENDPOINT_ROOT + path)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.convertToJsonString(createRequest)))
             .andExpect(status().isConflict())
             .andExpect(jsonPath("$.status").value(expectedError.getStatus().name()))
             .andExpect(jsonPath("$.message").value(errorMessage));
-        
+
         verify(unixFilesService, times(1)).createUnixAsset(path, createRequest);
         verifyNoMoreInteractions(unixFilesService);
     }
