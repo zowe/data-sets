@@ -81,7 +81,6 @@ Development requires an API ML [Quick Start here](https://github.com/zowe/api-la
     -Dserver.ssl.keyStore=localhost.keystore.p12 \
     -Dserver.ssl.keyStorePassword=password \
     -Dserver.ssl.keyStoreType=PKCS12 \
-    -Dserver.compression.enabled=true \
     -Dconnection.httpsPort=${GATEWAY_PORT} \
     -Dconnection.ipAddress=${GATEWAY_HOST} \
     -jar $(ls -1 data-sets-api-server/build/libs/data-sets-api-server-*-boot.jar) &
