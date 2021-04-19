@@ -55,7 +55,7 @@ public class DataSetsPutContentIntegrationTest extends AbstractDataSetsIntegrati
 
     @Test
     public void testPutMemberContentWithoutIfMatchWorks() {
-        putDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14), new DataSetContent("junk\n")).then()
+        putDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14), new DataSetContent("junk\n")).then().log().all()
             .statusCode(HttpStatus.SC_NO_CONTENT).header("Content-Encoding", "gzip");
         getDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14)).then().statusCode(HttpStatus.SC_OK)
             .body("records", equalTo("junk\n"));
@@ -65,7 +65,7 @@ public class DataSetsPutContentIntegrationTest extends AbstractDataSetsIntegrati
     public void testPutMemberContentWithEtag() {
         String eTag = getDataSetContentWithEtag(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14)).then().extract().header("ETag");
 
-        putDataSetContentReturnEtag(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14), content, eTag).then()
+        putDataSetContentReturnEtag(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14), content, eTag).then().log().all()
             .statusCode(HttpStatus.SC_NO_CONTENT).header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
         getDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14)).then().statusCode(HttpStatus.SC_OK)
             .body("records", equalTo(jcl));
@@ -75,7 +75,7 @@ public class DataSetsPutContentIntegrationTest extends AbstractDataSetsIntegrati
     public void testPutMemberContentWithGzip() {
         String eTag = getDataSetContentWithEtag(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14)).then().extract().header("ETag");
 
-        putDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14), content, eTag).then()
+        putDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14), content, eTag).then().log().all()
                 .statusCode(HttpStatus.SC_NO_CONTENT)
                 .header("Content-Encoding", "gzip");
         getDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14)).then().statusCode(HttpStatus.SC_OK)
@@ -85,7 +85,7 @@ public class DataSetsPutContentIntegrationTest extends AbstractDataSetsIntegrati
     @Test
     public void testPutSequentialDataSetContent() {
         String eTag = getDataSetContent(TEMP_SDS).then().extract().header("ETag");
-        putDataSetContentReturnEtag(TEMP_SDS, content, eTag).then().statusCode(HttpStatus.SC_NO_CONTENT)
+        putDataSetContentReturnEtag(TEMP_SDS, content, eTag).then().log().all().statusCode(HttpStatus.SC_NO_CONTENT)
                 .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
         getDataSetContent(TEMP_SDS).then().statusCode(HttpStatus.SC_OK).body("records", equalTo(jcl));
     }

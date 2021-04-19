@@ -33,7 +33,7 @@ public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesInt
 
         RestAssured.given().header(AUTH_HEADER).header("X-Return-Etag", "true").contentType("application/json").body(content)
             .when().put(TEST_DIRECTORY + "/editableFile")
-            .then().statusCode(HttpStatus.SC_NO_CONTENT)
+            .then().log().all().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
 
         RestAssured.given().header(AUTH_HEADER).when().get(TEST_DIRECTORY + "/editableFile")
@@ -47,7 +47,7 @@ public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesInt
 
         RestAssured.given().header(AUTH_HEADER).contentType("application/json").body(content)
                 .when().put(TEST_DIRECTORY + "/editableFile")
-                .then().statusCode(HttpStatus.SC_NO_CONTENT)
+                .then().log().all().statusCode(HttpStatus.SC_NO_CONTENT)
                 .header("Content-Encoding", "gzip");
 
         RestAssured.given().header(AUTH_HEADER).when().get(TEST_DIRECTORY + "/editableFile")
@@ -98,7 +98,7 @@ public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesInt
 
         RestAssured.given().header("If-Match", eTag).header(AUTH_HEADER).header("X-Return-Etag", "true")
             .contentType("application/json").body(content).when().put(TEST_DIRECTORY + "/editableFile")
-            .then().statusCode(HttpStatus.SC_NO_CONTENT)
+            .then().log().all().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
 
         RestAssured.given().header(AUTH_HEADER).when().get(TEST_DIRECTORY + "/editableFile")
@@ -122,7 +122,7 @@ public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesInt
         RestAssured.given().contentType("application/json").body(content).header("Convert", true).header(AUTH_HEADER)
             .header("X-Return-Etag", "true")
             .when().put(TEST_DIRECTORY + "/editableAsciiTaggedFile")
-            .then().statusCode(HttpStatus.SC_NO_CONTENT)
+            .then().log().all().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
 
         final String encodedFileContent = Base64.getEncoder().encodeToString(fileContent.getBytes());
@@ -138,7 +138,7 @@ public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesInt
 
         RestAssured.given().header(AUTH_HEADER).header("X-Return-Etag", "true").contentType("application/json").body(content)
             .when().put(TEST_DIRECTORY + "/editableAsciiTaggedFile")
-            .then().statusCode(HttpStatus.SC_NO_CONTENT)
+            .then().log().all().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
 
         final String encodedFileContent = Base64.getEncoder().encodeToString(fileContent.getBytes());
@@ -153,7 +153,7 @@ public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesInt
 
         RestAssured.given().header("Convert", false).header(AUTH_HEADER).header("X-Return-Etag", "true")
             .contentType("application/json").body(content).when().put(TEST_DIRECTORY + "/editableEbcdicTaggedFile")
-            .then().statusCode(HttpStatus.SC_NO_CONTENT)
+            .then().log().all().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
 
         RestAssured.given().header(AUTH_HEADER).when().get(TEST_DIRECTORY + "/editableEbcdicTaggedFile")
@@ -167,7 +167,7 @@ public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesInt
 
         RestAssured.given().header(AUTH_HEADER).header("X-Return-Etag", "true").contentType("application/json").body(content)
             .when().put(TEST_DIRECTORY + "/editableEbcdicTaggedFile")
-            .then().statusCode(HttpStatus.SC_NO_CONTENT)
+            .then().log().all().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
 
         RestAssured.given().header(AUTH_HEADER).when().get(TEST_DIRECTORY + "/editableEbcdicTaggedFile")

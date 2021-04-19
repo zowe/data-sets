@@ -150,7 +150,8 @@ node('zowe-jenkins-agent') {
                 -Pserver.username=${USERNAME} \
                 -Pserver.password=${PASSWORD} \
                 -Pserver.test.directory=${params.INTEGRATION_TEST_DIRECTORY_ROOT}/${uniqueBuildId} \
-                -Ptest.version=1"""
+                -Ptest.version=1
+                --info"""
             echo "Testing version 2 - v2 JWT "
             sh """./gradlew runIntegrationTests \
                 -Pserver.host=localhost \
