@@ -139,7 +139,7 @@ public class UnixFilesControllerTest extends ApiControllerTest {
 
         mockMvc.perform(get(ENDPOINT_ROOT + path)
                 .header("Convert", false)
-                .header("X-IBM-Return-Etag", "true"))
+                .header("X-Return-Etag", "true"))
             .andExpect(status().isOk())
             .andExpect(content().string(JsonUtils.convertToJsonString(fileContent)))
             .andExpect(header().string("ETag", equalTo(eTag)));
@@ -161,7 +161,7 @@ public class UnixFilesControllerTest extends ApiControllerTest {
 
 
         mockMvc.perform(get(ENDPOINT_ROOT + path)
-                .header("X-IBM-Return-Etag", "true"))
+                .header("X-Return-Etag", "true"))
             .andExpect(status().isOk())
             .andExpect(content().string(JsonUtils.convertToJsonString(fileContent)))
             .andExpect(header().string("ETag", equalTo(eTag)));
@@ -184,7 +184,7 @@ public class UnixFilesControllerTest extends ApiControllerTest {
 
 
         mockMvc.perform(get(ENDPOINT_ROOT + path)
-                .header("X-IBM-Return-Etag", "true"))
+                .header("X-Return-Etag", "true"))
             .andExpect(status().isOk())
             .andExpect(content().string(JsonUtils.convertToJsonString(fileContent)))
             .andExpect(header().string("ETag", equalTo(eTag)));
@@ -206,7 +206,7 @@ public class UnixFilesControllerTest extends ApiControllerTest {
 
         mockMvc.perform(get(ENDPOINT_ROOT + path)
                 .header("Convert", true)
-                .header("X-IBM-Return-Etag", "true"))
+                .header("X-Return-Etag", "true"))
             .andExpect(status().isOk())
             .andExpect(content().string(JsonUtils.convertToJsonString(fileContent)))
             .andExpect(header().string("ETag", equalTo(eTag)));
@@ -247,7 +247,7 @@ public class UnixFilesControllerTest extends ApiControllerTest {
         mockMvc
             .perform(put(ENDPOINT_ROOT + path)
                 .header("Convert", false)
-                .header("X-IBM-Return-Etag", "true")
+                .header("X-Return-Etag", "true")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.convertToJsonString(fileContent.getContent())))
             .andExpect(status().isNoContent())
@@ -272,7 +272,7 @@ public class UnixFilesControllerTest extends ApiControllerTest {
         mockMvc.perform(put(ENDPOINT_ROOT + path)
                 .header("Convert", false)
                 .header("If-Match", ifMatch)
-                .header("X-IBM-Return-Etag", "true")
+                .header("X-Return-Etag", "true")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.convertToJsonString(fileContent.getContent())))
             .andExpect(status().isNoContent())
@@ -296,7 +296,7 @@ public class UnixFilesControllerTest extends ApiControllerTest {
 
         mockMvc
             .perform(put(ENDPOINT_ROOT + path)
-                .header("X-IBM-Return-Etag", "true")
+                .header("X-Return-Etag", "true")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.convertToJsonString(fileContent.getContent())))
             .andExpect(status().isNoContent())

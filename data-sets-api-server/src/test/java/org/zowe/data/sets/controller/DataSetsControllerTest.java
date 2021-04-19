@@ -137,7 +137,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
 
         when(dataSetService.getContent(memberName)).thenReturn(response);
 
-        mockMvc.perform(get(ENDPOINT_ROOT + "/{dsn}/content", memberName).header("X-IBM-Return-Etag", "true"))
+        mockMvc.perform(get(ENDPOINT_ROOT + "/{dsn}/content", memberName).header("X-Return-Etag", "true"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(content().string(JsonUtils.convertToJsonString(expected)))
@@ -192,7 +192,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
 
         mockMvc
                 .perform(put(ENDPOINT_ROOT + "/{dsn}/content", memberName)
-                        .header("X-IBM-Return-Etag", "true")
+                        .header("X-Return-Etag", "true")
                         .contentType(MediaType.APPLICATION_JSON_VALUE).content(JsonUtils.convertToJsonString(content)))
                 .andExpect(status().isNoContent()).andExpect(content().string(""))
                 .andExpect(header().string("ETag", equalTo(eTag)));
@@ -256,7 +256,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
         mockMvc
                 .perform(put(ENDPOINT_ROOT + "/{dsn}/content", memberName)
                         .header("If-Match", ifMatch)
-                        .header("X-IBM-Return-Etag", "true")
+                        .header("X-Return-Etag", "true")
                         .contentType(MediaType.APPLICATION_JSON_VALUE).content(JsonUtils.convertToJsonString(content)))
                 .andExpect(status().isNoContent()).andExpect(content().string(""))
                 .andExpect(header().string("ETag", equalTo(eTag)));

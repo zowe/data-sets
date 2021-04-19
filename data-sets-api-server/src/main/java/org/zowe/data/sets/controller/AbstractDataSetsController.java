@@ -58,7 +58,7 @@ public abstract class AbstractDataSetsController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Ok", response = DataSetContent.class)})
     public ResponseEntity<DataSetContent> getContent(
             @ApiParam(value = "Data set name, e.g. HLQ.PS or HLQ.PO(MEMBER)", required = true) @PathVariable String dataSetName,
-            @RequestHeader(value = "X-IBM-Return-Etag", required = false) String etagHeader) {
+            @RequestHeader(value = "X-Return-Etag", required = false) String etagHeader) {
         DataSetContentWithEtag content = getDataSetService().getContent(dataSetName);
 
         HttpHeaders headers = new HttpHeaders();
@@ -89,7 +89,7 @@ public abstract class AbstractDataSetsController {
     public ResponseEntity<?> putContent(
             @ApiParam(value = "Data set name, e.g. HLQ.PS or HLQ.PO(MEMBER)", required = true) @PathVariable String dataSetName,
             @RequestBody DataSetContent input, @RequestHeader(value = "If-Match", required = false) String ifMatch,
-            @RequestHeader(value = "X-IBM-Return-Etag", required = false) String etagHeader) {
+            @RequestHeader(value = "X-Return-Etag", required = false) String etagHeader) {
         DataSetContentWithEtag request = new DataSetContentWithEtag(input, ifMatch);
         String putEtag = getDataSetService().putContent(dataSetName, request);
 

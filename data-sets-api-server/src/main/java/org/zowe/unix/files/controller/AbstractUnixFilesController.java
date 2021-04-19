@@ -65,7 +65,7 @@ public abstract class AbstractUnixFilesController {
     public ResponseEntity<UnixFileContent> getUnixFileContent(
             @PathVariable String path, HttpServletRequest request,
             @RequestHeader(value = "Convert", required = false) Boolean convert,
-            @RequestHeader(value = "X-IBM-Return-Etag", required = false) String etagHeader) {
+            @RequestHeader(value = "X-Return-Etag", required = false) String etagHeader) {
 
         String fullPath = getPathFromRequest(request);
 
@@ -93,7 +93,7 @@ public abstract class AbstractUnixFilesController {
             @PathVariable String path, HttpServletRequest request,
             @RequestBody UnixFileContent input, @RequestHeader(value = "If-Match", required = false) String ifMatch,
             @RequestHeader(value = "Convert", required = false) Boolean convert,
-            @RequestHeader(value = "X-IBM-Return-Etag", required = false) String etagHeader) {
+            @RequestHeader(value = "X-Return-Etag", required = false) String etagHeader) {
 
         UnixFileContentWithETag contentWithETag = new UnixFileContentWithETag(input, ifMatch);
         String fullPath = getPathFromRequest(request);
