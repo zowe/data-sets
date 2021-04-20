@@ -42,7 +42,7 @@ public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesInt
     }
 
     @Test
-    public void testPutUnixFileContentWithGzip() {
+    public void testPutUnixFileContentWithNoEtag() {
         final UnixFileContent content = new UnixFileContent("New testable content \\n testPutUnixFileContent");
 
         RestAssured.given().header(AUTH_HEADER).contentType("application/json").body(content)

@@ -187,7 +187,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
         String memberName = "TEST.JCL(MEMBER)";
         DataSetContent content = new DataSetContent("Test\nFile");
         DataSetContentWithEtag request = new DataSetContentWithEtag(content, null);
-        String eTag = "\"A7F90DCB9C2F4D4A582EF85\"";
+        String eTag = "A7F90DCB9C2F4D4A582EF85";
         when(dataSetService.putContent(memberName, request)).thenReturn(eTag);
 
         mockMvc
@@ -195,7 +195,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
                         .header("X-Return-Etag", "true")
                         .contentType(MediaType.APPLICATION_JSON_VALUE).content(JsonUtils.convertToJsonString(content)))
                 .andExpect(status().isNoContent()).andExpect(content().string(""))
-                .andExpect(header().string("ETag", equalTo(eTag)));
+                .andExpect(header().string("ETag", equalTo("\"" + eTag + "\"")));
 
         verify(dataSetService, times(1)).putContent(memberName, request);
         verifyNoMoreInteractions(dataSetService);
@@ -243,14 +243,13 @@ public class DataSetsControllerTest extends ApiControllerTest {
         verifyNoMoreInteractions(dataSetService);
     }
 
-    // TODO LATER - validation of If-Match / ETag to check if surrounded by double quotes? https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag
     @Test
     public void put_data_set_with_if_match_content_success() throws Exception {
         String ifMatch = "\"CA7F90DCB9C2F4D4A582E\"";
         String memberName = "TEST.JCL(MEMBER)";
         DataSetContent content = new DataSetContent("Test\nFile");
         DataSetContentWithEtag request = new DataSetContentWithEtag(content, ifMatch);
-        String eTag = "\"A7F90DCB9C2F4D4A582EF85\"";
+        String eTag = "A7F90DCB9C2F4D4A582EF85";
         when(dataSetService.putContent(memberName, request)).thenReturn(eTag);
 
         mockMvc
@@ -259,7 +258,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
                         .header("X-Return-Etag", "true")
                         .contentType(MediaType.APPLICATION_JSON_VALUE).content(JsonUtils.convertToJsonString(content)))
                 .andExpect(status().isNoContent()).andExpect(content().string(""))
-                .andExpect(header().string("ETag", equalTo(eTag)));
+                .andExpect(header().string("ETag", equalTo("\"" + eTag + "\"")));
 
         verify(dataSetService, times(1)).putContent(memberName, request);
         verifyNoMoreInteractions(dataSetService);

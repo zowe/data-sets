@@ -96,7 +96,7 @@ public abstract class AbstractDataSetsController {
         HttpHeaders headers = new HttpHeaders();
         if (etagHeader != null && etagHeader.toLowerCase().equals("true")) {
             headers.add("Access-Control-Expose-Headers", "ETag");
-            headers.add("ETag", putEtag);
+            headers.add("ETag", "\"" + putEtag + "\"");
         }
         return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
     }

@@ -109,7 +109,7 @@ public abstract class AbstractUnixFilesController {
         HttpHeaders headers = new HttpHeaders();
         if (etagHeader != null && etagHeader.toLowerCase().equals("true")) {
             headers.add("Access-Control-Expose-Headers", "ETag");
-            headers.add("ETag", putETag);
+            headers.add("ETag", "\"" + putETag + "\"");
         }
         return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
     }

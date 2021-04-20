@@ -240,7 +240,7 @@ public class UnixFilesControllerTest extends ApiControllerTest {
         String path = "/file";
         UnixFileContent fileContent = new UnixFileContent("Some file content");
         UnixFileContentWithETag fileContentWithETag = new UnixFileContentWithETag(fileContent, null);
-        String eTag = "\"E1B212479173E273A8ACFD682BCBEADE\"";
+        String eTag = "E1B212479173E273A8ACFD682BCBEADE";
 
         when(unixFilesService.putUnixFileContent(path, fileContentWithETag, false)).thenReturn(eTag);
 
@@ -252,7 +252,7 @@ public class UnixFilesControllerTest extends ApiControllerTest {
                 .content(JsonUtils.convertToJsonString(fileContent.getContent())))
             .andExpect(status().isNoContent())
             .andExpect(content().string(""))
-            .andExpect(header().string("ETag", eTag));
+            .andExpect(header().string("ETag", "\"" + eTag + "\""));
 
         verify(unixFilesService, times(1)).putUnixFileContent(path, fileContentWithETag, false);
         verify(unixFilesService, times(1)).getUnixFileContentWithETag(path, false, false);
@@ -263,7 +263,7 @@ public class UnixFilesControllerTest extends ApiControllerTest {
     public void put_unix_file_content_success_with_if_match() throws Exception {
         String path = "/file";
         String ifMatch = "\"29387FH925H72H4527459G2974GH849F\"";
-        String eTag = "\"E1B212479173E273A8ACFD682BCBEADE\"";
+        String eTag = "E1B212479173E273A8ACFD682BCBEADE";
         UnixFileContent fileContent = new UnixFileContent("Some file content");
         UnixFileContentWithETag fileContentWithETag = new UnixFileContentWithETag(fileContent, ifMatch);
 
@@ -277,7 +277,7 @@ public class UnixFilesControllerTest extends ApiControllerTest {
                 .content(JsonUtils.convertToJsonString(fileContent.getContent())))
             .andExpect(status().isNoContent())
             .andExpect(content().string(""))
-            .andExpect(header().string("ETag", eTag));
+            .andExpect(header().string("ETag", "\"" + eTag + "\""));
 
         verify(unixFilesService, times(1)).putUnixFileContent(path, fileContentWithETag, false);
         verify(unixFilesService, times(1)).getUnixFileContentWithETag(path, false, false);
@@ -289,7 +289,7 @@ public class UnixFilesControllerTest extends ApiControllerTest {
         String path = "/file";
         UnixFileContent fileContent = new UnixFileContent("Some file content");
         UnixFileContentWithETag fileContentWithETag = new UnixFileContentWithETag(fileContent, null);
-        String eTag = "\"E1B212479173E273A8ACFD682BCBEADE\"";
+        String eTag = "E1B212479173E273A8ACFD682BCBEADE";
 
         when(unixFilesService.putUnixFileContent(path, fileContentWithETag, false)).thenReturn(eTag);
         when(unixFilesService.shouldUnixFileConvert(path)).thenReturn(false);
@@ -301,7 +301,7 @@ public class UnixFilesControllerTest extends ApiControllerTest {
                 .content(JsonUtils.convertToJsonString(fileContent.getContent())))
             .andExpect(status().isNoContent())
             .andExpect(content().string(""))
-            .andExpect(header().string("ETag", eTag));
+            .andExpect(header().string("ETag", "\"" + eTag + "\""));
 
         verify(unixFilesService, times(1)).putUnixFileContent(path, fileContentWithETag, false);
         verify(unixFilesService, times(1)).getUnixFileContentWithETag(path, false, false);
