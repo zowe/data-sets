@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.*;
 
 public class DataSetsPutContentIntegrationTest extends AbstractDataSetsIntegrationTest {
 
@@ -55,8 +55,8 @@ public class DataSetsPutContentIntegrationTest extends AbstractDataSetsIntegrati
 
     @Test
     public void testPutMemberContentWithoutIfMatchWorks() {
-        putDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14), new DataSetContent("junk\n")).then().log().all()
-            .statusCode(HttpStatus.SC_NO_CONTENT).header("Content-Encoding", "gzip");
+        putDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14), new DataSetContent("junk\n")).then()
+            .statusCode(HttpStatus.SC_NO_CONTENT).header("ETag", is(nullValue()));
         getDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14)).then().statusCode(HttpStatus.SC_OK)
             .body("records", equalTo("junk\n"));
     }
@@ -65,27 +65,27 @@ public class DataSetsPutContentIntegrationTest extends AbstractDataSetsIntegrati
     public void testPutMemberContentWithEtag() {
         String eTag = getDataSetContentWithEtag(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14)).then().extract().header("ETag");
 
-        putDataSetContentReturnEtag(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14), content, eTag).then().log().all()
+        putDataSetContentReturnEtag(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14), content, eTag).then()
             .statusCode(HttpStatus.SC_NO_CONTENT).header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
         getDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14)).then().statusCode(HttpStatus.SC_OK)
             .body("records", equalTo(jcl));
     }
 
     @Test
-    public void testPutMemberContentWithGzip() {
+    public void testPutMemberContentWithNoEtag() {
         String eTag = getDataSetContentWithEtag(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14)).then().extract().header("ETag");
 
-        putDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14), content, eTag).then().log().all()
+        putDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14), content, eTag).then()
                 .statusCode(HttpStatus.SC_NO_CONTENT)
-                .header("Content-Encoding", "gzip");
+                .header("ETag", is(nullValue()));
         getDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14)).then().statusCode(HttpStatus.SC_OK)
                 .body("records", equalTo(jcl));
     }
 
     @Test
     public void testPutSequentialDataSetContent() {
-        String eTag = getDataSetContent(TEMP_SDS).then().extract().header("ETag");
-        putDataSetContentReturnEtag(TEMP_SDS, content, eTag).then().log().all().statusCode(HttpStatus.SC_NO_CONTENT)
+        String eTag = getDataSetContentWithEtag(TEMP_SDS).then().extract().header("ETag");
+        putDataSetContentReturnEtag(TEMP_SDS, content, eTag).then().statusCode(HttpStatus.SC_NO_CONTENT)
                 .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
         getDataSetContent(TEMP_SDS).then().statusCode(HttpStatus.SC_OK).body("records", equalTo(jcl));
     }
