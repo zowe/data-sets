@@ -95,7 +95,7 @@ public class UnixFilesGetFileContentIntegrationTest extends AbstractUnixFilesInt
         ApiError expectedError = new UnauthorisedFileException(unauthorisedFile).getApiError();
         
         RestAssured.given().header(AUTH_HEADER).when().get(unauthorisedFile)
-            .then().statusCode(HttpStatus.SC_FORBIDDEN)
+            .then().statusCode(HttpStatus.SC_FORBIDDEN).header("Content-Encoding", "gzip")
             .body("message", equalTo(expectedError.getMessage()));
     }
     
@@ -105,7 +105,7 @@ public class UnixFilesGetFileContentIntegrationTest extends AbstractUnixFilesInt
         ApiError expectedError = new FileNotFoundException(invalidPath).getApiError();
         
         RestAssured.given().header(AUTH_HEADER).when().get(invalidPath)
-            .then().statusCode(HttpStatus.SC_NOT_FOUND).contentType(ContentType.JSON)
+            .then().statusCode(HttpStatus.SC_NOT_FOUND).header("Content-Encoding", "gzip").contentType(ContentType.JSON)
             .body("message", equalTo(expectedError.getMessage()));
     }
     

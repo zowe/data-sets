@@ -60,7 +60,7 @@ public class DataSetsGetContentIntegrationTest extends AbstractDataSetsIntegrati
 
         ApiError expectedError = expected.getApiError();
 
-        getDataSetContent(INVALID_DATASET_NAME).then().statusCode(expectedError.getStatus().value())
+        getDataSetContent(INVALID_DATASET_NAME).then().statusCode(expectedError.getStatus().value()).header("Content-Encoding", "gzip")
             .contentType(ContentType.JSON).body("status", equalTo(expectedError.getStatus().name()))
             .body("message", equalTo(expectedError.getMessage()));
     }
