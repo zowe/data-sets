@@ -78,7 +78,7 @@ public abstract class AbstractUnixFilesController {
 
         HttpHeaders headers = new HttpHeaders();
 
-        if (etagHeader != null && etagHeader.toLowerCase().equals("true")) {
+        if ("true".equalsIgnoreCase(etagHeader)) {
             headers.add("Access-Control-Expose-Headers", "ETag");
             headers.add("ETag", content.getETag());
         }
@@ -107,7 +107,7 @@ public abstract class AbstractUnixFilesController {
         String putETag = getUnixFileService().putUnixFileContent(fullPath, contentWithETag, convert);
 
         HttpHeaders headers = new HttpHeaders();
-        if (etagHeader != null && etagHeader.toLowerCase().equals("true")) {
+        if ("true".equalsIgnoreCase(etagHeader)) {
             headers.add("Access-Control-Expose-Headers", "ETag");
             headers.add("ETag", "\"" + putETag + "\"");
         }

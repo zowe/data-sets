@@ -62,7 +62,7 @@ public abstract class AbstractDataSetsController {
         DataSetContentWithEtag content = getDataSetService().getContent(dataSetName);
 
         HttpHeaders headers = new HttpHeaders();
-        if (etagHeader != null && etagHeader.toLowerCase().equals("true")) {
+        if ("true".equalsIgnoreCase(etagHeader)) {
             headers.add("Access-Control-Expose-Headers", "ETag");
             headers.add("ETag", content.getEtag());
         }
@@ -94,7 +94,7 @@ public abstract class AbstractDataSetsController {
         String putEtag = getDataSetService().putContent(dataSetName, request);
 
         HttpHeaders headers = new HttpHeaders();
-        if (etagHeader != null && etagHeader.toLowerCase().equals("true")) {
+        if ("true".equalsIgnoreCase(etagHeader)) {
             headers.add("Access-Control-Expose-Headers", "ETag");
             headers.add("ETag", "\"" + putEtag + "\"");
         }
