@@ -14,7 +14,7 @@ ext {
     junitVersion = "4.13.1"
     mapStructVersion = "1.2.0.Final"
     restAssuredVersion = "4.3.0"
-    explorerApiCommonVersion = "1.1.5"
+    explorerApiCommonVersion = "1.1.6-CARSON-BUMP-SPRING-SNAPSHOT"
 
     libraries = [
         lombok                             : "org.projectlombok:lombok:${lombokVersion}",
