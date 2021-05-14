@@ -29,8 +29,7 @@ buildscript {
     repositories mavenRepositories
 
     dependencies {
-        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.5'
-        classpath 'com.palantir:jacoco-coverage:0.4.0'
+        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7'
         classpath 'net.researchgate:gradle-release:2.6.0'
         classpath "gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:${licenseGradlePluginVerion}"
         classpath 'org.owasp:dependency-check-gradle:3.3.4'
@@ -38,7 +37,6 @@ buildscript {
     }
 }
 
-apply plugin: 'com.palantir.jacoco-full-report'
 apply from: 'gradle/publish.gradle'
 apply from: 'gradle/sonar.gradle'
 apply from: 'gradle/coverage.gradle'
@@ -73,7 +71,7 @@ subprojects {
     license {
         header rootProject.file('.license/LICENSE_HEADER')
         ext.year = Calendar.getInstance().get(Calendar.YEAR)
-        excludes(["**/*.yml", "**/*.json", "**/static", "**/*.sh", "**/*.txt", "**/*.p12", "**/*.xml", "**/*.jsp", "**/*.html", "**/*.jks"])
+        excludes(["**/*.yml", "**/*.yaml", "**/*.json", "**/static", "**/*.sh", "**/*.txt", "**/*.p12", "**/*.xml", "**/*.jsp", "**/*.html", "**/*.jks"])
         mapping {
             java = 'SLASHSTAR_STYLE'
         }
@@ -89,27 +87,6 @@ subprojects {
 configurations {
     all*.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
     all*.exclude group: 'com.fasterxml.jackson.module', module: 'jackson-module-kotlin'
-}
-
-task jacocoSubProjects() {
-    subprojects.findAll { it.name in javaProjectsWithUnitTests }.each { dependsOn("${it.name}:jacocoTestReport") }
-}
-
-jacocoTestReport {
-    dependsOn test
-    reports {
-        xml.enabled true
-        html.enabled true
-    }
-}
-
-task mergeCoverage() {
-    dependsOn test, jacocoFullReport
-}
-
-task coverage() {
-    mergeCoverage.mustRunAfter jacocoSubProjects
-    dependsOn mergeCoverage, jacocoSubProjects, jacocoTestReport
 }
 
 task publishAllVersions {

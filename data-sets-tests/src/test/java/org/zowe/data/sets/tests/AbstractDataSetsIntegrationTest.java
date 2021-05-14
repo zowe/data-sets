@@ -67,6 +67,11 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractFilesInteg
         return RestAssured.given().spec(requestSpecification).header(AUTH_HEADER).when().get(dataSetName + "/content");
     }
 
+    static Response getDataSetContentWithEtag(String dataSetName) {
+        RequestSpecification requestSpecification = new RequestSpecBuilder().setUrlEncodingEnabled(false).build();
+        return RestAssured.given().spec(requestSpecification).header(AUTH_HEADER).header("X-Return-Etag", "true").when().get(dataSetName + "/content");
+    }
+
     static Response putDataSetContent(String dataSetName, DataSetContent body) {
         RequestSpecification requestSpecification = new RequestSpecBuilder().setUrlEncodingEnabled(false).build();
         return RestAssured.given().spec(requestSpecification).header(AUTH_HEADER).contentType("application/json")
@@ -77,6 +82,13 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractFilesInteg
         RequestSpecification requestSpecification = new RequestSpecBuilder().setUrlEncodingEnabled(false).build();
         return RestAssured.given().spec(requestSpecification).contentType("application/json").body(body)
                 .header("If-Match", etag).header(AUTH_HEADER).when()
+                .put(dataSetName + "/content");
+    }
+
+    static Response putDataSetContentReturnEtag(String dataSetName, DataSetContent body, String etag) {
+        RequestSpecification requestSpecification = new RequestSpecBuilder().setUrlEncodingEnabled(false).build();
+        return RestAssured.given().spec(requestSpecification).contentType("application/json").body(body)
+                .header("If-Match", etag).header(AUTH_HEADER).header("X-Return-Etag", "true").when()
                 .put(dataSetName + "/content");
     }
 
@@ -110,5 +122,5 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractFilesInteg
     static String getDataSetMemberPath(String pds, String member) {
         return pds + "(" + member + ")";
     }
-    
+
 }
