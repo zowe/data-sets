@@ -23,44 +23,58 @@ import org.zowe.unix.files.model.UnixFileContent;
 
 import java.util.Base64;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.*;
 
 public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesIntegrationTest {
 
     @Test
-    public void testPutUnixFileContent() throws Exception {
+    public void testPutUnixFileContentWithEtag() {
         final UnixFileContent content = new UnixFileContent("New testable content \\n testPutUnixFileContent");
-        
-        RestAssured.given().header(AUTH_HEADER).contentType("application/json").body(content)
+
+        RestAssured.given().header(AUTH_HEADER).header("X-Return-Etag", "true").contentType("application/json").body(content)
             .when().put(TEST_DIRECTORY + "/editableFile")
             .then().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
-        
+
         RestAssured.given().header(AUTH_HEADER).when().get(TEST_DIRECTORY + "/editableFile")
             .then().statusCode(HttpStatus.SC_OK)
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(content.getContent()));
     }
-    
+
     @Test
-    public void testPutUnixFileContentFileNotFound() throws Exception {
+    public void testPutUnixFileContentWithNoEtag() {
+        final UnixFileContent content = new UnixFileContent("New testable content \\n testPutUnixFileContent");
+
+        RestAssured.given().header(AUTH_HEADER).contentType("application/json").body(content)
+                .when().put(TEST_DIRECTORY + "/editableFile")
+                .then().statusCode(HttpStatus.SC_NO_CONTENT)
+                .header("ETag", is(nullValue()));
+
+        RestAssured.given().header(AUTH_HEADER).when().get(TEST_DIRECTORY + "/editableFile")
+                .then().statusCode(HttpStatus.SC_OK)
+                .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(content.getContent()));
+    }
+
+    @Test
+    public void testPutUnixFileContentFileNotFound() {
         String path = TEST_DIRECTORY + "/randomName";
         ApiError expectedError = new FileNotFoundException(path).getApiError();
-        
+
         testPutUnixFileWithError(path, expectedError, false);
     }
-    
+
     @Test
-    public void testPutUnixFileContentUnauthorised() throws Exception {
+    public void testPutUnixFileContentUnauthorised() {
         String path = TEST_DIRECTORY + "/fileWithoutAccess";
         ApiError expectedError = new UnauthorisedFileException(path).getApiError();
-        
+
         testPutUnixFileWithError(path, expectedError, false);
-        
+
     }
-    
+
     private void testPutUnixFileWithError(String path, ApiError expectedError, boolean ifMatch) {
         final UnixFileContent content = new UnixFileContent("New testable content");
-        
+
         if (ifMatch) {
             RestAssured.given().header("If-Match", "wrong").header(AUTH_HEADER)
                 .contentType("application/json").body(content).when().put(path)
@@ -73,90 +87,91 @@ public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesInt
                 .body("message", equalTo(expectedError.getMessage()));
         }
     }
-    
+
     @Test
-    public void testPutUnixFileContentWithCorrectIfMatch() throws Exception {
+    public void testPutUnixFileContentWithCorrectIfMatch() {
         final UnixFileContent content = new UnixFileContent("New testable content \\n testPutUnixFileContentWithCorrectIfMatch");
-        
-        String eTag = RestAssured.given().header(AUTH_HEADER).when().get(TEST_DIRECTORY + "/editableFile")
+
+        String eTag = RestAssured.given().header(AUTH_HEADER).header("X-Return-Etag", "true").when().get(TEST_DIRECTORY + "/editableFile")
             .then().statusCode(HttpStatus.SC_OK)
             .extract().header("ETag");
-        
-        RestAssured.given().header("If-Match", eTag).header(AUTH_HEADER)
+
+        RestAssured.given().header("If-Match", eTag).header(AUTH_HEADER).header("X-Return-Etag", "true")
             .contentType("application/json").body(content).when().put(TEST_DIRECTORY + "/editableFile")
             .then().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
-        
+
         RestAssured.given().header(AUTH_HEADER).when().get(TEST_DIRECTORY + "/editableFile")
             .then().statusCode(HttpStatus.SC_OK)
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(content.getContent()));
     }
-    
+
     @Test
-    public void testPutUnixFileContentWithWrongIfMatch() throws Exception {
+    public void testPutUnixFileContentWithWrongIfMatch() {
         String path = TEST_DIRECTORY + "/editableFile";
         ApiError expectedError = new PreconditionFailedException(path).getApiError();
-        
+
         testPutUnixFileWithError(path, expectedError, true);
     }
-    
+
     @Test
-    public void testPutUnixFileContentWithConvertTrueAndAsciiFile() throws Exception {
+    public void testPutUnixFileContentWithConvertTrueAndAsciiFile() {
         final String fileContent = "New testable content \\n testPutUnixFileContentWithConvertTrueAndAsciiFile";
         final UnixFileContent content = new UnixFileContent(fileContent);
-        
+
         RestAssured.given().contentType("application/json").body(content).header("Convert", true).header(AUTH_HEADER)
+            .header("X-Return-Etag", "true")
             .when().put(TEST_DIRECTORY + "/editableAsciiTaggedFile")
             .then().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
-        
+
         final String encodedFileContent = Base64.getEncoder().encodeToString(fileContent.getBytes());
         RestAssured.given().header("Convert", true).header(AUTH_HEADER).when().get(TEST_DIRECTORY + "/editableAsciiTaggedFile")
             .then().statusCode(HttpStatus.SC_OK)
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(encodedFileContent));
     }
-    
+
     @Test
-    public void testPutUnixFileContentWithConvertNullAndAsciiFile() throws Exception {
+    public void testPutUnixFileContentWithConvertNullAndAsciiFile() {
         final String fileContent = "New testable content \\n testPutUnixFileContentWithConvertTrueAndAsciiFile";
         final UnixFileContent content = new UnixFileContent(fileContent);
-    
-        RestAssured.given().header(AUTH_HEADER).contentType("application/json").body(content)
+
+        RestAssured.given().header(AUTH_HEADER).header("X-Return-Etag", "true").contentType("application/json").body(content)
             .when().put(TEST_DIRECTORY + "/editableAsciiTaggedFile")
             .then().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
-      
+
         final String encodedFileContent = Base64.getEncoder().encodeToString(fileContent.getBytes());
         RestAssured.given().header("Convert", true).header(AUTH_HEADER).when().get(TEST_DIRECTORY + "/editableAsciiTaggedFile")
             .then().statusCode(HttpStatus.SC_OK)
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(encodedFileContent));
     }
-    
+
     @Test
-    public void testPutUnixFileContentWithConvertFalseAndEbcdicFile() throws Exception {
+    public void testPutUnixFileContentWithConvertFalseAndEbcdicFile() {
         final UnixFileContent content = new UnixFileContent("New testable content \\n testPutUnixFileContentWithConvertFalseAndEbcdicFile");
-        
-        RestAssured.given().header("Convert", false).header(AUTH_HEADER)
+
+        RestAssured.given().header("Convert", false).header(AUTH_HEADER).header("X-Return-Etag", "true")
             .contentType("application/json").body(content).when().put(TEST_DIRECTORY + "/editableEbcdicTaggedFile")
             .then().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
-        
+
         RestAssured.given().header(AUTH_HEADER).when().get(TEST_DIRECTORY + "/editableEbcdicTaggedFile")
             .then().statusCode(HttpStatus.SC_OK)
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(content.getContent()));
     }
 
     @Test
-    public void testPutUnixFileContentWithConvertNullAndEbcdicFile() throws Exception {
+    public void testPutUnixFileContentWithConvertNullAndEbcdicFile() {
         final UnixFileContent content = new UnixFileContent("New testable content \\n testPutUnixFileContentWithConvertNullAndEbcdicFile");
-        
-        RestAssured.given().header(AUTH_HEADER).contentType("application/json").body(content)
+
+        RestAssured.given().header(AUTH_HEADER).header("X-Return-Etag", "true").contentType("application/json").body(content)
             .when().put(TEST_DIRECTORY + "/editableEbcdicTaggedFile")
             .then().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
-        
+
         RestAssured.given().header(AUTH_HEADER).when().get(TEST_DIRECTORY + "/editableEbcdicTaggedFile")
             .then().statusCode(HttpStatus.SC_OK)
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(content.getContent()));
-    }    
+    }
 }

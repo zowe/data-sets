@@ -65,7 +65,7 @@ public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractUnixFil
         ApiError expectedError = new UnauthorisedDirectoryException(testDirectoryPath).getApiError();
         
         RestAssured.given().header(AUTH_HEADER).when().get("?path=" + testDirectoryPath).then()
-            .statusCode(HttpStatus.SC_FORBIDDEN).contentType(ContentType.JSON)
+            .statusCode(HttpStatus.SC_FORBIDDEN).header("Content-Encoding", "gzip").contentType(ContentType.JSON)
             .body("message", equalTo(expectedError.getMessage()));
     }
     
@@ -76,7 +76,7 @@ public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractUnixFil
         ApiError expectedError = expected.getApiError();
         
         RestAssured.given().header(AUTH_HEADER).when().get("?path=" + invalidPath).then()
-            .statusCode(HttpStatus.SC_BAD_REQUEST).contentType(ContentType.JSON)
+            .statusCode(HttpStatus.SC_BAD_REQUEST).header("Content-Encoding", "gzip").contentType(ContentType.JSON)
             .body("message", equalTo(expectedError.getMessage()));
     }
 }

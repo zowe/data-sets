@@ -36,7 +36,6 @@ _BPX_JOBNAME=${ZOWE_PREFIX}${COMPONENT_CODE} java \
   -Dserver.ssl.keyStoreType=${KEYSTORE_TYPE} \
   -Dserver.connection-timeout=8000 \
   -Dcom.ibm.jsse2.overrideDefaultTLS=true \
-  -Dserver.compression.enabled=true \
   -Dconnection.httpsPort=${GATEWAY_PORT} \
   -Dconnection.ipAddress=${ZOWE_EXPLORER_HOST} \
   -Dspring.main.banner-mode=off \

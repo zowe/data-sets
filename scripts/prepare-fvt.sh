@@ -269,7 +269,6 @@ java -Xms16m -Xmx512m \
     -Dserver.ssl.keyStore=${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}/localhost.keystore.p12 \
     -Dserver.ssl.keyStorePassword=password \
     -Dserver.ssl.keyStoreType=PKCS12 \
-    -Dserver.compression.enabled=true \
     -Dconnection.httpsPort=${FVT_GATEWAY_PORT} \
     -Dconnection.ipAddress=localhost \
     -Dspring.main.banner-mode=off \

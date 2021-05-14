@@ -39,7 +39,7 @@ public class DataSetsGetMembersIntegrationTest extends AbstractDataSetsIntegrati
 
     @Test
     public void testGetValidDatasetMembers() throws Exception {
-        getMembers(TEST_PDS).then().statusCode(HttpStatus.SC_OK).body("items", hasItems("MEMBER1", "MEMBER2"));
+        getMembers(TEST_PDS).then().statusCode(HttpStatus.SC_OK).header("Content-Encoding", "gzip").body("items", hasItems("MEMBER1", "MEMBER2"));
     }
 
     @Test
@@ -48,7 +48,7 @@ public class DataSetsGetMembersIntegrationTest extends AbstractDataSetsIntegrati
 
         ApiError expectedError = expected.getApiError();
 
-        getMembers(INVALID_DATASET_NAME).then().statusCode(expectedError.getStatus().value())
+        getMembers(INVALID_DATASET_NAME).then().statusCode(expectedError.getStatus().value()).header("Content-Encoding", "gzip")
             .contentType(ContentType.JSON).body("status", equalTo(expectedError.getStatus().name()))
             .body("message", equalTo(expectedError.getMessage()));
     }

@@ -47,7 +47,7 @@ public class DataSetsGetIntegrationTest extends AbstractDataSetsIntegrationTest 
                     .recordLength(pdsRequest.getRecordLength()).allocationUnit(pdsRequest.getAllocationUnit())
                     .recordFormat(pdsRequest.getRecordFormat()).allocatedSize(10).used(10).build();
 
-            List<DataSetAttributes> actual = getDataSetsDetails(TEMP_DATA_SET).then().statusCode(HttpStatus.SC_OK).extract()
+            List<DataSetAttributes> actual = getDataSetsDetails(TEMP_DATA_SET).then().statusCode(HttpStatus.SC_OK).header("Content-Encoding", "gzip").extract()
                     .body().jsonPath().getList("items", DataSetAttributes.class);
             // We can't tell the value of some attributes
             for (DataSetAttributes dataSetAttributes : actual) {
@@ -69,7 +69,7 @@ public class DataSetsGetIntegrationTest extends AbstractDataSetsIntegrationTest 
         try {
             DataSet expected = DataSet.builder().name(TEMP_DATA_SET).migrated(false).build();
 
-            List<DataSet> actual = getDataSets(TEMP_DATA_SET).then().statusCode(HttpStatus.SC_OK).extract()
+            List<DataSet> actual = getDataSets(TEMP_DATA_SET).then().statusCode(HttpStatus.SC_OK).header("Content-Encoding", "gzip").extract()
                     .body().jsonPath().getList("items", DataSet.class);
             assertThat(actual, hasItem(expected));
         } finally {
@@ -81,12 +81,12 @@ public class DataSetsGetIntegrationTest extends AbstractDataSetsIntegrationTest 
 
     @Test
     public void testGetInvalidDataSets() throws Exception {
-        getDataSets(INVALID_DATASET_NAME).then().statusCode(HttpStatus.SC_OK).body("items", IsEmptyCollection.empty());
+        getDataSets(INVALID_DATASET_NAME).then().statusCode(HttpStatus.SC_OK).header("Content-Encoding", "gzip").body("items", IsEmptyCollection.empty());
     }
 
     @Test
     public void testGetInvalidDataSetAttributes() throws Exception {
-        getDataSetsDetails(INVALID_DATASET_NAME).then().statusCode(HttpStatus.SC_OK).body("items", IsEmptyCollection.empty());
+        getDataSetsDetails(INVALID_DATASET_NAME).then().statusCode(HttpStatus.SC_OK).header("Content-Encoding", "gzip").body("items", IsEmptyCollection.empty());
     }
 
     @Test
