@@ -7,7 +7,7 @@
 #
 # SPDX-License-Identifier: EPL-2.0
 #
-# Copyright IBM Corporation 2018, 2020
+# Copyright IBM Corporation 2018, 2021
 ################################################################################
 
 # Variables required on shell:
@@ -21,23 +21,34 @@
 # - GATEWAY_PORT - The SSL port z/OSMF is listening on.
 # - ZOWE_EXPLORER_HOST - The IP Address z/OSMF can be reached
 
+
+if [ -z "${LAUNCH_COMPONENT}" ]; then
+  # component should be started from component home directory
+  LAUNCH_COMPONENT=$(pwd)/bin
+fi
+
 JAR_FILE=$(ls -1 ${LAUNCH_COMPONENT}/data-sets-api-server-*.jar | head -n 1)
+
+options="-Xms16m -Xmx512m"
+if [ `uname` = "OS/390" ]; then
+  options="${options} -Xquickstart"
+fi
 
 COMPONENT_CODE=EF
 _BPX_JOBNAME=${ZOWE_PREFIX}${COMPONENT_CODE} java \
-  -Xms16m -Xmx512m \
+  ${options} \
   -Dibm.serversocket.recover=true \
   -Dfile.encoding=UTF-8 \
   -Djava.io.tmpdir=/tmp -Xquickstart \
-  -Dserver.port=${FILES_API_PORT} \
+  -Dserver.port=${FILES_API_PORT:-8547} \
   -Dserver.ssl.keyAlias="${KEY_ALIAS}" \
   -Dserver.ssl.keyStore="${KEYSTORE}" \
   -Dserver.ssl.keyStorePassword="${KEYSTORE_PASSWORD}" \
-  -Dserver.ssl.keyStoreType=${KEYSTORE_TYPE} \
+  -Dserver.ssl.keyStoreType=${KEYSTORE_TYPE:-PKCS12} \
   -Dserver.connection-timeout=8000 \
   -Dcom.ibm.jsse2.overrideDefaultTLS=true \
   -Dconnection.httpsPort=${GATEWAY_PORT} \
-  -Dconnection.ipAddress=${ZOWE_EXPLORER_HOST} \
+  -Dconnection.ipAddress=${ZOWE_EXPLORER_HOST:-localhost} \
   -Dspring.main.banner-mode=off \
   -Djava.protocol.handler.pkgs=com.ibm.crypto.provider \
-  -jar "${JAR_FILE}" &
+  -jar "${JAR_FILE}"
