@@ -39,7 +39,7 @@ _BPX_JOBNAME=${ZOWE_PREFIX}${COMPONENT_CODE} java \
   ${options} \
   -Dibm.serversocket.recover=true \
   -Dfile.encoding=UTF-8 \
-  -Djava.io.tmpdir=/tmp \
+  -Djava.io.tmpdir=${TMPDIR:-${TMP:-/tmp}} \
   -Dserver.port=${FILES_API_PORT:-8547} \
   -Dserver.ssl.keyAlias="${KEY_ALIAS}" \
   -Dserver.ssl.keyStore="${KEYSTORE}" \
