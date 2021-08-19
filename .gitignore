@@ -20,7 +20,7 @@ gradle/wrapper/gradle-wrapper.jar
 
 ### VSCODE ###
 .metadata
-.vscode
+.vscode/
 
 ### IntelliJ IDEA ###
 .idea

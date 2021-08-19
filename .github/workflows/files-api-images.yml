@@ -22,7 +22,7 @@ jobs:
           distribution: 'adopt'
           java-version: '8'
 
-      - uses: zowe-actions/shared-actions/envvars-global@main
+      - uses: zowe-actions/shared-actions/prepare-workflow@main
 
       - uses: zowe-actions/shared-actions/docker-prepare@main
         with:
@@ -49,7 +49,7 @@ jobs:
           distribution: 'adopt'
           java-version: '8'
 
-      - uses: zowe-actions/shared-actions/envvars-global@main
+      - uses: zowe-actions/shared-actions/prepare-workflow@main
 
       - uses: zowe-actions/shared-actions/docker-prepare@main
         with:
@@ -83,7 +83,7 @@ jobs:
           distribution: 'adopt'
           java-version: '8'
 
-      - uses: zowe-actions/shared-actions/envvars-global@main
+      - uses: zowe-actions/shared-actions/prepare-workflow@main
 
       - uses: zowe-actions/shared-actions/docker-prepare@main
         with:
@@ -98,7 +98,6 @@ jobs:
         with:
           linux-distro: ubuntu
           cpu-arch-list: "amd64 s390x"
-          extra-manifests: "latest {major} {major}.{minor} {major}.{minor}.{patch} latest-ubuntu {major}-ubuntu {major}.{minor}-ubuntu"
         timeout-minutes: 2
 
   build-ubi-amd64:
@@ -111,7 +110,7 @@ jobs:
           distribution: 'adopt'
           java-version: '8'
 
-      - uses: zowe-actions/shared-actions/envvars-global@main
+      - uses: zowe-actions/shared-actions/prepare-workflow@main
 
       - uses: zowe-actions/shared-actions/docker-prepare@main
         with:
@@ -141,7 +140,7 @@ jobs:
           distribution: 'adopt'
           java-version: '8'
 
-      - uses: zowe-actions/shared-actions/envvars-global@main
+      - uses: zowe-actions/shared-actions/prepare-workflow@main
 
       - uses: zowe-actions/shared-actions/docker-prepare@main
         with:
@@ -178,7 +177,7 @@ jobs:
           distribution: 'adopt'
           java-version: '8'
 
-      - uses: zowe-actions/shared-actions/envvars-global@main
+      - uses: zowe-actions/shared-actions/prepare-workflow@main
 
       - uses: zowe-actions/shared-actions/docker-prepare@main
         with:
@@ -193,5 +192,4 @@ jobs:
         with:
           linux-distro: ubi
           cpu-arch-list: "amd64 s390x"
-          extra-manifests: "latest-ubi {major}-ubi {major}.{minor}-ubi"
         timeout-minutes: 2
