@@ -3,6 +3,10 @@ dependencies {
     compile libraries.spring_boot_starter_actuator
     compile libraries.spring_boot_starter_parent
     compile libraries.spring_boot_starter_security
+    compile libraries.spring_security_config
+    compile libraries.spring_security_core
+    compile libraries.spring_security_crypto
+    compile libraries.spring_security_web
     compile libraries.spring_boot_starter_web
     compile libraries.http_core
     compile libraries.http_client

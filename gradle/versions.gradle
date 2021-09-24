@@ -1,6 +1,7 @@
 ext {
 //TODO MARK - shouldn't this inherit from parent?
-    springBootVersion = '2.4.11'
+    springBootVersion = '2.3.12.RELEASE'
+    springSecurityVersion = '5.3.11.RELEASE'
     springFoxVersion = '3.0.0'
     lombokVersion = '1.16.20'
     mockitoCoreVersion = '2.23.4'
@@ -28,6 +29,11 @@ ext {
         spring_boot_starter_security       : "org.springframework.boot:spring-boot-starter-security:${springBootVersion}",
         spring_boot_starter_web            : "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
         spring_boot_starter_test           : "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
+
+        spring_security_config             : "org.springframework.security:spring-security-config:${springSecurityVersion}",
+        spring_security_core               : "org.springframework.security:spring-security-core:${springSecurityVersion}",
+        spring_security_crypto             : "org.springframework.security:spring-security-crypto:${springSecurityVersion}",
+        spring_security_web                : "org.springframework.security:spring-security-web:${springSecurityVersion}",
 
         commons_codec                      : "commons-codec:commons-codec:${commonsCodecVersion}",
         json_path                          : "com.jayway.jsonpath:json-path:${jsonPathVersion}",
