@@ -48,7 +48,7 @@ _BPX_JOBNAME=${ZOWE_PREFIX}${COMPONENT_CODE} java \
   -Dserver.connection-timeout=8000 \
   -Dcom.ibm.jsse2.overrideDefaultTLS=true \
   -Dconnection.httpsPort=${GATEWAY_PORT} \
-  -Dconnection.ipAddress=${ZOWE_EXPLORER_HOST:-localhost} \
+  -Dconnection.ipAddress=${GATEWAY_HOST:-${ZOWE_EXPLORER_HOST:-localhost}} \
   -Dspring.main.banner-mode=off \
   -Djava.protocol.handler.pkgs=com.ibm.crypto.provider \
   -jar "${JAR_FILE}"
