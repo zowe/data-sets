@@ -10,6 +10,9 @@
 package org.zowe.unix.files.tests;
 
 import io.restassured.RestAssured;
+import io.restassured.response.Response;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.text.IsEqualIgnoringWhiteSpace;
@@ -25,6 +28,7 @@ import java.util.Base64;
 
 import static org.hamcrest.CoreMatchers.*;
 
+@Slf4j
 public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesIntegrationTest {
 
     @Test
@@ -136,9 +140,13 @@ public class UnixFilesPutFileContentIntegrationTest extends AbstractUnixFilesInt
         final String fileContent = "New testable content \\n testPutUnixFileContentWithConvertTrueAndAsciiFile";
         final UnixFileContent content = new UnixFileContent(fileContent);
 
-        RestAssured.given().header(AUTH_HEADER).header("X-Return-Etag", "true").contentType("application/json").body(content)
-            .when().put(TEST_DIRECTORY + "/editableAsciiTaggedFile")
-            .then().statusCode(HttpStatus.SC_NO_CONTENT)
+        Response r = RestAssured.given().header(AUTH_HEADER).header("X-Return-Etag", "true").contentType("application/json").body(content)
+            .when().put(TEST_DIRECTORY + "/editableAsciiTaggedFile");
+
+        log.info("testDeleteUnixFileContent response");
+        log.info(r.getStatusCode() + " " + r.getBody().prettyPrint());
+
+        r.then().statusCode(HttpStatus.SC_NO_CONTENT)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
 
         final String encodedFileContent = Base64.getEncoder().encodeToString(fileContent.getBytes());

@@ -14,6 +14,8 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.http.HttpStatus;
 import org.junit.BeforeClass;
 import org.zowe.data.sets.model.AllocationUnitType;
@@ -22,6 +24,7 @@ import org.zowe.data.sets.model.DataSetCreateRequest;
 import org.zowe.data.sets.model.DataSetOrganisationType;
 import org.zowe.tests.AbstractFilesIntegrationTest;
 
+@Slf4j
 public abstract class AbstractDataSetsIntegrationTest extends AbstractFilesIntegrationTest {
 
     static final String DATASETS_ROOT_ENDPOINT = "datasets";
@@ -59,7 +62,11 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractFilesInteg
     }
 
     static Response createDataSet(DataSetCreateRequest attributes) {
-        return RestAssured.given().header(AUTH_HEADER).contentType("application/json").body(attributes).when().post();
+        Response r = RestAssured.given().header(AUTH_HEADER).contentType("application/json").body(attributes).when().post();
+        log.info("createDataSet call");
+        log.info(attributes.toString());
+        log.info(r.getStatusCode() + " " + r.getBody().prettyPrint());
+        return r;
     }
 
     static Response getDataSetContent(String dataSetName) {

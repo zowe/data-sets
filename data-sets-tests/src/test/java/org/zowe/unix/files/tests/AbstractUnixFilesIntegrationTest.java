@@ -10,6 +10,9 @@
 package org.zowe.unix.files.tests;
 
 import io.restassured.RestAssured;
+import io.restassured.response.Response;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.http.HttpStatus;
 import org.junit.BeforeClass;
@@ -26,6 +29,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+@Slf4j
 public class AbstractUnixFilesIntegrationTest extends AbstractFilesIntegrationTest {
 
     static final String UNIX_FILES_ENDPOINT = "unixfiles";
@@ -37,10 +41,14 @@ public class AbstractUnixFilesIntegrationTest extends AbstractFilesIntegrationTe
     }
 
     public static void testGetDirectory(String directoryPath, UnixDirectoryChild[] expectedChildren) throws Exception {
-        UnixDirectoryAttributesWithChildren response = RestAssured.given().header(AUTH_HEADER)
-                .when().get("?path=" + directoryPath).then()
-                .statusCode(HttpStatus.SC_OK).header("Content-Encoding", "gzip").extract().body().as(UnixDirectoryAttributesWithChildren.class);
+        Response r = RestAssured.given().header(AUTH_HEADER)
+                .when().get("?path=" + directoryPath);
 
+        log.info("testGetDirectory response");
+        log.info(r.getStatusCode() + " " + r.getBody().prettyPrint());
+
+        UnixDirectoryAttributesWithChildren response = r.then()
+                .statusCode(HttpStatus.SC_OK).header("Content-Encoding", "gzip").extract().body().as(UnixDirectoryAttributesWithChildren.class);
         validateDirectory(response, expectedChildren);
     }
 

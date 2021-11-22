@@ -9,6 +9,8 @@
  */
 package org.zowe.data.sets.tests;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpStatus;
 import org.junit.AfterClass;
@@ -22,6 +24,7 @@ import org.zowe.data.sets.model.DataSetCreateRequest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
+@Slf4j
 public class DataSetsDeleteIntegrationTests extends AbstractDataSetsIntegrationTest {
 
     private static final String TEST_PDS = HLQ + ".A" + RandomStringUtils.randomAlphanumeric(7);
@@ -74,7 +77,7 @@ public class DataSetsDeleteIntegrationTests extends AbstractDataSetsIntegrationT
 
     @Test
     public void testDeleteDatasetsInvalidDataset() throws Exception {
-        System.out.println("testDeleteDatasetsInvalidDataset");
+        log.info("testDeleteDatasetsInvalidDataset");
         ZoweApiRestException expected = new DataSetNotFoundException(INVALID_DATASET_NAME);
         ApiError expectedError = expected.getApiError();
 

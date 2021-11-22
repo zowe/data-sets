@@ -11,6 +11,9 @@ package org.zowe.unix.files.tests;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.text.IsEqualIgnoringWhiteSpace;
@@ -24,6 +27,7 @@ import java.util.Base64;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
+@Slf4j
 public class UnixFilesGetFileContentIntegrationTest extends AbstractUnixFilesIntegrationTest {
     
     private final String multiLineTestString = "Hello world\nhello world on new line.\n";
@@ -57,9 +61,13 @@ public class UnixFilesGetFileContentIntegrationTest extends AbstractUnixFilesInt
     @Test
     public void testGetUnixFileContentBinaryWithConvertTrue() {
         String binary255ToBase64 = "AAAA/w==";
-        RestAssured.given().header("Convert", true).header(AUTH_HEADER).header("X-Return-Etag", "true")
-            .when().get(TEST_DIRECTORY + "/binaryExample/file.bin")
-            .then().statusCode(HttpStatus.SC_OK)
+        Response r = RestAssured.given().header("Convert", true).header(AUTH_HEADER).header("X-Return-Etag", "true")
+            .when().get(TEST_DIRECTORY + "/binaryExample/file.bin");
+
+        log.info("testDeleteUnixFileContent response");
+        log.info(r.getStatusCode() + " " + r.getBody().prettyPrint());
+
+        r.then().statusCode(HttpStatus.SC_OK)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(binary255ToBase64));
     }
@@ -94,8 +102,12 @@ public class UnixFilesGetFileContentIntegrationTest extends AbstractUnixFilesInt
         String unauthorisedFile = TEST_DIRECTORY + "/fileWithoutAccess";
         ApiError expectedError = new UnauthorisedFileException(unauthorisedFile).getApiError();
         
-        RestAssured.given().header(AUTH_HEADER).when().get(unauthorisedFile)
-            .then().statusCode(HttpStatus.SC_FORBIDDEN).header("Content-Encoding", "gzip")
+        Response r = RestAssured.given().header(AUTH_HEADER).when().get(unauthorisedFile);
+
+        log.info("testDeleteUnixFileContent response");
+        log.info(r.getStatusCode() + " " + r.getBody().prettyPrint());
+
+        r.then().statusCode(HttpStatus.SC_FORBIDDEN).header("Content-Encoding", "gzip")
             .body("message", equalTo(expectedError.getMessage()));
     }
     

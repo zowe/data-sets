@@ -11,6 +11,9 @@ package org.zowe.unix.files.tests;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.http.HttpStatus;
 import org.junit.Test;
@@ -23,13 +26,19 @@ import org.zowe.unix.files.model.UnixEntityType;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
+@Slf4j
 public class UnixFilesDeleteFileIntegrationTest extends AbstractUnixFilesIntegrationTest {
 
     @Test
     public void testDeleteUnixFileContent() throws Exception {
         final String fvtDeleteFile = TEST_DIRECTORY + "/deleteTestDirectoryAccess/deleteFileWithWritePermission";
 
-        RestAssured.given().header(AUTH_HEADER).when().delete(fvtDeleteFile).then().statusCode(HttpStatus.SC_NO_CONTENT);
+        Response r = RestAssured.given().header(AUTH_HEADER).when().delete(fvtDeleteFile);
+
+        log.info("testDeleteUnixFileContent response");
+        log.info(r.getStatusCode() + " " + r.getBody().prettyPrint());
+
+        r.then().statusCode(HttpStatus.SC_NO_CONTENT);
         
         ApiError expectedError = new FileNotFoundException(fvtDeleteFile).getApiError();
         

@@ -13,6 +13,8 @@ package org.zowe.data.sets.tests;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpStatus;
 import org.junit.After;
@@ -30,6 +32,7 @@ import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 
+@Slf4j
 public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationTest {
 
     // TODO - use junit 5 and nest the cleanup?
@@ -83,7 +86,7 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
         cleanUp = testDataSet;
         // Add debug
         Response response = createDataSet(sdsRequest);
-        System.out.println(response.asString());
+        log.info(response.asString());
         response.then().statusCode(HttpStatus.SC_CREATED)
             .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + testDataSet)).body(equalTo(""));
 
