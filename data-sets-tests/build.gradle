@@ -30,6 +30,9 @@ dependencies {
     compile libraries.springFox
     compile libraries.springFoxSwagger2
     compile libraries.springFoxSwaggerUI
+	compile libraries.tomcat_annotations_api
+	compile libraries.tomcat_embed_core
+	compile libraries.tomcat_embed_websocket
     compile libraries.lombok
     compile libraries.explorer_api_common
 	compile libraries.restAssured
