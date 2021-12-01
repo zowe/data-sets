@@ -44,8 +44,7 @@ public class AbstractUnixFilesIntegrationTest extends AbstractFilesIntegrationTe
         Response r = RestAssured.given().header(AUTH_HEADER)
                 .when().get("?path=" + directoryPath);
 
-        log.info("testGetDirectory response");
-        log.info(r.getStatusCode() + " " + r.getBody().prettyPrint());
+        log.info("testGetDirectory response: {}: {}", r.getStatusCode(), r.getBody().prettyPrint());
 
         UnixDirectoryAttributesWithChildren response = r.then()
                 .statusCode(HttpStatus.SC_OK).header("Content-Encoding", "gzip").extract().body().as(UnixDirectoryAttributesWithChildren.class);

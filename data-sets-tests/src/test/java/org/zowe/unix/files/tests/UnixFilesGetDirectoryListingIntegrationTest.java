@@ -12,6 +12,8 @@ package org.zowe.unix.files.tests;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
+import io.restassured.response.Response;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.junit.Test;
 import org.zowe.api.common.errors.ApiError;
@@ -23,6 +25,7 @@ import org.zowe.unix.files.model.UnixEntityType;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
+@Slf4j
 public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractUnixFilesIntegrationTest {
  
     @Test
@@ -55,7 +58,7 @@ public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractUnixFil
     @Test
     public void testGetDirectoryListingWithNoDirectoryChildren() throws Exception {
         final String directoryPath = TEST_DIRECTORY + "/directoryWithAccess/directoryInDirectoryWithAccess"; 
-        
+        log.info("testGetDirectoryListingWithNoDirectoryChildren test");
         testGetDirectory(directoryPath, new UnixDirectoryChild[0]);
     }
 
@@ -63,14 +66,17 @@ public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractUnixFil
     public void testGetDirectoryListingWithoutPermission() {
         final String testDirectoryPath = TEST_DIRECTORY + "/directoryWithoutAccess";
         ApiError expectedError = new UnauthorisedDirectoryException(testDirectoryPath).getApiError();
+        Response r = RestAssured.given().header(AUTH_HEADER).when().get("?path=" + testDirectoryPath);
+
+        log.info("testGetDirectoryListingWithoutPermission response: {}: {}", r.getStatusCode(), r.getBody().prettyPrint());
         
-        RestAssured.given().header(AUTH_HEADER).when().get("?path=" + testDirectoryPath).then()
+        r.then()
             .statusCode(HttpStatus.SC_FORBIDDEN).header("Content-Encoding", "gzip").contentType(ContentType.JSON)
             .body("message", equalTo(expectedError.getMessage()));
     }
     
     @Test
-    public void testGetDirectoryListingWithInvlaidPath() {
+    public void testGetDirectoryListingWithInvalidPath() {
         String invalidPath = "//";
         ZoweApiRestException expected = new PathNameNotValidException(invalidPath);
         ApiError expectedError = expected.getApiError();

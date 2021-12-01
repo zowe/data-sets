@@ -64,9 +64,6 @@ public class UnixFilesGetFileContentIntegrationTest extends AbstractUnixFilesInt
         Response r = RestAssured.given().header("Convert", true).header(AUTH_HEADER).header("X-Return-Etag", "true")
             .when().get(TEST_DIRECTORY + "/binaryExample/file.bin");
 
-        log.info("testDeleteUnixFileContent response");
-        log.info(r.getStatusCode() + " " + r.getBody().prettyPrint());
-
         r.then().statusCode(HttpStatus.SC_OK)
             .header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX))
             .body("content", IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace(binary255ToBase64));
@@ -98,14 +95,13 @@ public class UnixFilesGetFileContentIntegrationTest extends AbstractUnixFilesInt
     }
     
     @Test
-    public void testGetUnifFileContentUnauthorised() {
+    public void testGetUnixFileContentUnauthorised() {
         String unauthorisedFile = TEST_DIRECTORY + "/fileWithoutAccess";
         ApiError expectedError = new UnauthorisedFileException(unauthorisedFile).getApiError();
         
         Response r = RestAssured.given().header(AUTH_HEADER).when().get(unauthorisedFile);
 
-        log.info("testDeleteUnixFileContent response");
-        log.info(r.getStatusCode() + " " + r.getBody().prettyPrint());
+        log.info("testGetUnixFileContentUnauthorized response: {}: {}", r.getStatusCode(), r.getBody().prettyPrint());
 
         r.then().statusCode(HttpStatus.SC_FORBIDDEN).header("Content-Encoding", "gzip")
             .body("message", equalTo(expectedError.getMessage()));

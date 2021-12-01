@@ -13,6 +13,7 @@ import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.junit.Test;
 import org.springframework.http.MediaType;
@@ -24,6 +25,7 @@ import org.zowe.unix.files.model.UnixEntityType;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 
+@Slf4j
 public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegrationTest {
     
     @Test
@@ -37,6 +39,7 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
     @Test
     public void testCreateUnixDirectoryUnspecifiedPermissions() throws Exception {
         String path = TEST_DIRECTORY + "/createdDirectoryUnspecifiedPerms";
+        log.info("testCreateUnixDirectoryUnspecifiedPermissions test");
         unixAssetCreateTest(path, UnixEntityType.DIRECTORY);
         
         unixAssetCheckCreatedTest(path);
@@ -73,9 +76,10 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
     private void unixAssetCreateTest(String path, UnixEntityType entityType, String permissions) {
         String requestBody = constructRequestBody(entityType, permissions);
         
-        RestAssured.given().header(AUTH_HEADER).contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(requestBody).when().post(path)
-            .then().statusCode(HttpStatus.SC_CREATED)
+        Response r = RestAssured.given().header(AUTH_HEADER).contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(requestBody).when().post(path);
+        log.info("unixAssetCreateTest response: {}: {}", r.getStatusCode(), r.getBody().prettyPrint());
+            r.then().statusCode(HttpStatus.SC_CREATED)
             .header("Location", BASE_URL + UNIX_FILES_ENDPOINT + path);
     }
     
