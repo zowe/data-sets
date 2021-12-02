@@ -27,13 +27,13 @@ import static org.hamcrest.CoreMatchers.equalTo;
 
 @Slf4j
 public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractUnixFilesIntegrationTest {
- 
+
     @Test
     public void testGetDirectoryListingWithDirectoryChildren() throws Exception {
         final String directoryPath = TEST_DIRECTORY + "/directoryWithAccess";
         final String childFileName = "fileInDirectoryWithAccess";
         final String childDirectoryName = "directoryInDirectoryWithAccess";
-        
+
         UnixDirectoryChild childFile = UnixDirectoryChild
             .builder()
             .name(childFileName)
@@ -41,7 +41,7 @@ public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractUnixFil
             .size(12)
             .link(BASE_URL + UNIX_FILES_ENDPOINT + directoryPath + '/' + childFileName)
             .build();
-        
+
         UnixDirectoryChild childDirectory = UnixDirectoryChild
             .builder()
             .name(childDirectoryName)
@@ -49,15 +49,15 @@ public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractUnixFil
             .size(0)
             .link(BASE_URL + UNIX_FILES_ENDPOINT + directoryPath + '/' + childDirectoryName)
             .build();
-        
+
         UnixDirectoryChild[] children = {childFile, childDirectory};
-            
+
         testGetDirectory(directoryPath, children);
     }
-    
+
     @Test
     public void testGetDirectoryListingWithNoDirectoryChildren() throws Exception {
-        final String directoryPath = TEST_DIRECTORY + "/directoryWithAccess/directoryInDirectoryWithAccess"; 
+        final String directoryPath = TEST_DIRECTORY + "/directoryWithAccess/directoryInDirectoryWithAccess";
         log.info("testGetDirectoryListingWithNoDirectoryChildren test");
         testGetDirectory(directoryPath, new UnixDirectoryChild[0]);
     }
@@ -69,21 +69,21 @@ public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractUnixFil
         Response r = RestAssured.given().header(AUTH_HEADER).when().get("?path=" + testDirectoryPath);
 
         Response r1 = RestAssured.given().header(AUTH_HEADER).when().get(TEST_DIRECTORY);
-        log.info("testGetDirectoryListingWithoutPermission parent dir: {}: {}", r1.getStatusCode(), r1.getBody().prettyPrint());
+        log.info("testGetDirectoryListingWithoutPermission parent dir {}: {}: {}", TEST_DIRECTORY, r1.getStatusCode(), r1.getBody().prettyPrint());
 
         log.info("testGetDirectoryListingWithoutPermission response: {}: {}", r.getStatusCode(), r.getBody().prettyPrint());
-        
+
         r.then()
             .statusCode(HttpStatus.SC_FORBIDDEN).header("Content-Encoding", "gzip").contentType(ContentType.JSON)
             .body("message", equalTo(expectedError.getMessage()));
     }
-    
+
     @Test
     public void testGetDirectoryListingWithInvalidPath() {
         String invalidPath = "//";
         ZoweApiRestException expected = new PathNameNotValidException(invalidPath);
         ApiError expectedError = expected.getApiError();
-        
+
         RestAssured.given().header(AUTH_HEADER).when().get("?path=" + invalidPath).then()
             .statusCode(HttpStatus.SC_BAD_REQUEST).header("Content-Encoding", "gzip").contentType(ContentType.JSON)
             .body("message", equalTo(expectedError.getMessage()));
