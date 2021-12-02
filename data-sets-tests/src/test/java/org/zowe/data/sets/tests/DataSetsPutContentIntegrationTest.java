@@ -9,6 +9,8 @@
  */
 package org.zowe.data.sets.tests;
 
+import io.restassured.response.Response;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.hamcrest.text.MatchesPattern;
 import org.junit.AfterClass;
@@ -24,6 +26,7 @@ import java.nio.file.Paths;
 
 import static org.hamcrest.CoreMatchers.*;
 
+@Slf4j
 public class DataSetsPutContentIntegrationTest extends AbstractDataSetsIntegrationTest {
 
     protected static final String JOB_IEFBR14 = "IEFBR14";
@@ -65,8 +68,9 @@ public class DataSetsPutContentIntegrationTest extends AbstractDataSetsIntegrati
     public void testPutMemberContentWithEtag() {
         String eTag = getDataSetContentWithEtag(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14)).then().extract().header("ETag");
 
-        putDataSetContentReturnEtag(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14), content, eTag).then()
-            .statusCode(HttpStatus.SC_NO_CONTENT).header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
+        Response r = putDataSetContentReturnEtag(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14), content, eTag);
+        log.info("testPutMemberContentWithEtag test response: {}: {}", r.getStatusCode(), r.getBody().prettyPrint());
+        r.then().statusCode(HttpStatus.SC_NO_CONTENT).header("ETag", MatchesPattern.matchesPattern(HEX_IN_QUOTES_REGEX));
         getDataSetContent(getDataSetMemberPath(TEMP_PDS, JOB_IEFBR14)).then().statusCode(HttpStatus.SC_OK)
             .body("records", equalTo(jcl));
     }
