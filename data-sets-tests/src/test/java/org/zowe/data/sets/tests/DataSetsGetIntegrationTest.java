@@ -9,6 +9,8 @@
  */
 package org.zowe.data.sets.tests;
 
+import io.restassured.response.Response;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.Ignore;
@@ -24,6 +26,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertThat;
 
+@Slf4j
 public class DataSetsGetIntegrationTest extends AbstractDataSetsIntegrationTest {
 
     public static final String TEMP_DATA_SET = HLQ + ".TEST.DELETE";
@@ -81,7 +84,9 @@ public class DataSetsGetIntegrationTest extends AbstractDataSetsIntegrationTest 
 
     @Test
     public void testGetInvalidDataSets() throws Exception {
-        getDataSets(INVALID_DATASET_NAME).then().statusCode(HttpStatus.SC_OK).header("Content-Encoding", "gzip").body("items", IsEmptyCollection.empty());
+        Response r = getDataSets(INVALID_DATASET_NAME);
+        log.info("testGetInvalidDataSets test response: {}: {}", r.getStatusCode(), r.getBody().prettyPrint());
+        r.then().statusCode(HttpStatus.SC_OK).header("Content-Encoding", "gzip").body("items", IsEmptyCollection.empty());
     }
 
     @Test
