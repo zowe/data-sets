@@ -4,6 +4,8 @@ target/
 
 # FVT Test
 .fvt/
+.ehcache-diskstore.lock
+invalidated*.dataa
 
 # Gradle
 gradle/wrapper/gradle-wrapper.jar

@@ -29,8 +29,11 @@
 SCRIPT_NAME=$(basename "$0")
 SCRIPT_PWD=$(cd "$(dirname "$0")" && pwd)
 ROOT_DIR=$(cd "$SCRIPT_PWD" && cd .. && pwd)
-FVT_APIML_ARTIFACT=$1
-FVT_WORKSPACE="${ROOT_DIR}/.fvt"
+FVT_APIML_COMMONLIB_ARTIFACT=$1
+FVT_APIML_GATEWAY_ARTIFACT=$2
+FVT_APIML_DISCOVERY_ARTIFACT=$3
+FVT_WORKSPACE_SHORT=.fvt
+FVT_WORKSPACE="${ROOT_DIR}/${FVT_WORKSPACE_SHORT}"
 FVT_APIML_DIR=api-layer
 FVT_DATASETS_API_DIR=data-sets
 FVT_KEYSTORE_DIR=keystore
@@ -80,9 +83,17 @@ if [ -z "$(which ssh-agent)" ]; then
   echo "[${SCRIPT_NAME}][error] ssh-agent is required."
   exit 1
 fi
-if [ -z "$FVT_APIML_ARTIFACT" ]; then
-  FVT_APIML_ARTIFACT="libs-release-local/com/ca/mfaas/sdk/mfaas-zowe-install/*/mfaas-zowe-install-*.zip"
-  echo "[${SCRIPT_NAME}][warn] API-ML artifact is not defined, using default value."
+if [ -z "$FVT_APIML_GATEWAY_ARTIFACT" ]; then
+  FVT_APIML_GATEWAY_ARTIFACT="libs-release-local/org/zowe/apiml/sdk/gateway-package/1.*/gateway-package-1.*.zip"
+  echo "[${SCRIPT_NAME}][warn] API-ML Gateway artifact is not defined, using default value."
+fi
+if [ -z "$FVT_APIML_DISCOVERY_ARTIFACT" ]; then
+  FVT_APIML_DISCOVERY_ARTIFACT="libs-release-local/org/zowe/apiml/sdk/discovery-package/1.*/discovery-package-1.*.zip"
+  echo "[${SCRIPT_NAME}][warn] API-ML Discovery artifact is not defined, using default value."
+fi
+if [ -z "$FVT_APIML_COMMONLIB_ARTIFACT" ]; then
+  FVT_APIML_COMMONLIB_ARTIFACT="libs-release-local/org/zowe/apiml/sdk/apiml-common-lib-package/1.*/apiml-common-lib-package-1.*.zip"
+  echo "[${SCRIPT_NAME}][warn] API-ML Common Lib artifact is not defined, using default value."
 fi
 echo
 
@@ -209,18 +220,45 @@ echo
 
 ################################################################################
 # prepare and download APIML
-echo "[${SCRIPT_NAME}] prepare APIML download spec"
-sed -e "s#{ARTIFACT}#${FVT_APIML_ARTIFACT}#g" \
-    -e "s#{TARGET}#${FVT_WORKSPACE}/${FVT_APIML_DIR}/#g" \
+echo "[${SCRIPT_NAME}] prepare APIML Common Lib download spec"
+sed -e "s#{ARTIFACT}#${FVT_APIML_COMMONLIB_ARTIFACT}#g" \
+    -e "s#{TARGET}#${FVT_WORKSPACE}/${FVT_APIML_DIR}/common-lib/#g" \
     -e "s#{EXPLODE}#true#g" \
-    scripts/fvt/artifactory-download-spec.json.template > ${FVT_WORKSPACE}/artifactory-download-spec.json
-cat ${FVT_WORKSPACE}/artifactory-download-spec.json
-echo "[${SCRIPT_NAME}] download APIML to target test folder"
-jfrog rt dl --spec=${FVT_WORKSPACE}/artifactory-download-spec.json
+    scripts/fvt/artifactory-download-spec.json.template > ${FVT_WORKSPACE}/common-lib-download-spec.json
+cat ${FVT_WORKSPACE}/common-lib-download-spec.json
+echo "[${SCRIPT_NAME}] download APIML Common Lib to target test folder"
+jfrog rt dl --spec=${FVT_WORKSPACE}/common-lib-download-spec.json
+echo "[${SCRIPT_NAME}] prepare APIML Gateway download spec"
+sed -e "s#{ARTIFACT}#${FVT_APIML_GATEWAY_ARTIFACT}#g" \
+    -e "s#{TARGET}#${FVT_WORKSPACE}/${FVT_APIML_DIR}/gateway/#g" \
+    -e "s#{EXPLODE}#true#g" \
+    scripts/fvt/artifactory-download-spec.json.template > ${FVT_WORKSPACE}/gateway-download-spec.json
+    cat ${FVT_WORKSPACE}/gateway-download-spec.json
+    echo "[${SCRIPT_NAME}] download APIML Gateway to target test folder"
+    jfrog rt dl --spec=${FVT_WORKSPACE}/gateway-download-spec.json
+    echo "[${SCRIPT_NAME}] prepare APIML Discovery download spec"
+    sed -e "s#{ARTIFACT}#${FVT_APIML_DISCOVERY_ARTIFACT}#g" \
+        -e "s#{TARGET}#${FVT_WORKSPACE}/${FVT_APIML_DIR}/discovery/#g" \
+        -e "s#{EXPLODE}#true#g" \
+        scripts/fvt/artifactory-download-spec.json.template > ${FVT_WORKSPACE}/discovery-download-spec.json
+    cat ${FVT_WORKSPACE}/discovery-download-spec.json
+    echo "[${SCRIPT_NAME}] download APIML Discovery to target test folder"
+    jfrog rt dl --spec=${FVT_WORKSPACE}/discovery-download-spec.json
+
 cd "${FVT_WORKSPACE}"
-APIML_JAR=$(find . -name 'gateway-service.jar')
-if [ -z "${APIML_JAR}" ]; then
-  echo "[${SCRIPT_NAME}][error] failed to find APIML jar."
+APIML_GATEWAY_JAR=$(find . -name 'gateway-service-lite.jar')
+if [ -z "${APIML_GATEWAY_JAR}" ]; then
+  echo "[${SCRIPT_NAME}][error] failed to find APIML Gateway jar."
+  exit 1
+fi
+APIML_DISCOVERY_JAR=$(find . -name 'discovery-service-lite.jar')
+if [ -z "${APIML_DISCOVERY_JAR}" ]; then
+  echo "[${SCRIPT_NAME}][error] failed to find APIML Discovery jar."
+  exit 1
+fi
+APIML_COMMONLIB_JAR=$(find . -name 'api-layer-lite-lib-all.jar')
+if [ -z "${APIML_COMMONLIB_JAR}" ]; then
+  echo "[${SCRIPT_NAME}][error] failed to find APIML Common Lib jar."
   exit 1
 fi
 echo
@@ -258,7 +296,6 @@ echo
 
 ################################################################################
 echo "[${SCRIPT_NAME}] start data-sets api"
-# -Xquickstart \
 java -Xms16m -Xmx512m \
     -Dibm.serversocket.recover=true \
     -Dfile.encoding=UTF-8 \
@@ -278,7 +315,6 @@ echo
 
 ################################################################################
 echo "[${SCRIPT_NAME}] start APIML discovery server"
-# -Xquickstart \
 java -Xms32m -Xmx256m \
     -Dibm.serversocket.recover=true \
     -Dfile.encoding=UTF-8 \
@@ -288,12 +324,14 @@ java -Xms32m -Xmx256m \
     -Dapiml.discovery.userid=eureka \
     -Dapiml.discovery.password=password \
     -Dapiml.discovery.allPeersUrls="https://localhost:${FVT_DISCOVERY_PORT}/eureka/" \
+    -Dapiml.logs/location=${FVT_WORKSPACE}/${FVT_LOGS_DIR} \
     -Dapiml.service.hostname=localhost \
     -Dapiml.service.port=${FVT_DISCOVERY_PORT} \
     -Dapiml.service.ipAddress=127.0.0.1 \
-    -Dapiml.service.preferIpAddress=true \
+    -Dapiml.service.preferIpAddress=false \
     -Dapiml.discovery.staticApiDefinitionsDirectories="${FVT_WORKSPACE}/${FVT_CONFIG_DIR}" \
     -Dapiml.security.ssl.verifySslCertificatesOfServices=false \
+    -Dapiml.security.ssl.nonStrictVerifySslCertificatesOfServices=false \
     -Dserver.ssl.enabled=true \
     -Dserver.ssl.keyStore="${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}/localhost.keystore.p12" \
     -Dserver.ssl.keyStoreType=PKCS12 \
@@ -304,14 +342,14 @@ java -Xms32m -Xmx256m \
     -Dserver.ssl.trustStoreType=PKCS12 \
     -Dserver.ssl.trustStorePassword=password \
     -Djava.protocol.handler.pkgs=com.ibm.crypto.provider \
-    -jar "${FVT_WORKSPACE}/api-layer/discovery-service.jar" \
+    -Dloader.path=${FVT_WORKSPACE_SHORT}/${FVT_APIML_DIR}/common-lib/bin/api-layer-lite-lib-all.jar \
+    -jar "${FVT_WORKSPACE}/${FVT_APIML_DIR}/discovery/bin/discovery-service-lite.jar" \
     > "${FVT_WORKSPACE}/${FVT_LOGS_DIR}/discovery-service.log" &
 echo
 
 ################################################################################
 echo "[${SCRIPT_NAME}] start APIML gateway server"
 # Hint: assign -Dspring.profiles.include=debug if we want to show debug level APIML logs
-# -Xquickstart \
 java -Xms32m -Xmx256m \
     -Dibm.serversocket.recover=true \
     -Dfile.encoding=UTF-8 \
@@ -320,12 +358,26 @@ java -Xms32m -Xmx256m \
     -Dapiml.service.hostname=localhost \
     -Dapiml.service.port=${FVT_GATEWAY_PORT} \
     -Dapiml.service.discoveryServiceUrls="https://localhost:${FVT_DISCOVERY_PORT}/eureka/" \
-    -Dapiml.service.preferIpAddress=true \
+    -Dapiml.service.preferIpAddress=false \
+    -Dapiml.service.allowEncodedSlashes=true \
+    -Dapiml.service.corsEnabled=false \
+    -Dapiml.catalog.serviceId=apicatalog \
+    -Dapiml.cache.storage.location=${FVT_WORKSPACE}/${FVT_LOGS_DIR}/ \
+    -Dapiml.logs.location=${FVT_WORKSPACE}/${FVT_LOGS_DIR} \
+    -Dapiml.service.ipAddress=127.0.0.1 \
+    -Dapiml.gateway.timeoutMillis=600000 \
     -Denvironment.ipAddress=127.0.0.1 \
     -Dapiml.gateway.timeoutMillis=30000 \
     -Dapiml.security.ssl.verifySslCertificatesOfServices=false \
+    -Dapiml.security.ssl.nonStrictVerifySslCertificatesOfServices=false \
+    -Dapiml.security.auth.zosmf.serviceId=zosmf \
+    -Dapiml.security.auth.provider=zosmf \
+    -Dapiml.security.auth.jwtKeyAlias=jwtsecret \
+    -Dapiml.zoweManifest= \
     -Dapiml.security.auth.zosmfServiceId=zosmf \
     -Dserver.address=0.0.0.0 \
+    -Dserver.maxConnectionsPerRoute=100 \
+    -Dserver.maxTotalConnections=1000 \
     -Dserver.ssl.enabled=true \
     -Dserver.ssl.keyStore="${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}/localhost.keystore.p12" \
     -Dserver.ssl.keyStoreType=PKCS12 \
@@ -335,8 +387,25 @@ java -Xms32m -Xmx256m \
     -Dserver.ssl.trustStore="${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}/localhost.truststore.p12" \
     -Dserver.ssl.trustStoreType=PKCS12 \
     -Dserver.ssl.trustStorePassword=password \
+    -Dserver.internal.enabled=false \
+    -Dserver.internal.ssl.enabled=true \
+    -Dserver.internal.port=10017 \
+    -Dserver.internal.ssl.keyAlias=localhost-multi \
+    -Dserver.internal.ssl.keyStore="${FVT_WORKSPACE}/${FVT_KEYSTORE_DIR}/localhost.keystore.p12" \
+    -Dapiml.security.auth.zosmf.jwtAutoconfiguration=auto \
+    -Dapiml.security.x509.enabled=false \
+    -Dapiml.security.x509.externalMapperUrl="https://localhost:${FVT_GATEWAY_PORT}/zss/api/v1/certificate/x509/map" \
+    -Dapiml.security.x509.externalMapperUser=ZWESVUSR \
+    -Dapiml.security.authorization.provider= \
+    -Dapiml.security.authorization.endpoint.enabled=false \
+    -Dapiml.security.authorization.endpoint.url="https://localhost:${FVT_GATEWAY_PORT}/zss/api/v1/saf-auth" \
+    -Dapiml.security.authorization.resourceClass=ZOWE \
+    -Dapiml.security.authorization.resourceNamePrefix=APIML. \
+    -Dapiml.security.zosmf.applid=IZUDFLT \
     -Djava.protocol.handler.pkgs=com.ibm.crypto.provider \
-    -jar "${FVT_WORKSPACE}/api-layer/gateway-service.jar" \
+    -Dloader.path=${FVT_WORKSPACE_SHORT}/${FVT_APIML_DIR}/common-lib/bin/api-layer-lite-lib-all.jar \
+    -Dspring.profiles.active= \
+    -jar "${FVT_WORKSPACE}/${FVT_APIML_DIR}/gateway/bin/gateway-service-lite.jar" \
     > "${FVT_WORKSPACE}/${FVT_LOGS_DIR}/gateway-service.log"  &
 echo
 

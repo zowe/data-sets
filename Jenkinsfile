@@ -22,13 +22,6 @@ node('zowe-jenkins-agent') {
   // we have extra parameters for integration test
   pipeline.addBuildParameters(
     string(
-      name: 'INTEGRATION_TEST_APIML_BUILD',
-      description: 'APIML build for integration test',
-      defaultValue: 'libs-release-local/org/zowe/apiml/sdk/zowe-install/*/zowe-install-*.zip',
-      trim: true,
-      required: true
-    ),
-    string(
       name: 'INTEGRATION_TEST_ZOSMF_HOST',
       description: 'z/OSMF server for integration test',
       defaultValue: 'zzow04.zowe.marist.cloud',
@@ -127,7 +120,7 @@ node('zowe-jenkins-agent') {
           "FVT_SERVER_DIRECTORY_ROOT=${params.INTEGRATION_TEST_DIRECTORY_ROOT}",
           "FVT_UID=${uniqueBuildId}"
         ]) {
-          sh "scripts/prepare-fvt.sh '${params.INTEGRATION_TEST_APIML_BUILD}'"
+          sh "scripts/prepare-fvt.sh"
         }
       }
 
