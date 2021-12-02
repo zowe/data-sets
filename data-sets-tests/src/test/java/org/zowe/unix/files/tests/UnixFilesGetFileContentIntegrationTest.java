@@ -98,6 +98,9 @@ public class UnixFilesGetFileContentIntegrationTest extends AbstractUnixFilesInt
     public void testGetUnixFileContentUnauthorised() {
         String unauthorisedFile = TEST_DIRECTORY + "/fileWithoutAccess";
         ApiError expectedError = new UnauthorisedFileException(unauthorisedFile).getApiError();
+
+        Response r1 = RestAssured.given().header(AUTH_HEADER).when().get(TEST_DIRECTORY);
+        log.info("testGetUnixFileContentUnauthorized parent dir: {}: {}", r1.getStatusCode(), r1.getBody().prettyPrint());
         
         Response r = RestAssured.given().header(AUTH_HEADER).when().get(unauthorisedFile);
 

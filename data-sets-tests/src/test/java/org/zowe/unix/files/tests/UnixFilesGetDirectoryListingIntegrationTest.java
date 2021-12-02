@@ -68,6 +68,9 @@ public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractUnixFil
         ApiError expectedError = new UnauthorisedDirectoryException(testDirectoryPath).getApiError();
         Response r = RestAssured.given().header(AUTH_HEADER).when().get("?path=" + testDirectoryPath);
 
+        Response r1 = RestAssured.given().header(AUTH_HEADER).when().get(TEST_DIRECTORY);
+        log.info("testGetDirectoryListingWithoutPermission parent dir: {}: {}", r1.getStatusCode(), r1.getBody().prettyPrint());
+
         log.info("testGetDirectoryListingWithoutPermission response: {}: {}", r.getStatusCode(), r.getBody().prettyPrint());
         
         r.then()
