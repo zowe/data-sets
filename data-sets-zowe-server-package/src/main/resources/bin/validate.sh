@@ -7,16 +7,9 @@
 #
 # SPDX-License-Identifier: EPL-2.0
 #
-# Copyright IBM Corporation 2019
+# Copyright IBM Corporation 2021
 ################################################################################
 
-INITIAL_ERRORS_FOUND=$ERRORS_FOUND
-
-# Source main utils script
-. ${ROOT_DIR}/bin/utils/utils.sh
-
-validate_port_is_available ${FILES_API_PORT}
-validate_variables_are_set "KEYSTORE,KEYSTORE_PASSWORD,KEY_ALIAS,VERIFY_CERTIFICATES"
-validate_directory_is_writable "${STATIC_DEF_CONFIG_DIR}"
-
-return $(($ERRORS_FOUND-$INITIAL_ERRORS_FOUND))
+print_formatted_debug "ZWELS" "files-api,bin/validate.sh:${LINENO}" "- Checking Files API port ${ZWE_configs_port}"
+validate_this "is_port_available \"${ZWE_configs_port}\" 2>&1" "files-api,bin/validate.sh:${LINENO}"
+validate_this "is_directory_writable \"${ZWE_STATIC_DEFINITIONS_DIR}\" 2>&1" "files-api,bin/validate.sh:${LINENO}"
