@@ -1,0 +1,23 @@
+services:
+    - serviceId: zosmf                                          
+      title: IBM z/OSMF                                           
+      description: IBM z/OS Management Facility REST API service  
+      catalogUiTileId: zosmf                                      
+      instanceBaseUrls:                                           
+        - https://{ZOSMF_HOST}:{ZOSMF_PORT}/zosmf/                
+      homePageRelativeUrl: https://{ZOSMF_HOST}:{ZOSMF_PORT}/zosmf/
+      routes:
+        - gatewayUrl: api/v1                                      
+          serviceRelativeUrl: /                                   
+      # authentication:
+      #     scheme: zosmf                                           
+      apiInfo:                                                    
+        - apiId: com.ibm.zosmf
+          gatewayUrl: api/v1
+          version: 2.x.0
+          documentationUrl: https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.3.0/com.ibm.zos.v2r3.izua700/IZUHPINFO_RESTServices.htm
+
+catalogUiTiles:                                                   # z/OSMF services tile
+    zosmf:
+        title: z/OSMF services
+        description: IBM z/OS Management Facility REST services

@@ -1,0 +1,38 @@
+version: "3.3"
+services:
+  discovery-service:
+    image: zowe-docker-release.jfrog.io/ompzowe/discovery-service:latest
+    ports:
+      - "{DISCOVERY_PORT}:{DISCOVERY_PORT}"
+    volumes:
+      - {WORKSPACE}/keystore:/home/zowe/keystore
+      - {WORKSPACE}/api-defs:/api-defs
+    environment:
+      - KEYSTORE=/home/zowe/keystore/localhost.keystore.p12
+      - KEY_ALIAS=localhost
+      - KEYSTORE_PASSWORD=password
+      - TRUSTSTORE=/home/zowe/keystore/localhost.truststore.p12
+      - CMMN_LB=apiml-common-lib/bin/api-layer-lite-lib-all.jar
+      - WORKSPACE_DIR=/component
+      - APIML_DEBUG_MODE_ENABLED=true
+      - ZOWE_EXPLORER_HOST=discovery-service
+      - ZWE_DISCOVERY_SERVICES_LIST=https://discovery-service:{DISCOVERY_PORT}/eureka/
+      - STATIC_DEF_CONFIG_DIR=/api-defs
+      - DISCOVERY_PORT={DISCOVERY_PORT}
+  gateway-service:
+    image: zowe-docker-release.jfrog.io/ompzowe/gateway-service:latest
+    ports:
+      - "{GATEWAY_PORT}:{GATEWAY_PORT}"
+    volumes:
+      - {WORKSPACE}/keystore:/home/zowe/keystore
+    environment:
+      - KEYSTORE=/home/zowe/keystore/localhost.keystore.p12
+      - KEY_ALIAS=localhost
+      - KEYSTORE_PASSWORD=password
+      - TRUSTSTORE=/home/zowe/keystore/localhost.truststore.p12
+      - CMMN_LB=apiml-common-lib/bin/api-layer-lite-lib-all.jar
+      - WORKSPACE_DIR=/component
+      - APIML_DEBUG_MODE_ENABLED=true
+      - ZOWE_EXPLORER_HOST=gateway-service
+      - ZWE_DISCOVERY_SERVICES_LIST=https://discovery-service:{DISCOVERY_PORT}/eureka/
+      - GATEWAY_PORT={GATEWAY_PORT}
