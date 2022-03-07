@@ -1,0 +1,49 @@
+name: Image publish branch
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+
+      - uses: ./.github/actions/setup
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - uses: ./.github/actions/teardown
+
+  get-version:
+    runs-on: ubuntu-latest
+    outputs:
+      imageVersion: ${{ steps.outputVersion.outputs.version }}
+    steps:
+      - name: Output version using branch
+        id: outputVersion
+        run: |
+          # Replace / and _ with - in branch name
+          cleanBranchName=$(echo "${{ github.ref_name }}" | sed -e "s/\//-/g" | sed "s/_/-/g")
+          echo "::set-output name=version::$cleanBranchName"
+
+  publish-images:
+    needs:
+      - build
+      - get-version
+    uses: zowe/data-sets/.github/workflows/build-images.yml@master
+    with:
+      forceNoRelease: true
+      versionOverride: ${{ needs.get-version.outputs.imageVersion }}
+    secrets:
+      registry-user: ${{ secrets.ARTIFACTORY_X_USERNAME }}
+      registry-password: ${{ secrets.ARTIFACTORY_X_PASSWORD }}
+      redhat-registry-user: ${{ secrets.REDHAT_DEVELOPER_USER }}
+      redhat-registry-password: ${{ secrets.REDHAT_DEVELOPER_PASSWORD }}
+      zlinux-host: ${{ secrets.ZLINUX_HOST }}
+      zlinux-ssh-user: ${{ secrets.ZLINUX_SSH_USER }}
+      zlinux-ssh-key: ${{ secrets.ZLINUX_SSH_KEY }}
+      zlinux-ssh-passphrase: ${{ secrets.ZLINUX_SSH_PASSPHRASE }}

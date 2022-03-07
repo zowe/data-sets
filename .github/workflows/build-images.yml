@@ -1,0 +1,116 @@
+name: Reusable workflow to create images
+
+on:
+  workflow_call:
+    inputs:
+      forceNoRelease:
+        type: boolean
+        description: 'If this is set to true, images will be published to the snapshot location. If false, the publish location will be determined from the version.'
+        default: false
+        required: false
+      versionOverride:
+        description: 'Version of images that will be published.'
+        type: string
+        default: ''
+        required: false
+    secrets:
+      registry-user:
+        required: true
+      registry-password:
+        required: true
+      redhat-registry-user:
+        required: true
+      redhat-registry-password:
+        required: true
+      zlinux-host:
+        required: true
+      zlinux-ssh-user:
+        required: true
+      zlinux-ssh-key:
+        required: true
+      zlinux-ssh-passphrase:
+        required: true
+
+env:
+  SERVICE: files-api
+  IMAGE_BASE_DIR: container
+  SNAPSHOT_POSTFIX: "-SNAPSHOT"
+
+jobs:
+  create-images:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ ubuntu, ubi ]
+        arch: [ amd64, s390x ]
+        include:
+          - os: ubuntu
+            BUILD_ARG_LIST: ZOWE_BASE_IMAGE=latest-ubuntu
+          - os: ubi
+            BUILD_ARG_LIST: ZOWE_BASE_IMAGE=latest-ubi
+    steps:
+        - uses: actions/checkout@v2
+          with:
+            ref: ${{ github.head_ref }}
+
+        - uses: ./.github/actions/setup
+
+        - uses: ./.github/actions/image-publish-setup
+          id: setup
+          with:
+            versionOverride: ${{ inputs.versionOverride }}
+
+        - uses: zowe-actions/shared-actions/docker-prepare@main
+          with:
+            registry-user: ${{ secrets.registry-user }}
+            registry-password: ${{ secrets.registry-password }}
+            release: ${{ !inputs.forceNoRelease && !endsWith(steps.setup.outputs.imageVersion, env.SNAPSHOT_POSTFIX) }}
+            base-directory: ${{ env.IMAGE_BASE_DIR }}/${{ env.SERVICE }}
+            image-name: ${{ env.SERVICE }}
+            linux-distro: ${{ matrix.os }}
+            cpu-arch: ${{ matrix.arch }}
+            # Used only for UBI
+            redhat-registry: ${{ env.DEFAULT_REDHAT_DOCKER_REGISTRY }}
+            redhat-registry-user: ${{ secrets.redhat-registry-user }}
+            redhat-registry-password: ${{ secrets.redhat-registry-password }}
+
+        - uses: zowe-actions/shared-actions/docker-build-local@main
+          with:
+            build-arg-list: ${{ matrix.BUILD_ARG_LIST }}
+
+        - uses: ./.github/actions/teardown
+
+  create-manifest:
+    needs: create-images
+    strategy:
+      matrix:
+        os: [ ubuntu, ubi ]
+        arch: [ amd64, s390x ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+
+      - uses: ./.github/actions/image-publish-setup
+        id: setup
+        with:
+          versionOverride: ${{ inputs.versionOverride }}
+
+      - uses: zowe-actions/shared-actions/docker-prepare@main
+        timeout-minutes: 15
+        with:
+          registry-user: ${{ secrets.registry-user }}
+          registry-password: ${{ secrets.registry-password }}
+          release: ${{ !inputs.forceNoRelease && !endsWith(steps.setup.outputs.imageVersion, env.SNAPSHOT_POSTFIX) }}
+          base-directory: ${{ env.IMAGE_BASE_DIR }}/${{ env.SERVICE }}
+          image-name: ${{ env.SERVICE }}
+          linux-distro: ${{ matrix.os }}
+
+      - uses: zowe-actions/shared-actions/docker-manifest@main
+        with:
+          linux-distro: ${{ matrix.os }}
+          cpu-arch-list: "amd64 s390x"
+        timeout-minutes: 2
+
+      - uses: ./.github/actions/teardown

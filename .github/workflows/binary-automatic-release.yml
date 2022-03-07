@@ -1,0 +1,34 @@
+name: Automatic release of binaries
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: 'The release scope.'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        required: true
+        default: 'patch'
+
+jobs:
+  binary-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+
+      - uses: ./.github/actions/setup
+
+      - name: Release with Gradle
+        run: >
+          ./gradlew release -Prelease.useAutomaticVersion=true
+          -Prelease.scope=${{ github.event.inputs.scope }}
+          -Pdeploy.username=$ARTIFACTORY_USERNAME -Pdeploy.password=$ARTIFACTORY_PASSWORD
+        env:
+          ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+
+      - uses: ./.github/actions/teardown

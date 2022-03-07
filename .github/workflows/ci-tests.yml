@@ -1,0 +1,163 @@
+name: CI Testing
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+env:
+  MARIST_HOST: 'zzow03.zowe.marist.cloud'
+  ZOSMF_PORT: 10443
+  GATEWAY_PORT: 7554
+  FILES_PORT: 8443
+
+jobs:
+  UnitTest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+
+      - uses: ./.github/actions/setup
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Unit test with Gradle
+        run: ./gradlew coverage
+
+      - name: Store test results
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: UnitTestResults
+          path: |
+            build/reports/jacoco/jacocoFullReport/html
+            jobs-api-server/build/reports/tests/test
+
+      - uses: ./.github/actions/teardown
+
+  IntegrationTest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+
+      - uses: ./.github/actions/setup
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Run APIML containers
+        run: |
+          chmod +x scripts/run-containerized-apiml.sh
+          ./scripts/run-containerized-apiml.sh
+        env:
+          ZOSMF_HOST: ${{ env.MARIST_HOST }}
+          ZOSMF_PORT: ${{ env.ZOSMF_PORT }}
+          GATEWAY_PORT: ${{ env.GATEWAY_PORT }}
+          FILES_PORT: ${{ env.FILES_PORT }}
+          HOST_OS: linux
+
+      - name: Run Jobs API server
+        run: >
+          java -Xms16m -Xmx512m -Dibm.serversocket.recover=true -Dfile.encoding=UTF-8
+          -Djava.io.tmpdir=/tmp
+          -Dserver.port=${{ env.FILES_PORT }}
+          -Dserver.ssl.keyAlias=localhost
+          -Dserver.ssl.keyStore=.apiml/keystore/localhost.keystore.p12
+          -Dserver.ssl.keyStorePassword=password
+          -Dserver.ssl.keyStoreType=PKCS12
+          -Dconnection.httpsPort=${{ env.GATEWAY_PORT }}
+          -Dconnection.ipAddress=localhost
+          -jar jobs-api-server/build/libs/jobs-api-server-*-boot.jar &
+
+      - name: Validate APIML setup
+        run: |
+          sleep 2m # let APIML finish setting up
+          gwHealth=$(curl -k -sS https://localhost:${{ env.GATEWAY_PORT }}/application/health)
+          echo $gwHealth
+          gatewayUp=$(echo $gwHealth | awk -F{\"status\":\" '{print $2}' | awk -F\" '{print $1}')
+          if [ "$gatewayUp" != "UP" ]; then
+            echo ">>>>>Gateway is not up"
+            exit 1
+          fi
+
+      - uses: zowe-actions/shared-actions/prepare-workflow@main
+
+      - name: Lock marist server
+        uses: zowe-actions/shared-actions/lock-resource@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+          lock-resource-name: jobs-integration-tests-${{ env.MARIST_HOST }}-lock
+          lock-avg-retry-interval: 60
+
+
+      - name: Integration tests for v1 - LTPA
+        run: >
+          ./gradlew runIntegrationTests --info
+          -Pserver.host=localhost
+          -Pserver.port=${{ env.GATEWAY_PORT }}
+          -Pserver.username=${{ secrets.SSH_MARIST_USERNAMEP }}
+          -Pserver.password=${{ secrets.SSH_MARIST_PASSWORDP }}
+          -Ptest.version=1
+
+      - name: Integration tests for v2 - JWT
+        run: >
+          ./gradlew runIntegrationTests --info
+          -Pserver.host=localhost
+          -Pserver.port=${{ env.GATEWAY_PORT }}
+          -Pserver.username=${{ secrets.SSH_MARIST_USERNAMEP }}
+          -Pserver.password=${{ secrets.SSH_MARIST_PASSWORDP }}
+          -Ptest.version=2
+
+      - name: Output APIML logs
+        if: always()
+        run: docker-compose -f .apiml/docker-compose.yml logs
+
+      - name: Store test results
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: IntegrationTestResults
+          path: |
+            jobs-tests/build/reports/tests/test-1
+            jobs-tests/build/reports/tests/test-2
+
+      - uses: ./.github/actions/teardown
+
+  SonarQubeScan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+
+      - uses: ./.github/actions/setup
+        with:
+          jdkVersion: 11
+
+      - name: Sonar scan with Gradle
+        run: >
+          ./gradlew compileJava compileTestJava sonarqube --info
+          -x test
+          -Psonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
+          -Partifactory_user=$ARTIFACTORY_USERNAME -Partifactory_password=$ARTIFACTORY_PASSWORD
+        env:
+          ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - uses: ./.github/actions/teardown
