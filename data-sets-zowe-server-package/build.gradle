@@ -35,7 +35,6 @@ packageFilesApiServer.doFirst {
     getCommitHash.consumeProcessOutput(commit_hash, command_err)
     getCommitHash.waitForOrKill(1000)
 
-    // BRANCH_NAME and BUILD_NUMBER are Jenkins variables
     manifest = manifest.replaceAll("\\{\\{build.branch\\}\\}", System.getenv("BRANCH_NAME"))
                        .replaceAll("\\{\\{build.number\\}\\}", System.getenv("BUILD_NUMBER"))
                        .replaceAll("\\{\\{build.commitHash\\}\\}", commit_hash.toString().trim())
@@ -51,13 +50,6 @@ packageFilesApiServer.doFirst {
     }
     convertedManifest.createNewFile();
     convertedManifest.write(manifest)
-}
-
-jar.dependsOn(packageFilesApiServer)
-build.dependsOn(packageFilesApiServer)
-
-artifacts {
-    zip packageFilesApiServer
 }
 
 publishing {
