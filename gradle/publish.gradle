@@ -67,6 +67,11 @@ configure(subprojects.findAll { it.name in projectsToPublish }) {
         }
     }
 
+    tasks.withType(PublishToMavenRepository) {
+        doLast {
+            println(">>>>>Published ${publication.groupId}:${publication.artifactId}:${publication.version} to ${repository.url}")
+        }
+    }
 }
 
 //noinspection GroovyAssignabilityCheck
