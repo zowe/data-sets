@@ -14,6 +14,7 @@ env:
   ZOSMF_PORT: 10443
   GATEWAY_PORT: 7554
   FILES_PORT: 8443
+  FILES__LOG_DIR: .apiml/files-api.log
 
 jobs:
   UnitTest:
@@ -78,7 +79,7 @@ jobs:
           -Dserver.ssl.keyStoreType=PKCS12
           -Dconnection.httpsPort=${{ env.GATEWAY_PORT }}
           -Dconnection.ipAddress=localhost
-          -jar data-sets-api-server/build/libs/data-sets-api-server-*-boot.jar &
+          -jar data-sets-api-server/build/libs/data-sets-api-server-*-boot.jar > ${{ env.JOBS_LOG_DIR }} &
 
       - name: Validate APIML setup
         run: |
@@ -119,6 +120,16 @@ jobs:
           -Pserver.username=${{ secrets.SSH_MARIST_USERNAMEP }}
           -Pserver.password=${{ secrets.SSH_MARIST_PASSWORDP }}
           -Ptest.version=2
+
+      - name: Output Jobs API logs
+        if: always()
+        run: >
+          if [ -f ${{ env.JOBS_LOG_DIR }} ]; then
+            echo ">>>>>Jobs API logs"
+            cat ${{ env.JOBS_LOG_DIR }}
+          else
+            echo ">>>>>No Jobs API logs"
+          fi
 
       - name: Output APIML logs
         if: always()
