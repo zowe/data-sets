@@ -33,7 +33,7 @@ configure(subprojects.findAll { it.name in projectsToPublish }) {
     publishing {
         publications {
             mavenJava(MavenPublication) {
-                groupId 'org.zowe.explorer.datasets'
+                groupId 'org.zowe.explorer.files'
                 version rootProject.version
                 artifactId "${project.name}"
                 from components.java
