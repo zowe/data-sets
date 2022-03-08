@@ -20,7 +20,7 @@ jobs:
       - name: Set version to include branch
         run: |
           # Replace / and _ with - in branch name
-          CLEAN_BRANCH_NAME=$(echo "$BRANCH_NAME" | sed -e "s/\//-/g" | sed "s/_/-/g")
+          CLEAN_BRANCH_NAME=$(echo "$BRANCH_NAME" | sed "s/\//-/g" | sed "s/_/-/g" | awk '{print toupper($0)}')
           sed -i '/version=/ s/-SNAPSHOT/'-"$CLEAN_BRANCH_NAME"'-SNAPSHOT/g' ./gradle.properties
 
       - name: Publish with Gradle

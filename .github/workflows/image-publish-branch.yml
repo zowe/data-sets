@@ -27,7 +27,7 @@ jobs:
         id: outputVersion
         run: |
           # Replace / and _ with - in branch name
-          cleanBranchName=$(echo "${{ github.ref_name }}" | sed -e "s/\//-/g" | sed "s/_/-/g")
+          cleanBranchName=$(echo "${{ github.ref_name }}" | sed "s/\//-/g" | sed "s/_/-/g" | awk '{print toupper($0)}')
           echo "::set-output name=version::$cleanBranchName"
 
   publish-images:
