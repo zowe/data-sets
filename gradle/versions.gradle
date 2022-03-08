@@ -15,7 +15,7 @@ ext {
     junitVersion = "4.13.1"
     mapStructVersion = "1.2.0.Final"
     restAssuredVersion = "4.3.0"
-    explorerApiCommonVersion = "1.1.9-DEBUG-LOGGING-MARIST-SNAPSHOT"
+    explorerApiCommonVersion = "1.1.11--debug_logging_marist-SNAPSHOT"
     tomcatVersion = "9.0.54"
 
     libraries = [
