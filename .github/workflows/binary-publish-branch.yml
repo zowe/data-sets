@@ -3,6 +3,7 @@ on:
   push: # run on push to any branch except master
     branches-ignore:
       - master
+      - v2.x/master
 
 env:
   BRANCH_NAME: ${{ github.ref_name }}

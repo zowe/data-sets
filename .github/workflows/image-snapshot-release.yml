@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - v2.x/master
 
 env:
   BRANCH_NAME: ${{ github.ref_name }}
