@@ -109,11 +109,11 @@ jobs:
 
       - name: Prepare server side files
         run: |
-          sshpass -e sftp -o BatchMode=no -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -b - -P ${{ env.MARIST_SSH_PORT }} ${{ secrets.SSH_MARIST_USERNAMEL }}@${{ env.MARIST_HOST }} << EOF
+          sshpass -e sftp -o BatchMode=no -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -b - -P ${{ env.MARIST_SSH_PORT }} ${{ secrets.SSH_MARIST_USERNAMEP }}@${{ env.MARIST_HOST }} << EOF
             cd ${{ env.MARIST_TMP_DIRECTORY }}
             put scripts/prepare-integration-test-folders.sh
           EOF
-          sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${{ env.MARIST_SSH_PORT }} ${{ secrets.SSH_MARIST_USERNAMEL }}@${{ env.MARIST_HOST }} << EOF
+          sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${{ env.MARIST_SSH_PORT }} ${{ secrets.SSH_MARIST_USERNAMEP }}@${{ env.MARIST_HOST }} << EOF
             cd ${{ env.MARIST_TMP_DIRECTORY }}
             iconv -f ISO8859-1 -t IBM-1047 prepare-integration-test-folders.sh > prepare-integration-test-folders.sh.new
             mv prepare-integration-test-folders.sh.new prepare-integration-test-folders.sh && chmod +x prepare-integration-test-folders.sh
@@ -121,8 +121,7 @@ jobs:
             ./prepare-integration-test-folders.sh "${{ env.MARIST_TEST_DIRECTORY }}_v2" || { echo "[prepare-integration-test-folders v2] failed"; exit 1; }
           EOF
         env:
-          SSHPASS: ${{ secrets.SSH_MARIST_PASSWORDL }}
-
+          SSHPASS: ${{ secrets.SSH_MARIST_PASSWORDP }}
       - name: Integration tests for v1 - LTPA
         run: >
           ./gradlew runIntegrationTests --info
@@ -146,14 +145,14 @@ jobs:
       - name: Clean up integration test files
         if: always()
         run: |
-          sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${{ env.MARIST_SSH_PORT }} ${{ secrets.SSH_MARIST_USERNAMEL }}@${{ env.MARIST_HOST }} << EOF
+          sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${{ env.MARIST_SSH_PORT }} ${{ secrets.SSH_MARIST_USERNAMEP }}@${{ env.MARIST_HOST }} << EOF
             cd ${{ env.MARIST_TMP_DIRECTORY }}
             [ -f "prepare-integration-test-folders.sh" ] && rm prepare-integration-test-folders.sh
             [ -d "${{ env.MARIST_TEST_DIRECTORY }}_v1" ] && rm -rf ${{ env.MARIST_TEST_DIRECTORY }}_v1
             [ -d "${{ env.MARIST_TEST_DIRECTORY }}_v2" ] && rm -rf ${{ env.MARIST_TEST_DIRECTORY }}_v2
           EOF
         env:
-          SSHPASS: ${{ secrets.SSH_MARIST_PASSWORDL }}
+          SSHPASS: ${{ secrets.SSH_MARIST_PASSWORDP }}
 
       - name: Output Files API logs
         if: always()
