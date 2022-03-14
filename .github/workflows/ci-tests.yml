@@ -13,6 +13,8 @@ on:
 
 env:
   MARIST_HOST: 'zzow01.zowe.marist.cloud'
+  MARIST_SSH_PORT: 22
+  MARIST_TEST_DIRECTORY: /ZOWE/tmp/${{ github.run_id }}_${{ github.run_number }}
   ZOSMF_PORT: 10443
   GATEWAY_PORT: 7554
   FILES_PORT: 8443
@@ -104,6 +106,18 @@ jobs:
           lock-resource-name: files-integration-tests-${{ env.MARIST_HOST }}-lock
           lock-avg-retry-interval: 60
 
+      - name: Prepare server side files
+        run: |
+          SSHPASS=${{ secrets.SSH_MARIST_PASSWORDP }} sshpass -e sftp -o BatchMode=no -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -b - -P ${{ env.MARIST_SSH_PORT }} ${{ secrets.SSH_MARIST_USERNAMEP }}@${{ env.MARIST_HOST }} << EOF
+          put scripts/prepare-integration-test-folders.sh
+          EOF
+          SSHPASS=${{ secrets.SSH_MARIST_PASSWORDP }} sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${{ env.MARIST_SSH_PORT }} ${{ secrets.SSH_MARIST_USERNAMEP }}@${{ env.MARIST_HOST }} << EOF
+          cd ~ && \
+            (iconv -f ISO8859-1 -t IBM-1047 prepare-integration-test-folders.sh > prepare-integration-test-folders.sh.new) && mv prepare-integration-test-folders.sh.new prepare-integration-test-folders.sh && chmod +x prepare-integration-test-folders.sh
+          ./prepare-integration-test-folders.sh "${{ env.MARIST_TEST_DIRECTORY }}_v1" || { echo "[prepare-integration-test-folders v1] failed"; exit 1; }
+          ./prepare-integration-test-folders.sh "$${{ env.MARIST_TEST_DIRECTORY }}_v2" || { echo "[prepare-integration-test-folders v2] failed"; exit 1; }
+          echo "[prepare-integration-test-folders] succeeds" && exit 0
+          EOF
 
       - name: Integration tests for v1 - LTPA
         run: >
