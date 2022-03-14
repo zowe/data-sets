@@ -1,7 +1,7 @@
 version: "3.3"
 services:
   discovery-service:
-    image: zowe-docker-release.jfrog.io/ompzowe/discovery-service:latest
+    image: zowe-docker-release.jfrog.io/ompzowe/discovery-service:1
     network_mode: "host"
     volumes:
       - {WORKSPACE}/keystore:/home/zowe/keystore
@@ -19,7 +19,7 @@ services:
       - STATIC_DEF_CONFIG_DIR=/api-defs
       - DISCOVERY_PORT={DISCOVERY_PORT}
   gateway-service:
-    image: zowe-docker-release.jfrog.io/ompzowe/gateway-service:latest
+    image: zowe-docker-release.jfrog.io/ompzowe/gateway-service:1
     network_mode: "host"
     volumes:
       - {WORKSPACE}/keystore:/home/zowe/keystore
