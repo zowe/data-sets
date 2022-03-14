@@ -109,17 +109,15 @@ jobs:
 
       - name: Prepare server side files
         run: |
-          echo "START"
           sshpass -e sftp -o BatchMode=no -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -b - -P ${{ env.MARIST_SSH_PORT }} ${{ secrets.SSH_MARIST_USERNAMEL }}@${{ env.MARIST_HOST }} << EOF
             cd ${{ env.MARIST_TMP_DIRECTORY }}
             put scripts/prepare-integration-test-folders.sh
           EOF
-          echo "HERE"
           sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${{ env.MARIST_SSH_PORT }} ${{ secrets.SSH_MARIST_USERNAMEL }}@${{ env.MARIST_HOST }} << EOF
             cd ${{ env.MARIST_TMP_DIRECTORY }} && \
               (iconv -f ISO8859-1 -t IBM-1047 prepare-integration-test-folders.sh > prepare-integration-test-folders.sh.new) && mv prepare-integration-test-folders.sh.new prepare-integration-test-folders.sh && chmod +x prepare-integration-test-folders.sh
             ./prepare-integration-test-folders.sh "${{ env.MARIST_TEST_DIRECTORY }}_v1" || { echo "[prepare-integration-test-folders v1] failed"; exit 1; }
-            ./prepare-integration-test-folders.sh "$${{ env.MARIST_TEST_DIRECTORY }}_v2" || { echo "[prepare-integration-test-folders v2] failed"; exit 1; }
+            ./prepare-integration-test-folders.sh "${{ env.MARIST_TEST_DIRECTORY }}_v2" || { echo "[prepare-integration-test-folders v2] failed"; exit 1; }
             echo "[prepare-integration-test-folders] succeeds" && exit 0
           EOF
         env:
