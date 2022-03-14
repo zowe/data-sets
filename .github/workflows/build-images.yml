@@ -38,6 +38,7 @@ env:
 
 jobs:
   create-images:
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -81,6 +82,7 @@ jobs:
         - uses: ./.github/actions/teardown
 
   create-manifest:
+    timeout-minutes: 20
     needs: create-images
     strategy:
       matrix:

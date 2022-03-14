@@ -25,6 +25,7 @@ env:
 jobs:
   UnitTest:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v2
         with:
@@ -51,6 +52,7 @@ jobs:
 
   IntegrationTest:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v2
