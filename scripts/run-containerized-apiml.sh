@@ -16,8 +16,6 @@
 # - ZOSMF_HOST
 # - ZOSMF_PORT
 ################################################################################
-ZOSMF_PORT=443
-ZOSMF_HOST=tvt5003.svl.ibm.com
 ######################## DEFINE CONSTANTS #########################
 SCRIPT_NAME=$(basename "$0")
 SCRIPT_PWD=$(cd "$(dirname "$0")" && pwd)

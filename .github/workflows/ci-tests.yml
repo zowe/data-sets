@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 env:
-  MARIST_HOST: 'zzow03.zowe.marist.cloud'
+  MARIST_HOST: 'zzow01.zowe.marist.cloud'
   ZOSMF_PORT: 10443
   GATEWAY_PORT: 7554
   FILES_PORT: 8443
