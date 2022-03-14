@@ -16,6 +16,7 @@ env:
   MARIST_SSH_PORT: 22
   MARIST_TMP_DIRECTORY: /ZOWE/tmp
   MARIST_TEST_DIRECTORY: /ZOWE/tmp/files-integration-test-${{ github.run_id }}_${{ github.run_number }}
+  JOB_ID: ${{ github.run_id }}-${{ github.run_number }}
   MARIST_FILE_SETUP_SCRIPT: prepare-integration-test-folders.sh
   ZOSMF_PORT: 10443
   GATEWAY_PORT: 7554
@@ -43,7 +44,7 @@ jobs:
         uses: actions/upload-artifact@v2
         if: always()
         with:
-          name: UnitTestResults
+          name: UnitTestResults-${{ env.JOB_ID }}
           path: |
             build/reports/jacoco/jacocoFullReport/html
             data-sets-api-server/build/reports/tests/test
@@ -178,7 +179,7 @@ jobs:
         uses: actions/upload-artifact@v2
         if: always()
         with:
-          name: IntegrationTestResults
+          name: IntegrationTestResults-${{ env.JOB_ID }}
           path: |
             data-sets-tests/build/reports/tests/test-1
             data-sets-tests/build/reports/tests/test-2
