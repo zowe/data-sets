@@ -7,7 +7,7 @@ services:
       - {WORKSPACE}/keystore:/home/zowe/keystore
       - {WORKSPACE}/api-defs:/api-defs
     environment:
-      - ZWE_configs_certificate_keystore_file=/home/zowe/keystore/localhost.keystore.p12
+    - ZWE_configs_certificate_keystore_file=/home/zowe/keystore/localhost.keystore.p12
     - ZWE_configs_certificate_keystore_alias=localhost
     - ZWE_configs_certificate_keystore_password=password
     - ZWE_configs_certificate_truststore_file=/home/zowe/keystore/localhost.truststore.p12
@@ -26,7 +26,7 @@ services:
     volumes:
       - {WORKSPACE}/keystore:/home/zowe/keystore
     environment:
-      - ZWE_configs_certificate_keystore_file=/home/zowe/keystore/localhost.keystore.p12
+    - ZWE_configs_certificate_keystore_file=/home/zowe/keystore/localhost.keystore.p12
     - ZWE_configs_certificate_keystore_alias=localhost
     - ZWE_configs_certificate_keystore_password=password
     - ZWE_configs_certificate_truststore_file=/home/zowe/keystore/localhost.truststore.p12
