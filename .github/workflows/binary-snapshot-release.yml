@@ -1,0 +1,28 @@
+name: Binary snapshot release
+on:
+  push:
+    branches:
+      - master
+      - v2.x/master
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+
+      - uses: ./.github/actions/setup
+
+      - name: Release with Gradle
+        run: >
+          ./gradlew packageFilesApiServer publishAllVersions
+          -Pdeploy.username=$ARTIFACTORY_USERNAME -Pdeploy.password=$ARTIFACTORY_PASSWORD
+        env:
+          ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+          BUILD_NUMBER: ${{ github.run_number }}
+
+      - uses: ./.github/actions/teardown

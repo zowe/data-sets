@@ -1,0 +1,49 @@
+name: "Pull request to v2.x/master with commits to master"
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+env:
+  MERGE_TO_V2_BRANCH: files/v2/merge
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Prepare branch to merge
+        run: |
+          git config --global user.email "zowe-robot@users.noreply.github.com"
+          git config --global user.name "Zowe Robot"
+          git checkout master
+          git checkout v2.x/master
+          git branch ${{ env.MERGE_TO_V2_BRANCH }}
+          git checkout ${{ env.MERGE_TO_V2_BRANCH }}
+          git merge master
+
+      - name: Create pull request
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.ZOWE_ROBOT_TOKEN }}
+          script: |
+            await github.rest.pulls.create({
+                owner: 'zowe',
+                repo: 'data-sets',
+                title: 'Automatic PR to v2 branch',
+                body: 'Automatically prepared PR for merging into the V2 branch',
+                head: 'master',
+                base: '${{ env.MERGE_TO_V2_BRANCH }}'
+            });

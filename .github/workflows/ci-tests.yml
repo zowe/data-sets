@@ -1,0 +1,215 @@
+name: CI Testing
+
+on:
+  push:
+    branches:
+      - master
+      - v2.x/master
+  pull_request:
+    branches:
+      - master
+      - v2.x/master
+  workflow_dispatch:
+
+env:
+  MARIST_HOST: zzow01.zowe.marist.cloud
+  MARIST_SSH_PORT: 22
+  MARIST_TMP_DIRECTORY: /ZOWE/tmp
+  MARIST_TEST_DIRECTORY: /ZOWE/tmp/files-integration-test-${{ github.run_id }}_${{ github.run_number }}
+  JOB_ID: ${{ github.run_id }}-${{ github.run_number }}
+  MARIST_FILE_SETUP_SCRIPT: prepare-integration-test-folders.sh
+  ZOSMF_PORT: 10443
+  GATEWAY_PORT: 7554
+  FILES_PORT: 8443
+  FILES_LOG_DIR: .apiml/files-api.log
+
+jobs:
+  UnitTest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+
+      - uses: ./.github/actions/setup
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Unit test with Gradle
+        run: ./gradlew coverage
+
+      - name: Store test results
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: UnitTestResults-${{ env.JOB_ID }}
+          path: |
+            build/reports/jacoco/jacocoFullReport/html
+            data-sets-api-server/build/reports/tests/test
+
+      - uses: ./.github/actions/teardown
+
+  IntegrationTest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+
+      - uses: ./.github/actions/setup
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Run APIML containers
+        run: |
+          chmod +x scripts/run-containerized-apiml.sh
+          ./scripts/run-containerized-apiml.sh
+        env:
+          ZOSMF_HOST: ${{ env.MARIST_HOST }}
+          ZOSMF_PORT: ${{ env.ZOSMF_PORT }}
+          GATEWAY_PORT: ${{ env.GATEWAY_PORT }}
+          FILES_PORT: ${{ env.FILES_PORT }}
+          HOST_OS: linux
+
+      - name: Run Files API server
+        run: >
+          java -Xms16m -Xmx512m -Dibm.serversocket.recover=true -Dfile.encoding=UTF-8
+          -Djava.io.tmpdir=/tmp
+          -Dserver.port=${{ env.FILES_PORT }}
+          -Dcom.ibm.jsse2.overrideDefaultTLS=true
+          -Dserver.ssl.keyAlias=localhost
+          -Dserver.ssl.keyStore=.apiml/keystore/localhost.keystore.p12
+          -Dserver.ssl.keyStorePassword=password
+          -Dserver.ssl.keyStoreType=PKCS12
+          -Dconnection.httpsPort=${{ env.GATEWAY_PORT }}
+          -Dconnection.ipAddress=localhost
+          -jar data-sets-api-server/build/libs/data-sets-api-server-*-boot.jar > ${{ env.FILES_LOG_DIR }} &
+
+      - name: Validate APIML setup
+        run: |
+          sleep 2m # let APIML finish setting up
+          gwHealth=$(curl -k -sS https://localhost:${{ env.GATEWAY_PORT }}/application/health)
+          echo $gwHealth
+          gatewayUp=$(echo $gwHealth | awk -F{\"status\":\" '{print $2}' | awk -F\" '{print $1}')
+          if [ "$gatewayUp" != "UP" ]; then
+            echo ">>>>>Gateway is not up"
+            exit 1
+          fi
+
+      - uses: zowe-actions/shared-actions/prepare-workflow@main
+
+      - name: Lock marist server
+        uses: zowe-actions/shared-actions/lock-resource@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          lock-resource-name: files-integration-tests-${{ env.MARIST_HOST }}-lock
+          lock-avg-retry-interval: 60
+
+      - name: Prepare server side files
+        timeout-minutes: 3
+        run: |
+          sshpass -e sftp -o BatchMode=no -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -b - -P ${{ env.MARIST_SSH_PORT }} ${{ secrets.SSH_MARIST_USERNAMEP }}@${{ env.MARIST_HOST }} << EOF
+            cd ${{ env.MARIST_TMP_DIRECTORY }}
+            put scripts/${{ env.MARIST_FILE_SETUP_SCRIPT }}
+          EOF
+          sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${{ env.MARIST_SSH_PORT }} ${{ secrets.SSH_MARIST_USERNAMEP }}@${{ env.MARIST_HOST }} << EOF
+            cd ${{ env.MARIST_TMP_DIRECTORY }}
+            iconv -f ISO8859-1 -t IBM-1047 ${{ env.MARIST_FILE_SETUP_SCRIPT }} > ${{ env.MARIST_FILE_SETUP_SCRIPT }}.new
+            mv ${{ env.MARIST_FILE_SETUP_SCRIPT }}.new ${{ env.MARIST_FILE_SETUP_SCRIPT }} && chmod +x ${{ env.MARIST_FILE_SETUP_SCRIPT }}
+            ./${{ env.MARIST_FILE_SETUP_SCRIPT }} "${{ env.MARIST_TEST_DIRECTORY }}_v1" || { echo "[${{ env.MARIST_FILE_SETUP_SCRIPT }} v1] failed"; exit 1; }
+            ./${{ env.MARIST_FILE_SETUP_SCRIPT }} "${{ env.MARIST_TEST_DIRECTORY }}_v2" || { echo "[${{ env.MARIST_FILE_SETUP_SCRIPT }} v2] failed"; exit 1; }
+            echo "[${{ env.MARIST_FILE_SETUP_SCRIPT }}] successful for v1 and v2" && exit 0
+          EOF
+        env:
+          SSHPASS: ${{ secrets.SSH_MARIST_PASSWORDP }}
+      - name: Integration tests for v1 - LTPA
+        run: >
+          ./gradlew runIntegrationTests --info
+          -Pserver.host=localhost
+          -Pserver.port=${{ env.GATEWAY_PORT }}
+          -Pserver.username=${{ secrets.SSH_MARIST_USERNAMEL }}
+          -Pserver.password=${{ secrets.SSH_MARIST_PASSWORDL }}
+          -Pserver.test.directory=${{ env.MARIST_TEST_DIRECTORY }}_v1
+          -Ptest.version=1
+
+      - name: Integration tests for v2 - JWT
+        run: >
+          ./gradlew runIntegrationTests --info
+          -Pserver.host=localhost
+          -Pserver.port=${{ env.GATEWAY_PORT }}
+          -Pserver.username=${{ secrets.SSH_MARIST_USERNAMEL }}
+          -Pserver.password=${{ secrets.SSH_MARIST_PASSWORDL }}
+          -Pserver.test.directory=${{ env.MARIST_TEST_DIRECTORY }}_v2
+          -Ptest.version=2
+
+      - name: Clean up integration test files
+        timeout-minutes: 3
+        if: always()
+        run: |
+          sshpass -e ssh -tt -o StrictHostKeyChecking=no -o PubkeyAuthentication=no -p ${{ env.MARIST_SSH_PORT }} ${{ secrets.SSH_MARIST_USERNAMEP }}@${{ env.MARIST_HOST }} << EOF
+            cd ${{ env.MARIST_TMP_DIRECTORY }}
+            [ -f "${{ env.MARIST_FILE_SETUP_SCRIPT }}" ] && rm ${{ env.MARIST_FILE_SETUP_SCRIPT }}
+            [ -d "${{ env.MARIST_TEST_DIRECTORY }}_v1" ] && rm -rf ${{ env.MARIST_TEST_DIRECTORY }}_v1
+            [ -d "${{ env.MARIST_TEST_DIRECTORY }}_v2" ] && rm -rf ${{ env.MARIST_TEST_DIRECTORY }}_v2
+            echo "Done cleaning up integration test files" && exit 0
+          EOF
+        env:
+          SSHPASS: ${{ secrets.SSH_MARIST_PASSWORDP }}
+
+      - name: Output Files API logs
+        if: always()
+        run: >
+          if [ -f ${{ env.FILES_LOG_DIR }} ]; then
+            echo ">>>>>Files API logs"
+            cat ${{ env.FILES_LOG_DIR }}
+          else
+            echo ">>>>>No Files API logs"
+          fi
+
+      - name: Output APIML logs
+        if: always()
+        run: docker-compose -f .apiml/docker-compose.yml logs
+
+      - name: Store test results
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: IntegrationTestResults-${{ env.JOB_ID }}
+          path: |
+            data-sets-tests/build/reports/tests/test-1
+            data-sets-tests/build/reports/tests/test-2
+
+      - uses: ./.github/actions/teardown
+
+  SonarQubeScan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+
+      - uses: ./.github/actions/setup
+        with:
+          jdkVersion: 11
+
+      - name: Sonar scan with Gradle
+        run: >
+          ./gradlew compileJava compileTestJava sonarqube --info
+          -x test
+          -Psonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
+          -Partifactory_user=$ARTIFACTORY_USERNAME -Partifactory_password=$ARTIFACTORY_PASSWORD
+        env:
+          ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - uses: ./.github/actions/teardown
