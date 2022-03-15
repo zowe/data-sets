@@ -1,36 +1,40 @@
 version: "3.3"
 services:
   discovery-service:
-    image: zowe-docker-release.jfrog.io/ompzowe/discovery-service:1
+    image: zowe-docker-release.jfrog.io/ompzowe/discovery-service:2
     network_mode: "host"
     volumes:
       - {WORKSPACE}/keystore:/home/zowe/keystore
       - {WORKSPACE}/api-defs:/api-defs
     environment:
-      - KEYSTORE=/home/zowe/keystore/localhost.keystore.p12
-      - KEY_ALIAS=localhost
-      - KEYSTORE_PASSWORD=password
-      - TRUSTSTORE=/home/zowe/keystore/localhost.truststore.p12
-      - CMMN_LB=apiml-common-lib/bin/api-layer-lite-lib-all.jar
-      - WORKSPACE_DIR=/component
-      - APIML_DEBUG_MODE_ENABLED=true
-      - ZOWE_EXPLORER_HOST=localhost
-      - ZWE_DISCOVERY_SERVICES_LIST=https://localhost:{DISCOVERY_PORT}/eureka/
-      - STATIC_DEF_CONFIG_DIR=/api-defs
-      - DISCOVERY_PORT={DISCOVERY_PORT}
+      - ZWE_configs_certificate_keystore_file=/home/zowe/keystore/localhost.keystore.p12
+    - ZWE_configs_certificate_keystore_alias=localhost
+    - ZWE_configs_certificate_keystore_password=password
+    - ZWE_configs_certificate_truststore_file=/home/zowe/keystore/localhost.truststore.p12
+    - ZWE_configs_certificate_truststore_password=password
+    - CMMN_LB=apiml-common-lib/bin/api-layer-lite-lib-all.jar
+    - ZWE_zowe_workspaceDirectory=/component
+    - ZWE_configs_debug=true
+    - ZWE_haInstance_hostname=localhost
+    - ZWE_DISCOVERY_SERVICES_LIST=https://localhost:{DISCOVERY_PORT}/eureka/
+    - ZWE_STATIC_DEFINITIONS_DIR=/api-defs
+    - ZWE_configs_port={DISCOVERY_PORT}
+    - ZWE_zowe_verifyCertificates=DISABLED
   gateway-service:
-    image: zowe-docker-release.jfrog.io/ompzowe/gateway-service:1
+    image: zowe-docker-release.jfrog.io/ompzowe/gateway-service:2
     network_mode: "host"
     volumes:
       - {WORKSPACE}/keystore:/home/zowe/keystore
     environment:
-      - KEYSTORE=/home/zowe/keystore/localhost.keystore.p12
-      - KEY_ALIAS=localhost
-      - KEYSTORE_PASSWORD=password
-      - TRUSTSTORE=/home/zowe/keystore/localhost.truststore.p12
-      - CMMN_LB=apiml-common-lib/bin/api-layer-lite-lib-all.jar
-      - WORKSPACE_DIR=/component
-      - APIML_DEBUG_MODE_ENABLED=true
-      - ZOWE_EXPLORER_HOST=localhost
-      - ZWE_DISCOVERY_SERVICES_LIST=https://localhost:{DISCOVERY_PORT}/eureka/
-      - GATEWAY_PORT={GATEWAY_PORT}
+      - ZWE_configs_certificate_keystore_file=/home/zowe/keystore/localhost.keystore.p12
+    - ZWE_configs_certificate_keystore_alias=localhost
+    - ZWE_configs_certificate_keystore_password=password
+    - ZWE_configs_certificate_truststore_file=/home/zowe/keystore/localhost.truststore.p12
+    - ZWE_configs_certificate_truststore_password=password
+    - CMMN_LB=apiml-common-lib/bin/api-layer-lite-lib-all.jar
+    - ZWE_zowe_workspaceDirectory=/component
+    - ZWE_configs_debug=true
+    - ZWE_haInstance_hostname=localhost
+    - ZWE_DISCOVERY_SERVICES_LIST=https://localhost:{DISCOVERY_PORT}/eureka/
+    - ZWE_configs_port={GATEWAY_PORT}
+    - ZWE_zowe_verifyCertificates=DISABLED
