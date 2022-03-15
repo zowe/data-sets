@@ -21,6 +21,7 @@ import org.zowe.unix.files.exceptions.AlreadyExistsException;
 import org.zowe.unix.files.exceptions.InvalidPermissionsException;
 import org.zowe.unix.files.model.UnixEntityType;
 
+import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 
@@ -76,7 +77,7 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
         RestAssured.given().header(AUTH_HEADER).contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(requestBody).when().post(path)
             .then().statusCode(HttpStatus.SC_CREATED)
-            .header("Location", BASE_URL + path);
+            .header("Location", endsWith(UNIXFILES_SERVICE_ID + path));
     }
     
     private void unixAssetCheckCreatedTest(String path) {
