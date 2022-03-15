@@ -76,7 +76,7 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
         RestAssured.given().header(AUTH_HEADER).contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(requestBody).when().post(path)
             .then().statusCode(HttpStatus.SC_CREATED)
-            .header("Location", BASE_URL + UNIX_FILES_ENDPOINT + path);
+            .header("Location", BASE_URL + path);
     }
     
     private void unixAssetCheckCreatedTest(String path) {
@@ -84,7 +84,7 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
     }
     private void unixAssetCheckCreatedTest(String path, String permissions) {
         Response response = RestAssured.given().header(AUTH_HEADER)
-                .when().get(BASE_URL + UNIX_FILES_ENDPOINT + "?path=" + path);
+                .when().get(BASE_URL + "?path=" + path);
         response.then().statusCode(HttpStatus.SC_OK);
         if ( permissions != null) {
             JsonPath jsonPath = response.body().jsonPath();
@@ -131,7 +131,7 @@ public class UnixFilesCreateAssetIntegrationTest extends AbstractUnixFilesIntegr
         String requestBody = constructRequestBody(entityType, permissions);
         
         RestAssured.given().header(AUTH_HEADER).contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(requestBody).when().post(BASE_URL + UNIX_FILES_ENDPOINT + path)
+            .body(requestBody).when().post(BASE_URL + path)
             .then().statusCode(expectedError.getStatus().value())
             .body("message", equalTo(expectedError.getMessage()));
     }

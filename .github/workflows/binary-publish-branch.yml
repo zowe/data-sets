@@ -1,6 +1,6 @@
 name: Publish branch binaries
 on:
-  push: # run on push to any branch except master
+  push: # run on push to any branch except master branches
     branches-ignore:
       - master
       - v2.x/master

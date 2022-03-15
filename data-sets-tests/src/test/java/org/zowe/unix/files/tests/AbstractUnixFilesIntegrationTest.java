@@ -28,12 +28,13 @@ import static org.junit.Assert.assertTrue;
 
 public class AbstractUnixFilesIntegrationTest extends AbstractFilesIntegrationTest {
 
-    static final String UNIX_FILES_ENDPOINT = "unixfiles";
+    static final String UNIXFILES_SERVICE_ID = "unixfiles";
+    static final String BASE_URL = getBaseUrl(UNIXFILES_SERVICE_ID);
     static final String TEST_DIRECTORY = System.getProperty("server.test.directory");
 
     @BeforeClass
     public static void setUpEndpoint() throws Exception {
-        RestAssured.basePath = UNIX_FILES_ENDPOINT;
+        RestAssured.baseURI = BASE_URL;
     }
 
     public static void testGetDirectory(String directoryPath, UnixDirectoryChild[] expectedChildren) throws Exception {
