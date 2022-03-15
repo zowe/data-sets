@@ -79,7 +79,7 @@ public class UnixFilesDeleteFileIntegrationTest extends AbstractUnixFilesIntegra
             .name(childFileName)
             .type(UnixEntityType.FILE)
             .size(0)
-            .link(BASE_URL + directoryPath + '/' + childFileName)
+            .link(UNIXFILES_BASE_URL + directoryPath + '/' + childFileName)
             .build();
         
         UnixDirectoryChild childDirectory = UnixDirectoryChild
@@ -87,7 +87,7 @@ public class UnixFilesDeleteFileIntegrationTest extends AbstractUnixFilesIntegra
             .name(childDirectoryName)
             .type(UnixEntityType.DIRECTORY)
             .size(0)
-            .link(BASE_URL + directoryPath + '/' + childDirectoryName)
+            .link(UNIXFILES_BASE_URL + directoryPath + '/' + childDirectoryName)
             .build();
         
         UnixDirectoryChild[] children = {childFile, childDirectory};

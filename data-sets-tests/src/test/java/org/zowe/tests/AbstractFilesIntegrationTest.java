@@ -13,4 +13,16 @@ import org.zowe.api.common.test.AbstractHttpIntegrationTest;
 
 public abstract class AbstractFilesIntegrationTest extends AbstractHttpIntegrationTest {
     protected static final String HEX_IN_QUOTES_REGEX = "^\"[0-9A-F]+\"$";
+    protected static final String FILES_API_BASE_URL = getHost() + getApiPath();
+
+    private static String getHost() {
+        return "https://" + System.getProperty("server.host") + ":" + System.getProperty("server.port");
+    }
+
+    private static String getApiPath() {
+        if (System.getProperty("test.version") != null && System.getProperty("test.version").equals("1")) {
+            return "/api/v1/";
+        }
+        return "/api/v2/";
+    }
 }

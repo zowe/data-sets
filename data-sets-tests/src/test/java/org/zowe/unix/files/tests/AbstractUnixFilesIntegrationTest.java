@@ -29,6 +29,7 @@ import static org.junit.Assert.assertTrue;
 public class AbstractUnixFilesIntegrationTest extends AbstractFilesIntegrationTest {
 
     static final String UNIXFILES_SERVICE_ID = "unixfiles";
+    static final String UNIXFILES_BASE_URL = FILES_API_BASE_URL + UNIXFILES_SERVICE_ID;
     static final String BASE_URL = getBaseUrl(UNIXFILES_SERVICE_ID);
     static final String TEST_DIRECTORY = System.getProperty("server.test.directory");
 
