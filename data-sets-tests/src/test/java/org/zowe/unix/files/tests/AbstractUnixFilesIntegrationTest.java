@@ -11,6 +11,7 @@ package org.zowe.unix.files.tests;
 
 import io.restassured.RestAssured;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.junit.BeforeClass;
 import org.zowe.tests.AbstractFilesIntegrationTest;
@@ -30,7 +31,7 @@ public class AbstractUnixFilesIntegrationTest extends AbstractFilesIntegrationTe
 
     static final String UNIXFILES_SERVICE_ID = "unixfiles";
     static final String UNIXFILES_BASE_URL = FILES_API_BASE_URL + UNIXFILES_SERVICE_ID;
-    static final String BASE_URL = getBaseUrl(UNIXFILES_SERVICE_ID);
+    static final String BASE_URL = StringUtils.chop(getBaseUrl(UNIXFILES_SERVICE_ID)); // remove last '/'
     static final String TEST_DIRECTORY = System.getProperty("server.test.directory");
 
     @BeforeClass
