@@ -1,0 +1,36 @@
+name: Image publish branch
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+
+      - uses: ./.github/actions/setup
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - uses: ./.github/actions/teardown
+
+  publish-images:
+    needs:
+      - build
+    uses: zowe/data-sets/.github/workflows/build-images.yml@master
+    with:
+      forceNoRelease: true
+    secrets:
+      registry-user: ${{ secrets.ARTIFACTORY_X_USERNAME }}
+      registry-password: ${{ secrets.ARTIFACTORY_X_PASSWORD }}
+      redhat-registry-user: ${{ secrets.REDHAT_DEVELOPER_USER }}
+      redhat-registry-password: ${{ secrets.REDHAT_DEVELOPER_PASSWORD }}
+      zlinux-host: ${{ secrets.ZLINUX_HOST }}
+      zlinux-ssh-user: ${{ secrets.ZLINUX_SSH_USER }}
+      zlinux-ssh-key: ${{ secrets.ZLINUX_SSH_KEY }}
+      zlinux-ssh-passphrase: ${{ secrets.ZLINUX_SSH_PASSPHRASE }}

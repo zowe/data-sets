@@ -1,0 +1,42 @@
+version: "3.3"
+services:
+  discovery-service:
+    image: zowe-docker-release.jfrog.io/ompzowe/discovery-service:2
+    ports:
+      - "{DISCOVERY_PORT}:{DISCOVERY_PORT}"
+    volumes:
+      - {WORKSPACE}/keystore:/home/zowe/keystore
+      - {WORKSPACE}/api-defs:/api-defs
+    environment:
+      - ZWE_configs_certificate_keystore_file=/home/zowe/keystore/localhost.keystore.p12
+      - ZWE_configs_certificate_keystore_alias=localhost
+      - ZWE_configs_certificate_keystore_password=password
+      - ZWE_configs_certificate_truststore_file=/home/zowe/keystore/localhost.truststore.p12
+      - ZWE_configs_certificate_truststore_password=password
+      - CMMN_LB=apiml-common-lib/bin/api-layer-lite-lib-all.jar
+      - ZWE_zowe_workspaceDirectory=/component
+      - ZWE_configs_debug=true
+      - ZWE_haInstance_hostname=discovery-service
+      - ZWE_DISCOVERY_SERVICES_LIST=https://discovery-service:{DISCOVERY_PORT}/eureka/
+      - ZWE_STATIC_DEFINITIONS_DIR=/api-defs
+      - ZWE_configs_port={DISCOVERY_PORT}
+      - ZWE_zowe_verifyCertificates=DISABLED
+  gateway-service:
+    image: zowe-docker-release.jfrog.io/ompzowe/gateway-service:2
+    ports:
+      - "{GATEWAY_PORT}:{GATEWAY_PORT}"
+    volumes:
+      - {WORKSPACE}/keystore:/home/zowe/keystore
+    environment:
+      - ZWE_configs_certificate_keystore_file=/home/zowe/keystore/localhost.keystore.p12
+      - ZWE_configs_certificate_keystore_alias=localhost
+      - ZWE_configs_certificate_keystore_password=password
+      - ZWE_configs_certificate_truststore_file=/home/zowe/keystore/localhost.truststore.p12
+      - ZWE_configs_certificate_truststore_password=password
+      - CMMN_LB=apiml-common-lib/bin/api-layer-lite-lib-all.jar
+      - ZWE_zowe_workspaceDirectory=/component
+      - ZWE_configs_debug=true
+      - ZWE_haInstance_hostname=gateway-service
+      - ZWE_DISCOVERY_SERVICES_LIST=https://discovery-service:{DISCOVERY_PORT}/eureka/
+      - ZWE_configs_port={GATEWAY_PORT}
+      - ZWE_zowe_verifyCertificates=DISABLED

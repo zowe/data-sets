@@ -1,0 +1,37 @@
+name: Publish branch binaries
+on:
+  push: # run on push to any branch except master branches
+    branches-ignore:
+      - master
+      - v2.x/master
+
+env:
+  BRANCH_NAME: ${{ github.ref_name }}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+
+      - uses: ./.github/actions/setup
+
+      - name: Set version to include branch
+        run: |
+          # Replace / and _ with - in branch name
+          CLEAN_BRANCH_NAME=$(echo "$BRANCH_NAME" | sed "s/\//-/g" | sed "s/_/-/g" | awk '{print toupper($0)}')
+          sed -i '/version=/ s/-SNAPSHOT/'-"$CLEAN_BRANCH_NAME"'-SNAPSHOT/g' ./gradle.properties
+
+      - name: Publish with Gradle
+        run: >
+          ./gradlew packageFilesApiServer publishAllVersions
+          -Pdeploy.username=$ARTIFACTORY_USERNAME -Pdeploy.password=$ARTIFACTORY_PASSWORD
+        env:
+          ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+          BUILD_NUMBER: ${{ github.run_number }}
+
+      - uses: ./.github/actions/teardown

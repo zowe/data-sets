@@ -24,7 +24,7 @@ import org.zowe.tests.AbstractFilesIntegrationTest;
 
 public abstract class AbstractDataSetsIntegrationTest extends AbstractFilesIntegrationTest {
 
-    static final String DATASETS_ROOT_ENDPOINT = "datasets";
+    static final String DATASETS_SERVICE_ID = "datasets";
 
     static final String HLQ = USER.toUpperCase();
     static final String INVALID_DATASET_NAME = HLQ + ".TEST.INVALID";
@@ -33,7 +33,7 @@ public abstract class AbstractDataSetsIntegrationTest extends AbstractFilesInteg
 
     @BeforeClass
     public static void setUpEndpoint() throws Exception {
-        RestAssured.basePath = DATASETS_ROOT_ENDPOINT;
+        RestAssured.baseURI = getBaseUrl(DATASETS_SERVICE_ID);
     }
 
     static void createPdsWithMembers(String pdsName, String... memberNames) {

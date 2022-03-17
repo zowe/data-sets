@@ -2,8 +2,7 @@ target/
 .mvn/
 .history/
 
-# FVT Test
-.fvt/
+.apiml/
 
 # Gradle
 gradle/wrapper/gradle-wrapper.jar

@@ -52,7 +52,7 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
         DataSetCreateRequest pdsRequest = createPdsRequest(testDataSet);
         cleanUp = testDataSet;
         createDataSet(pdsRequest).then().statusCode(HttpStatus.SC_CREATED)
-            .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + testDataSet)).body(equalTo(""));
+            .header("Location", endsWith(DATASETS_SERVICE_ID + "/" + testDataSet)).body(equalTo(""));
 
         List<DataSetAttributes> actual = getDataSetsDetails(testDataSet).then().statusCode(HttpStatus.SC_OK).extract()
             .body().jsonPath().getList("items", DataSetAttributes.class);
@@ -85,7 +85,7 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
         Response response = createDataSet(sdsRequest);
         System.out.println(response.asString());
         response.then().statusCode(HttpStatus.SC_CREATED)
-            .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + testDataSet)).body(equalTo(""));
+            .header("Location", endsWith(DATASETS_SERVICE_ID + "/" + testDataSet)).body(equalTo(""));
 
         List<DataSetAttributes> actual = getDataSetsDetails(testDataSet).then().statusCode(HttpStatus.SC_OK).extract()
             .body().jsonPath().getList("items", DataSetAttributes.class);
@@ -101,7 +101,7 @@ public class DataSetsCreateIntegrationTests extends AbstractDataSetsIntegrationT
         cleanUp = testDataSet;
         Response createDataSet = createDataSet(pdseRequest);
         createDataSet.then().statusCode(HttpStatus.SC_CREATED)
-            .header("Location", endsWith(DATASETS_ROOT_ENDPOINT + "/" + testDataSet)).body(equalTo(""));
+            .header("Location", endsWith(DATASETS_SERVICE_ID + "/" + testDataSet)).body(equalTo(""));
 
         List<DataSetAttributes> actual = getDataSetsDetails(testDataSet).then().statusCode(HttpStatus.SC_OK).extract()
             .body().jsonPath().getList("items", DataSetAttributes.class);
