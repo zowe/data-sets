@@ -12,6 +12,7 @@ ext {
     httpCoreVersion = '4.4.10'
     commonsCodecVersion = '1.11'
     slf4jVersion = "1.7.25"
+    jacksonCoreVersion = '2.13.2'
     jsonPathVersion = "2.4.0"
     junitVersion = "4.13.1"
     mapStructVersion = "1.2.0.Final"
@@ -42,6 +43,9 @@ ext {
         tomcat_embed_websocket             : "org.apache.tomcat.embed:tomcat-embed-websocket:${tomcatVersion}",
 
         commons_codec                      : "commons-codec:commons-codec:${commonsCodecVersion}",
+        jackson_annotations                : "com.fasterxml.jackson.core:jackson-annotations:${jacksonCoreVersion}",
+        jackson_core                       : "com.fasterxml.jackson.core:jackson-core:${jacksonCoreVersion}",
+        jackson_databind                   : "com.fasterxml.jackson.core:jackson-databind:${jacksonCoreVersion}",
         json_path                          : "com.jayway.jsonpath:json-path:${jsonPathVersion}",
         springFox                          : "io.springfox:springfox-swagger2:${springFoxVersion}",
         springFoxSwagger2                  : "io.springfox:springfox-swagger2:${springFoxVersion}",
