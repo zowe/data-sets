@@ -10,7 +10,7 @@ ext {
     guavaVersion = '31.0.1-jre'
     httpClientVersion = '4.5.13'
     httpCoreVersion = '4.4.10'
-    commonsCodecVersion = '1.11'
+    commonsCodecVersion = '1.15'
     slf4jVersion = "1.7.25"
     jacksonCoreVersion = '2.13.2'
     jsonPathVersion = "2.4.0"
