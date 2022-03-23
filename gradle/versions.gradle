@@ -8,6 +8,7 @@ ext {
     powerMockVersion = "2.0.0-RC.1"
     gsonVersion = '2.8.2'
     guavaVersion = '31.0.1-jre'
+    logbackVersion = '1.2.9'
     httpClientVersion = '4.5.13'
     httpCoreVersion = '4.4.10'
     commonsCodecVersion = '1.15'
@@ -47,17 +48,18 @@ ext {
         jackson_core                       : "com.fasterxml.jackson.core:jackson-core:${jacksonCoreVersion}",
         jackson_databind                   : "com.fasterxml.jackson.core:jackson-databind:${jacksonCoreVersion}",
         json_path                          : "com.jayway.jsonpath:json-path:${jsonPathVersion}",
+        logback_classic : "ch.qos.logback:logback-classic:${logbackVersion}",
         springFox                          : "io.springfox:springfox-swagger2:${springFoxVersion}",
         springFoxSwagger2                  : "io.springfox:springfox-swagger2:${springFoxVersion}",
         springFoxSwaggerUI                 : "io.springfox:springfox-swagger-ui:${springFoxVersion}",
 
         http_core                          : "org.apache.httpcomponents:httpcore:${httpCoreVersion}",
         http_client                        : "org.apache.httpcomponents:httpclient:${httpClientVersion}",
-    
+
         powermock_api_mockito2             : "org.powermock:powermock-api-mockito2:${powerMockVersion}",
         power_mock_junit4                  : "org.powermock:powermock-module-junit4:${powerMockVersion}",
         power_mock_junit4_rule             : "org.powermock:powermock-module-junit4-rule:${powerMockVersion}",
-    
+
         gson                               : "com.google.code.gson:gson:${gsonVersion}",
         guava                              : "com.google.guava:guava:${guavaVersion}",
         mockito_core                       : "org.mockito:mockito-core:${mockitoCoreVersion}",
