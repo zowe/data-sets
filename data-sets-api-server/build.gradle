@@ -23,7 +23,11 @@ dependencies {
     compile libraries.http_core
     compile libraries.http_client
     compile libraries.commons_codec
+    compile libraries.jackson_annotations
+    compile libraries.jackson_core
+    compile libraries.jackson_databind
     compile libraries.gson
+    compile libraries.guava
     compile libraries.springFox
     compile libraries.springFoxSwagger2
     compile libraries.springFoxSwaggerUI
