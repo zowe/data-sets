@@ -25,6 +25,7 @@ dependencies {
     compile libraries.spring_context
     compile libraries.spring_core
     compile libraries.spring_expression
+    compile libraries.spring_jcl
     compile libraries.spring_test
     compile libraries.spring_web
     compile libraries.spring_webmvc
