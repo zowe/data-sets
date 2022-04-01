@@ -39,6 +39,15 @@ ext {
         spring_security_crypto             : "org.springframework.security:spring-security-crypto:${springSecurityVersion}",
         spring_security_web                : "org.springframework.security:spring-security-web:${springSecurityVersion}",
 
+        spring_aop                         : "org.springframework:spring-aop:${springFrameworkVersion}",
+        spring_beans                       : "org.springframework:spring-beans:${springFrameworkVersion}",
+        spring_context                     : "org.springframework:spring-context:${springFrameworkVersion}",
+        spring_core                        : "org.springframework:spring-core:${springFrameworkVersion}",
+        spring_expression                  : "org.springframework:spring-expression:${springFrameworkVersion}",
+        spring_test                        : "org.springframework:spring-test:${springFrameworkVersion}",
+        spring_web                         : "org.springframework:spring-web:${springFrameworkVersion}",
+        spring_webmvc                      : "org.springframework:spring-webmvc:${springFrameworkVersion}",
+
         tomcat_annotations_api             : "org.apache.tomcat:tomcat-annotations-api:${tomcatVersion}",
         tomcat_embed_core                  : "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
         tomcat_embed_websocket             : "org.apache.tomcat.embed:tomcat-embed-websocket:${tomcatVersion}",
