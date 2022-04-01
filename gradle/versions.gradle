@@ -2,6 +2,7 @@ ext {
 //TODO MARK - shouldn't this inherit from parent?
     springBootVersion = '2.3.12.RELEASE'
     springSecurityVersion = '5.3.11.RELEASE!!'
+    springFrameworkVersion = '5.2.20.RELEASE!!'
     springFoxVersion = '2.9.2'
     lombokVersion = '1.18.20'
     mockitoCoreVersion = '2.23.4'
@@ -38,6 +39,15 @@ ext {
         spring_security_core               : "org.springframework.security:spring-security-core:${springSecurityVersion}",
         spring_security_crypto             : "org.springframework.security:spring-security-crypto:${springSecurityVersion}",
         spring_security_web                : "org.springframework.security:spring-security-web:${springSecurityVersion}",
+
+        spring_aop                         : "org.springframework:spring-aop:${springFrameworkVersion}",
+        spring_beans                       : "org.springframework:spring-beans:${springFrameworkVersion}",
+        spring_context                     : "org.springframework:spring-context:${springFrameworkVersion}",
+        spring_core                        : "org.springframework:spring-core:${springFrameworkVersion}",
+        spring_expression                  : "org.springframework:spring-expression:${springFrameworkVersion}",
+        spring_test                        : "org.springframework:spring-test:${springFrameworkVersion}",
+        spring_web                         : "org.springframework:spring-web:${springFrameworkVersion}",
+        spring_webmvc                      : "org.springframework:spring-webmvc:${springFrameworkVersion}",
 
         tomcat_annotations_api             : "org.apache.tomcat:tomcat-annotations-api:${tomcatVersion}",
         tomcat_embed_core                  : "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
