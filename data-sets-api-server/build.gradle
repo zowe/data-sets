@@ -29,6 +29,7 @@ dependencies {
     compile libraries.gson
     compile libraries.guava
     compile libraries.logback_classic
+    compile libraries.logback_core
     compile libraries.springFox
     compile libraries.springFoxSwagger2
     compile libraries.springFoxSwaggerUI
