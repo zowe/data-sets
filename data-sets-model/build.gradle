@@ -8,6 +8,15 @@ dependencies {
     compile libraries.spring_security_crypto
     compile libraries.spring_security_web
     compile libraries.spring_boot_starter_web
+    compile libraries.spring_aop
+    compile libraries.spring_beans
+    compile libraries.spring_context
+    compile libraries.spring_core
+    compile libraries.spring_expression
+    compile libraries.spring_jcl
+    compile libraries.spring_test
+    compile libraries.spring_web
+    compile libraries.spring_webmvc
     compile libraries.http_core
     compile libraries.http_client
     compile libraries.commons_codec
