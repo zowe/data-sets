@@ -41,6 +41,7 @@ _BPX_JOBNAME=${ZWE_zowe_job_prefix}${COMPONENT_CODE} java \
   -Dibm.serversocket.recover=true \
   -Dfile.encoding=UTF-8 \
   -Djava.io.tmpdir=${TMPDIR:-${TMP:-/tmp}} \
+  -Dspring.profiles.include="${EXPLORER_API_LOG_LEVEL}" \
   -Dserver.port=${ZWE_configs_port:-8547} \
   -Dserver.ssl.keyAlias="${ZWE_configs_certificate_keystore_alias:-${ZWE_zowe_certificate_keystore_alias}}" \
   -Dserver.ssl.keyStore="${ZWE_configs_certificate_keystore_file:-${ZWE_zowe_certificate_keystore_file}}" \
