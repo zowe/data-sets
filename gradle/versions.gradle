@@ -20,7 +20,7 @@ ext {
     junitVersion = "4.13.1"
     mapStructVersion = "1.2.0.Final"
     restAssuredVersion = "4.3.0"
-    explorerApiCommonVersion = "2.0.5"
+    explorerApiCommonVersion = "2.0.6"
     tomcatVersion = "9.0.58"
 
     libraries = [
