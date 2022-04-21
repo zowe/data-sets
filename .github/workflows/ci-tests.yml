@@ -77,7 +77,8 @@ jobs:
           HOST_OS: linux
 
       - name: Run Files API server
-        run: >
+        run: |
+          chmod +x data-sets-zowe-server-package/src/main/resources/bin/start.sh
           data-sets-zowe-server-package/src/main/resources/bin/start.sh > ${{ env.FILES_LOG_DIR }} &
         env:
           LAUNCH_COMPONENT: data-sets-api-server/build/libs # point start.sh to jar file directory
