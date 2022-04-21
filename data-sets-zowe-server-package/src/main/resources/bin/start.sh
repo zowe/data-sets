@@ -31,7 +31,7 @@
 JAR_FILE=$(ls -1 $(pwd)/bin/data-sets-api-server-*.jar | head -n 1)
 
 LOG_LEVEL=
-if [[ ! -z ${ZWE_configs_debug} && ${ZWE_configs_debug} == true ]]
+if [ "${ZWE_configs_debug}" = true ]
 then
   LOG_LEVEL="debug"
 fi
