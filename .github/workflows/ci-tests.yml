@@ -68,13 +68,9 @@ jobs:
       - name: Run APIML containers
         run: |
           chmod +x scripts/run-containerized-apiml.sh
-          ./scripts/run-containerized-apiml.sh
+          ./scripts/run-containerized-apiml.sh -h ${{ env.MARIST_HOST }} -p ${{ env.ZOSMF_PORT }} -f ${{ env.FILES_PORT }} -l
         env:
-          ZOSMF_HOST: ${{ env.MARIST_HOST }}
-          ZOSMF_PORT: ${{ env.ZOSMF_PORT }}
           GATEWAY_PORT: ${{ env.GATEWAY_PORT }}
-          FILES_PORT: ${{ env.FILES_PORT }}
-          HOST_OS: linux
 
       - name: Run Files API server
         run: >
