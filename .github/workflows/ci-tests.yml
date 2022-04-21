@@ -86,11 +86,11 @@ jobs:
           data-sets-zowe-server-package/src/main/resources/bin/start.sh > ${{ env.FILES_LOG_DIR }} &
         env:
           ZWE_configs_debug: true
-          FILES_API_PORT: ${{ env.FILES_PORT }}
-          KEY_ALIAS: localhost
-          KEYSTORE: .apiml/keystore/localhost.keystore.p12
-          KEYSTORE_PASSWORD: password
-          GATEWAY_PORT: ${{ env.GATEWAY_PORT }}
+          ZWE_configs_port: ${{ env.FILES_PORT }}
+          ZWE_configs_certificate_keystore_alias: localhost
+          ZWE_configs_certificate_keystore_file: .apiml/keystore/localhost.keystore.p12
+          ZWE_configs_certificate_keystore_password: password
+          ZWE_components_gateway_port: ${{ env.GATEWAY_PORT }}
 
       - name: Validate APIML setup
         run: |
