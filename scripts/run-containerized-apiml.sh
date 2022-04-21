@@ -26,13 +26,23 @@ KEYSTORE_DIR=keystore
 API_DEFS_DIR=api-defs
 ###################################################################
 ###################### VALIDATE PARAMETERS ########################
+while getopts h:p:f:l arg
+do
+  case "${arg}" in
+    h) ZOSMF_HOST=${OPTARG};;
+    p) ZOSMF_PORT=${OPTARG};;
+    f) FILES_PORT=${OPTARG};;
+    l) HOST_OS="linux";;
+  esac
+done
+
 echo "[${SCRIPT_NAME}] validate parameters"
 if [ -z "${ZOSMF_HOST}" ]; then
-  echo "[${SCRIPT_NAME}][error] environment variable ZOSMF_HOST is required."
+  echo "[${SCRIPT_NAME}][error] -h argument for ZOSMF_HOST is required."
   exit 1
 fi
 if [ -z "${ZOSMF_PORT}" ]; then
-  echo "[${SCRIPT_NAME}][error] environment variable ZOSMF_PORT is required."
+  echo "[${SCRIPT_NAME}][error] -p argument for ZOSMF_PORT is required."
   exit 1
 fi
 if [ -z "${DISCOVERY_PORT}" ]; then
