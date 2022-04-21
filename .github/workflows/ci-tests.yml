@@ -78,17 +78,15 @@ jobs:
 
       - name: Run Files API server
         run: >
-          java -Xms16m -Xmx512m -Dibm.serversocket.recover=true -Dfile.encoding=UTF-8
-          -Djava.io.tmpdir=/tmp
-          -Dserver.port=${{ env.FILES_PORT }}
-          -Dcom.ibm.jsse2.overrideDefaultTLS=true
-          -Dserver.ssl.keyAlias=localhost
-          -Dserver.ssl.keyStore=.apiml/keystore/localhost.keystore.p12
-          -Dserver.ssl.keyStorePassword=password
-          -Dserver.ssl.keyStoreType=PKCS12
-          -Dconnection.httpsPort=${{ env.GATEWAY_PORT }}
-          -Dconnection.ipAddress=localhost
-          -jar data-sets-api-server/build/libs/data-sets-api-server-*-boot.jar > ${{ env.FILES_LOG_DIR }} &
+          data-sets-zowe-server-package/src/main/resources/bin/start.sh > ${{ env.FILES_LOG_DIR }} &
+        env:
+          LAUNCH_COMPONENT: data-sets-api-server/build/libs # point start.sh to jar file directory
+          EXPLORER_API_LOG_LEVEL: debug
+          FILES_API_PORT: ${{ env.FILES_PORT }}
+          KEY_ALIAS: localhost
+          KEYSTORE: .apiml/keystore/localhost.keystore.p12
+          KEYSTORE_PASSWORD: password
+          GATEWAY_PORT: ${{ env.GATEWAY_PORT }}
 
       - name: Validate APIML setup
         run: |
