@@ -81,8 +81,7 @@ jobs:
           chmod +x data-sets-zowe-server-package/src/main/resources/bin/start.sh
           data-sets-zowe-server-package/src/main/resources/bin/start.sh > ${{ env.FILES_LOG_DIR }} &
         env:
-          LAUNCH_COMPONENT: data-sets-api-server/build/libs # point start.sh to jar file directory
-          EXPLORER_API_LOG_LEVEL: debug
+          ZWE_configs_debug: true
           FILES_API_PORT: ${{ env.FILES_PORT }}
           KEY_ALIAS: localhost
           KEYSTORE: .apiml/keystore/localhost.keystore.p12

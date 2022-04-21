@@ -30,6 +30,12 @@
 
 JAR_FILE=$(ls -1 $(pwd)/bin/data-sets-api-server-*.jar | head -n 1)
 
+LOG_LEVEL=
+if [[ ! -z ${ZWE_configs_debug} && ${ZWE_configs_debug} == true ]]
+then
+  LOG_LEVEL="debug"
+fi
+
 options="-Xms16m -Xmx512m"
 if [ `uname` = "OS/390" ]; then
   options="${options} -Xquickstart"
@@ -41,7 +47,7 @@ _BPX_JOBNAME=${ZWE_zowe_job_prefix}${COMPONENT_CODE} java \
   -Dibm.serversocket.recover=true \
   -Dfile.encoding=UTF-8 \
   -Djava.io.tmpdir=${TMPDIR:-${TMP:-/tmp}} \
-  -Dspring.profiles.include="${EXPLORER_API_LOG_LEVEL}" \
+  -Dspring.profiles.include="${LOG_LEVEL}" \
   -Dserver.port=${ZWE_configs_port:-8547} \
   -Dserver.ssl.keyAlias="${ZWE_configs_certificate_keystore_alias:-${ZWE_zowe_certificate_keystore_alias}}" \
   -Dserver.ssl.keyStore="${ZWE_configs_certificate_keystore_file:-${ZWE_zowe_certificate_keystore_file}}" \
