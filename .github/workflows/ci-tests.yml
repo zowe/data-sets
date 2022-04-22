@@ -87,11 +87,11 @@ jobs:
           -jar data-sets-api-server/build/libs/data-sets-api-server-*-boot.jar > ${{ env.FILES_LOG_DIR }} &
 
       - name: Validate APIML setup
-        # poll for 2 minutes, if GW not healthy after 2 minutes then exit
+        # poll for 2 minutes, if GW not healthy after 3 minutes then exit
         run: |
           set +e # curl -s doesn't swallow the error alone
           attemptCounter=1
-          maxAttempts=12
+          maxAttempts=18
           until [ $attemptCounter -gt $maxAttempts ]; do
             sleep 10
             gwHealth=$(curl -k -s https://localhost:${{ env.GATEWAY_PORT }}/application/health)
