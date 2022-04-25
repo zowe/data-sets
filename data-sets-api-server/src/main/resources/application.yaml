@@ -19,7 +19,7 @@ logging:
     level:
         ROOT: INFO
         org.springframework: INFO
-        org.zowe: DEBUG
+        org.zowe: INFO
 
 apiml:
     security:
@@ -37,10 +37,18 @@ server:
     ciphers: ${apiml.security.ssl.ciphers}
   compression:
     enabled: true
-    mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css  
-    
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css
+
 zosmf:
   ipAddress: ${zosmf.ipAddress}
   httpsPort: ${zosmf.httpsPort}
 
 logbackServiceName: ZWEEAD1
+
+---
+spring.profiles: debug
+
+logging:
+  level:
+    ROOT: INFO
+    org.zowe: DEBUG

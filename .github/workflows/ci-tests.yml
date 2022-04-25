@@ -77,18 +77,20 @@ jobs:
           HOST_OS: linux
 
       - name: Run Files API server
-        run: >
-          java -Xms16m -Xmx512m -Dibm.serversocket.recover=true -Dfile.encoding=UTF-8
-          -Djava.io.tmpdir=/tmp
-          -Dserver.port=${{ env.FILES_PORT }}
-          -Dcom.ibm.jsse2.overrideDefaultTLS=true
-          -Dserver.ssl.keyAlias=localhost
-          -Dserver.ssl.keyStore=.apiml/keystore/localhost.keystore.p12
-          -Dserver.ssl.keyStorePassword=password
-          -Dserver.ssl.keyStoreType=PKCS12
-          -Dconnection.httpsPort=${{ env.GATEWAY_PORT }}
-          -Dconnection.ipAddress=localhost
-          -jar data-sets-api-server/build/libs/data-sets-api-server-*-boot.jar > ${{ env.FILES_LOG_DIR }} &
+        run: |
+          # start.sh uses $(pwd)/bin to locate jar file
+          mkdir ./bin
+          cp data-sets-api-server/build/libs/data-sets-api-server-*.jar ./bin
+          chmod +x ./bin/data-sets-api-server-*.jar
+          chmod +x data-sets-zowe-server-package/src/main/resources/bin/start.sh
+          data-sets-zowe-server-package/src/main/resources/bin/start.sh > ${{ env.FILES_LOG_DIR }} &
+        env:
+          ZWE_configs_debug: true
+          ZWE_configs_port: ${{ env.FILES_PORT }}
+          ZWE_configs_certificate_keystore_alias: localhost
+          ZWE_configs_certificate_keystore_file: .apiml/keystore/localhost.keystore.p12
+          ZWE_configs_certificate_keystore_password: password
+          ZWE_components_gateway_port: ${{ env.GATEWAY_PORT }}
 
       - name: Validate APIML setup
         run: |
