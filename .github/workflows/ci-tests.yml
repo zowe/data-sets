@@ -68,13 +68,9 @@ jobs:
       - name: Run APIML containers
         run: |
           chmod +x scripts/run-containerized-apiml.sh
-          ./scripts/run-containerized-apiml.sh
+          ./scripts/run-containerized-apiml.sh -h ${{ env.MARIST_HOST }} -p ${{ env.ZOSMF_PORT }} -f ${{ env.FILES_PORT }} -l
         env:
-          ZOSMF_HOST: ${{ env.MARIST_HOST }}
-          ZOSMF_PORT: ${{ env.ZOSMF_PORT }}
           GATEWAY_PORT: ${{ env.GATEWAY_PORT }}
-          FILES_PORT: ${{ env.FILES_PORT }}
-          HOST_OS: linux
 
       - name: Run Files API server
         run: |
@@ -90,13 +86,29 @@ jobs:
           GATEWAY_PORT: ${{ env.GATEWAY_PORT }}
 
       - name: Validate APIML setup
+        # poll for 2 minutes, if GW not healthy after 3 minutes then exit
         run: |
-          sleep 2m # let APIML finish setting up
-          gwHealth=$(curl -k -sS https://localhost:${{ env.GATEWAY_PORT }}/application/health)
-          echo $gwHealth
-          gatewayUp=$(echo $gwHealth | awk -F{\"status\":\" '{print $2}' | awk -F\" '{print $1}')
-          if [ "$gatewayUp" != "UP" ]; then
-            echo ">>>>>Gateway is not up"
+          set +e # curl -s doesn't swallow the error alone
+          attemptCounter=1
+          maxAttempts=18
+          until [ $attemptCounter -gt $maxAttempts ]; do
+            sleep 10
+            gwHealth=$(curl -k -s https://localhost:${{ env.GATEWAY_PORT }}/application/health)
+            echo "Polling for GW health: $attemptCounter"
+            echo $gwHealth
+
+            gatewayUp=$(echo $gwHealth | jq -r '.status')
+            authUp=$(echo $gwHealth | jq -r '.components.gateway.details.auth')
+
+            if [ "$gatewayUp" = "UP" ] && [ "$authUp" = "UP" ]; then
+              echo ">>>>>APIML is ready"
+              break
+            fi
+            attemptCounter=$((attemptCounter+1))
+          done
+
+          if [ "$gatewayUp" != "UP" ] || [ "$authUp" != "UP" ]; then
+            echo ">>>>>APIML is not ready"
             exit 1
           fi
 
