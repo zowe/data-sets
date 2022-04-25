@@ -100,12 +100,12 @@ jobs:
             echo "Polling for GW health: $attemptCounter"
             echo $gwHealth
 
-            gatewayUp=$(echo $gwHealth | awk -F{\"status\":\" '{print $2}' | awk -F\" '{print $1}')
-            authUp=$(echo $gwHealth | awk -F\"auth\":\" '{print $2}' | awk -F\" '{print $1}')
+            gatewayUp=$(echo $gwHealth | jq -r '.status')
+            authUp=$(echo $gwHealth | jq -r '.components.gateway.details.auth')
 
             if [ "$gatewayUp" = "UP" ] && [ "$authUp" = "UP" ]; then
               echo ">>>>>APIML is ready"
-              attemptCounter=$maxAttempts # will exit until loop
+              break
             fi
             attemptCounter=$((attemptCounter+1))
           done
