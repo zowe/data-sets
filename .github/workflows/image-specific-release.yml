@@ -28,7 +28,7 @@ jobs:
 
   PublishImages:
     needs: BuildAndTest
-    uses: zowe/data-sets/.github/workflows/build-images.yml@master
+    uses: zowe/data-sets/.github/workflows/build-images.yml@v2.x/master
     with:
       versionOverride: ${{ github.event.inputs.release_version }}
     secrets:
