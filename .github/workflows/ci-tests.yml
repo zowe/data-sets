@@ -3,11 +3,11 @@ name: CI Testing
 on:
   push:
     branches:
-      - master
+      - v1.x/master
       - v2.x/master
   pull_request:
     branches:
-      - master
+      - v1.x/master
       - v2.x/master
   workflow_dispatch:
 

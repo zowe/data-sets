@@ -2,7 +2,7 @@ name: Binary snapshot release
 on:
   push:
     branches:
-      - master
+      - v1.x/master
       - v2.x/master
 
 jobs:
