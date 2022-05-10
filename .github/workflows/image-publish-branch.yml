@@ -22,7 +22,7 @@ jobs:
   publish-images:
     needs:
       - build
-    uses: zowe/data-sets/.github/workflows/build-images.yml@master
+    uses: zowe/data-sets/.github/workflows/build-images.yml@v1.x/master
     with:
       forceNoRelease: true
     secrets:
