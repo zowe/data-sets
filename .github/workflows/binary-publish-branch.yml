@@ -2,7 +2,7 @@ name: Publish branch binaries
 on:
   push: # run on push to any branch except master branches
     branches-ignore:
-      - master
+      - v1.x/master
       - v2.x/master
 
 env:
