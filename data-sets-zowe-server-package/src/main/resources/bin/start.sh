@@ -37,6 +37,10 @@ fi
 COMPONENT_CODE=EF
 _BPX_JOBNAME=${ZOWE_PREFIX}${COMPONENT_CODE} java \
   ${options} \
+  -javaagent:/home/zowe/runtime/bin/opentelemetry-javaagent.jar \
+  -Dotel.traces.exporter=otlp \
+  -Dotel.resource.attributes=service.name=files-api \
+  -Dotel.exporter.otlp.traces.endpoint="http://34.71.61.249:4317" \
   -Dibm.serversocket.recover=true \
   -Dfile.encoding=UTF-8 \
   -Djava.io.tmpdir=${TMPDIR:-${TMP:-/tmp}} \
