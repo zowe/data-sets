@@ -23,7 +23,7 @@ jobs:
         run: |
           # Replace / and _ with - in branch name
           CLEAN_BRANCH_NAME=$(echo "$BRANCH_NAME" | sed "s/\//-/g" | sed "s/_/-/g" | awk '{print toupper($0)}')
-          sed -i '/version=/ s/-SNAPSHOT/'-"$CLEAN_BRANCH_NAME"'-SNAPSHOT/g' ./gradle.properties
+          sed -i '/version=/ s/-SNAPSHOT/'-"$CLEAN_BRANCH_NAME"'-BRANCH-SNAPSHOT/g' ./gradle.properties
 
       - name: Publish with Gradle
         run: >
