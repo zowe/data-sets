@@ -54,8 +54,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @PrepareForTest({ ServletUriComponentsBuilder.class })
 public class UnixFilesControllerTest extends ApiControllerTest {
 
-    private static final String ENDPOINT_ROOT = "/api/v1/unixfiles";
-    private static final String URI_BASE = "http://localhost/api/v1/unixfiles";
+    private static final String ENDPOINT_ROOT = "/api/v1/unixfiles/";
+    private static final String URI_BASE = "http://localhost/api/v1/unixfiles/";
 
     @Mock
     private UnixFilesService unixFilesService;
@@ -408,8 +408,8 @@ public class UnixFilesControllerTest extends ApiControllerTest {
 
 
     @Test
-    public void post_unix_file_succss() throws Exception {
-        String path = "/u/newFile";
+    public void post_unix_file_success() throws Exception {
+        String path = "u/newFile";
         String permissions = "rwxrwxrwx";
         UnixCreateAssetRequest createRequest = new UnixCreateAssetRequest(UnixEntityType.FILE, permissions);
 
@@ -419,7 +419,7 @@ public class UnixFilesControllerTest extends ApiControllerTest {
             .andExpect(status().isCreated())
             .andExpect(header().string("Location", "http://localhost" + ENDPOINT_ROOT + path));
 
-        verify(unixFilesService, times(1)).createUnixAsset(path, createRequest);
+        verify(unixFilesService, times(1)).createUnixAsset("/" + path, createRequest);
         verifyNoMoreInteractions(unixFilesService);
     }
 

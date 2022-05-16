@@ -48,7 +48,7 @@ public abstract class AbstractUnixFilesController {
         return baseURIForLinkTo;
     }
 
-    @GetMapping(value = "", produces = {"application/json"})
+    @GetMapping(value = "/", produces = {"application/json"})
     @ApiOperation(value = "Get a list of a directories contents", nickname = "getDirectoryListing", notes = "This API gets a list of files and directories for a given path")
     @ApiResponses({@ApiResponse(code = 200, message = "Ok", response = UnixDirectoryAttributesWithChildren.class)})
     public UnixDirectoryAttributesWithChildren getUnixDirectoryListing(

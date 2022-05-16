@@ -430,7 +430,7 @@ public class DataSetsControllerTest extends ApiControllerTest {
         mockDataSetUriConstruction(dataSetName, locationUri);
 
         mockMvc
-                .perform(post(ENDPOINT_ROOT).contentType(MediaType.APPLICATION_JSON_VALUE)
+                .perform(post(ENDPOINT_ROOT + "/").contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(JsonUtils.convertToJsonString(request)))
                 .andExpect(status().isCreated()).andExpect(header().string("Location", locationUri.toString()));
 
