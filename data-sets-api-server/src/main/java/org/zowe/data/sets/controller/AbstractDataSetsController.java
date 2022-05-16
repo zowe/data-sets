@@ -69,7 +69,7 @@ public abstract class AbstractDataSetsController {
         return new ResponseEntity<>(content.getContent(), headers, HttpStatus.OK);
     }
 
-    @PostMapping(consumes = "application/json")
+    @PostMapping(value = "/", consumes = "application/json")
     @ApiOperation(value = "Create a data set", notes = "This creates a data set based on the attributes passed in")
     @ApiResponses({@ApiResponse(code = 201, message = "Data set successfully created")})
     @ResponseStatus(HttpStatus.CREATED)
