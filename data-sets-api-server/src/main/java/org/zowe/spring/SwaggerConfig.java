@@ -35,7 +35,7 @@ public class SwaggerConfig {
                 .paths(PathSelectors.regex("/api.*"))
                 .build()
                 .apiInfo(
-                        new ApiInfo("Files API", "REST API for the Data sets and z/OS Unix Files Services", "1.0", null, null, null, null, Collections.emptyList())
+                        new ApiInfo("Files API", "REST API for the Data sets and z/OS Unix Files Services", "2.0", null, null, null, null, Collections.emptyList())
                 );
     }
 
