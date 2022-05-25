@@ -19,7 +19,7 @@ build:
   branch: "{{build.branch}}"
   number: "{{build.number}}"
   commitHash: "{{build.commitHash}}"
-  timestamp: "{{build.timestamp}}"
+  timestamp: {{build.timestamp}}
 commands:
   start: bin/start.sh
   validate: bin/validate.sh
@@ -32,3 +32,5 @@ apimlServices:
   - file: apiml-static-registration.yaml.template
 configs:
   port: 8547
+schemas:
+  configs: trivial-schema.json

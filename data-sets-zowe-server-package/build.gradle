@@ -18,6 +18,7 @@ task packageFilesApiServer(type: Zip) {
 
     into('/') {
         from "$buildDir/convert/manifest.yaml", "$resourceDir/apiml-static-registration.yaml.template"
+        from "../schemas/trivial-schema.json"
     }
 
     into('bin/') {
