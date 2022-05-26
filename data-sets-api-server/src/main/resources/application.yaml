@@ -9,6 +9,8 @@
 #
 
 spring:
+    config:
+        useLegacyProcessing: true
     application:
         name: data-sets
     output:
