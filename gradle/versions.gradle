@@ -1,6 +1,7 @@
 ext {
 //TODO MARK - shouldn't this inherit from parent?
     springBootVersion = '2.5.13'
+    springBootVersionForGradle = '2.3.12.RELEASE'
     springSecurityVersion = '5.3.11.RELEASE!!'
     springFrameworkVersion = '5.3.20!!'
     springFoxVersion = '2.9.2'
