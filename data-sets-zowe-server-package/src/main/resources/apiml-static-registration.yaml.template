@@ -20,7 +20,7 @@ services:
       - apiId: org.zowe.data.sets
         gatewayUrl: api/v2
         version: 2.0.0
-        swaggerUrl: https://${ZWE_haInstance_hostname:-localhost}:${ZWE_components_files_api_port}/v2/api-docs?group=apiV1Datasets
+        swaggerUrl: https://${ZWE_haInstance_hostname:-localhost}:${ZWE_components_files_api_port}/v2/api-docs?group=apiV2Datasets
         documentationUrl: https://${ZWE_haInstance_hostname:-localhost}:${ZWE_components_files_api_port}/swagger-ui.html?urls.primaryName=apiV2Datasets
     customMetadata:
       apiml:
