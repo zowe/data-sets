@@ -9,8 +9,7 @@
  */
 package org.zowe.data.sets.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -26,38 +25,38 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 
 @JsonInclude(Include.NON_NULL)
-@ApiModel(value = "DataSetAttributes", description = "Attributes of a data set")
+@Schema(title = "DataSetAttributes", description = "Attributes of a data set")
 public class DataSetAttributes {
 
     // TODO - match this with Create request
-    @ApiModelProperty(value = "Data set name", required = true)
+    @Schema(description = "Data set name", required = true)
     private String name;
-    @ApiModelProperty(value = "Volume serial")
+    @Schema(description = "Volume serial")
     private String volumeSerial;
-    @ApiModelProperty(value = "Device type")
+    @Schema(description = "Device type")
     private String deviceType;
     // we can support PO-E in 2.3 and read VS. How to reconcil this?
-    @ApiModelProperty(value = "Data set organization", dataType = "string")
+    @Schema(description = "Data set organization")
     private DataSetOrganisationType dataSetOrganization;
 
-    @ApiModelProperty(value = "Unit of space allocation, alcunit, spaceu", dataType = "string")
+    @Schema(description = "Unit of space allocation, alcunit, spaceu")
     private AllocationUnitType allocationUnit;
 
-    @ApiModelProperty(value = "Primary space allocation")
+    @Schema(description = "Primary space allocation")
     private Integer primary;
-    @ApiModelProperty(value = "Secondary space allocation")
+    @Schema(description = "Secondary space allocation")
     private Integer secondary;
-    @ApiModelProperty(value = "Number of directory blocks, dirblk")
+    @Schema(description = "Number of directory blocks, dirblk")
     private Integer directoryBlocks;
-    @ApiModelProperty(value = "Average block")
+    @Schema(description = "Average block")
     private Integer averageBlock;
 
     // TODO convert to enum once we know which formats z/OS MF works with?
-    @ApiModelProperty(value = "Record format, recfm", required = true)
+    @Schema(description = "Record format, recfm", required = true)
     private String recordFormat;
-    @ApiModelProperty(value = "Block size, blksize")
+    @Schema(description = "Block size, blksize")
     private Integer blockSize;
-    @ApiModelProperty(value = "Record length, lrecl", required = true)
+    @Schema(description = "Record length, lrecl", required = true)
     private Integer recordLength;
 
     // TODO - dsnType - dataSetNameType https://github.com/zowe/data-sets/issues/30
@@ -65,16 +64,16 @@ public class DataSetAttributes {
     // https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.3.0/com.ibm.zos.v2r3.izua700/IZUHPINFO_API_RESTFILES_JSON_Documents.htm?
 
     // not valid in create - seperate into super model?
-    @ApiModelProperty(value = "Allocate size, sizex")
+    @Schema(description = "Allocate size, sizex")
     private Integer allocatedSize;
-    @ApiModelProperty(value = "Percentage of allocation used")
+    @Schema(description = "Percentage of allocation used")
     private Integer used;
-    @ApiModelProperty(value = "Whether the data set is migrated")
+    @Schema(description = "Whether the data set is migrated")
     private Boolean migrated;
-    @ApiModelProperty(value = "Catalog name, catnm")
+    @Schema(description = "Catalog name, catnm")
     private String catalogName;
-    @ApiModelProperty(value = "Creation date, cdate") // TODO should we make this a date object?
+    @Schema(description = "Creation date, cdate") // TODO should we make this a date object?
     private String creationDate;
-    @ApiModelProperty(value = "Expiration date, edate") // TODO should we make this a date object?
+    @Schema(description = "Expiration date, edate") // TODO should we make this a date object?
     private String expirationDate;
 }

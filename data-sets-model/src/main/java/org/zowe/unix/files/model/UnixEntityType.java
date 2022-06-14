@@ -9,9 +9,9 @@
  */
 package org.zowe.unix.files.model;
 
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@ApiModel
+@Schema
 public enum UnixEntityType {
     FILE, DIRECTORY
 }

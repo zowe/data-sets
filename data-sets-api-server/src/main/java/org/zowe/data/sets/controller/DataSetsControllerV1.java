@@ -9,7 +9,7 @@
  */
 package org.zowe.data.sets.controller;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/v1/datasets")
-@Api(value = "Data Sets V1 APIs", tags = "Data Sets V1 APIs")
+@Tag(name = "Data Sets V1 APIs")
 public class DataSetsControllerV1 extends AbstractDataSetsController {
 
     @Autowired
@@ -42,7 +42,7 @@ public class DataSetsControllerV1 extends AbstractDataSetsController {
     
     @RestController
     @RequestMapping("/api/v1/datasets")
-    @Api(value = "Data Sets V1 APIs", tags = "Data Sets V1 APIs")
+    @Tag(name = "Data Sets V1 APIs")
     public class UsernameController extends AbstractApiController {
         
     }
