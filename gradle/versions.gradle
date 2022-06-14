@@ -4,7 +4,7 @@ ext {
     springBootVersionForGradle = '2.3.12.RELEASE'
     springSecurityVersion = '5.7.1!!'
     springFrameworkVersion = '5.3.20!!'
-    springFoxVersion = '2.9.2'
+    springDocVersion = '1.6.9'
     lombokVersion = '1.18.20'
     mockitoCoreVersion = '2.23.4'
     powerMockVersion = "2.0.0-RC.1"
@@ -21,7 +21,7 @@ ext {
     junitVersion = "4.13.1"
     mapStructVersion = "1.2.0.Final"
     restAssuredVersion = "4.3.0"
-    explorerApiCommonVersion = "2.0.10"
+    explorerApiCommonVersion = "2.0.11"
     tomcatVersion = "9.0.63"
 
     libraries = [
@@ -52,6 +52,7 @@ ext {
         spring_test                        : "org.springframework:spring-test:${springFrameworkVersion}",
         spring_web                         : "org.springframework:spring-web:${springFrameworkVersion}",
         spring_webmvc                      : "org.springframework:spring-webmvc:${springFrameworkVersion}",
+        spring_doc                         : "org.springdoc:springdoc-openapi-ui:${springDocVersion}",
 
         tomcat_annotations_api             : "org.apache.tomcat:tomcat-annotations-api:${tomcatVersion}",
         tomcat_embed_core                  : "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
@@ -65,9 +66,6 @@ ext {
         json_path                          : "com.jayway.jsonpath:json-path:${jsonPathVersion}",
         logback_classic                    : "ch.qos.logback:logback-classic:${logbackVersion}",
         logback_core                       : "ch.qos.logback:logback-core:${logbackVersion}",
-        springFox                          : "io.springfox:springfox-swagger2:${springFoxVersion}",
-        springFoxSwagger2                  : "io.springfox:springfox-swagger2:${springFoxVersion}",
-        springFoxSwaggerUI                 : "io.springfox:springfox-swagger-ui:${springFoxVersion}",
 
         http_core                          : "org.apache.httpcomponents:httpcore:${httpCoreVersion}",
         http_client                        : "org.apache.httpcomponents:httpclient:${httpClientVersion}",

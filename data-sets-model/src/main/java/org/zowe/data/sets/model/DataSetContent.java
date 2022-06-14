@@ -9,8 +9,7 @@
  */
 package org.zowe.data.sets.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,9 +20,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(value = "DataSetContent", description = "Data Set file content")
+@Schema(type = "DataSetContent", description = "Data Set file content")
 public class DataSetContent {
 
-    @ApiModelProperty(value = "The content of the data set, with \\\\n for new lines", dataType = "string", required = true, example = "//TESTJOBX JOB (),MSGCLASS=H\\n// EXEC PGM=IEFBR14")
+    @Schema(description = "The content of the data set, with \\\\n for new lines", required = true, example = "//TESTJOBX JOB (),MSGCLASS=H\\n// EXEC PGM=IEFBR14")
     private String records;
 }

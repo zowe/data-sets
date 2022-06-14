@@ -10,7 +10,7 @@
 
 package org.zowe.unix.files.controller;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,7 +20,7 @@ import org.zowe.unix.files.services.UnixFilesService;
 
 @RestController
 @RequestMapping("/api/v1/unixfiles")
-@Api(value = "Unix Files APIs V1", tags = "Unix Files APIs V1")
+@Tag(name = "Unix Files APIs V1")
 public class UnixFilesControllerV1 extends AbstractUnixFilesController {
     
     private static final String ENDPOINT_ROOT = "/api/v1/unixfiles";

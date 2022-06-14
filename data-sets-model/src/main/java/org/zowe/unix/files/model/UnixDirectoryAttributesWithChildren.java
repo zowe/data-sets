@@ -9,8 +9,7 @@
  */
 package org.zowe.unix.files.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -28,27 +27,27 @@ import java.util.List;
 @AllArgsConstructor
 
 @JsonInclude(Include.NON_NULL)
-@ApiModel(value = "UnixDirectoryAttributesWithChildren", description = "Attributes of a Unix Directory with its children")
+@Schema(title = "UnixDirectoryAttributesWithChildren", description = "Attributes of a Unix Directory with its children")
 public class UnixDirectoryAttributesWithChildren {
-    
-    @ApiModelProperty(value = "Type", required = true)
+
+    @Schema(description = "Type", required = true)
     private UnixEntityType type;
-    
-    @ApiModelProperty(value = "Owner", required = true)
+
+    @Schema(description = "Owner", required = true)
     private String owner;
-    
-    @ApiModelProperty(value = "Group", required = true)
+
+    @Schema(description = "Group", required = true)
     private String group;
-    
-    @ApiModelProperty(value = "Symbolic permissions", required = true)
+
+    @Schema(description = "Symbolic permissions", required = true)
     private String permissionsSymbolic;
-    
-    @ApiModelProperty(value = "Size on disk", required = true)
+
+    @Schema(description = "Size on disk", required = true)
     private Integer size;
-    
-    @ApiModelProperty(value = "Last Modified", required = true)
+
+    @Schema(description = "Last Modified", required = true)
     private String lastModified;
-    
-    @ApiModelProperty(value = "Children", required = true)
+
+    @Schema(description = "Children", required = true)
     private List<UnixDirectoryChild> children;
 }

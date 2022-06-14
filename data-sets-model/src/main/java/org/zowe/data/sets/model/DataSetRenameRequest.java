@@ -9,8 +9,7 @@
  */
 package org.zowe.data.sets.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -26,9 +25,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 
 @JsonInclude(Include.NON_NULL)
-@ApiModel(value = "DataSetRenameRequest", description = "Reaname data set request payload with attributes from-dataset to-dataset")
+@Schema(title = "DataSetRenameRequest", description = "Reaname data set request payload with attributes from-dataset to-dataset")
 public class DataSetRenameRequest {
 
-    @ApiModelProperty(value = "new dataset name", required = true, example = "HLQ.ZOWE or HLQ.ZOWE(mem1)")
+    @Schema(description = "new dataset name", required = true, example = "HLQ.ZOWE or HLQ.ZOWE(mem1)")
     private String newName;
 }

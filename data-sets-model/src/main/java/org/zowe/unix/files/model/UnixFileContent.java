@@ -9,8 +9,7 @@
  */
 package org.zowe.unix.files.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,9 +19,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 
-@ApiModel(value = "UnixFileContent", description = "Unix file content")
+@Schema(type = "UnixFileContent", description = "Unix file content")
 public class UnixFileContent {
 
-    @ApiModelProperty(value = "The content of the unix file", dataType = "string", required = true, example = "Hello World")
+    @Schema(description = "The content of the unix file", required = true, example = "Hello World")
     private String content;
 }
