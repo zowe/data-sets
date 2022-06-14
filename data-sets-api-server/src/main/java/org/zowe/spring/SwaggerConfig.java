@@ -9,84 +9,77 @@
  */
 package org.zowe.spring;
 
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
 
+import org.springdoc.core.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Collections;
-
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
 @Configuration
-@EnableSwagger2
 public class SwaggerConfig {
+    private static final String V1 = "1.0.0";
+    private static final String V2 = "2.0.0";
+    private static final String DATASETS_TITLE = "Datasets API";
+    private static final String DATASETS_DESCRIPTION = "REST API for the Data sets Service";
+    private static final String UNIXFILES_TITLE = "Unix FIles API";
+    private static final String UNIXFILES_DESCRIPTION = "REST API for the z/OS Unix Files Service";
+
     @Bean
-    public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("all")
-                .select()
-                .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.regex("/api.*"))
-                .build()
-                .apiInfo(
-                        new ApiInfo("Files API", "REST API for the Data sets and z/OS Unix Files Services", "2.0", null, null, null, null, Collections.emptyList())
-                );
+    public OpenAPI openAPI() {
+        return new OpenAPI().info(new Info()
+                .title("Files API")
+                .description("REST API for the Data sets and z/OS Unix Files Services")
+                .version(V2));
     }
 
     @Bean
-    public Docket apiV1Datasets() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("apiV1Datasets")
-                .select()
-                .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.regex("/api/v1/datasets.*"))
-                .build()
-                .apiInfo(
-                        new ApiInfo("Datasets API", "REST API for the Data sets Service", "1.0", null, null, null, null, Collections.emptyList())
-                );
+    public GroupedOpenApi api() {
+        return GroupedOpenApi.builder()
+                .group("all")
+                .pathsToMatch("/api/**")
+                .build();
     }
 
     @Bean
-    public Docket apiV2Datasets() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("apiV2Datasets")
-                .select()
-                .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.regex("/api/v2/datasets.*"))
-                .build()
-                .apiInfo(
-                        new ApiInfo("Datasets API", "REST API for the Data sets Service", "2.0", null, null, null, null, Collections.emptyList())
-                );
+    public GroupedOpenApi apiV1Datasets() {
+        return GroupedOpenApi.builder()
+                .group("datasetsV1")
+                .pathsToMatch("/api/v1/datasets/**")
+                .addOpenApiCustomiser(openApi -> openApi.setInfo(openApi.getInfo().title(DATASETS_TITLE)))
+                .addOpenApiCustomiser(openApi -> openApi.setInfo(openApi.getInfo().description(DATASETS_DESCRIPTION)))
+                .addOpenApiCustomiser(openApi -> openApi.setInfo(openApi.getInfo().version(V1)))
+                .build();
     }
 
     @Bean
-    public Docket apiV1UnixFiles() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("apiV1UnixFiles")
-                .select()
-                .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.regex("/api/v1/unixfiles.*"))
-                .build()
-                .apiInfo(
-                        new ApiInfo("Unix Files API", "REST API for the z/OS Unix Files Service", "1.0", null, null, null, null, Collections.emptyList())
-                );
+    public GroupedOpenApi apiV2Datasets() {
+        return GroupedOpenApi.builder()
+                .group("datasetsV2")
+                .addOpenApiCustomiser(openApi -> openApi.setInfo(openApi.getInfo().title(DATASETS_TITLE)))
+                .addOpenApiCustomiser(openApi -> openApi.setInfo(openApi.getInfo().description(DATASETS_DESCRIPTION)))
+                .pathsToMatch("/api/v2/datasets/**")
+                .build();
     }
 
     @Bean
-    public Docket apiV2UnixFiles() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("apiV2UnixFiles")
-                .select()
-                .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.regex("/api/v2/unixfiles/.*"))
-                .build()
-                .apiInfo(
-                        new ApiInfo("Unix Files API", "REST API for the z/OS Unix Files Service", "2.0", null, null, null, null, Collections.emptyList())
-                );
+    public GroupedOpenApi apiV1UnixFiles() {
+        return GroupedOpenApi.builder()
+                .group("unixfilesV1")
+                .pathsToMatch("/api/v1/unixfiles/**")
+                .addOpenApiCustomiser(openApi -> openApi.setInfo(openApi.getInfo().title(UNIXFILES_TITLE)))
+                .addOpenApiCustomiser(openApi -> openApi.setInfo(openApi.getInfo().description(UNIXFILES_DESCRIPTION)))
+                .addOpenApiCustomiser(openApi -> openApi.setInfo(openApi.getInfo().version(V1)))
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi apiV2UnixFiles() {
+        return GroupedOpenApi.builder()
+                .group("unixfilesV2")
+                .addOpenApiCustomiser(openApi -> openApi.setInfo(openApi.getInfo().title(UNIXFILES_TITLE)))
+                .addOpenApiCustomiser(openApi -> openApi.setInfo(openApi.getInfo().description(UNIXFILES_DESCRIPTION)))
+                .pathsToMatch("/api/v2/unixfiles/**")
+                .build();
     }
 }
