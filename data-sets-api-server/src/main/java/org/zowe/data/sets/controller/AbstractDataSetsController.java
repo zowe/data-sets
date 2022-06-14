@@ -71,7 +71,7 @@ public abstract class AbstractDataSetsController {
 
     @PostMapping(value = "/", consumes = "application/json")
     @Operation(summary = "Create a data set", description = "This creates a data set based on the attributes passed in")
-    @ApiResponses({@ApiResponse(responseCode = "201", description = "Data set successfully created")})
+    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Data set successfully created")})
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> createDataSet(@RequestBody DataSetCreateRequest input) {
 
@@ -113,7 +113,7 @@ public abstract class AbstractDataSetsController {
 
     @DeleteMapping(value = "{dataSetName:.+}")
     @Operation(summary = "Delete a data set or member", description = "This API deletes a data set or data set member.")
-    @ApiResponses({@ApiResponse(responseCode = "204", description = "Data set or member successfully deleted")})
+    @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Data set or member successfully deleted")})
     public ResponseEntity<?> deleteDatasetMember(
             @Parameter(description = "Data set name", required = true) @PathVariable String dataSetName) {
 
