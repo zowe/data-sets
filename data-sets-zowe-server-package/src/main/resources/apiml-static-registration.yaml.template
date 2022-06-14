@@ -15,13 +15,13 @@ services:
       - apiId: org.zowe.data.sets
         gatewayUrl: api/v1
         version: 1.0.0
-        swaggerUrl: https://${ZWE_haInstance_hostname:-localhost}:${ZWE_components_files_api_port}/v2/api-docs?group=apiV1Datasets
-        documentationUrl: https://${ZWE_haInstance_hostname:-localhost}:${ZWE_components_files_api_port}/swagger-ui.html?urls.primaryName=apiV1Datasets
+        swaggerUrl: https://${ZWE_haInstance_hostname:-localhost}:${ZWE_components_files_api_port}/v3/api-docs/datasetsV1
+        documentationUrl: https://${ZWE_haInstance_hostname:-localhost}:${ZWE_components_files_api_port}/swagger-ui/index.html?url=https%3A%2F%2F${ZWE_haInstance_hostname:-localhost}%3A${ZWE_components_files_api_port}%2Fv3%2Fapi-docs%2Fv1&urls.primaryName=datasetsV1
       - apiId: org.zowe.data.sets
         gatewayUrl: api/v2
         version: 2.0.0
-        swaggerUrl: https://${ZWE_haInstance_hostname:-localhost}:${ZWE_components_files_api_port}/v2/api-docs?group=apiV2Datasets
-        documentationUrl: https://${ZWE_haInstance_hostname:-localhost}:${ZWE_components_files_api_port}/swagger-ui.html?urls.primaryName=apiV2Datasets
+        swaggerUrl: https://${ZWE_haInstance_hostname:-localhost}:${ZWE_components_files_api_port}/v3/api-docs/datasetsV2
+        documentationUrl: https://${ZWE_haInstance_hostname:-localhost}:${ZWE_components_files_api_port}/swagger-ui/index.html?url=https%3A%2F%2F${ZWE_haInstance_hostname:-localhost}%3A${ZWE_components_files_api_port}%2Fv3%2Fapi-docs%2Fv1&urls.primaryName=datasetsV2
     customMetadata:
       apiml:
         enableUrlEncodedCharacters: true
@@ -41,13 +41,13 @@ services:
       - apiId: org.zowe.unix.files
         gatewayUrl: api/v1
         version: 1.0.0
-        swaggerUrl: https://${ZWE_haInstance_hostname:-localhost}:${ZWE_components_files_api_port}/v2/api-docs?group=apiV1UnixFiles
-        documentationUrl: https://${ZWE_haInstance_hostname:-localhost}:${ZWE_components_files_api_port}/swagger-ui.html?urls.primaryName=apiV1UnixFiles
+        swaggerUrl: https://${ZWE_haInstance_hostname:-localhost}:${ZWE_components_files_api_port}/v3/api-docs/unixfilesV1
+        documentationUrl: https://${ZWE_haInstance_hostname:-localhost}:${ZWE_components_files_api_port}/swagger-ui/index.html?url=https%3A%2F%2F${ZWE_haInstance_hostname:-localhost}%3A${ZWE_components_files_api_port}%2Fv3%2Fapi-docs%2Fv1&urls.primaryName=unixfilesV1
       - apiId: org.zowe.unix.files
         gatewayUrl: api/v2
         version: 2.0.0
-        swaggerUrl: https://${ZWE_haInstance_hostname:-localhost}:${ZWE_components_files_api_port}/v2/api-docs?group=apiV2UnixFiles
-        documentationUrl: https://${ZWE_haInstance_hostname:-localhost}:${ZWE_components_files_api_port}/swagger-ui.html?urls.primaryName=apiV2UnixFiles
+        swaggerUrl: https://${ZWE_haInstance_hostname:-localhost}:${ZWE_components_files_api_port}/v3/api-docs/unixfilesV2
+        documentationUrl: hhttps://${ZWE_haInstance_hostname:-localhost}:${ZWE_components_files_api_port}/swagger-ui/index.html?url=https%3A%2F%2F${ZWE_haInstance_hostname:-localhost}%3A${ZWE_components_files_api_port}%2Fv3%2Fapi-docs%2Fv1&urls.primaryName=unixfilesV2
 catalogUiTiles:
   datasetsAndUnixFiles:
     title: z/OS Datasets and Unix Files services
