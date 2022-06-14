@@ -10,8 +10,7 @@
 package org.zowe.data.sets.model;
 
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -29,11 +28,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 
 @JsonInclude(Include.NON_NULL)
-@ApiModel(value = "DataSet", description = "List of data set")
+@Schema(title = "DataSet", description = "List of data set")
 public class DataSet {
     // TODO - match this with Create request
-    @ApiModelProperty(value = "Data set name", required = true)
+    @Schema(description = "Data set name", required = true)
     private String name;
-    @ApiModelProperty(value = "Whether the data set is migrated")
+    @Schema(description = "Whether the data set is migrated")
     private Boolean migrated;
 }

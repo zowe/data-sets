@@ -9,8 +9,7 @@
  */
 package org.zowe.data.sets.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -26,36 +25,36 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 
 @JsonInclude(Include.NON_NULL)
-@ApiModel(value = "DataSetCreateRequest", description = "Attributes of a data set to be created")
+@Schema(title = "DataSetCreateRequest", description = "Attributes of a data set to be created")
 public class DataSetCreateRequest {
 
-    @ApiModelProperty(value = "Data set name", required = true, example = "HLQ.ZOWE")
+    @Schema(description = "Data set name", required = true, example = "HLQ.ZOWE")
     private String name;
-    @ApiModelProperty(value = "Volume serial", required = false, example = "zmf046")
+    @Schema(description = "Volume serial", required = false, example = "zmf046")
     private String volumeSerial;
-    @ApiModelProperty(value = "Device type, unit", required = false, example = "3390")
+    @Schema(description = "Device type, unit", required = false, example = "3390")
     private String deviceType;
     // we can support PO-E in 2.3 and read VS. How to reconcil this?
-    @ApiModelProperty(value = "Data set organization", required = true, dataType = "string", example = "PO")
+    @Schema(description = "Data set organization", required = true, example = "PO")
     private DataSetOrganisationType dataSetOrganization;
 
-    @ApiModelProperty(value = "Unit of space allocation, alcunit, spaceu", required = true, dataType = "string", example = "TRACK")
+    @Schema(description = "Unit of space allocation, alcunit, spaceu", required = true, example = "TRACK")
     private AllocationUnitType allocationUnit;
 
-    @ApiModelProperty(value = "Primary space allocation", required = true, example = "10")
+    @Schema(description = "Primary space allocation", required = true, example = "10")
     private Integer primary;
-    @ApiModelProperty(value = "Secondary space allocation", required = true, example = "5")
+    @Schema(description = "Secondary space allocation", required = true, example = "5")
     private Integer secondary;
-    @ApiModelProperty(value = "Number of directory blocks, dirblk. Only valid for partitioned data sets", required = false, example = "5")
+    @Schema(description = "Number of directory blocks, dirblk. Only valid for partitioned data sets", required = false, example = "5")
     private Integer directoryBlocks;
-    @ApiModelProperty(value = "Average block", required = false, example = "500")
+    @Schema(description = "Average block", required = false, example = "500")
     private Integer averageBlock;
 
     // TODO convert to enum once we know which formats z/OS MF works with?
-    @ApiModelProperty(value = "Record format, recfm", required = true, example = "FB")
+    @Schema(description = "Record format, recfm", required = true, example = "FB")
     private String recordFormat;
-    @ApiModelProperty(value = "Block size, blksize", example = "400")
+    @Schema(description = "Block size, blksize", example = "400")
     private Integer blockSize;
-    @ApiModelProperty(value = "Record length, lrecl", required = true, example = "80")
+    @Schema(description = "Record length, lrecl", required = true, example = "80")
     private Integer recordLength;
 }

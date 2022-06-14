@@ -9,8 +9,7 @@
  */
 package org.zowe.unix.files.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,11 +21,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 
-@ApiModel(value = "UnixCreateAssetRequest", description = "Unix File or Directory attributes for creation")
+@Schema(title = "UnixCreateAssetRequest", description = "Unix File or Directory attributes for creation")
 public class UnixCreateAssetRequest {
 
-    @ApiModelProperty(value = "Unix Entity type, File or Directory", required = true, example = "FILE")
+    @Schema(description = "Unix Entity type, File or Directory", required = true, example = "FILE")
     private UnixEntityType type;
-    @ApiModelProperty(value = "Access Mode for new asset", required = false, example = "rwxrw-r--")
+    @Schema(description = "Access Mode for new asset", required = false, example = "rwxrw-r--")
     private String permissions;
 }

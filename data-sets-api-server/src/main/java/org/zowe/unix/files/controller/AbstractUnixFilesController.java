@@ -9,10 +9,10 @@
  */
 package org.zowe.unix.files.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -49,19 +49,19 @@ public abstract class AbstractUnixFilesController {
     }
 
     @GetMapping(value = "", produces = {"application/json"})
-    @ApiOperation(value = "Get a list of a directories contents", nickname = "getDirectoryListing", notes = "This API gets a list of files and directories for a given path")
-    @ApiResponses({@ApiResponse(code = 200, message = "Ok", response = UnixDirectoryAttributesWithChildren.class)})
+    @Operation(summary = "Get a list of a directories contents", operationId = "getDirectoryListing", description = "This API gets a list of files and directories for a given path")
+    @ApiResponses({@ApiResponse(responseCode = "200", description = "Ok")})
     public UnixDirectoryAttributesWithChildren getUnixDirectoryListing(
-            @ApiParam(value = "Path of Directory to be listed", required = true) @RequestParam String path, HttpServletRequest request) {
+            @Parameter(description = "Path of Directory to be listed", required = true) @RequestParam String path, HttpServletRequest request) {
 
         String hypermediaLinkToBase = getLinkToBaseURI(request).toString();
         return getUnixFileService().listUnixDirectory(path, hypermediaLinkToBase);
     }
 
     @GetMapping(value = "{path}/**", produces = {"application/json"})
-    @ApiOperation(value = "Get the contents of a Unix file", nickname = "getUnixFileContents", notes = "This API gets a the contetns of a Unix file. Try it out function will not work due to the encoding of forward slashes, "
+    @Operation(summary = "Get the contents of a Unix file", operationId = "getUnixFileContents", description = "This API gets a the contetns of a Unix file. Try it out function will not work due to the encoding of forward slashes, "
             + "it should be noted that requests to this endpoint should only contain unencoded slashes and not include wild card characters")
-    @ApiResponses({@ApiResponse(code = 200, message = "Ok", response = UnixFileContent.class)})
+    @ApiResponses({@ApiResponse(responseCode = "200", description = "Ok")})
     public ResponseEntity<UnixFileContent> getUnixFileContent(
             @PathVariable String path, HttpServletRequest request,
             @RequestHeader(value = "Convert", required = false) Boolean convert,
@@ -86,9 +86,9 @@ public abstract class AbstractUnixFilesController {
     }
 
     @PutMapping(value = "{path}/**", produces = {"application/json"})
-    @ApiOperation(value = "Update the contents of a Unix file", nickname = "putUnixFileContents", notes = "This API will update the contents of a Unix file. Try it out function will not work due to the encoding of forward slashes, "
+    @Operation(summary = "Update the contents of a Unix file", operationId = "putUnixFileContents", description = "This API will update the contents of a Unix file. Try it out function will not work due to the encoding of forward slashes, "
             + "it should be noted that requests to this endpoint should only contain unencoded slashes and not include wild card characters")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Ok")})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Ok")})
     public ResponseEntity<?> putUnixFileContent(
             @PathVariable String path, HttpServletRequest request,
             @RequestBody UnixFileContent input, @RequestHeader(value = "If-Match", required = false) String ifMatch,
@@ -115,9 +115,9 @@ public abstract class AbstractUnixFilesController {
     }
 
     @DeleteMapping(value = "{path}/**", produces = {"application/json"})
-    @ApiOperation(value = "Delete a Unix file", nickname = "deleteUnixFile", notes = "This API deletes a Unix file or directory. Try it out function will not work due to the encoding of forward slashes, "
+    @Operation(summary = "Delete a Unix file", operationId = "deleteUnixFile", description = "This API deletes a Unix file or directory. Try it out function will not work due to the encoding of forward slashes, "
             + "it should be noted that requests to this endpoint should only contain unencoded slashes")
-    @ApiResponses({@ApiResponse(code = 204, message = "Unix file successfully deleted")})
+    @ApiResponses({@ApiResponse(responseCode = "204", description = "Unix file successfully deleted")})
     public ResponseEntity<?> deleteUnixFile(@PathVariable String path, HttpServletRequest request,
                                             @RequestHeader(value = "recursive", required = false, defaultValue = "false") boolean isRecursive) {
         String fullPath = getPathFromRequest(request);
@@ -126,9 +126,9 @@ public abstract class AbstractUnixFilesController {
     }
 
     @PostMapping(value = "{path}/**", produces = {"application/json"})
-    @ApiOperation(value = "Create a new Unix File or Diretory", nickname = "postUnixFileOrDirectory", notes = "This API will create a new UnixFile or Directory. Try it out function not functional due to encoding of slashes and auto insertion of wildcard characters, "
+    @Operation(summary = "Create a new Unix File or Diretory", operationId = "postUnixFileOrDirectory", description = "This API will create a new UnixFile or Directory. Try it out function not functional due to encoding of slashes and auto insertion of wildcard characters, "
             + "an example request path would be /api/v1/unixFiles/u/ibmuser/newDirectory")
-    @ApiResponses(value = {@ApiResponse(code = 201, message = "Created")})
+    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Created")})
     public ResponseEntity<?> createUnifFileOrDirectory(@PathVariable String path, HttpServletRequest request,
                                                        @RequestBody UnixCreateAssetRequest input) {
         getUnixFileService().createUnixAsset(getPathFromRequest(request), input);
