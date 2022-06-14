@@ -9,8 +9,7 @@
  */
 package org.zowe.unix.files.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -26,21 +25,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 
 @JsonInclude(Include.NON_NULL)
-@ApiModel(value = "UnixDirectoryChild", description = "Child of a unix directory")
+@Schema(title = "UnixDirectoryChild", description = "Child of a unix directory")
 public class UnixDirectoryChild {
-    
-    @ApiModelProperty(value = "Path", required = true)
+
+    @Schema(description = "Path", required = true)
     private String name;
-    
-    @ApiModelProperty(value = "type", required = true)
-    private UnixEntityType type; 
-    
-    @ApiModelProperty(value = "size", required = true)
-    private Integer size; 
-    
-    @ApiModelProperty(value = "lastModified", required = true)
-    private String lastModified; 
-    
-    @ApiModelProperty(value = "Link", required = true)
+
+    @Schema(description = "type", required = true)
+    private UnixEntityType type;
+
+    @Schema(description = "size", required = true)
+    private Integer size;
+
+    @Schema(description = "lastModified", required = true)
+    private String lastModified;
+
+    @Schema(description = "Link", required = true)
     private String link;
 }

@@ -9,7 +9,7 @@
  */
 package org.zowe.data.sets.controller;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/v2/datasets")
-@Api(value = "Data Sets V2 APIs", tags = "Data Sets V2 APIs")
+@Tag(name = "Data Sets V2 APIs")
 public class DataSetsControllerV2 extends AbstractDataSetsController {
 
     @Autowired

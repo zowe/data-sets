@@ -9,9 +9,9 @@
  */
 package org.zowe.data.sets.model;
 
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@ApiModel
+@Schema
 public enum DataSetOrganisationType {
     PO("PO"), // Partitioned
     POU("POU"), // Partitioned unmovable
