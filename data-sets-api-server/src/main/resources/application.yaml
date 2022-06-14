@@ -17,6 +17,9 @@ spring:
         ansi:
             enabled: always
 
+springdoc:
+  pathsToMatch: /api/**
+
 logging:
     level:
         ROOT: INFO
