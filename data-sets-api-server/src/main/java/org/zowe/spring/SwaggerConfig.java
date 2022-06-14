@@ -11,8 +11,8 @@ package org.zowe.spring;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
-
 import io.swagger.v3.oas.models.responses.ApiResponse;
+
 import org.springdoc.core.GroupedOpenApi;
 import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +24,7 @@ public class SwaggerConfig {
     private static final String V2 = "2.0.0";
     private static final String DATASETS_TITLE = "Datasets API";
     private static final String DATASETS_DESCRIPTION = "REST API for the Data sets Service";
-    private static final String UNIXFILES_TITLE = "Unix FIles API";
+    private static final String UNIXFILES_TITLE = "Unix Files API";
     private static final String UNIXFILES_DESCRIPTION = "REST API for the z/OS Unix Files Service";
 
     private static final GenericApiResponseCustomizer GENERIC_API_RESPONSE_CUSTOMIZER = new GenericApiResponseCustomizer();
