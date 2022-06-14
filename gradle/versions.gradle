@@ -52,7 +52,7 @@ ext {
         spring_test                        : "org.springframework:spring-test:${springFrameworkVersion}",
         spring_web                         : "org.springframework:spring-web:${springFrameworkVersion}",
         spring_webmvc                      : "org.springframework:spring-webmvc:${springFrameworkVersion}",
-        spring_doc                         : "org.sprindoc:springdoc-openapi-ui:${springDocVersion}",
+        spring_doc                         : "org.springdoc:springdoc-openapi-ui:${springDocVersion}",
 
         tomcat_annotations_api             : "org.apache.tomcat:tomcat-annotations-api:${tomcatVersion}",
         tomcat_embed_core                  : "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
