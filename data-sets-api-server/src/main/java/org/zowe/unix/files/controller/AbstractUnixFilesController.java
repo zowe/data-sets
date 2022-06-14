@@ -50,7 +50,7 @@ public abstract class AbstractUnixFilesController {
 
     @GetMapping(value = "", produces = {"application/json"})
     @Operation(summary = "Get a list of a directories contents", operationId = "getDirectoryListing", description = "This API gets a list of files and directories for a given path")
-    @ApiResponses({@ApiResponse(responseCode = "200", description = "Ok")})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Ok")})
     public UnixDirectoryAttributesWithChildren getUnixDirectoryListing(
             @Parameter(description = "Path of Directory to be listed", required = true) @RequestParam String path, HttpServletRequest request) {
 
@@ -61,7 +61,7 @@ public abstract class AbstractUnixFilesController {
     @GetMapping(value = "{path}/**", produces = {"application/json"})
     @Operation(summary = "Get the contents of a Unix file", operationId = "getUnixFileContents", description = "This API gets a the contetns of a Unix file. Try it out function will not work due to the encoding of forward slashes, "
             + "it should be noted that requests to this endpoint should only contain unencoded slashes and not include wild card characters")
-    @ApiResponses({@ApiResponse(responseCode = "200", description = "Ok")})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Ok")})
     public ResponseEntity<UnixFileContent> getUnixFileContent(
             @PathVariable String path, HttpServletRequest request,
             @RequestHeader(value = "Convert", required = false) Boolean convert,
@@ -117,7 +117,7 @@ public abstract class AbstractUnixFilesController {
     @DeleteMapping(value = "{path}/**", produces = {"application/json"})
     @Operation(summary = "Delete a Unix file", operationId = "deleteUnixFile", description = "This API deletes a Unix file or directory. Try it out function will not work due to the encoding of forward slashes, "
             + "it should be noted that requests to this endpoint should only contain unencoded slashes")
-    @ApiResponses({@ApiResponse(responseCode = "204", description = "Unix file successfully deleted")})
+    @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Unix file successfully deleted")})
     public ResponseEntity<?> deleteUnixFile(@PathVariable String path, HttpServletRequest request,
                                             @RequestHeader(value = "recursive", required = false, defaultValue = "false") boolean isRecursive) {
         String fullPath = getPathFromRequest(request);
