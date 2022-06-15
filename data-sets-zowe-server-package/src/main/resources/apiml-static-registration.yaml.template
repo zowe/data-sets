@@ -47,7 +47,7 @@ services:
         gatewayUrl: api/v2
         version: 2.0.0
         swaggerUrl: https://${ZWE_haInstance_hostname:-localhost}:${ZWE_components_files_api_port}/v3/api-docs/unixfilesV2
-        documentationUrl: hhttps://${ZWE_haInstance_hostname:-localhost}:${ZWE_components_files_api_port}/swagger-ui/index.html?url=https%3A%2F%2F${ZWE_haInstance_hostname:-localhost}%3A${ZWE_components_files_api_port}%2Fv3%2Fapi-docs%2Fv1&urls.primaryName=unixfilesV2
+        documentationUrl: https://${ZWE_haInstance_hostname:-localhost}:${ZWE_components_files_api_port}/swagger-ui/index.html?url=https%3A%2F%2F${ZWE_haInstance_hostname:-localhost}%3A${ZWE_components_files_api_port}%2Fv3%2Fapi-docs%2Fv1&urls.primaryName=unixfilesV2
 catalogUiTiles:
   datasetsAndUnixFiles:
     title: z/OS Datasets and Unix Files services
