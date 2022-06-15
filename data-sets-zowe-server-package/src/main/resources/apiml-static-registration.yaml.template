@@ -6,6 +6,8 @@ services:
     instanceBaseUrls:
       - https://${ZWE_haInstance_hostname:-localhost}:${ZWE_components_files_api_port}/
     homePageRelativeUrl:  # Home page is at the same URL
+    authentication:
+      scheme: zoweJwt
     routedServices:
       - gatewayUrl: api/v1 
         serviceRelativeUrl: api/v1/datasets
