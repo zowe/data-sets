@@ -1,1 +1,15 @@
-""
+{
+  "lockAcquiredTime": "Mon Aug 15 2022 15:35:14 GMT+0000 (Coordinated Universal Time)",
+  "uid": "1660577714969508048",
+  "repository": {
+    "owner": "zowe",
+    "repo": "data-sets"
+  },
+  "branch": "refs/pull/275/merge",
+  "workflow": "CI Testing",
+  "job": "IntegrationTest",
+  "actor": "CarsonCook",
+  "runId": 2861674314,
+  "runNumber": 214,
+  "link": "https://github.com/zowe/data-sets/actions/runs/2861674314"
+}
