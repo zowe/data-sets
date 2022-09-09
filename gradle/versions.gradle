@@ -14,6 +14,7 @@ ext {
     httpClientVersion = '4.5.13'
     httpCoreVersion = '4.4.10'
     commonsCodecVersion = '1.15'
+    snakeYaml = "1.31"
     slf4jVersion = "1.7.25"
     jacksonCoreVersion = '2.13.2'
     jacksonDatabindVersion = '2.13.2.2'
@@ -30,6 +31,7 @@ ext {
         mapstruct_processor                : "org.mapstruct:mapstruct-processor:${mapStructVersion}",
         slf4j_simple                       : "org.slf4j:slf4j-simple:${slf4jVersion}",
         slf4j_api                          : "org.slf4j:slf4j-api:${slf4jVersion}",
+        snakeyaml                          : "org.yaml:snakeyaml:${snakeYaml}",
         spring_boot_gradle_plugin          : "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}",
         spring_boot_starter_actuator       : "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}",
         spring_boot_starter_parent         : "org.springframework.boot:spring-boot-starter-parent:${springBootVersion}",
