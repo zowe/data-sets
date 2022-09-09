@@ -30,6 +30,7 @@ dependencies {
     compile libraries.http_client
     compile libraries.commons_codec
     compile libraries.gson
+	compile libraries.snakeyaml
 	compile libraries.tomcat_annotations_api
 	compile libraries.tomcat_embed_core
 	compile libraries.tomcat_embed_websocket
