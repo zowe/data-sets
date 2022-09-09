@@ -24,6 +24,7 @@ dependencies {
     compile libraries.gson
     compile libraries.logback_classic
     compile libraries.logback_core
+    compile libraries.snakeyaml
     compile libraries.spring_doc
     compile libraries.tomcat_annotations_api
     compile libraries.tomcat_embed_core
