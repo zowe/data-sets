@@ -22,6 +22,12 @@ dependencies {
 	compile libraries.spring_security_core
 	compile libraries.spring_security_crypto
 	compile libraries.spring_security_web
+	compile libraries.spring_aop
+	compile libraries.spring_beans
+	compile libraries.spring_context
+	compile libraries.spring_core
+	compile libraries.spring_expression
+	compile libraries.spring_web
 	implementation(libraries.spring_boot_starter_web){
 		exclude group: "org.apache.tomcat.embed", module: "tomcat-embed-el"
 	}
