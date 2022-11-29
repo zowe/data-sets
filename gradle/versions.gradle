@@ -3,7 +3,7 @@ ext {
     springBootVersion = '2.5.13'
     springBootVersionForGradle = '2.3.12.RELEASE'
     springSecurityVersion = '5.7.5!!'
-    springFrameworkVersion = '5.3.20!!'
+    springFrameworkVersion = '5.3.24!!'
     springDocVersion = '1.6.9'
     lombokVersion = '1.18.20'
     mockitoCoreVersion = '2.23.4'
