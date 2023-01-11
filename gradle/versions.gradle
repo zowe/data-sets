@@ -1,6 +1,6 @@
 ext {
 //TODO MARK - shouldn't this inherit from parent?
-    springBootVersion = '2.5.13'
+    springBootVersion = '2.5.14'
     springBootVersionForGradle = '2.3.12.RELEASE'
     springSecurityVersion = '5.7.5!!'
     springFrameworkVersion = '5.3.24!!'
@@ -12,18 +12,18 @@ ext {
     guavaVersion = '31.0.1-jre'
     logbackVersion = '1.2.9'
     httpClientVersion = '4.5.13'
-    httpCoreVersion = '4.4.10'
+    httpCoreVersion = '4.4.14'
     commonsCodecVersion = '1.15'
     snakeYaml = "1.33"
     slf4jVersion = "1.7.25"
-    jacksonCoreVersion = '2.13.2'
-    jacksonDatabindVersion = '2.14.0'
+    jacksonCoreVersion = '2.14.1'
+    jacksonDatabindVersion = '2.14.1'
     jsonPathVersion = "2.4.0"
     junitVersion = "4.13.1"
     mapStructVersion = "1.2.0.Final"
     restAssuredVersion = "4.3.0"
     explorerApiCommonVersion = "2.0.16"
-    tomcatVersion = "9.0.68"
+    tomcatVersion = "9.0.70"
 
     libraries = [
         lombok                             : "org.projectlombok:lombok:${lombokVersion}",
