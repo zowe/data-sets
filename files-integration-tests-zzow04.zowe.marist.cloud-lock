@@ -1,1 +1,15 @@
-""
+{
+  "lockAcquiredTime": "Tue May 30 2023 20:02:43 GMT+0000 (Coordinated Universal Time)",
+  "uid": "1685476963078967466",
+  "repository": {
+    "owner": "zowe",
+    "repo": "data-sets"
+  },
+  "branch": "v1.x/master",
+  "workflow": "CI Testing",
+  "job": "IntegrationTest",
+  "actor": "MarkAckert",
+  "runId": 5125701600,
+  "runNumber": 284,
+  "link": "https://github.com/zowe/data-sets/actions/runs/5125701600"
+}
