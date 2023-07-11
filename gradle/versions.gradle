@@ -4,11 +4,10 @@ ext {
     springSecurityVersion = '5.7.8!!'
     springFrameworkVersion = '5.3.27!!'
     springDocVersion = '1.6.9'
-    lombokVersion = '1.18.26'
+    lombokVersion = '1.18.20'
     mockitoCoreVersion = '2.23.4'
     powerMockVersion = "2.0.0-RC.1"
     gsonVersion = '2.9.0'
-    guavaVersion = '31.0.1-jre'
     logbackVersion = '1.2.9'
     httpClientVersion = '4.5.13'
     httpCoreVersion = '4.4.14'
@@ -76,7 +75,6 @@ ext {
         power_mock_junit4_rule             : "org.powermock:powermock-module-junit4-rule:${powerMockVersion}",
 
         gson                               : "com.google.code.gson:gson:${gsonVersion}",
-        guava                              : "com.google.guava:guava:${guavaVersion}",
         mockito_core                       : "org.mockito:mockito-core:${mockitoCoreVersion}",
 
         junit                              : "junit:junit:${junitVersion}",
