@@ -5,7 +5,7 @@ group 'org.zowe.explorer.files'
 
 buildscript {
     ext {
-        licenseGradlePluginVerion = '0.14.0'
+        licenseGradlePluginVersion = '0.14.0'
     }
 
     ext.mavenRepositories = {
@@ -31,7 +31,7 @@ buildscript {
     dependencies {
         classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7'
         classpath 'net.researchgate:gradle-release:2.6.0'
-        classpath "gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:${licenseGradlePluginVerion}"
+        classpath "gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:${licenseGradlePluginVersion}"
         classpath 'org.owasp:dependency-check-gradle:3.3.4'
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
     }
