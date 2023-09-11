@@ -5,7 +5,7 @@ group 'org.zowe.explorer.files'
 
 buildscript {
     ext {
-        licenseGradlePluginVersion = '0.14.0'
+        licenseGradlePluginVersion = '0.13.1'
     }
 
     ext.mavenRepositories = {
