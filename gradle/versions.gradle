@@ -15,7 +15,7 @@ ext {
     httpCoreVersion = '4.4.10'
     commonsCodecVersion = '1.15'
     slf4jVersion = "1.7.25"
-    snakeYaml = "2.0"
+    snakeYaml = "1.33"
     jacksonCoreVersion = '2.13.2'
     jacksonDatabindVersion = '2.14.0'
     jsonPathVersion = "2.4.0"
