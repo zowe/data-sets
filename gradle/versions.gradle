@@ -1,6 +1,6 @@
 ext {
 //TODO MARK - shouldn't this inherit from parent?
-    springBootVersion = '2.5.13'
+    springBootVersion = '2.7.12'
     springBootVersionForGradle = '2.3.12.RELEASE'
     springSecurityVersion = '5.7.8!!'
     springFrameworkVersion = '5.3.20!!'
@@ -9,13 +9,13 @@ ext {
     mockitoCoreVersion = '2.23.4'
     powerMockVersion = "2.0.0-RC.1"
     gsonVersion = '2.9.0'
-    guavaVersion = '31.0.1-jre'
+    guavaVersion = '32.0.1-jre'
     logbackVersion = '1.2.9'
     httpClientVersion = '4.5.13'
     httpCoreVersion = '4.4.10'
     commonsCodecVersion = '1.15'
     slf4jVersion = "1.7.25"
-    snakeYaml = "1.33"
+    snakeYaml = "2.0"
     jacksonCoreVersion = '2.13.2'
     jacksonDatabindVersion = '2.14.0'
     jsonPathVersion = "2.4.0"
