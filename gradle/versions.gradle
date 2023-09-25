@@ -1,7 +1,7 @@
 ext {
 //TODO MARK - shouldn't this inherit from parent?
     springBootVersion = '2.7.12'
-    springSecurityVersion = '5.7.10!!'
+    springSecurityVersion = '5.7.11!!'
     springFrameworkVersion = '5.3.27!!'
     springDocVersion = '1.6.9'
     lombokVersion = '1.18.20'
@@ -21,7 +21,7 @@ ext {
     mapStructVersion = "1.2.0.Final"
     restAssuredVersion = "4.3.0"
     explorerApiCommonVersion = "2.0.23"
-    tomcatVersion = "9.0.75"
+    tomcatVersion = "9.0.80"
 
     libraries = [
         lombok                             : "org.projectlombok:lombok:${lombokVersion}",
