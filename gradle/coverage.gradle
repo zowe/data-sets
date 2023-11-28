@@ -44,7 +44,7 @@ configure(jacocoSubProjects) {
     test.dependsOn instrument
 
     jacoco {
-        toolVersion = '0.8.3'
+        toolVersion = '0.8.11'
     }
 
     jacocoTestReport {

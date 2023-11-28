@@ -5,58 +5,55 @@ buildscript {
     }
 }
 
-
 apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
-
 
 dependencies {
-    compile project(':data-sets-model')
-    compile libraries.spring_boot_starter_actuator
-    compile libraries.spring_boot_starter_parent
-    compile libraries.spring_boot_starter_security
-    compile libraries.spring_security_config
-    compile libraries.spring_security_core
-    compile libraries.spring_security_crypto
-    compile libraries.spring_security_web
-    compile libraries.spring_boot_starter_web
-    compile libraries.spring_aop
-    compile libraries.spring_beans
-    compile libraries.spring_context
-    compile libraries.spring_core
-    compile libraries.spring_expression
-    compile libraries.spring_messaging
-    compile libraries.spring_jcl
-    compile libraries.spring_test
-    compile libraries.spring_web
-    compile libraries.spring_webmvc
-    compile libraries.http_core
-    compile libraries.http_client
-    compile libraries.commons_codec
-    compile libraries.jackson_annotations
-    compile libraries.jackson_core
-    compile libraries.jackson_databind
-    compile libraries.gson
-    compile libraries.logback_classic
-    compile libraries.logback_core
-    compile libraries.snakeyaml
-    compile libraries.spring_doc
-    compile libraries.tomcat_annotations_api
-    compile libraries.tomcat_embed_core
-    compile libraries.tomcat_embed_el
-    compile libraries.tomcat_embed_websocket
-    compile libraries.explorer_api_common
-    compile libraries.lombok
+    api project(':data-sets-model')
+    implementation libraries.spring_boot_starter_actuator
+    implementation libraries.spring_boot_starter_parent
+    implementation libraries.spring_boot_starter_security
+    implementation libraries.spring_security_config
+    implementation libraries.spring_security_core
+    implementation libraries.spring_security_crypto
+    implementation libraries.spring_security_web
+    implementation libraries.spring_boot_starter_web
+    implementation libraries.spring_aop
+    implementation libraries.spring_beans
+    implementation libraries.spring_context
+    implementation libraries.spring_core
+    implementation libraries.spring_expression
+    implementation libraries.spring_messaging
+    implementation libraries.spring_jcl
+    implementation libraries.spring_test
+    implementation libraries.spring_web
+    implementation libraries.spring_webmvc
+    implementation libraries.http_core
+    implementation libraries.http_client
+    implementation libraries.commons_codec
+    implementation libraries.jackson_annotations
+    implementation libraries.jackson_core
+    implementation libraries.jackson_databind
+    implementation libraries.gson
+    implementation libraries.logback_classic
+    implementation libraries.logback_core
+    implementation libraries.snakeyaml
+    implementation libraries.spring_doc
+    implementation libraries.tomcat_annotations_api
+    implementation libraries.tomcat_embed_core
+    implementation libraries.tomcat_embed_el
+    implementation libraries.tomcat_embed_websocket
+    implementation libraries.explorer_api_common
+    compileOnly libraries.lombok
     annotationProcessor libraries.lombok
-    compile libraries.mapstruct
+    implementation libraries.mapstruct
     annotationProcessor libraries.mapstruct_processor
 
-    testCompile libraries.spring_boot_starter_test
-    testCompile libraries.powermock_api_mockito2
-    testCompile libraries.power_mock_junit4
-    testCompile libraries.power_mock_junit4_rule
-    testCompile libraries.mockito_core
-    testCompile libraries.explorer_api_common_test
+    testImplementation libraries.spring_boot_starter_test
+    testImplementation libraries.powermock_api_mockito2
+    testImplementation libraries.power_mock_junit4
+    testImplementation libraries.power_mock_junit4_rule
+    testImplementation libraries.mockito_core
+    testImplementation libraries.explorer_api_common_test
 }
 
 jar {

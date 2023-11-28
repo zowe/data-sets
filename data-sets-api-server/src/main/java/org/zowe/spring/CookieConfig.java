@@ -7,6 +7,7 @@
  *
  * Copyright IBM Corporation 2018, 2020
  */
+
 package org.zowe.spring;
 
 import org.apache.tomcat.util.http.LegacyCookieProcessor;

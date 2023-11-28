@@ -7,6 +7,7 @@
  *
  * Copyright IBM Corporation 2018, 2019
  */
+
 package org.zowe.data.sets.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;

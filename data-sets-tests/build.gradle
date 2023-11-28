@@ -12,46 +12,46 @@ ext {
 }
 
 dependencies {
-    compile project(':data-sets-model')
-    compile project(':data-sets-api-server')
+    api project(':data-sets-model')
+    api project(':data-sets-api-server')
 
-    compile libraries.spring_boot_starter_actuator
-    compile libraries.spring_boot_starter_parent
-    compile libraries.spring_boot_starter_security
-	compile libraries.spring_security_config
-	compile libraries.spring_security_core
-	compile libraries.spring_security_crypto
-	compile libraries.spring_security_web
-    compile libraries.spring_boot_starter_web
-	compile libraries.spring_aop
-	compile libraries.spring_beans
-	compile libraries.spring_context
-	compile libraries.spring_core
-	compile libraries.spring_expression
-	compile libraries.spring_messaging
-	compile libraries.spring_jcl
-	compile libraries.spring_test
-	compile libraries.spring_web
-	compile libraries.spring_webmvc
-    compile libraries.http_core
-    compile libraries.http_client
-    compile libraries.commons_codec
-    compile libraries.gson
-	compile libraries.snakeyaml
-	compile libraries.tomcat_annotations_api
-	compile libraries.tomcat_embed_core
-	compile libraries.tomcat_embed_websocket
-    compile libraries.lombok
-    compile libraries.explorer_api_common
-	compile libraries.restAssured
+    implementation libraries.spring_boot_starter_actuator
+    implementation libraries.spring_boot_starter_parent
+    implementation libraries.spring_boot_starter_security
+	implementation libraries.spring_security_config
+	implementation libraries.spring_security_core
+	implementation libraries.spring_security_crypto
+	implementation libraries.spring_security_web
+    implementation libraries.spring_boot_starter_web
+	implementation libraries.spring_aop
+	implementation libraries.spring_beans
+	implementation libraries.spring_context
+	implementation libraries.spring_core
+	implementation libraries.spring_expression
+	implementation libraries.spring_messaging
+	implementation libraries.spring_jcl
+	implementation libraries.spring_test
+	implementation libraries.spring_web
+	implementation libraries.spring_webmvc
+    implementation libraries.http_core
+    implementation libraries.http_client
+    implementation libraries.commons_codec
+    implementation libraries.gson
+	implementation libraries.snakeyaml
+	implementation libraries.tomcat_annotations_api
+	implementation libraries.tomcat_embed_core
+	implementation libraries.tomcat_embed_websocket
+    compileOnly libraries.lombok
+    implementation libraries.explorer_api_common
+	testImplementation libraries.restAssured
 
-    testCompile libraries.spring_boot_starter_test
-    testCompile libraries.powermock_api_mockito2
-    testCompile libraries.power_mock_junit4
-    testCompile libraries.power_mock_junit4_rule
-    testCompile libraries.mockito_core
-    testCompile libraries.explorer_api_common_test
-    testCompile 'org.hamcrest:hamcrest-junit:2.0.0.0' //TODO testCompile libraries.hamcrest
+    testImplementation libraries.spring_boot_starter_test
+    testImplementation libraries.powermock_api_mockito2
+    testImplementation libraries.power_mock_junit4
+    testImplementation libraries.power_mock_junit4_rule
+    testImplementation libraries.mockito_core
+    testImplementation libraries.explorer_api_common_test
+	testImplementation 'org.hamcrest:hamcrest-junit:2.0.0.0' //TODO testCompile libraries.hamcrest
 }
 
 test {
