@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 env:
-  MARIST_HOST: zzow04.zowe.marist.cloud
+  MARIST_HOST: zzow08.zowe.marist.cloud
   MARIST_SSH_PORT: 22
   MARIST_TMP_DIRECTORY: /ZOWE/tmp
   MARIST_TEST_DIRECTORY: /ZOWE/tmp/files-integration-test-${{ github.run_id }}_${{ github.run_number }}
