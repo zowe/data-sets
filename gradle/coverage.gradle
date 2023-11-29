@@ -82,15 +82,10 @@ task jacocoFullReport(type: JacocoReport) {
     )
 
     reports {
-        html.enabled = true
-        xml.enabled = true
+        html.required = true
+        xml.required = true
     }
 
-    doFirst {
-        getExecutionData().from(
-                files(executionData.findAll { it.exists() })
-        )
-    }
 }
 
 task coverage() {
