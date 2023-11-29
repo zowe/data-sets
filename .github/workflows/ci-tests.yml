@@ -72,7 +72,7 @@ jobs:
         env:
           GATEWAY_PORT: ${{ env.GATEWAY_PORT }}
 
-      - name: Run Files API server
+      - name: Run Data Set API server
         run: |
           # start.sh uses $(pwd)/bin to locate jar file
           mkdir ./bin
@@ -179,10 +179,10 @@ jobs:
         if: always()
         run: >
           if [ -f ${{ env.FILES_LOG_DIR }} ]; then
-            echo ">>>>>Files API logs"
+            echo ">>>>>Data Set API logs"
             cat ${{ env.FILES_LOG_DIR }}
           else
-            echo ">>>>>No Files API logs"
+            echo ">>>>>No Data Set API logs"
           fi
 
       - name: Output APIML logs
