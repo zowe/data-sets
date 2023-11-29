@@ -12,9 +12,8 @@ on:
   workflow_dispatch:
 
 env:
-  MARIST_HOST: zzow04.zowe.marist.cloud
-  ZOSMF_HOST: zzow08.zowe.marist.cloud
-  MARIST_SSH_PORT: 22
+  MARIST_HOST: ${{ secrets.SSH_MARIST_RACF_HOST }}
+  MARIST_SSH_PORT: ${{ secrets.SSH_MARIST_ALLSYS_PORT }}
   MARIST_TMP_DIRECTORY: /ZOWE/tmp
   MARIST_TEST_DIRECTORY: /ZOWE/tmp/files-integration-test-${{ github.run_id }}_${{ github.run_number }}
   JOB_ID: ${{ github.run_id }}-${{ github.run_number }}
@@ -69,7 +68,7 @@ jobs:
       - name: Run APIML containers
         run: |
           chmod +x scripts/run-containerized-apiml.sh
-          ./scripts/run-containerized-apiml.sh -h ${{ env.ZOSMF_HOST }} -p ${{ env.ZOSMF_PORT }} -f ${{ env.FILES_PORT }} -l
+          ./scripts/run-containerized-apiml.sh -h ${{ env.MARIST_HOST }} -p ${{ env.ZOSMF_PORT }} -f ${{ env.FILES_PORT }} -l
         env:
           GATEWAY_PORT: ${{ env.GATEWAY_PORT }}
 
