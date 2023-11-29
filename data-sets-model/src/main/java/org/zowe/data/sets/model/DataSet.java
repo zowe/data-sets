@@ -32,7 +32,7 @@ import lombok.NoArgsConstructor;
 @Schema(title = "DataSet", description = "List of data set")
 public class DataSet {
     // TODO - match this with Create request
-    @Schema(description = "Data set name", required = true)
+    @Schema(description = "Data set name", requiredMode = Schema.RequiredMode.REQUIRED)
     private String name;
     @Schema(description = "Whether the data set is migrated")
     private Boolean migrated;

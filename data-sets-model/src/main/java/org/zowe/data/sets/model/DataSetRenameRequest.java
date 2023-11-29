@@ -29,6 +29,6 @@ import lombok.NoArgsConstructor;
 @Schema(title = "DataSetRenameRequest", description = "Reaname data set request payload with attributes from-dataset to-dataset")
 public class DataSetRenameRequest {
 
-    @Schema(description = "new dataset name", required = true, example = "HLQ.ZOWE or HLQ.ZOWE(mem1)")
+    @Schema(description = "new dataset name", requiredMode = Schema.RequiredMode.REQUIRED, example = "HLQ.ZOWE or HLQ.ZOWE(mem1)")
     private String newName;
 }

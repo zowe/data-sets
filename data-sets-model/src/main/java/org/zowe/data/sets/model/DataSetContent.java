@@ -24,6 +24,6 @@ import lombok.NoArgsConstructor;
 @Schema(type = "DataSetContent", description = "Data Set file content")
 public class DataSetContent {
 
-    @Schema(description = "The content of the data set, with \\\\n for new lines", required = true, example = "//TESTJOBX JOB (),MSGCLASS=H\\n// EXEC PGM=IEFBR14")
+    @Schema(description = "The content of the data set, with \\\\n for new lines", requiredMode = Schema.RequiredMode.REQUIRED, example = "//TESTJOBX JOB (),MSGCLASS=H\\n// EXEC PGM=IEFBR14")
     private String records;
 }
