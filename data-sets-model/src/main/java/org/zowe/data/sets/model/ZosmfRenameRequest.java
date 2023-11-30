@@ -7,6 +7,7 @@
  *
  * Copyright IBM Corporation 2020
  */
+
 package org.zowe.data.sets.model;
 
 import com.google.gson.JsonObject;

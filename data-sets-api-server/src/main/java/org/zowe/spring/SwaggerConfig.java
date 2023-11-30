@@ -7,6 +7,7 @@
  *
  * Copyright IBM Corporation 2018
  */
+
 package org.zowe.spring;
 
 import io.swagger.v3.oas.models.OpenAPI;

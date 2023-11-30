@@ -7,6 +7,7 @@
  *
  * Copyright IBM Corporation 2019
  */
+
 package org.zowe.unix.files.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,24 +31,24 @@ import java.util.List;
 @Schema(title = "UnixDirectoryAttributesWithChildren", description = "Attributes of a Unix Directory with its children")
 public class UnixDirectoryAttributesWithChildren {
 
-    @Schema(description = "Type", required = true)
+    @Schema(description = "Type", requiredMode = Schema.RequiredMode.REQUIRED)
     private UnixEntityType type;
 
-    @Schema(description = "Owner", required = true)
+    @Schema(description = "Owner", requiredMode = Schema.RequiredMode.REQUIRED)
     private String owner;
 
-    @Schema(description = "Group", required = true)
+    @Schema(description = "Group", requiredMode = Schema.RequiredMode.REQUIRED)
     private String group;
 
-    @Schema(description = "Symbolic permissions", required = true)
+    @Schema(description = "Symbolic permissions", requiredMode = Schema.RequiredMode.REQUIRED)
     private String permissionsSymbolic;
 
-    @Schema(description = "Size on disk", required = true)
+    @Schema(description = "Size on disk", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer size;
 
-    @Schema(description = "Last Modified", required = true)
+    @Schema(description = "Last Modified", requiredMode = Schema.RequiredMode.REQUIRED)
     private String lastModified;
 
-    @Schema(description = "Children", required = true)
+    @Schema(description = "Children", requiredMode = Schema.RequiredMode.REQUIRED)
     private List<UnixDirectoryChild> children;
 }

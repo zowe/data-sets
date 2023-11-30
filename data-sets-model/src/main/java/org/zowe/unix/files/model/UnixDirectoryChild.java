@@ -7,6 +7,7 @@
  *
  * Copyright IBM Corporation 2019
  */
+
 package org.zowe.unix.files.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -28,18 +29,18 @@ import lombok.NoArgsConstructor;
 @Schema(title = "UnixDirectoryChild", description = "Child of a unix directory")
 public class UnixDirectoryChild {
 
-    @Schema(description = "Path", required = true)
+    @Schema(description = "Path", requiredMode = Schema.RequiredMode.REQUIRED)
     private String name;
 
-    @Schema(description = "type", required = true)
+    @Schema(description = "type", requiredMode = Schema.RequiredMode.REQUIRED)
     private UnixEntityType type;
 
-    @Schema(description = "size", required = true)
+    @Schema(description = "size", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer size;
 
-    @Schema(description = "lastModified", required = true)
+    @Schema(description = "lastModified", requiredMode = Schema.RequiredMode.REQUIRED)
     private String lastModified;
 
-    @Schema(description = "Link", required = true)
+    @Schema(description = "Link", requiredMode = Schema.RequiredMode.REQUIRED)
     private String link;
 }

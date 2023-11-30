@@ -7,6 +7,7 @@
  *
  * Copyright IBM Corporation 2018, 2019
  */
+
 package org.zowe.data.sets.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -29,7 +30,7 @@ import lombok.NoArgsConstructor;
 public class DataSetAttributes {
 
     // TODO - match this with Create request
-    @Schema(description = "Data set name", required = true)
+    @Schema(description = "Data set name", requiredMode = Schema.RequiredMode.REQUIRED)
     private String name;
     @Schema(description = "Volume serial")
     private String volumeSerial;
@@ -52,11 +53,11 @@ public class DataSetAttributes {
     private Integer averageBlock;
 
     // TODO convert to enum once we know which formats z/OS MF works with?
-    @Schema(description = "Record format, recfm", required = true)
+    @Schema(description = "Record format, recfm", requiredMode = Schema.RequiredMode.REQUIRED)
     private String recordFormat;
     @Schema(description = "Block size, blksize")
     private Integer blockSize;
-    @Schema(description = "Record length, lrecl", required = true)
+    @Schema(description = "Record length, lrecl", requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer recordLength;
 
     // TODO - dsnType - dataSetNameType https://github.com/zowe/data-sets/issues/30

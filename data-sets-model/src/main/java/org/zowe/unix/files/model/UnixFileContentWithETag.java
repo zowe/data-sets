@@ -7,6 +7,7 @@
  *
  * Copyright IBM Corporation 2019
  */
+
 package org.zowe.unix.files.model;
 
 import lombok.AllArgsConstructor;

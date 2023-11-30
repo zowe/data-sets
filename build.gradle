@@ -5,7 +5,7 @@ group 'org.zowe.explorer.files'
 
 buildscript {
     ext {
-        licenseGradlePluginVersion = '0.13.1'
+        licenseGradlePluginVersion = '0.6.1'
     }
 
     ext.mavenRepositories = {
@@ -29,11 +29,11 @@ buildscript {
     repositories mavenRepositories
 
     dependencies {
-        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7'
-        classpath 'net.researchgate:gradle-release:2.6.0'
-        classpath "gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:${licenseGradlePluginVersion}"
+        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.8'
+        classpath 'net.researchgate:gradle-release:2.8.1'
+        classpath "gradle.plugin.org.cadixdev.gradle:licenser:${licenseGradlePluginVersion}"
         classpath 'org.owasp:dependency-check-gradle:3.3.4'
-        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
     }
 }
 
@@ -45,9 +45,9 @@ apply from: 'gradle/code-quality.gradle'
 
 allprojects {
     apply plugin: 'java'
+    apply plugin: 'java-library'
     apply plugin: 'idea'
-    apply plugin: 'maven'
-    apply plugin: 'com.github.hierynomus.license'
+    apply plugin: 'org.cadixdev.licenser'
     apply plugin: 'org.owasp.dependencycheck'
 
     repositories mavenRepositories
@@ -69,16 +69,32 @@ allprojects {
     configurations.all {
         exclude group: 'org.glassfish', module: 'jakarta.el'
     }
+
+    dependencies {
+        constraints {
+            compileOnly libraries.values()
+            implementation libraries.values()
+            testImplementation libraries.values()
+            annotationProcessor libraries.values()
+        }
+    }
+
+    configurations.all {
+        exclude group: 'org.junit.jupiter'
+
+        resolutionStrategy.force libraries.mockito_core
+    }
+
 }
 
 subprojects {
     license {
-        header rootProject.file('.license/LICENSE_HEADER')
-        ext.year = Calendar.getInstance().get(Calendar.YEAR)
-        excludes(["**/*.yml", "**/*.yaml", "**/*.json", "**/static", "**/*.sh", "**/*.txt", "**/*.p12", "**/*.xml", "**/*.jsp", "**/*.html", "**/*.jks"])
-        mapping {
-            java = 'SLASHSTAR_STYLE'
+        header = rootProject.file('.license/LICENSE_HEADER')
+        properties {
+            name = 'Contributors to the Zowe Project'
+            year = Calendar.getInstance().get(Calendar.YEAR)
         }
+        exclude "**/*.yml", "**/*.yaml", "**/*.json", "**/static", "**/*.sh", "**/*.txt", "**/*.p12", "**/*.xml", "**/*.jsp", "**/*.html", "**/*.jks"
         skipExistingHeaders = true
     }
 

@@ -7,6 +7,7 @@
  *
  * Copyright IBM Corporation 2019
  */
+
 package org.zowe.unix.files.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,6 +23,6 @@ import lombok.NoArgsConstructor;
 @Schema(type = "UnixFileContent", description = "Unix file content")
 public class UnixFileContent {
 
-    @Schema(description = "The content of the unix file", required = true, example = "Hello World")
+    @Schema(description = "The content of the unix file", requiredMode = Schema.RequiredMode.REQUIRED, example = "Hello World")
     private String content;
 }

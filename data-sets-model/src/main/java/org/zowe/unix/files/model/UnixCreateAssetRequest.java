@@ -7,6 +7,7 @@
  *
  * Copyright IBM Corporation 2019
  */
+
 package org.zowe.unix.files.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,8 +25,8 @@ import lombok.NoArgsConstructor;
 @Schema(title = "UnixCreateAssetRequest", description = "Unix File or Directory attributes for creation")
 public class UnixCreateAssetRequest {
 
-    @Schema(description = "Unix Entity type, File or Directory", required = true, example = "FILE")
+    @Schema(description = "Unix Entity type, File or Directory", requiredMode = Schema.RequiredMode.REQUIRED, example = "FILE")
     private UnixEntityType type;
-    @Schema(description = "Access Mode for new asset", required = false, example = "rwxrw-r--")
+    @Schema(description = "Access Mode for new asset", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "rwxrw-r--")
     private String permissions;
 }

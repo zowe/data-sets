@@ -12,8 +12,8 @@ on:
   workflow_dispatch:
 
 env:
-  MARIST_HOST: zzow04.zowe.marist.cloud
-  MARIST_SSH_PORT: 22
+  MARIST_HOST: ${{ secrets.SSH_MARIST_RACF_HOST }}
+  MARIST_SSH_PORT: ${{ secrets.SSH_MARIST_ALLSYS_PORT }}
   MARIST_TMP_DIRECTORY: /ZOWE/tmp
   MARIST_TEST_DIRECTORY: /ZOWE/tmp/files-integration-test-${{ github.run_id }}_${{ github.run_number }}
   JOB_ID: ${{ github.run_id }}-${{ github.run_number }}
@@ -72,7 +72,7 @@ jobs:
         env:
           GATEWAY_PORT: ${{ env.GATEWAY_PORT }}
 
-      - name: Run Files API server
+      - name: Run Data Set API server
         run: |
           # start.sh uses $(pwd)/bin to locate jar file
           mkdir ./bin
@@ -179,10 +179,10 @@ jobs:
         if: always()
         run: >
           if [ -f ${{ env.FILES_LOG_DIR }} ]; then
-            echo ">>>>>Files API logs"
+            echo ">>>>>Data Set API logs"
             cat ${{ env.FILES_LOG_DIR }}
           else
-            echo ">>>>>No Files API logs"
+            echo ">>>>>No Data Set API logs"
           fi
 
       - name: Output APIML logs
