@@ -8,7 +8,7 @@ ext {
     mockitoCoreVersion = '2.28.2'
     powerMockVersion = "2.0.9"
     gsonVersion = '2.10.1'
-    logbackVersion = '1.2.12'
+    logbackVersion = '1.2.13'
     httpClientVersion = '4.5.14'
     httpCoreVersion = '4.4.16'
     commonsCodecVersion = '1.16.0'
@@ -20,7 +20,7 @@ ext {
     junitVersion = "4.13.2"
     mapStructVersion = "1.2.0.Final"
     restAssuredVersion = "4.5.1"
-    explorerApiCommonVersion = "2.0.28"
+    explorerApiCommonVersion = "2.0.29"
     tomcatVersion = "9.0.83"
 
     activationApiVersion = "1.2.2"
