@@ -211,7 +211,7 @@ jobs:
 
       - uses: ./.github/actions/setup
         with:
-          jdkVersion: 11
+          jdkVersion: 17
 
       - name: Sonar scan with Gradle
         run: >
