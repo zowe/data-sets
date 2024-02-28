@@ -10,7 +10,7 @@ ext {
     powerMockVersion = "2.0.0-RC.1"
     gsonVersion = '2.9.0'
     guavaVersion = '32.0.1-jre'
-    logbackVersion = '1.2.9'
+    logbackVersion = '1.2.13'
     httpClientVersion = '4.5.13'
     httpCoreVersion = '4.4.10'
     commonsCodecVersion = '1.15'
