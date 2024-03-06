@@ -1,29 +1,32 @@
 ext {
 //TODO MARK - shouldn't this inherit from parent?
-    springBootVersion = '2.7.12'
-    springBootVersionForGradle = '2.3.12.RELEASE'
-    springSecurityVersion = '5.7.11!!'
-    springFrameworkVersion = '5.3.30!!'
-    springDocVersion = '1.6.9'
-    lombokVersion = '1.18.20'
-    mockitoCoreVersion = '2.23.4'
-    powerMockVersion = "2.0.0-RC.1"
-    gsonVersion = '2.9.0'
-    guavaVersion = '32.0.1-jre'
+    springBootVersion = '2.7.18'
+    springSecurityVersion = '5.8.10'
+    springFrameworkVersion = '5.3.32'
+    springDocVersion = '1.7.0'
     logbackVersion = '1.2.13'
-    httpClientVersion = '4.5.13'
-    httpCoreVersion = '4.4.10'
-    commonsCodecVersion = '1.15'
-    slf4jVersion = "1.7.25"
-    snakeYaml = "2.0"
-    jacksonCoreVersion = '2.13.2'
-    jacksonDatabindVersion = '2.14.0'
-    jsonPathVersion = "2.4.0"
-    junitVersion = "4.13.1"
-    mapStructVersion = "1.2.0.Final"
-    restAssuredVersion = "4.3.0"
-    explorerApiCommonVersion = "1.1.20"
+    lombokVersion = '1.18.30'
+    mockitoCoreVersion = '2.28.2'
+    powerMockVersion = "2.0.9"
+    gsonVersion = '2.10.1'
+    httpClientVersion = '4.5.14'
+    httpCoreVersion = '4.4.16'
+    commonsCodecVersion = '1.16.1'
+    slf4jVersion = "1.7.36"
+    snakeYaml = "2.2"
+    jacksonCoreVersion = '2.16.1'
+    jacksonDatabindVersion = '2.16.1'
+    jsonPathVersion = "2.9.0"
+    junitVersion = "4.13.2"
+    restAssuredVersion = "4.5.1"
+    explorerApiCommonVersion = "2.0.31"
     tomcatVersion = "9.0.85"
+    mapStructVersion = "1.2.0.Final"
+
+    activationApiVersion = "1.2.2"
+    xmlBindApiVersion = "2.3.3"
+    hamcrestVersion = "2.2"
+    commonsLang3Version = "3.14.0"
 
     libraries = [
         lombok                             : "org.projectlombok:lombok:${lombokVersion}",
@@ -77,7 +80,6 @@ ext {
         power_mock_junit4_rule             : "org.powermock:powermock-module-junit4-rule:${powerMockVersion}",
 
         gson                               : "com.google.code.gson:gson:${gsonVersion}",
-        guava                              : "com.google.guava:guava:${guavaVersion}",
         mockito_core                       : "org.mockito:mockito-core:${mockitoCoreVersion}",
 
         junit                              : "junit:junit:${junitVersion}",
@@ -85,6 +87,11 @@ ext {
 
         explorer_api_common                : "org.zowe.explorer.api:explorer-api-common:${explorerApiCommonVersion}",
         explorer_api_common_model          : "org.zowe.explorer.api:explorer-api-common-model:${explorerApiCommonVersion}",
-        explorer_api_common_test           : "org.zowe.explorer.api:explorer-api-common-test:${explorerApiCommonVersion}"
+        explorer_api_common_test           : "org.zowe.explorer.api:explorer-api-common-test:${explorerApiCommonVersion}",
+
+        activation_api                     : "jakarta.activation:jakarta.activation-api:${activationApiVersion}",
+        xml_bind_api                       : "jakarta.xml.bind:jakarta.xml.bind-api:${xmlBindApiVersion}",
+        hamcrest                           : "org.hamcrest:hamcrest:${hamcrestVersion}",
+        commonsLang3                       : "org.apache.commons:commons-lang3:${commonsLang3Version}"
     ]
 }
