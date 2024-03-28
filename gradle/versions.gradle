@@ -23,7 +23,7 @@ ext {
     mapStructVersion = "1.2.0.Final"
     restAssuredVersion = "4.3.0"
     explorerApiCommonVersion = "1.1.20"
-    tomcatVersion = "9.0.85"
+    tomcatVersion = "9.0.87"
 
     libraries = [
         lombok                             : "org.projectlombok:lombok:${lombokVersion}",
