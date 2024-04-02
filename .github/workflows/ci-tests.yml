@@ -138,7 +138,7 @@ jobs:
             echo "[${{ env.MARIST_FILE_SETUP_SCRIPT }}] successful for v1 and v2" && exit 0
           EOF
         env:
-          SSHPASS: ${{ secrets.SSH_MARIST_PASSWORDP }}
+          SSHPASS: ${{ secrets.SSH_MARIST_RACF_PASSWORD }}
       - name: Integration tests for v1 - LTPA
         run: >
           ./gradlew runIntegrationTests --info
@@ -171,7 +171,7 @@ jobs:
             echo "Done cleaning up integration test files" && exit 0
           EOF
         env:
-          SSHPASS: ${{ secrets.SSH_MARIST_PASSWORDP }}
+          SSHPASS: ${{ secrets.SSH_MARIST_RACF_PASSWORD }}
 
       - name: Output Files API logs
         if: always()
