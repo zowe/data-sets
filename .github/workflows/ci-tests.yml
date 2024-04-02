@@ -19,6 +19,7 @@ env:
   JOB_ID: ${{ github.run_id }}-${{ github.run_number }}
   MARIST_FILE_SETUP_SCRIPT: prepare-integration-test-folders.sh
   ZOSMF_PORT: 10443
+  ZOSMF_HOST: zzow08.zowe.marist.cloud
   GATEWAY_PORT: 7554
   FILES_PORT: 8443
   FILES_LOG_DIR: .apiml/files-api.log
@@ -68,7 +69,7 @@ jobs:
       - name: Run APIML containers
         run: |
           chmod +x scripts/run-containerized-apiml.sh
-          ./scripts/run-containerized-apiml.sh -h ${{ env.MARIST_HOST }} -p ${{ env.ZOSMF_PORT }} -f ${{ env.FILES_PORT }} -l
+          ./scripts/run-containerized-apiml.sh -h ${{ env.ZOSMF_HOST }} -p ${{ env.ZOSMF_PORT }} -f ${{ env.FILES_PORT }} -l
         env:
           GATEWAY_PORT: ${{ env.GATEWAY_PORT }}
 
