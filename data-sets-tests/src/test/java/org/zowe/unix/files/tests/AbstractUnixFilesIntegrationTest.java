@@ -7,6 +7,7 @@
  *
  * Copyright IBM Corporation 2019, 2020
  */
+
 package org.zowe.unix.files.tests;
 
 import io.restassured.RestAssured;

@@ -7,6 +7,7 @@
  *
  * Copyright IBM Corporation 2018, 2020
  */
+
 package org.zowe.data.sets.services.zosmf;
 
 import org.apache.http.Header;

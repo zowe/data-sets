@@ -7,6 +7,7 @@
  *
  * Copyright IBM Corporation 2019
  */
+
 package org.zowe.unix.files.services.zosmf;
 
 import com.google.gson.JsonElement;
