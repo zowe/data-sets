@@ -7,6 +7,7 @@
  *
  * Copyright IBM Corporation 2018
  */
+
 package org.zowe;
 
 import lombok.extern.slf4j.Slf4j;

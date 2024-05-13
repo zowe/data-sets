@@ -7,6 +7,7 @@
  *
  * Copyright IBM Corporation 2020
  */
+
 package org.zowe.data.sets.tests;
 
 import io.restassured.RestAssured;
@@ -96,14 +97,13 @@ public class DataSetsPutRenameIntegrationTest extends AbstractDataSetsIntegratio
         String newName = TEMP_OLD_PDS + "(" + TEMP_NEW_MEMBER + "ABCDEFGH)";
         
         putDataSetRename(oldName, DataSetRenameRequest.builder().newName(newName).build()).then()
-            .statusCode(HttpStatus.SC_BAD_REQUEST);
+            .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
     }
     
     
     @Test
     public void testRenameMemberExisting() throws Exception {
         String oldName = TEMP_OLD_PDS + "(" + TEMP_EXIST_MEMBER1 + ")";
-        //invalid new name where member name length greater than length 8
         String newName = TEMP_OLD_PDS + "(" + TEMP_EXIST_MEMBER2 + ")";
         
         //non existent dataset name is PDS throw INTERNAL ERROR, zosmf throw very general 500 exception

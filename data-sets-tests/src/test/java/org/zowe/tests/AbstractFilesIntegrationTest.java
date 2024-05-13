@@ -7,6 +7,7 @@
  *
  * Copyright IBM Corporation 2018, 2019
  */
+
 package org.zowe.tests;
 
 import org.zowe.api.common.test.AbstractHttpIntegrationTest;

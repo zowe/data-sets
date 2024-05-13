@@ -7,6 +7,7 @@
  *
  * Copyright IBM Corporation 2019, 2020
  */
+
 package org.zowe.unix.files.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
