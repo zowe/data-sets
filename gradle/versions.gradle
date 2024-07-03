@@ -1,8 +1,8 @@
 ext {
 //TODO MARK - shouldn't this inherit from parent?
     springBootVersion = '2.7.18'
-    springSecurityVersion = '5.8.12'
-    springFrameworkVersion = '5.3.34'
+    springSecurityVersion = '5.8.13'
+    springFrameworkVersion = '5.3.37'
     springDocVersion = '1.7.0'
     logbackVersion = '1.2.13'
     lombokVersion = '1.18.32'
@@ -14,15 +14,15 @@ ext {
     commonsCodecVersion = '1.16.1'
     slf4jVersion = "1.7.36"
     snakeYaml = "2.2"
-    jacksonCoreVersion = '2.16.2'
-    jacksonDatabindVersion = '2.16.2'
+    jacksonCoreVersion = '2.17.1'
+    jacksonDatabindVersion = '2.17.1'
     jsonPathVersion = "2.9.0"
     junitVersion = "4.13.2"
     restAssuredVersion = "4.5.1"
-    explorerApiCommonVersion = "2.0.32"
-    tomcatVersion = "9.0.88"
-    mapStructVersion = "1.2.0.Final"
+    explorerApiCommonVersion = "2.0.33"
+    tomcatVersion = "9.0.90"
 
+    mapStructVersion = "1.2.0.Final"
     activationApiVersion = "1.2.2"
     xmlBindApiVersion = "2.3.3"
     hamcrestVersion = "2.2"
