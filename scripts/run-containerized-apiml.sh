@@ -57,8 +57,8 @@ fi
 if [ -z "${HOST_OS}" ]; then
   HOST_OS="not-linux"
 fi
-if [ -z $(command -v docker-compose) ]; then
-  echo "[${SCRIPT_NAME}][error] docker-compose is required."
+if [ -z $(command -v docker compose) ]; then
+  echo "[${SCRIPT_NAME}][error] docker compose is required."
   exit 1
 fi
 
@@ -180,7 +180,7 @@ sed -e "s|{WORKSPACE}|${WORKSPACE}|g" \
   -e "s|{DISCOVERY_PORT}|${DISCOVERY_PORT}|g" \
   -e "s|{GATEWAY_PORT}|${GATEWAY_PORT}|g" \
   "scripts/containerized-apiml/$dockerComposeTemplate" > "${WORKSPACE}/docker-compose.yml"
-docker-compose -f "${WORKSPACE}/docker-compose.yml" up -d
+docker compose -f "${WORKSPACE}/docker-compose.yml" up -d
 ###################################################################
 echo "[${SCRIPT_NAME}] done."
 exit 0
