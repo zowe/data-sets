@@ -187,7 +187,7 @@ jobs:
 
       - name: Output APIML logs
         if: always()
-        run: docker-compose -f .apiml/docker-compose.yml logs
+        run: docker compose -f .apiml/docker-compose.yml logs
 
       - name: Store test results
         uses: actions/upload-artifact@v2
