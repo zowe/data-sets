@@ -2,7 +2,7 @@ ext {
 //TODO MARK - shouldn't this inherit from parent?
     springBootVersion = '2.7.18'
     springSecurityVersion = '5.8.13'
-    springFrameworkVersion = '5.3.37'
+    springFrameworkVersion = '5.3.39'
     springDocVersion = '1.7.0'
     logbackVersion = '1.2.13'
     lombokVersion = '1.18.32'
@@ -19,7 +19,7 @@ ext {
     jsonPathVersion = "2.9.0"
     junitVersion = "4.13.2"
     restAssuredVersion = "4.5.1"
-    explorerApiCommonVersion = "2.0.34"
+    explorerApiCommonVersion = "2.0.35"
     tomcatVersion = "9.0.93"
 
     mapStructVersion = "1.2.0.Final"
