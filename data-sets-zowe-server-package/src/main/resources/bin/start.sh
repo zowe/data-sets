@@ -41,6 +41,51 @@ if [ `uname` = "OS/390" ]; then
   options="${options} -Xquickstart"
 fi
 
+get_enabled_protocol_limit() {
+    target=$1
+    type=$2
+    key_component="ZWE_configs_zowe_network_${target}_tls_${type}Tls"
+    value_component=$(eval echo \$$key_component)
+    key_files_api="ZWE_components_files_api_zowe_network_${target}_tls_${type}Tls"
+    value_files_api=$(eval echo \$$key_files_api)
+    key_zowe="ZWE_zowe_network_${target}_tls_${type}Tls"
+    value_zowe=$(eval echo \$$key_zowe)
+    enabled_protocol_limit=${value_component:-${value_files_api:-${value_zowe:-}}}
+}
+
+extract_between() {
+    echo "$1" | sed -e "s/.*$2,//" -e "s/$3.*//"
+}
+
+get_enabled_protocol() {
+    target=$1
+    get_enabled_protocol_limit "${target}" "min"
+    enabled_protocols_min=${enabled_protocol_limit}
+    get_enabled_protocol_limit "${target}" "max"
+    enabled_protocols_max=${enabled_protocol_limit}
+
+    if [ "${enabled_protocols_min:-}" = "${enabled_protocols_max:-}" ]; then
+        result="${enabled_protocols_max:-}"
+    elif [ -z "${enabled_protocols_min:-}" ]; then
+        result="${enabled_protocols_max:-}"
+    else
+        enabled_protocols_max=${enabled_protocols_max:-"TLSv1.2"}
+        enabled_protocols=,TLSv1,TLSv1.1,TLSv1.2,TLSv1.3,TLSv1.4,
+        # Extract protocols between min and max (inclusive)
+        result=$(extract_between "$enabled_protocols" "$enabled_protocols_min" "$enabled_protocols_max")
+        result="$enabled_protocols_min,$result$enabled_protocols_max"
+    fi
+}
+
+get_enabled_protocol_limit "server" "max"
+server_protocol=${enabled_protocol_limit:-"TLS"}
+get_enabled_protocol "server"
+server_enabled_protocols=${result:-"TLSv1.2"}
+server_ciphers=${ZWE_configs_zowe_network_server_tls_ciphers:-${ZWE_components_files_api_zowe_network_server_tls_ciphers:-${ZWE_zowe_network_server_tls_ciphers:-TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384,TLS_AES_128_GCM_SHA256,TLS_AES_256_GCM_SHA384}}}
+get_enabled_protocol "client"
+client_enabled_protocols=${ZWE_components_files_api_apiml_httpclient_ssl_enabled_protocols:-${result:-${server_enabled_protocols}}}
+client_ciphers=${ZWE_configs_zowe_network_client_tls_ciphers:-${ZWE_components_files_api_zowe_network_client_tls_ciphers:-${ZWE_zowe_network_client_tls_ciphers:-${server_ciphers}}}}
+
 COMPONENT_CODE=EF
 _BPX_JOBNAME=${ZWE_zowe_job_prefix}${COMPONENT_CODE} java \
   ${options} \
@@ -53,6 +98,11 @@ _BPX_JOBNAME=${ZWE_zowe_job_prefix}${COMPONENT_CODE} java \
   -Dserver.ssl.keyStore="${ZWE_configs_certificate_keystore_file:-${ZWE_zowe_certificate_keystore_file}}" \
   -Dserver.ssl.keyStorePassword="${ZWE_configs_certificate_keystore_password:-${ZWE_zowe_certificate_keystore_password}}" \
   -Dserver.ssl.keyStoreType="${ZWE_configs_certificate_keystore_type:-${ZWE_zowe_certificate_keystore_type:-PKCS12}}" \
+  -Dserver.ssl.ciphers=${server_ciphers} \
+  -Dserver.ssl.protocol=${ZWE_configs_server_ssl_protocol:-${server_protocol}} \
+  -Dserver.ssl.enabled-protocols=${server_enabled_protocols} \
+  -Dapiml.httpclient.ssl.enabled-protocols=${ZWE_components_files_api_apiml_httpclient_ssl_enabled_protocols:-${client_enabled_protocols}} \
+  -Djdk.tls.client.cipherSuites=${client_ciphers} \
   -Dserver.connection-timeout=8000 \
   -Dcom.ibm.jsse2.overrideDefaultTLS=true \
   -Dconnection.httpsPort=${ZWE_components_gateway_port:-7554} \
