@@ -97,7 +97,7 @@ public class DataSetsPutRenameIntegrationTest extends AbstractDataSetsIntegratio
         String newName = TEMP_OLD_PDS + "(" + TEMP_NEW_MEMBER + "ABCDEFGH)";
         
         putDataSetRename(oldName, DataSetRenameRequest.builder().newName(newName).build()).then()
-            .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+            .statusCode(HttpStatus.SC_BAD_REQUEST);
     }
     
     

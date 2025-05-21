@@ -20,8 +20,8 @@ public class PathNameNotValidException extends ZoweApiRestException {
      */
     private static final long serialVersionUID = -2079479272866830096L;
 
-    public PathNameNotValidException(String path) {
-        super(HttpStatus.BAD_REQUEST, "Requested path ''{0}'' is not valid", path);
+    public PathNameNotValidException() {
+        super(HttpStatus.BAD_REQUEST, "Path name is not valid");
     }
 
 }

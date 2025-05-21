@@ -127,7 +127,7 @@ public class ListUnixDirectoryZosmfRunner extends AbstractZosmfRequestRunner<Uni
             if (null != details && details.toString().contains("EDC5111I Permission denied.")) {
                 throw new UnauthorisedDirectoryException(path);
             } else if (message.toString().contains("Path name is not valid")) {
-                throw new PathNameNotValidException(path);
+                throw new PathNameNotValidException();
             }
         }
         return null;
