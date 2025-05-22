@@ -71,9 +71,9 @@ public class UnixFilesGetDirectoryListingIntegrationTest extends AbstractUnixFil
     }
     
     @Test
-    public void testGetDirectoryListingWithInvlaidPath() {
+    public void testGetDirectoryListingWithInvalidPath() {
         String invalidPath = "//";
-        ZoweApiRestException expected = new PathNameNotValidException(invalidPath);
+        ZoweApiRestException expected = new PathNameNotValidException();
         ApiError expectedError = expected.getApiError();
         
         RestAssured.given().header(AUTH_HEADER).when().get("?path=" + invalidPath).then()
