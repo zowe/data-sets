@@ -19,8 +19,8 @@ ext {
     jsonPathVersion = "2.9.0"
     junitVersion = "4.13.2"
     restAssuredVersion = "4.5.1"
-    explorerApiCommonVersion = "2.0.42"
-    tomcatVersion = "9.0.109"
+    explorerApiCommonVersion = "2.0.43"
+    tomcatVersion = "9.0.111"
 
     mapStructVersion = "1.2.0.Final"
     activationApiVersion = "1.2.2"
