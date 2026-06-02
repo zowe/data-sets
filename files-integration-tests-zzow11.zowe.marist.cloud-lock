@@ -1,1 +1,15 @@
-""
+{
+  "lockAcquiredTime": "Tue Jun 02 2026 11:39:17 GMT+0000 (Coordinated Universal Time)",
+  "uid": "1780400357824654647",
+  "repository": {
+    "owner": "zowe",
+    "repo": "data-sets"
+  },
+  "branch": "refs/pull/346/merge",
+  "workflow": "CI Testing",
+  "job": "IntegrationTest",
+  "actor": "pavel-jares-bcm",
+  "runId": 26817098227,
+  "runNumber": 472,
+  "link": "https://github.com/zowe/data-sets/actions/runs/26817098227"
+}
