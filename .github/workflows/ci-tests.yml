@@ -145,16 +145,15 @@ jobs:
           EOF
         env:
           SSHPASS: ${{ secrets.SSH_MARIST_RACF_PASSWORD }}
-      # TODO: The environment is not working with these tests
-      #- name: Integration tests for v1 - LTPA
-      #  run: >
-      #    ./gradlew runIntegrationTests --info
-      #    -Pserver.host=localhost
-      #    -Pserver.port=${{ env.GATEWAY_PORT }}
-      #    -Pserver.username=${{ secrets.SSH_MARIST_USERNAMEL }}
-      #    -Pserver.password=${{ secrets.SSH_MARIST_PASSWORDL }}
-      #    -Pserver.test.directory=${{ env.MARIST_TEST_DIRECTORY }}_v1
-      #    -Ptest.version=1
+      - name: Integration tests for v1 - LTPA
+        run: >
+          ./gradlew runIntegrationTests --info
+          -Pserver.host=localhost
+          -Pserver.port=${{ env.GATEWAY_PORT }}
+          -Pserver.username=${{ secrets.SSH_MARIST_USERNAMEL }}
+          -Pserver.password=${{ secrets.SSH_MARIST_PASSWORDL }}
+          -Pserver.test.directory=${{ env.MARIST_TEST_DIRECTORY }}_v1
+          -Ptest.version=1
 
       - name: Integration tests for v2 - JWT
         run: >
