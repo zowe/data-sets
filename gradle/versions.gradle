@@ -4,6 +4,7 @@ ext {
     springSecurityVersion = '5.8.16'
     springFrameworkVersion = '5.3.39'
     springDocVersion = '1.8.0'
+    log4jVersion = '2.26.1'
     logbackVersion = '1.2.13'
     lombokVersion = '1.18.46'
     mockitoCoreVersion = '2.28.2'
@@ -11,17 +12,17 @@ ext {
     gsonVersion = '2.14.0'
     httpClientVersion = '4.5.14'
     httpCoreVersion = '4.4.16'
-    commonsCodecVersion = '1.22.0'
+    commonsCodecVersion = '1.22.1'
     commonsLang3Version = "3.20.0"
     slf4jVersion = "1.7.36!!"
     snakeYaml = "2.6"
-    jacksonCoreVersion = '2.17.3'
-    jacksonDatabindVersion = '2.17.3'
+    jacksonCoreVersion = '2.18.9'
+    jacksonDatabindVersion = '2.18.9'
     jsonPathVersion = "2.10.0"
     junitVersion = "4.13.2"
     restAssuredVersion = "4.5.1"
     explorerApiCommonVersion = "2.0.44"
-    tomcatVersion = "9.0.118"
+    tomcatVersion = "9.0.120"
 
     mapStructVersion = "1.6.3"
     activationApiVersion = "1.2.2"
@@ -69,6 +70,8 @@ ext {
         jackson_core                       : "com.fasterxml.jackson.core:jackson-core:${jacksonCoreVersion}",
         jackson_databind                   : "com.fasterxml.jackson.core:jackson-databind:${jacksonDatabindVersion}",
         json_path                          : "com.jayway.jsonpath:json-path:${jsonPathVersion}",
+        log4j_api                          : "org.apache.logging.log4j:log4j-api:${log4jVersion}",
+        log4j_to_slf4j                     : "org.apache.logging.log4j:log4j-to-slf4j:${log4jVersion}",
         logback_classic                    : "ch.qos.logback:logback-classic:${logbackVersion}",
         logback_core                       : "ch.qos.logback:logback-core:${logbackVersion}",
 
